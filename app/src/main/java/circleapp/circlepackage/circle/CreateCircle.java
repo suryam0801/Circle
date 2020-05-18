@@ -44,7 +44,5 @@ public class CreateCircle extends AppCompatActivity {
         locationTagsDisplay = findViewById(R.id.selected_location_tags_display);
         interestTagsDisplay = findViewById(R.id.selected_interest_tags_display);
 
-
-
     }
 }
