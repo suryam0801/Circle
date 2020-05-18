@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,13 +33,14 @@ public class Explore extends AppCompatActivity {
 
     private String TAG = Explore.class.getSimpleName();
     private List<Circle> circleList = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private CircleDisplayAdapter circleDisplayAdapter;
+    private Button btnAddCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
+
+        btnAddCircle = findViewById(R.id.add_circle_button); //initialize add projectButton
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         //persistence automatically handles offline behavior

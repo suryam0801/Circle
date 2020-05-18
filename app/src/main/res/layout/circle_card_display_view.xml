@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/explore_card_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="18dp"
+            android:id="@+id/explore_card_icon_background"
+            android:layout_marginTop="16dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleX=".7"
+                android:scaleY=".7"
+                android:id="@+id/explore_card_icon_foreground"
+                android:layout_gravity="center"></androidx.appcompat.widget.AppCompatImageView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Name"
+                android:textSize="16dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_light"
+                android:paddingBottom="5dp"
+                android:paddingLeft="7dp"
+                android:layout_marginRight="45dp"
+                android:paddingTop="15dp"
+                android:id="@+id/circle_name"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  Created by "
+                    android:textSize="12dp"
+                    android:textColor="#B6B6B6"
+                    android:fontFamily="@font/roboto_regular"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Creator Name"
+                    android:textSize="12dp"
+                    android:textColor="#6CACFF"
+                    android:fontFamily="@font/roboto_regular"
+                    android:id="@+id/circle_creatorName"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/project_item_divider"
+            android:background="#F1F1F1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Description"
+            android:textSize="12dp"
+            android:maxLines="2"
+            android:textColor="#9E9E9E"
+            android:fontFamily="@font/roboto_regular"
+            android:ellipsize="end"
+            android:layout_margin="18dp"
+            android:id="@+id/circle_desc"
+            />
+    </LinearLayout>
+
+</LinearLayout>
