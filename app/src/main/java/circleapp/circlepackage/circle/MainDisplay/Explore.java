@@ -85,7 +85,7 @@ public class Explore extends AppCompatActivity {
                 locationTags, interestTags, "UUID", 0, 0, 0, "TOKEN_ID");
 
 
-        //singe value listener for Circles Collection
+        //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
         circles.addValueEventListener(new ValueEventListener() {
