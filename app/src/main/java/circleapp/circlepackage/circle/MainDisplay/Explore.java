@@ -2,11 +2,17 @@ package circleapp.circlepackage.circle.MainDisplay;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,11 +26,14 @@ import java.util.List;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.RecyclerItemClickListener;
 
 public class Explore extends AppCompatActivity {
 
     private String TAG = Explore.class.getSimpleName();
     private List<Circle> circleList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private CircleDisplayAdapter circleDisplayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +48,39 @@ public class Explore extends AppCompatActivity {
         //synchronizes and stores local copy of data
         circles.keepSynced(true);
 
+        //initialize recylcerview
+        RecyclerView recyclerView = findViewById(R.id.circlesRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        //initializing the CircleDisplayAdapter and setting the adapter to recycler view
+        //adapter adds all items from the circle list and displays them in individual cards in the recycler view
+        final RecyclerView.Adapter adapter = new CircleDisplayAdapter(Explore.this, circleList);
+        recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnItemTouchListener(
+                //RecyclerItemClickListener is a gestureDectector class which recognises the type of touch
+                new RecyclerItemClickListener(Explore.this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "LONG PRESSED", Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
+
         //Creating a testUser
         final List<String> locationTags = new ArrayList<>();
         locationTags.add("psg");
         final List<String> interestTags = new ArrayList<>();
         interestTags.add("juggling");
         final User user = new User("Surya", "Manivannan", "+17530043008", "default",
-                locationTags, interestTags, "UUID", 0,0,0,"TOKEN_ID");
+                locationTags, interestTags, "UUID", 0, 0, 0, "TOKEN_ID");
 
 
         //singe value listener for Circles Collection
@@ -56,22 +91,40 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //filter through each Circle in the Circles database
-                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
                     Circle circle = postSnapshot.getValue(Circle.class);
 
+
+                    //*FROM HERE*
+                    //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading circlesList at the same time
+                    int position = 0;
+                    List<Circle> tempList = new ArrayList<>(circleList);
+                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
+                    for (Circle c : tempList) {
+                        if (c.getId().equals(circle.getId())) {
+                            circleList.remove(position);
+                            adapter.notifyDataSetChanged();
+                        }
+                        position++;
+                    }
+                    //*TO HERE* only for changing values for updated or modified children in database
+
+                    //setting the adapter initially
                     //filter for only circles associated with matching user location and interests
-                    for(String locIterator : user.getLocationTags()){
-                        if(circle.getLocationTags().contains(locIterator)){
-                            for (String intIterator : user.getInterestTags()){
-                                if(circle.getInterestTags().contains(intIterator))
+                    for (String locIterator : user.getLocationTags()) {
+                        if (circle.getLocationTags().contains(locIterator)) {
+                            for (String intIterator : user.getInterestTags()) {
+                                if (circle.getInterestTags().contains(intIterator)) {
                                     circleList.add(circle);
+                                    //notify the adapter each time a new item needs to be added to the recycler view
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                         }
                     }
-                }
 
-                Log.d(TAG, String.valueOf(circleList.size()));
+                }
             }
 
             @Override
