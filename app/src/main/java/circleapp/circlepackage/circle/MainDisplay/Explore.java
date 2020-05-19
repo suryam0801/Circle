@@ -85,7 +85,7 @@ public class Explore extends AppCompatActivity {
         final List<String> locationTags = new ArrayList<>();
         locationTags.add("psg");
         final List<String> interestTags = new ArrayList<>();
-        interestTags.add("juggling");
+        interestTags.add("basketball");
         final User user = new User("Surya", "Manivannan", "+17530043008", "default",
                 locationTags, interestTags, "UUID", 0, 0, 0, "TOKEN_ID");
 
