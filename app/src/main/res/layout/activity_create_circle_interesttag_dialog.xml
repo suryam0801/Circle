@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="380dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/tag_picker_popup_background"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="19dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/bck_locations_tags_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:scaleX=".8"
+            android:scaleY=".8"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_chevron_left_black_24dp">
+        </ImageButton>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingRight="25dp"
+            android:gravity="center"
+            android:text="Set Interest Tags"
+            android:textColor="@color/black"
+            android:textSize="20dp">
+        </TextView>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="18.5dp"
+        android:background="#EEEEEE">
+    </View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="100"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="99"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Select or add your interest preferences to show updates from the selected tags."
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp">
+            </TextView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Eg: #sports #cse #eventmanagement"
+                    android:textColor="@color/black"
+                    android:layout_margin="20dp"
+                    android:textSize="14dp"
+                    android:paddingRight="10dp"
+                    android:id="@+id/circle_interest_tags_entry"
+                    android:fontFamily="@font/roboto_regular"
+                    android:paddingLeft="16dp"
+                    android:background="@drawable/edittext_light_gray_rounded_bg"
+                    android:textColorHint="#828282">
+                </EditText>
+
+                <Button
+                    android:id="@+id/circle_interest_tag_add_button"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_add_black_24dp"
+                    android:layout_marginRight="30dp">
+                </Button>
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="280dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:id="@+id/circle_interest_tag_chip_group">
+                </com.google.android.material.chip.ChipGroup>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/circle_finalize_interest_tags"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/popup_tag_picker_confirm_button"
+            android:fontFamily="@font/roboto_black"
+            android:gravity="center"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:text="Confirm Interest Tags"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFFFF"
+            android:textSize="15dp" />
+
+    </LinearLayout>
+</LinearLayout>
