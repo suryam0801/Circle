@@ -56,7 +56,7 @@ public class CreateCircle extends AppCompatActivity {
     private ChipGroup locationTagsDisplay, interestTagsDisplay;
 
     private FirebaseDatabase database;
-    private DatabaseReference tags;
+    private DatabaseReference tags, circleDB;
 
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbLocationTags = new ArrayList<>(), dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
@@ -96,7 +96,7 @@ public class CreateCircle extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
 
-                dbLocationTags = (List<String>) tagsDBRetrieved.get("locationTags");
+                dbLocationTags = new ArrayList<>(((HashMap<String, Boolean>) tagsDBRetrieved.get("locationTags")).keySet());
                 locIntTags = (HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags");
             }
 
@@ -178,7 +178,7 @@ public class CreateCircle extends AppCompatActivity {
 
         for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
             if (selectedLocations.contains(entry.getKey())) {
-                List<String> tempInterests = (List<String>) entry.getValue();
+                List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
                 for (String interest : tempInterests) {
                     if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
                         dbInterestTags.add(interest);
@@ -237,9 +237,12 @@ public class CreateCircle extends AppCompatActivity {
         interestTagAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String interestTag = interestTagEntry.getText().toString();
+                String interestTag = interestTagEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterests.add(interestTag);
+                    if(!dbInterestTags.contains(interestTag))
+                        dbInterestTags.add(interestTag);
+
                     setInterestTag(interestTag, interestChipGroupPopup);
                 }
             }
@@ -249,7 +252,7 @@ public class CreateCircle extends AppCompatActivity {
         interestTagDialog.show();
     }
 
-    public void setInterestTag(String name, ChipGroup interestChipGroupPopup) {
+    public void setInterestTag(final String name, ChipGroup interestChipGroupPopup) {
         final Chip chip = new Chip(this);
         int paddingDp = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 10,
@@ -262,8 +265,10 @@ public class CreateCircle extends AppCompatActivity {
                         getResources().getDisplayMetrics()
                 ),
                 paddingDp, paddingDp, paddingDp);
-        chip.setText(name);
-
+        if(!name.contains("#"))
+            chip.setText("#" + name);
+        else
+            chip.setText(name);
 
         if (selectedInterests.contains(name)) {
             chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
@@ -279,11 +284,11 @@ public class CreateCircle extends AppCompatActivity {
                 if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
                     chip.setTextColor(Color.BLACK);
-                    selectedInterests.remove(chip.getText().toString());
+                    selectedInterests.remove(chip.getText().toString().replace("#",""));
                 } else {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
                     chip.setTextColor(Color.WHITE);
-                    selectedInterests.add(chip.getText().toString());
+                    selectedInterests.add(chip.getText().toString().replace("#",""));
                 }
 
                 Log.d(TAG, "INTEREST TAG LIST: " + selectedInterests.toString());
@@ -315,7 +320,7 @@ public class CreateCircle extends AppCompatActivity {
         finalizeLocationTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectedLocations.isEmpty()){
+                if (selectedLocations.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Select A Tag", Toast.LENGTH_LONG).show();
                 } else {
                     locationTagDialog.dismiss();
@@ -355,9 +360,11 @@ public class CreateCircle extends AppCompatActivity {
         locationTagAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String locationTag = locationTagEntry.getText().toString();
+                String locationTag = locationTagEntry.getText().toString().replace("#", "");
                 if (!locationTag.isEmpty()) {
                     selectedLocations.add(locationTag);
+                    if(!dbLocationTags.contains(locationTag))
+                        dbLocationTags.add(locationTag);
                     setLocationTag(locationTag, locationChipGroupPopup);
                 }
             }
@@ -381,7 +388,10 @@ public class CreateCircle extends AppCompatActivity {
                         getResources().getDisplayMetrics()
                 ),
                 paddingDp, paddingDp, paddingDp);
-        chip.setText(name);
+        if(!name.contains("#"))
+            chip.setText("#" + name);
+        else
+            chip.setText(name);
 
         if (selectedLocations.contains(name)) {
             chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
@@ -397,11 +407,11 @@ public class CreateCircle extends AppCompatActivity {
                 if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
                     chip.setTextColor(Color.BLACK);
-                    selectedLocations.remove(chip.getText().toString());
+                    selectedLocations.remove(chip.getText().toString().replace("#",""));
                 } else {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
                     chip.setTextColor(Color.WHITE);
-                    selectedLocations.add(chip.getText().toString());
+                    selectedLocations.add(chip.getText().toString().replace("#", ""));
                 }
 
                 Log.d(TAG, "LOCATION TAG LIST: " + selectedLocations.toString());
@@ -416,18 +426,31 @@ public class CreateCircle extends AppCompatActivity {
 
     public void createCirlce(String cName, String cDescription) {
 
+        circleDB = database.getReference("Circles");
+
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
 
-        String myCircleID = UUID.randomUUID().toString();
+        String myCircleID = circleDB.getKey();
         String creatorUserID = "964e0f48-8a8c-4e92-b8e5-9e6c52b67ef9";//Objects.requireNonNull(currentUser.getCurrentUser()).getUid());
         String acceptanceType = acceptanceButton.getText().toString();
         String creatorName = "matt barnes"; //currentUser.getCurrentUser().getDisplayName();
 
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, selectedLocations, selectedInterests);
 
-        Log.d(TAG, circle.toString());
+        for (String l : selectedLocations)
+            tags.child("locationTags").child(l).setValue(true);
+        for (String i : selectedInterests)
+            tags.child("interestTags").child(i).setValue(true);
+
+
+        for (String loc : selectedLocations) {
+            for(String i : selectedInterests) {
+                tags.child("locationInterestTags").child(loc).child(i).setValue(true);
+            }
+        }
 
         database.getReference("Circles").push().setValue(circle);
+
     }
 }
