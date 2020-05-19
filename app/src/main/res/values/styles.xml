@@ -1,7 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,8 +9,8 @@
     </style>
 
     <style name="MyRaidoButtonTwo" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:colorControlNormal">#D1D1D1</item>
-        <item name="android:colorControlActivated">#11F692</item>
+        <item name="android:colorControlNormal" tools:targetApi="lollipop">#D1D1D1</item>
+        <item name="android:colorControlActivated" tools:targetApi="lollipop">#11F692</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat</item>
     </style>
 

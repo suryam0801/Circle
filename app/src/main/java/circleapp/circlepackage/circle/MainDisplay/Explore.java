@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CreateCircle;
@@ -36,6 +37,8 @@ public class Explore extends AppCompatActivity {
     private String TAG = Explore.class.getSimpleName();
     private List<Circle> circleList = new ArrayList<>();
     private Button btnAddCircle;
+    private FirebaseDatabase database;
+    private DatabaseReference circles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +47,11 @@ public class Explore extends AppCompatActivity {
 
         btnAddCircle = findViewById(R.id.add_circle_button); //initialize add projectButton
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         //persistence automatically handles offline behavior
         database.setPersistenceEnabled(true);
 
-        final DatabaseReference circles = database.getReference("Circles");
+        circles = database.getReference("Circles");
         //synchronizes and stores local copy of data
         circles.keepSynced(true);
 

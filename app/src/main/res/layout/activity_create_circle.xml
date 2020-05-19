@@ -118,11 +118,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
                 android:layout_marginTop="20dp"
                 android:text="Acceptance Type"
-                android:layout_marginLeft="23dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:textSize="12dp"
                 android:textColor="#C3BDBD"
                 android:fontFamily="@font/roboto_regular">
@@ -161,9 +162,11 @@
             </RadioGroup>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/create_circle_location_tag_select_title"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/roboto_regular"
@@ -187,7 +190,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="5dp"
-                android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:drawableEnd="@drawable/ic_chevron_right_appblue_24dp"
                 android:fontFamily="@font/roboto_regular"
                 android:gravity="center_vertical"
                 android:textSize="12dp"
@@ -195,9 +198,11 @@
                 android:textColor="#5B86E5"></TextView>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/create_circle_interest_tag_select_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/roboto_regular"
@@ -221,7 +226,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:drawableEnd="@drawable/ic_chevron_right_appblue_24dp"
                 android:fontFamily="@font/roboto_regular"
                 android:gravity="center_vertical"
                 android:textSize="12dp"
