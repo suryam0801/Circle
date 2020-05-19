@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.MainDisplay;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,9 +14,12 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,26 +30,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CreateCircle;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.RecyclerItemClickListener;
+import circleapp.circlepackage.circle.SessionStorage;
 
 public class Explore extends AppCompatActivity {
 
     private String TAG = Explore.class.getSimpleName();
     private List<Circle> circleList = new ArrayList<>();
-    private Button btnAddCircle;
+    private FloatingActionButton btnAddCircle;
     private FirebaseDatabase database;
     private DatabaseReference circles;
+    private ImageView profPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
-        btnAddCircle = findViewById(R.id.add_circle_button); //initialize add projectButton
+
+        btnAddCircle = findViewById(R.id.add_circle_button);
+        profPic = findViewById(R.id.explore_profilePicture);
 
         database = FirebaseDatabase.getInstance();
         //persistence automatically handles offline behavior
@@ -71,7 +80,8 @@ public class Explore extends AppCompatActivity {
                 new RecyclerItemClickListener(Explore.this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(), "CLICKED", Toast.LENGTH_SHORT).show();
+                        SessionStorage.saveCircle(Explore.this, circleList.get(position));
+                        startActivity(new Intent(Explore.this, CircleWall.class));
                     }
 
                     @Override
@@ -88,6 +98,12 @@ public class Explore extends AppCompatActivity {
         interestTags.add("basketball");
         final User user = new User("Surya", "Manivannan", "+17530043008", "default",
                 locationTags, interestTags, "UUID", 0, 0, 0, "TOKEN_ID");
+
+        //load user profile picture
+        Glide.with(Explore.this)
+                .load("")
+                .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
+                .into(profPic);
 
 
         //single value listener for Circles Collection

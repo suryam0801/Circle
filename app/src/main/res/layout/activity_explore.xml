@@ -36,7 +36,7 @@
             android:background="@drawable/ic_notifications_none_black_24dp"></ImageButton>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/mainActivity_profilePicture"
+            android:id="@+id/explore_profilePicture"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
@@ -51,20 +51,19 @@
         android:id="@+id/circlesRecyclerView"
         android:layout_below="@id/exploreHeaderBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layoutAnimation="@anim/explore_rv_animation">
+        android:layout_height="wrap_content">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_circle_button"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:clickable="true"
+        android:src="@drawable/ic_add_white_24dp"
+        android:backgroundTint="#3A8BF3"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/create_project_button_background"
-        android:elevation="10dp"
-        android:foreground="@drawable/ic_add_white_24dp" />
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>
