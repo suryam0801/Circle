@@ -1,7 +1,7 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class Broadcast {
-    public String id, message, attachmentURI, creatorName, creatorID;
+    public String id, message, attachmentURI, creatorName, creatorID, docKey;
     public boolean pollExists;
     public long timeStamp;
     public Poll poll;
@@ -24,6 +24,14 @@ public class Broadcast {
 
     public Poll getPoll() {
         return poll;
+    }
+
+    public String getDocKey() {
+        return docKey;
+    }
+
+    public void setDocKey(String docKey) {
+        this.docKey = docKey;
     }
 
     public void setPoll(Poll poll) {

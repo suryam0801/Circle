@@ -131,13 +131,17 @@ public class CircleWall extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
+                    //clears broadcast list if the database is updating the children (updates all values in document)
+                    if(!broadcastList.isEmpty())
+                        broadcastList.clear();
+
                     //filter through each Circle in the Circles database
                     for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                         //casts the datasnapshot to Broadcast Object
-                        Log.d(TAG, postSnapshot.toString());
                         Broadcast broadcast = postSnapshot.getValue(Broadcast.class);
-                        broadcastList.add(broadcast);
+                        broadcast.setDocKey(postSnapshot.getKey());
 
+                        broadcastList.add(broadcast);
                         adapter.notifyDataSetChanged();
                     }
                 }

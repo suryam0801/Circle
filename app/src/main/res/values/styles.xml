@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyRaidoButtonTwo" parent="Widget.AppCompat.CompoundButton.RadioButton">
+    <style name="MyRadioButtonTwo" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:colorControlNormal" tools:targetApi="lollipop">#D1D1D1</item>
         <item name="android:colorControlActivated" tools:targetApi="lollipop">#11F692</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat</item>

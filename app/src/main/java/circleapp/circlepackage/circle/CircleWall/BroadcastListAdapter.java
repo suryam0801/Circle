@@ -81,8 +81,21 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 totalValue += entry.getValue();
             }
 
+            if(viewHolder.pollOptionsDisplayGroup.getChildCount()>0)
+                viewHolder.pollOptionsDisplayGroup.removeAllViews();
+
+            if(poll.getUserResponse()!=null){
+                if(poll.getUserResponse().containsKey("USERID")){
+                    viewHolder.setCurrentUserPollOption(poll.getUserResponse().get("USERID"));
+                }
+            }
+
             for(Map.Entry<String, Integer> entry : pollOptions.entrySet()){
                 RadioButton button = new RadioButton(context);
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lparams.setMargins(0, 10, 20, 10);
+                button.setPadding(50, 0, 0, 10);
+                button.setLayoutParams(lparams);
                 button.setHighlightColor(Color.BLACK);
                 ColorStateList colorStateList = new ColorStateList(
                         new int[][]{
@@ -98,17 +111,22 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     button.setButtonTintList(colorStateList);
                 }
                 if(totalValue != 0) {
-                    int percentage = (int) (((entry.getValue()/totalValue)/ 100.0f) * 10);
+                    int percentage = (int) (((double)entry.getValue()/totalValue) * 100);
                     button.setBackground(new PercentDrawable(percentage));
                 }
                 button.setTextColor(Color.BLACK);
                 button.setText(entry.getKey());
                 viewHolder.pollOptionsDisplayGroup.addView(button);
+                if(viewHolder.getCurrentUserPollOption()!=null){
+                    button.setPressed(true);
+                }
             }
+
             viewHolder.pollOptionsDisplayGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    RadioButton rb = viewHolder.view.findViewById(checkedId);
+                    RadioButton rb = group.findViewById(checkedId);
+
                     String option = rb.getText().toString();
                     HashMap<String, Integer> pollOptions = poll.getOptions();
                     int currentSelectedVotes = poll.getOptions().get(option);
@@ -128,7 +146,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
                     HashMap<String, String> currentUserResponse = new HashMap<>();
                     currentUserResponse.put("USERID", viewHolder.getCurrentUserPollOption());
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("userResponse").setValue(currentUserResponse);
+                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getDocKey()).child("poll").child("userResponse").setValue(currentUserResponse);
+                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getDocKey()).child("poll").child("options").setValue(pollOptions);
                 }
             });
         }
