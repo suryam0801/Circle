@@ -16,24 +16,17 @@
         <activity android:name=".Login.LocationTagPicker" />
         <activity android:name=".Login.GatherUserDetails" />
         <activity android:name=".Login.OtpActivity" />
-        <activity android:name=".Login.PhoneLogin">
+        <activity android:name=".Login.PhoneLogin"/>
         <activity android:name=".CircleWall.CircleWall"></activity>
-        <activity android:name=".CreateCircle" />
-        <activity android:name=".MainDisplay.CircleDisplayAdapter" />
-        <activity android:name=".MainDisplay.Explore" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".CreateCircle" />
         <activity android:name=".MainDisplay.CircleDisplayAdapter" />
         <activity android:name=".MainDisplay.Explore" />
-        <activity android:name=".MainActivity">
-
-        </activity>
     </application>
 
 </manifest>
