@@ -1,13 +1,14 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Poll {
-    String id, question;
-    List<String> options, userResponse;
+    String question;
+    HashMap<String, String> userResponse;
+    HashMap<String, Integer> options;
 
-    public Poll(String id, String question, List<String> options, List<String> userResponse) {
-        this.id = id;
+    public Poll(String question, HashMap<String, Integer> options, HashMap<String, String> userResponse) {
         this.question = question;
         this.options = options;
         this.userResponse = userResponse;
@@ -16,13 +17,6 @@ public class Poll {
     public Poll() {
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getQuestion() {
         return question;
@@ -32,26 +26,25 @@ public class Poll {
         this.question = question;
     }
 
-    public List<String> getOptions() {
+    public HashMap<String, Integer> getOptions() {
         return options;
     }
 
-    public void setOptions(List<String> options) {
+    public void setOptions(HashMap<String, Integer> options) {
         this.options = options;
     }
 
-    public List<String> getUserResponse() {
+    public HashMap<String, String> getUserResponse() {
         return userResponse;
     }
 
-    public void setUserResponse(List<String> userResponse) {
+    public void setUserResponse(HashMap<String, String> userResponse) {
         this.userResponse = userResponse;
     }
 
     @Override
     public String toString() {
         return "Poll{" +
-                "id='" + id + '\'' +
                 ", question='" + question + '\'' +
                 ", options=" + options +
                 ", userResponse=" + userResponse +

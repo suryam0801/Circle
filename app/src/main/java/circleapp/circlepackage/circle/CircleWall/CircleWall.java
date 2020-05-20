@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -33,29 +35,35 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CreateCircle;
+import circleapp.circlepackage.circle.MainDisplay.CircleDisplayAdapter;
 import circleapp.circlepackage.circle.MainDisplay.Explore;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.RecyclerItemClickListener;
 import circleapp.circlepackage.circle.SessionStorage;
 
 public class CircleWall extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference pollsDB, broadcastsDB;
+    private DatabaseReference broadcastsDB;
 
     private String TAG = CircleWall.class.getSimpleName();
     private static final int STORAGE_PERMISSION_CODE = 101;
@@ -67,9 +75,8 @@ public class CircleWall extends AppCompatActivity {
     private Circle circle;
     private FloatingActionButton createNewBroadcast;
 
-    private List<String> pollAnswerOptionsList = new ArrayList<>( );
+    private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
-    private String pollQuestion;
 
     //create broadcast popup ui elements
     private EditText setMessageET, setPollQuestionET, setPollOptionET;
@@ -79,14 +86,17 @@ public class CircleWall extends AppCompatActivity {
     private Button btnAddPollOption, btnUploadBroadcast;
     private Dialog createBroadcastPopup;
 
+    //elements for loading broadcasts, setting recycler view, and passing objects into adapter
+    List<Broadcast> broadcastList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
 
         database = FirebaseDatabase.getInstance();
-        pollsDB = database.getReference("Polls");
         broadcastsDB = database.getReference("Broadcasts");
+        broadcastsDB.keepSynced(true);
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -97,6 +107,44 @@ public class CircleWall extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showCreateBroadcastDialog();
+            }
+        });
+
+        loadCircleBroadcasts();
+
+    }
+
+    private void loadCircleBroadcasts() {
+
+        //initialize recylcerview
+        RecyclerView recyclerView = findViewById(R.id.broadcastViewRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        //initializing the CircleDisplayAdapter and setting the adapter to recycler view
+        //adapter adds all items from the circle list and displays them in individual cards in the recycler view
+        final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
+        recyclerView.setAdapter(adapter);
+
+        broadcastsDB.child(circle.getId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    //filter through each Circle in the Circles database
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        //casts the datasnapshot to Broadcast Object
+                        Log.d(TAG, postSnapshot.toString());
+                        Broadcast broadcast = postSnapshot.getValue(Broadcast.class);
+                        broadcastList.add(broadcast);
+
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
     }
@@ -126,7 +174,7 @@ public class CircleWall extends AppCompatActivity {
                 tvUploadFileOption.setVisibility(View.GONE);
                 tvMiddleOrPlaceHolder.setVisibility(View.GONE);
                 uploadFileView.setVisibility(View.VISIBLE);
-                if(tvCreatePollOption.getVisibility() == View.GONE)
+                if (tvCreatePollOption.getVisibility() == View.GONE)
                     additionalSelector.setVisibility(View.GONE);
             }
         });
@@ -137,7 +185,7 @@ public class CircleWall extends AppCompatActivity {
                 tvCreatePollOption.setVisibility(View.GONE);
                 tvMiddleOrPlaceHolder.setVisibility(View.GONE);
                 pollCreateView.setVisibility(View.VISIBLE);
-                if(tvUploadFileOption.getVisibility() == View.GONE)
+                if (tvUploadFileOption.getVisibility() == View.GONE)
                     additionalSelector.setVisibility(View.GONE);
             }
         });
@@ -161,7 +209,7 @@ public class CircleWall extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String option = setPollOptionET.getText().toString();
-                if(!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()){
+                if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
                     LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
                     lparams.setMargins(0, 10, 20, 0);
                     final TextView tv = new TextView(CircleWall.this);
@@ -170,8 +218,8 @@ public class CircleWall extends AppCompatActivity {
                     tv.setTextColor(Color.BLACK);
                     tv.setGravity(Gravity.CENTER_VERTICAL);
                     tv.setBackground(getResources().getDrawable(R.drawable.light_blue_rounded_background));
-                    tv.setCompoundDrawablesWithIntrinsicBounds(0,0 , R.drawable.ic_clear_blue_24dp, 0);
-                    tv.setPaddingRelative(40,10,40,10);
+                    tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_blue_24dp, 0);
+                    tv.setPaddingRelative(40, 10, 40, 10);
                     tv.setTextColor(Color.parseColor("#6CACFF"));
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -184,6 +232,7 @@ public class CircleWall extends AppCompatActivity {
                     pollAnswerOptionsList.add(option);
                     Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
                     pollOptionsDisplay.addView(tv);
+                    setPollOptionET.setText("");
                 } else {
                     Toast.makeText(getApplicationContext(), "Fill out all poll fields", Toast.LENGTH_SHORT).show();
                 }
@@ -193,7 +242,10 @@ public class CircleWall extends AppCompatActivity {
         btnUploadBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!setMessageET.getText().toString().isEmpty())
+                if (!pollAnswerOptionsList.isEmpty())
+                    pollExists = true;
+
+                if (!setMessageET.getText().toString().isEmpty())
                     createBroadcast();
                 else
                     Toast.makeText(getApplicationContext(), "Set your broadcast message", Toast.LENGTH_SHORT).show();
@@ -209,21 +261,39 @@ public class CircleWall extends AppCompatActivity {
 
         String message = setMessageET.getText().toString();
         String broadcastId = broadcastsDB.child(currentCircleId).push().getKey();
-        String pollId = pollsDB.child(currentCircleId).push().getKey();
+        String pollQuestion = setPollQuestionET.getText().toString();
 
-        if(downloadUri == null && pollExists == false){
-            Broadcast broadcast = new Broadcast(broadcastId, message, null, null, false);
+        HashMap<String, Integer> options = new HashMap<>();
+        if(!pollAnswerOptionsList.isEmpty()) {
+            for (String option : pollAnswerOptionsList)
+                options.put(option, 0);
+        }
+
+        if (downloadUri == null && pollExists == false) {
+
+            Broadcast broadcast = new Broadcast(broadcastId, message, null,
+                    "username", "userID", false, System.currentTimeMillis(), null);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+
         } else if (downloadUri != null && pollExists == false) {
-            Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri, null, false);
+
+            Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
+                    "username", "userID",  false, System.currentTimeMillis(), null);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+
         } else if (downloadUri == null && pollExists == true) {
-            Broadcast broadcast = new Broadcast(broadcastId, message, null, pollId, true);
-            Poll poll = new Poll(pollId, pollQuestion, pollAnswerOptionsList, null);
+
+            Poll poll = new Poll(pollQuestion, options, null);
+            Broadcast broadcast = new Broadcast(broadcastId, message, null,
+                    "username", "userID",  true, System.currentTimeMillis(), poll);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
-        } else if (downloadUri != null && pollExists == true){
-            Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri, pollId, true);
-            Poll poll = new Poll(pollId, pollQuestion, pollAnswerOptionsList, null);
+
+        } else if (downloadUri != null && pollExists == true) {
+
+            Poll poll = new Poll(pollQuestion, options, null);
+            Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
+                    "username", "userID",  true, System.currentTimeMillis(), poll);
+            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
         }
     }
 
@@ -299,6 +369,7 @@ public class CircleWall extends AppCompatActivity {
                 @Override
                 public void onSuccess(Uri uri) {
                     downloadUri = uri.toString();
+                    Log.d(TAG, downloadUri);
                     progressDialog.dismiss();
                 }
             })

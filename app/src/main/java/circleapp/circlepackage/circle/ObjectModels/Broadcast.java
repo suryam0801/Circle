@@ -1,19 +1,57 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class Broadcast {
-    public String id, message, attachmentURI, pollID;
+    public String id, message, attachmentURI, creatorName, creatorID;
     public boolean pollExists;
+    public long timeStamp;
+    public Poll poll;
 
-    public Broadcast(String id, String message, String attachmentURI, String pollID, boolean pollExists) {
+    public Broadcast(String id, String message, String attachmentURI, String creatorName,
+                     String creatorID, boolean pollExists, long timeStamp, Poll poll) {
         this.id = id;
         this.message = message;
         this.attachmentURI = attachmentURI;
-        this.pollID = pollID;
+        this.creatorName = creatorName;
+        this.creatorID = creatorID;
         this.pollExists = pollExists;
+        this.timeStamp = timeStamp;
+        this.poll = poll;
     }
 
     public Broadcast(){
 
+    }
+
+    public Poll getPoll() {
+        return poll;
+    }
+
+    public void setPoll(Poll poll) {
+        this.poll = poll;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorID() {
+        return creatorID;
+    }
+
+    public void setCreatorID(String creatorID) {
+        this.creatorID = creatorID;
     }
 
     public String getId() {
@@ -40,14 +78,6 @@ public class Broadcast {
         this.attachmentURI = attachmentURI;
     }
 
-    public String getPollID() {
-        return pollID;
-    }
-
-    public void setPollID(String pollID) {
-        this.pollID = pollID;
-    }
-
     public boolean isPollExists() {
         return pollExists;
     }
@@ -62,8 +92,11 @@ public class Broadcast {
                 "id='" + id + '\'' +
                 ", message='" + message + '\'' +
                 ", attachmentURI='" + attachmentURI + '\'' +
-                ", pollID='" + pollID + '\'' +
+                ", creatorName='" + creatorName + '\'' +
+                ", creatorID='" + creatorID + '\'' +
                 ", pollExists=" + pollExists +
+                ", timeStamp=" + timeStamp +
+                ", poll=" + poll.toString() +
                 '}';
     }
 }

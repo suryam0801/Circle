@@ -19,7 +19,7 @@ public class SessionStorage {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         String string = new Gson().toJson(circle);
-        Log.d(TAG, "saveProject: "+string);
+        //Log.d(TAG, "saveCircle: "+string);
         editor.putString("1", "1");
         editor.putString("project", string);
         editor.apply();
@@ -29,7 +29,7 @@ public class SessionStorage {
     {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
         String string = sharedPref.getString("project","1234");
-        Log.d(TAG, "getProject: "+string);
+        //Log.d(TAG, "getCircle: "+string);
         return new Gson().fromJson(string, Circle.class);
     }
 
