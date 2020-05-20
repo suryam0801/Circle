@@ -57,8 +57,10 @@ public class Explore extends AppCompatActivity {
         profPic = findViewById(R.id.explore_profilePicture);
 
         database = FirebaseDatabase.getInstance();
+
         //persistence automatically handles offline behavior
         database.setPersistenceEnabled(true);
+
 
         circles = database.getReference("Circles");
         //synchronizes and stores local copy of data
