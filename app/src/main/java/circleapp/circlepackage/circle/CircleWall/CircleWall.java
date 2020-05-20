@@ -7,11 +7,13 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,10 +23,8 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -42,42 +44,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.CreateCircle;
+import circleapp.circlepackage.circle.MainDisplay.Explore;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
 public class CircleWall extends AppCompatActivity {
 
+    private FirebaseDatabase database;
+    private DatabaseReference pollsDB, broadcastsDB;
 
+    private String TAG = CircleWall.class.getSimpleName();
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int PICK_IMAGE_REQUEST = 100;
     private StorageReference storageReference;
     private Uri filePath = null;
-    private String downloadUri, uniqueID;
+    private String downloadUri = null;
 
     private Circle circle;
     private FloatingActionButton createNewBroadcast;
 
+    private List<String> pollAnswerOptionsList = new ArrayList<>( );
+    private boolean pollExists = false;
+    private String pollQuestion;
+
     //create broadcast popup ui elements
-    private EditText setMessageET, setPollQuestionET, setPollAnswerET;
-    private LinearLayout uploadFileView, pollCreateView, additionalSelector;
+    private EditText setMessageET, setPollQuestionET, setPollOptionET;
+    private LinearLayout uploadFileView, pollCreateView, additionalSelector, pollOptionsDisplay;
     private ImageView uploadCloudImageView;
     private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText;
-    private AlertDialog alertDialog;
     private Button btnAddPollOption, btnUploadBroadcast;
-    private AlertDialog.Builder builder;
-    private LayoutInflater inflater;
-    private View dialogue;
+    private Dialog createBroadcastPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
 
+        database = FirebaseDatabase.getInstance();
+        pollsDB = database.getReference("Polls");
+        broadcastsDB = database.getReference("Broadcasts");
+
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
-        uniqueID = UUID.randomUUID().toString();
 
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
 
@@ -90,24 +102,23 @@ public class CircleWall extends AppCompatActivity {
     }
 
     private void showCreateBroadcastDialog() {
-        builder = new AlertDialog.Builder(CircleWall.this);
-        inflater = getLayoutInflater();
-        dialogue = inflater.inflate(R.layout.broadcast_create_popup_layout, null);
-        builder.setView(dialogue);
+        createBroadcastPopup = new Dialog(CircleWall.this);
+        createBroadcastPopup.setContentView(R.layout.broadcast_create_popup_layout); //set dialog view
 
-        setMessageET = dialogue.findViewById(R.id.broadcastDescriptionEditText);
-        setPollQuestionET = dialogue.findViewById(R.id.poll_create_question_editText);
-        setPollAnswerET = dialogue.findViewById(R.id.poll_create_answer_option_editText);
-        uploadFileView = dialogue.findViewById(R.id.attachmentUploadView);
-        pollCreateView = dialogue.findViewById(R.id.poll_create_layout);
-        additionalSelector = dialogue.findViewById(R.id.additional_selector_view);
-        uploadCloudImageView = dialogue.findViewById(R.id.create_broadcast_file_upload_cloud_image_btn);
-        tvUploadFileOption = dialogue.findViewById(R.id.upload_file_btn);
-        tvCreatePollOption = dialogue.findViewById(R.id.poll_create_btn);
-        tvMiddleOrPlaceHolder = dialogue.findViewById(R.id.upload_or_poll_or_textview);
-        tvUploadPlaceholderText = dialogue.findViewById(R.id.create_broadcast_file_upload_text);
-        btnAddPollOption = dialogue.findViewById(R.id.poll_create_answer_option_add_btn);
-        btnUploadBroadcast = dialogue.findViewById(R.id.upload_broadcast_btn);
+        setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
+        setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
+        setPollOptionET = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
+        pollOptionsDisplay = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_display);
+        uploadFileView = createBroadcastPopup.findViewById(R.id.attachmentUploadView);
+        pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
+        additionalSelector = createBroadcastPopup.findViewById(R.id.additional_selector_view);
+        uploadCloudImageView = createBroadcastPopup.findViewById(R.id.create_broadcast_file_upload_cloud_image_btn);
+        tvUploadFileOption = createBroadcastPopup.findViewById(R.id.upload_file_btn);
+        tvCreatePollOption = createBroadcastPopup.findViewById(R.id.poll_create_btn);
+        tvMiddleOrPlaceHolder = createBroadcastPopup.findViewById(R.id.upload_or_poll_or_textview);
+        tvUploadPlaceholderText = createBroadcastPopup.findViewById(R.id.create_broadcast_file_upload_text);
+        btnAddPollOption = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
+        btnUploadBroadcast = createBroadcastPopup.findViewById(R.id.upload_broadcast_btn);
 
         tvUploadFileOption.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +126,8 @@ public class CircleWall extends AppCompatActivity {
                 tvUploadFileOption.setVisibility(View.GONE);
                 tvMiddleOrPlaceHolder.setVisibility(View.GONE);
                 uploadFileView.setVisibility(View.VISIBLE);
+                if(tvCreatePollOption.getVisibility() == View.GONE)
+                    additionalSelector.setVisibility(View.GONE);
             }
         });
 
@@ -124,6 +137,8 @@ public class CircleWall extends AppCompatActivity {
                 tvCreatePollOption.setVisibility(View.GONE);
                 tvMiddleOrPlaceHolder.setVisibility(View.GONE);
                 pollCreateView.setVisibility(View.VISIBLE);
+                if(tvUploadFileOption.getVisibility() == View.GONE)
+                    additionalSelector.setVisibility(View.GONE);
             }
         });
 
@@ -142,10 +157,77 @@ public class CircleWall extends AppCompatActivity {
             }
         });
 
-        alertDialog = builder.create();
-        alertDialog.show();
+        btnAddPollOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String option = setPollOptionET.getText().toString();
+                if(!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()){
+                    LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
+                    lparams.setMargins(0, 10, 20, 0);
+                    final TextView tv = new TextView(CircleWall.this);
+                    tv.setLayoutParams(lparams);
+                    tv.setText(option);
+                    tv.setTextColor(Color.BLACK);
+                    tv.setGravity(Gravity.CENTER_VERTICAL);
+                    tv.setBackground(getResources().getDrawable(R.drawable.light_blue_rounded_background));
+                    tv.setCompoundDrawablesWithIntrinsicBounds(0,0 , R.drawable.ic_clear_blue_24dp, 0);
+                    tv.setPaddingRelative(40,10,40,10);
+                    tv.setTextColor(Color.parseColor("#6CACFF"));
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            pollOptionsDisplay.removeView(tv);
+                            pollAnswerOptionsList.remove(tv.getText());
+                            Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
+                        }
+                    });
+                    pollAnswerOptionsList.add(option);
+                    Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
+                    pollOptionsDisplay.addView(tv);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Fill out all poll fields", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnUploadBroadcast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!setMessageET.getText().toString().isEmpty())
+                    createBroadcast();
+                else
+                    Toast.makeText(getApplicationContext(), "Set your broadcast message", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        createBroadcastPopup.show();
     }
 
+    private void createBroadcast() {
+        String currentCircleId = circle.getId();
+
+        String message = setMessageET.getText().toString();
+        String broadcastId = broadcastsDB.child(currentCircleId).push().getKey();
+        String pollId = pollsDB.child(currentCircleId).push().getKey();
+
+        if(downloadUri == null && pollExists == false){
+            Broadcast broadcast = new Broadcast(broadcastId, message, null, null, false);
+            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+        } else if (downloadUri != null && pollExists == false) {
+            Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri, null, false);
+            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+        } else if (downloadUri == null && pollExists == true) {
+            Broadcast broadcast = new Broadcast(broadcastId, message, null, pollId, true);
+            Poll poll = new Poll(pollId, pollQuestion, pollAnswerOptionsList, null);
+            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+        } else if (downloadUri != null && pollExists == true){
+            Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri, pollId, true);
+            Poll poll = new Poll(pollId, pollQuestion, pollAnswerOptionsList, null);
+        }
+    }
+
+    //start the intent for picking an image
     public void selectFile() {
         Intent intent = new Intent();
         intent.setType("*/*");
@@ -153,6 +235,7 @@ public class CircleWall extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_IMAGE_REQUEST);
     }
 
+    //request permission from the user to access their internal storage
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super
@@ -176,12 +259,13 @@ public class CircleWall extends AppCompatActivity {
         }
     }
 
+    //when file is picked, upload file to firebase storage and retrieve the download URI
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-
+            String uniqueID = UUID.randomUUID().toString();
             final StorageReference riversRef = storageReference.child("ProjectWall/" + circle.getId() + "/" + uniqueID);
 
             final ProgressDialog progressDialog = new ProgressDialog(CircleWall.this);
