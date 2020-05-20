@@ -12,6 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Login.InterestTagPicker"></activity>
+        <activity android:name=".Login.LocationTagPicker" />
+        <activity android:name=".Login.GatherUserDetails" />
+        <activity android:name=".Login.OtpActivity" />
+        <activity android:name=".Login.PhoneLogin">
         <activity android:name=".CircleWall.CircleWall"></activity>
         <activity android:name=".CreateCircle" />
         <activity android:name=".MainDisplay.CircleDisplayAdapter" />
@@ -22,6 +27,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".CreateCircle" />
+        <activity android:name=".MainDisplay.CircleDisplayAdapter" />
+        <activity android:name=".MainDisplay.Explore" />
+        <activity android:name=".MainActivity">
+
         </activity>
     </application>
 

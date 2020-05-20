@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:orientation="vertical"
+    tools:context=".Login.GatherUserDetails">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_black"
+                android:layout_gravity="center"
+                android:text="Circle"
+                android:layout_marginTop="30dp"
+                android:textColor="#2196F3"
+                android:textSize="50dp"
+                />
+
+            <TextView
+                android:id="@+id/beneathTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_black"
+                android:text="Login to Continue"
+                android:layout_gravity="center"
+                android:textSize="14dp"
+                android:textColor="#D1D1D1" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile picture"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="#B3B1B1"
+                    android:textSize="11dp">
+                </TextView>
+
+                <RelativeLayout
+                    android:id="@+id/imagePreview"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/profile_image"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/profile_image"
+                        app:civ_border_width="2dp"
+                        app:civ_border_color="#FF000000"/>
+
+                    <Button
+                        android:id="@+id/profilePicSetterImage"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginTop="45dp"
+                        android:background="@drawable/edit_project_button_background"
+                        android:foreground="@drawable/edit_drawable"
+                        android:foregroundGravity="center"/>
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="First Name"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="#B3B1B1"
+                    android:layout_marginTop="20dp"
+                    android:textSize="11dp">
+                </TextView>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#ACA9A9"
+                    android:textColorHint="#ACA9A9"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="13dp"
+                    android:textColor="@color/black"
+                    android:inputType="textEmailAddress" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last Name"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="#B3B1B1"
+                    android:layout_marginTop="20dp"
+                    android:textSize="11dp">
+                </TextView>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#ACA9A9"
+                    android:textColorHint="#ACA9A9"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="13dp"
+                    android:textColor="@color/black"
+                    android:inputType="textEmailAddress" />
+
+                <Button
+                    android:id="@+id/registerButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/gradient_button"
+                    android:fontFamily="@font/roboto_black"
+                    android:text="Continue To Set Location Tags"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFFFF"
+                    android:paddingRight="19dp"
+                    android:paddingLeft="19dp"
+                    android:textSize="15dp"
+                    android:gravity="start|center"
+                    android:drawableEnd="@drawable/right_forward_arrow"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>
