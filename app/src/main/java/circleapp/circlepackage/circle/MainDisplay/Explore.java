@@ -58,10 +58,6 @@ public class Explore extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
-        //persistence automatically handles offline behavior
-        database.setPersistenceEnabled(true);
-
-
         circles = database.getReference("Circles");
         //synchronizes and stores local copy of data
         circles.keepSynced(true);

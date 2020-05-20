@@ -74,6 +74,8 @@ public class LocationTagPicker extends AppCompatActivity {
         contact = getIntent().getStringExtra("contact");
 
         database = FirebaseDatabase.getInstance();
+        //persistence automatically handles offline behavior
+        database.setPersistenceEnabled(true);
         tags = database.getReference("Tags");
         tags.addValueEventListener(new ValueEventListener() {
             @Override
