@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Log;
 
 public class PercentDrawable extends Drawable {
@@ -23,7 +24,9 @@ public class PercentDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRect(0, 0, (percent * canvas.getWidth()) / 100, canvas.getHeight(), paint);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(0, 0, (percent * canvas.getWidth()) / 100, canvas.getHeight(),30, 30, paint);
+        }
     }
 
     @Override
