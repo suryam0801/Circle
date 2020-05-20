@@ -55,21 +55,22 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i){
 
         final Broadcast broadcast = broadcastList.get(i);
         final Poll poll;
+        RadioButton button;
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
         viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
 
-        if(broadcast.getAttachmentURI() != null) {
+        if (broadcast.getAttachmentURI() != null) {
             viewHolder.attachmentDisplay.setVisibility(View.VISIBLE);
             viewHolder.attachmentNameDisplay.setText("Click to download attachment");
         }
 
-        if(broadcast.isPollExists() == true){
+        if (broadcast.isPollExists() == true) {
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
             viewHolder.pollQuestionDisplay.setText(poll.getQuestion());
@@ -77,21 +78,20 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
             //optionPercentageCalculation
             int totalValue = 0;
-            for(Map.Entry<String, Integer> entry : pollOptions.entrySet()){
+            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
                 totalValue += entry.getValue();
             }
 
-            if(viewHolder.pollOptionsDisplayGroup.getChildCount()>0)
+            if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
                 viewHolder.pollOptionsDisplayGroup.removeAllViews();
 
-            if(poll.getUserResponse()!=null){
-                if(poll.getUserResponse().containsKey("USERID")){
+            if (poll.getUserResponse() != null)
+                if (poll.getUserResponse().containsKey("USERID"))
                     viewHolder.setCurrentUserPollOption(poll.getUserResponse().get("USERID"));
-                }
-            }
 
-            for(Map.Entry<String, Integer> entry : pollOptions.entrySet()){
-                RadioButton button = new RadioButton(context);
+
+            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+                button = new RadioButton(context);
                 LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 lparams.setMargins(0, 10, 20, 10);
                 button.setPadding(50, 0, 0, 10);
@@ -110,38 +110,37 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     button.setButtonTintList(colorStateList);
                 }
-                if(totalValue != 0) {
-                    int percentage = (int) (((double)entry.getValue()/totalValue) * 100);
+                if (totalValue != 0) {
+                    int percentage = (int) (((double) entry.getValue() / totalValue) * 100);
                     button.setBackground(new PercentDrawable(percentage));
                 }
                 button.setTextColor(Color.BLACK);
                 button.setText(entry.getKey());
                 viewHolder.pollOptionsDisplayGroup.addView(button);
-                if(viewHolder.getCurrentUserPollOption()!=null){
-                    button.setPressed(true);
-                }
+                button.setPressed(true);
             }
 
             viewHolder.pollOptionsDisplayGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     RadioButton rb = group.findViewById(checkedId);
-
                     String option = rb.getText().toString();
                     HashMap<String, Integer> pollOptions = poll.getOptions();
                     int currentSelectedVotes = poll.getOptions().get(option);
 
-                    if(viewHolder.getCurrentUserPollOption() == null){
+                    if (viewHolder.getCurrentUserPollOption() == null) {
                         ++currentSelectedVotes;
                         pollOptions.put(option, currentSelectedVotes);
                         viewHolder.setCurrentUserPollOption(option);
                     } else {
-                        int userPreviousVote = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //if user already saved an answer, this will regulate voting count
-                        --userPreviousVote;
-                        ++currentSelectedVotes;
-                        pollOptions.put(option, currentSelectedVotes);
-                        pollOptions.put(viewHolder.getCurrentUserPollOption(), userPreviousVote);
-                        viewHolder.setCurrentUserPollOption(option);
+                        if(!viewHolder.getCurrentUserPollOption().equals(option)){
+                            int userPreviousVote = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //if user already saved an answer, this will regulate voting count
+                            --userPreviousVote;
+                            ++currentSelectedVotes;
+                            pollOptions.put(option, currentSelectedVotes);
+                            pollOptions.put(viewHolder.getCurrentUserPollOption(), userPreviousVote);
+                            viewHolder.setCurrentUserPollOption(option);
+                        }
                     }
 
                     HashMap<String, String> currentUserResponse = new HashMap<>();
@@ -170,6 +169,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
+        private RadioButton radioButton;
 
         public ViewHolder(View view) {
             super(view);
