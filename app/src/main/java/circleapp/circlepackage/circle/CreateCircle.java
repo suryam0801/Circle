@@ -176,6 +176,7 @@ public class CreateCircle extends AppCompatActivity {
         interestTagEntry = interestTagDialog.findViewById(R.id.circle_interest_tags_entry);
         final Button interestTagAdd = interestTagDialog.findViewById(R.id.circle_interest_tag_add_button);
 
+        //geting location tags and location-interestTags from the database
         for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
             if (selectedLocations.contains(entry.getKey())) {
                 List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
@@ -206,7 +207,6 @@ public class CreateCircle extends AppCompatActivity {
                     interestTagSelectTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_edit_black_24dp, 0);
                     for (String interest : selectedInterests)
                         setInterestTag(interest, interestTagsDisplay);
-                    Log.d(TAG, "INTEREST TAG LIST: " + selectedInterests.toString());
                 }
             }
         });
@@ -414,7 +414,6 @@ public class CreateCircle extends AppCompatActivity {
                     selectedLocations.add(chip.getText().toString().replace("#", ""));
                 }
 
-                Log.d(TAG, "LOCATION TAG LIST: " + selectedLocations.toString());
             }
 
         });
@@ -431,7 +430,7 @@ public class CreateCircle extends AppCompatActivity {
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
 
-        String myCircleID = circleDB.getKey();
+        String myCircleID = circleDB.push().getKey();
         String creatorUserID = "964e0f48-8a8c-4e92-b8e5-9e6c52b67ef9";//Objects.requireNonNull(currentUser.getCurrentUser()).getUid());
         String acceptanceType = acceptanceButton.getText().toString();
         String creatorName = "matt barnes"; //currentUser.getCurrentUser().getDisplayName();

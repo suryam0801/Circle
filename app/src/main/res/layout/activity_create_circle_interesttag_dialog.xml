@@ -83,6 +83,8 @@
                     android:layout_margin="20dp"
                     android:textSize="14dp"
                     android:paddingRight="10dp"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:id="@+id/circle_interest_tags_entry"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="16dp"

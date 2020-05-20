@@ -82,8 +82,10 @@
                     android:hint="Eg: #peelamedu #psgtech #coimbatore"
                     android:paddingLeft="16dp"
                     android:paddingRight="10dp"
+                    android:inputType="text"
                     android:textColor="@color/black"
                     android:textColorHint="#828282"
+                    android:maxLines="1"
                     android:textSize="14dp"></EditText>
 
                 <Button

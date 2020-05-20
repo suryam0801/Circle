@@ -147,13 +147,13 @@
                     android:fontFamily="@font/roboto_regular"
                     android:text="Review"
                     android:textColor="@color/black"
-                    android:theme="@style/MyRaidoButtonTwo"></RadioButton>
+                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
                 <RadioButton
                     android:id="@+id/acceptanceTypeAutomatic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/MyRaidoButtonTwo"
+                    android:theme="@style/MyRadioButtonTwo"
                     android:textColor="@color/black"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Automatic"
