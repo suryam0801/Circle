@@ -139,6 +139,7 @@ public class OtpActivity extends AppCompatActivity {
                     }
                 });
     }
+
     @Override
     protected void onStart() {
         super.onStart();

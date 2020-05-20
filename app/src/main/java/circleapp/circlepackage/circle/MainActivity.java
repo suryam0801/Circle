@@ -25,15 +25,15 @@ public class MainActivity extends AppCompatActivity {
 
         currentUser=FirebaseAuth.getInstance();
 
-//        if(currentUser.getCurrentUser()!=null)
-//        {
-//            Log.d(TAG, currentUser.getCurrentUser().getUid());
-//            startActivity(new Intent(MainActivity.this, Explore.class));
-//            finish();
-//        } else {
-//            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
-//            finish();
-//        }
+        if(currentUser.getCurrentUser()!=null)
+        {
+            Log.d(TAG, currentUser.getCurrentUser().getUid());
+            startActivity(new Intent(MainActivity.this, Explore.class));
+            finish();
+        } else {
+            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
+            finish();
+        }
 
     }
     @Override
