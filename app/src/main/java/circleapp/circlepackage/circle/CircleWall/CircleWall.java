@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -20,7 +19,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -35,6 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,20 +49,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.CreateCircle;
-import circleapp.circlepackage.circle.MainDisplay.CircleDisplayAdapter;
-import circleapp.circlepackage.circle.MainDisplay.Explore;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.RecyclerItemClickListener;
 import circleapp.circlepackage.circle.SessionStorage;
 
 public class CircleWall extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference broadcastsDB;
+    private FirebaseAuth currentUser;
 
     private String TAG = CircleWall.class.getSimpleName();
     private static final int STORAGE_PERMISSION_CODE = 101;
@@ -97,6 +93,7 @@ public class CircleWall extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
         broadcastsDB.keepSynced(true);
+        currentUser=FirebaseAuth.getInstance();
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -267,6 +264,9 @@ public class CircleWall extends AppCompatActivity {
         String broadcastId = broadcastsDB.child(currentCircleId).push().getKey();
         String pollQuestion = setPollQuestionET.getText().toString();
 
+        String currentUserName = currentUser.getCurrentUser().getDisplayName();
+        String currentUserId = currentUser.getCurrentUser().getUid();
+
         HashMap<String, Integer> options = new HashMap<>();
         if(!pollAnswerOptionsList.isEmpty()) {
             for (String option : pollAnswerOptionsList)
@@ -276,27 +276,27 @@ public class CircleWall extends AppCompatActivity {
         if (downloadUri == null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
-                    "username", "userID", false, System.currentTimeMillis(), null);
+                    currentUserName, currentUserId, false, System.currentTimeMillis(), null);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
 
         } else if (downloadUri != null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
-                    "username", "userID",  false, System.currentTimeMillis(), null);
+                    currentUserName, currentUserId,  false, System.currentTimeMillis(), null);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
 
         } else if (downloadUri == null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
-                    "username", "userID",  true, System.currentTimeMillis(), poll);
+                    currentUserName, currentUserId,  true, System.currentTimeMillis(), poll);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
 
         } else if (downloadUri != null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
-                    "username", "userID",  true, System.currentTimeMillis(), poll);
+                    currentUserName, currentUserId,  true, System.currentTimeMillis(), poll);
             broadcastsDB.child(currentCircleId).push().setValue(broadcast);
         }
     }

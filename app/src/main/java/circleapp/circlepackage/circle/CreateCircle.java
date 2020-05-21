@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +58,7 @@ public class CreateCircle extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference tags, circleDB;
+    private FirebaseAuth currentUser;
 
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbLocationTags = new ArrayList<>(), dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
@@ -426,14 +428,15 @@ public class CreateCircle extends AppCompatActivity {
     public void createCirlce(String cName, String cDescription) {
 
         circleDB = database.getReference("Circles");
+        currentUser=FirebaseAuth.getInstance();
 
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
 
         String myCircleID = circleDB.push().getKey();
-        String creatorUserID = "964e0f48-8a8c-4e92-b8e5-9e6c52b67ef9";//Objects.requireNonNull(currentUser.getCurrentUser()).getUid());
+        String creatorUserID = currentUser.getCurrentUser().getUid();//Objects.requireNonNull(currentUser.getCurrentUser()).getUid());
         String acceptanceType = acceptanceButton.getText().toString();
-        String creatorName = "matt barnes"; //currentUser.getCurrentUser().getDisplayName();
+        String creatorName = currentUser.getCurrentUser().getDisplayName(); //currentUser.getCurrentUser().getDisplayName();
 
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, selectedLocations, selectedInterests);
 
