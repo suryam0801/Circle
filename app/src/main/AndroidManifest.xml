@@ -25,8 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateCircle" />
-        <activity android:name=".MainDisplay.CircleDisplayAdapter" />
-        <activity android:name=".MainDisplay.Explore" />
+        <activity android:name=".Explore.CircleDisplayAdapter" />
+        <activity android:name=".Explore.Explore" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.MainDisplay;
+package circleapp.circlepackage.circle.Explore;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.ObjectModels.Circle;
