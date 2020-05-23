@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,6 +27,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +37,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +45,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.User;
 
 public class CreateCircle extends AppCompatActivity {
 
@@ -59,6 +65,7 @@ public class CreateCircle extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference tags, circleDB;
     private FirebaseAuth currentUser;
+    private FirebaseFirestore db;
 
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbLocationTags = new ArrayList<>(), dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
@@ -91,6 +98,7 @@ public class CreateCircle extends AppCompatActivity {
         interestTagSelectTitle = findViewById(R.id.create_circle_interest_tag_select_title);
 
         database = FirebaseDatabase.getInstance();
+        db = FirebaseFirestore.getInstance();
         tags = database.getReference("Tags");
 
         tags.addValueEventListener(new ValueEventListener() {
@@ -454,5 +462,29 @@ public class CreateCircle extends AppCompatActivity {
 
         database.getReference("Circles").push().setValue(circle);
 
+        User user = SessionStorage.getUser(CreateCircle.this);
+
+        int createdProjects = user.getCreatedProjects();
+        createdProjects = createdProjects + 1;
+
+        db.collection("Users").document(currentUser.getInstance().getUid()).update("createdProjects", createdProjects).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "JOB SUCCESSFUL!!!!");
+                onBackPressed();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent about_intent = new Intent(this, Explore.class);
+        startActivity(about_intent);
+        about_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     }
 }

@@ -58,7 +58,7 @@ public class GatherUserDetails extends AppCompatActivity {
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
@@ -210,5 +210,11 @@ public class GatherUserDetails extends AppCompatActivity {
             }
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        firebaseAuth.signOut();
     }
 }

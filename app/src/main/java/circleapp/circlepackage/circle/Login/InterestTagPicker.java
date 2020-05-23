@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -73,9 +74,9 @@ public class InterestTagPicker extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interest_tag_picker);
         //To set the Fullscreen
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setFormat(PixelFormat.RGB_565);
-        getSupportActionBar().hide();
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFormat(PixelFormat.RGB_565);
+//        getSupportActionBar().hide();
 
         register = findViewById(R.id.registerButton);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
@@ -261,7 +262,7 @@ public class InterestTagPicker extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                                 //if the user registered and profile updated successfully  the mainActivity will be opened
-                                startActivity(new Intent(InterestTagPicker.this, MainActivity.class));
+                                startActivity(new Intent(InterestTagPicker.this, Explore.class));
                                 finish();
                             } else {
                                 Toast.makeText(InterestTagPicker.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -315,6 +316,9 @@ public class InterestTagPicker extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                        firebaseAuth.getCurrentUser().delete();
+//                        firebaseAuth.getCurrentUser().
+
                     }
                 });
     }
