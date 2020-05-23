@@ -32,12 +32,21 @@ public class MainActivity extends AppCompatActivity {
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
-        currentUser=FirebaseAuth.getInstance();
-        db=FirebaseFirestore.getInstance();
-        currentUserstate = currentUser.getCurrentUser()!=null;
+       currentUser=FirebaseAuth.getInstance();
 
+        if(currentUser.getCurrentUser()!=null)
+        {
+            Log.d(TAG, currentUser.getCurrentUser().getUid());
+            startActivity(new Intent(MainActivity.this, Explore.class));
+            finish();
+        } else {
+            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
+            finish();
+        }
+
+/*
          DocumentReference docRef = db.collection("Users").document(currentUser.getUid());
                 docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -51,12 +60,23 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+*/
     }
     @Override
     protected void onStart() {
         super.onStart();
 
+        if(currentUser.getCurrentUser()!=null)
+        {
+            Log.d(TAG, currentUser.getCurrentUser().getUid());
+            startActivity(new Intent(MainActivity.this, Explore.class));
+            finish();
+        } else {
+            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
+            finish();
+        }
+
+/*
         DocumentReference docRef = db.collection("Users").document(currentUser.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -71,6 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+*/
     }
 }

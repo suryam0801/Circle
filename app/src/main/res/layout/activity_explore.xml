@@ -48,11 +48,20 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/circlesRecyclerView"
-        android:layout_below="@id/exploreHeaderBar"
+        android:id="@+id/workRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/exploreHeaderBar"
+        android:layout_marginTop="3dp"></androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/circlesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/workRecyclerView"
+        android:layout_marginTop="3dp"
+        app:reverseLayout="true"></androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_circle_button"

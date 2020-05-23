@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +25,7 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +51,7 @@ public class LocationTagPicker extends AppCompatActivity {
     private EditText locationTagEntry;
 
     private FirebaseDatabase database;
+    private FirebaseAuth firebaseAuth;
     private DatabaseReference tags;
 
     @Override
@@ -59,9 +59,9 @@ public class LocationTagPicker extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_tag_picker);
         //To set the Fullscreen
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setFormat(PixelFormat.RGB_565);
-        getSupportActionBar().hide();
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFormat(PixelFormat.RGB_565);
+//        getSupportActionBar().hide();
 
         // Initialize all UI elements in the LocationTagPicker activity
         setInterestTags = findViewById(R.id.setInterestTags);
@@ -74,6 +74,7 @@ public class LocationTagPicker extends AppCompatActivity {
         contact = getIntent().getStringExtra("contact");
 
         database = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         //persistence automatically handles offline behavior
 //        database.setPersistenceEnabled(true);
         tags = database.getReference("Tags");

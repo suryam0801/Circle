@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -50,7 +51,7 @@ public class OtpActivity extends AppCompatActivity {
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
@@ -155,7 +156,7 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the  user to HomePage
     public void sendUserToHome() {
-        Intent homeIntent = new Intent(OtpActivity.this, MainActivity.class);
+        Intent homeIntent = new Intent(OtpActivity.this, Explore.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(homeIntent);
