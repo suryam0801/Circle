@@ -74,17 +74,24 @@ public class Explore extends AppCompatActivity {
 
         final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
         String userJSON = sharedPreferences.getString("myUserDetails", "default");
+        Log.d(TAG, "!!!!! " + FirebaseAuth.getInstance().getCurrentUser().getUid());
         user = new Gson().fromJson(userJSON, User.class);
-        Log.d(TAG, user.toString());
+        if(user == null || currentUser.getCurrentUser().getUid()==null){
+            currentUser.signOut();
+            startActivity(new Intent(Explore.this, PhoneLogin.class));
+            finish();
+        }
 
         Glide.with(Explore.this)
                 .load(user.getProfileImageLink())
                 .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
                 .into(profPic);
 
+        SessionStorage.saveUser(Explore.this, user);
+
         startTime = System.currentTimeMillis();
         setCircleTabs();
-        //setWorkbenchTabs();
+        setWorkbenchTabs();
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +204,6 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //filter through each Circle in the Circles database
-
                 Log.d(TAG, "TIME IN MILLISECONDS: " + TimeUnit.MILLISECONDS.toSeconds(startTime - System.currentTimeMillis()));
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
@@ -221,9 +227,9 @@ public class Explore extends AppCompatActivity {
                     //setting the adapter initially
                     //filter for only circles associated with matching user location and interests
                     for (String locIterator : user.getLocationTags()) {
-                        if (circle.getLocationTags().contains(locIterator)) {
+                        if (circle.getLocationTags().contains("#" + locIterator)) {
                             for (String intIterator : user.getInterestTags()) {
-                                if (circle.getInterestTags().contains(intIterator)) {
+                                if (circle.getInterestTags().contains("#" + intIterator)) {
                                     circleList.add(circle);
                                     //notify the adapter each time a new item needs to be added to the recycler view
                                     adapter.notifyDataSetChanged();

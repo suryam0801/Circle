@@ -45,7 +45,8 @@ public class LocationTagPicker extends AppCompatActivity {
     //Declare all UI elements for the LocationTagPicker Activity
     private String loc, fName, lName, userId, downloadUri, contact;
     private List<String> selectedLocList = new ArrayList<>();
-    private List<String> loadlocList = new ArrayList<String>();;
+    private List<String> loadlocList = new ArrayList<String>();
+    ;
     private Button setInterestTags, locationTagAdd;
     private ChipGroup chipGroup;
     private EditText locationTagEntry;
@@ -82,14 +83,13 @@ public class LocationTagPicker extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
 
+                Log.d(TAG, tagsDBRetrieved.get("locationTags").toString());
                 loadlocList = new ArrayList<>(((HashMap<String, Boolean>) tagsDBRetrieved.get("locationTags")).keySet());
                 chipGroup.removeAllViews();
                 if (!loadlocList.isEmpty()) {
-                    for (String loc : loadlocList)
-                    {
+                    for (String loc : loadlocList) {
                         setTag(loc);
                     }
-
                 }
             }
 
@@ -102,7 +102,7 @@ public class LocationTagPicker extends AppCompatActivity {
         setInterestTags.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!selectedLocList.isEmpty()){
+                if (!selectedLocList.isEmpty()) {
                     Intent intent = new Intent(LocationTagPicker.this, InterestTagPicker.class);
                     intent.putExtra("fName", fName);
                     intent.putExtra("lName", lName);
@@ -113,7 +113,7 @@ public class LocationTagPicker extends AppCompatActivity {
 
                     startActivity(intent);
                 } else {
-                    Toast.makeText(LocationTagPicker.this,"Select tags before you continue",Toast.LENGTH_LONG).show();
+                    Toast.makeText(LocationTagPicker.this, "Select tags before you continue", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -150,7 +150,7 @@ public class LocationTagPicker extends AppCompatActivity {
                 String locationTag = locationTagEntry.getText().toString().replace("#", "");
                 if (!locationTag.isEmpty()) {
                     selectedLocList.add(locationTag);
-                    if(!loadlocList.contains(locationTag))
+                    if (!loadlocList.contains(locationTag))
                         loadlocList.add(locationTag);
                     setTag(locationTag);
                 }
@@ -174,7 +174,7 @@ public class LocationTagPicker extends AppCompatActivity {
                 ),
                 paddingDp, paddingDp, paddingDp);
         //chip name
-        if(!name.contains("#"))
+        if (!name.contains("#"))
             chip.setText("#" + name);
         else
             chip.setText(name);
