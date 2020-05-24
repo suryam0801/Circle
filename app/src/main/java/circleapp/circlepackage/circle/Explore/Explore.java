@@ -76,7 +76,7 @@ public class Explore extends AppCompatActivity {
         String userJSON = sharedPreferences.getString("myUserDetails", "default");
         Log.d(TAG, "!!!!! " + FirebaseAuth.getInstance().getCurrentUser().getUid());
         user = new Gson().fromJson(userJSON, User.class);
-        if(user == null || currentUser.getCurrentUser().getUid()==null){
+        if (user == null || currentUser.getCurrentUser().getUid() == null) {
             currentUser.signOut();
             startActivity(new Intent(Explore.this, PhoneLogin.class));
             finish();
@@ -233,7 +233,6 @@ public class Explore extends AppCompatActivity {
                                     circleList.add(circle);
                                     //notify the adapter each time a new item needs to be added to the recycler view
                                     adapter.notifyDataSetChanged();
-
                                 }
                             }
                         }

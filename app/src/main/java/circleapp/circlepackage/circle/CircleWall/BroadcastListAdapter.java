@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -53,6 +54,28 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         final Broadcast broadcast = broadcastList.get(i);
         final Poll poll;
         RadioButton button;
+
+        //calculating time elapsed
+        long currentTime = System.currentTimeMillis();
+        long createdTime =broadcast.getTimeStamp();
+        long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
+        long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
+
+        if (seconds < 60) {
+            viewHolder.timeElapsedDisplay.setText(seconds + "s ago");
+        } else if (minutes > 1 && minutes < 60) {
+            viewHolder.timeElapsedDisplay.setText(minutes + "m ago");
+        } else if (hours > 1 && hours < 24) {
+            viewHolder.timeElapsedDisplay.setText(hours + "h ago");
+        } else if (days > 1 && days < 365) {
+            if (days > 7)
+                viewHolder.timeElapsedDisplay.setText((days / 7) + "w ago");
+            else
+                viewHolder.timeElapsedDisplay.setText(days + "d ago");
+        }
+
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
