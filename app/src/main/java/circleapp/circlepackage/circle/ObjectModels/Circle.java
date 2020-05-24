@@ -1,18 +1,19 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Circle {
     private String id, name, description, acceptanceType, creatorID, creatorName;
-    private List<String> locationTags, interestTags;
+    private HashMap<String, Boolean> locationTags, interestTags;
 
     public Circle(){
 
     }
 
     public Circle(String id, String name, String description, String acceptanceType,
-                  String creatorID, String creatorName, List<String> locationTags,
-                  List<String> interestTags) {
+                  String creatorID, String creatorName, HashMap<String, Boolean> locationTags,
+                  HashMap<String, Boolean> interestTags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -71,19 +72,19 @@ public class Circle {
         this.creatorName = creatorName;
     }
 
-    public List<String> getLocationTags() {
+    public HashMap<String, Boolean> getLocationTags() {
         return locationTags;
     }
 
-    public void setLocationTags(List<String> locationTags) {
+    public void setLocationTags(HashMap<String, Boolean> locationTags) {
         this.locationTags = locationTags;
     }
 
-    public List<String> getInterestTags() {
+    public HashMap<String, Boolean> getInterestTags() {
         return interestTags;
     }
 
-    public void setInterestTags(List<String> interestTags) {
+    public void setInterestTags(HashMap<String, Boolean> interestTags) {
         this.interestTags = interestTags;
     }
 
@@ -96,8 +97,8 @@ public class Circle {
                 ", acceptanceType='" + acceptanceType + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorName='" + creatorName + '\'' +
-                ", locationTags=" + locationTags +
-                ", interestTags=" + interestTags +
+                ", locationTags=" + locationTags.toString() +
+                ", interestTags=" + interestTags.toString() +
                 '}';
     }
 }

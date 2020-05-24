@@ -287,13 +287,23 @@ public class InterestTagPicker extends AppCompatActivity {
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
 
+        //set interest and location tags as hashmaps
+        HashMap<String, Boolean> locationTagHashmap = new HashMap<>();
+        for(String locationTemp:locationTags)
+            locationTagHashmap.put(locationTemp,true);
+
+        HashMap<String, Boolean> interestTagHashmap = new HashMap<>();
+        for(String interestTemp:selectedInterestTags)
+            interestTagHashmap.put(interestTemp,true);
+
+
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
             //creaeting the user object
-            user = new User(fName, lName, contact, downloadUri, locationTags, selectedInterestTags, userId, 0, 0, 0, token_id);
+            user = new User(fName, lName, contact, downloadUri, locationTagHashmap, interestTagHashmap, userId, 0, 0, 0, token_id);
         } else {
-            user = new User(fName, lName, contact, "default", locationTags, selectedInterestTags, userId, 0, 0, 0, token_id);
+            user = new User(fName, lName, contact, "default", locationTagHashmap, interestTagHashmap, userId, 0, 0, 0, token_id);
         }
 
         for (String l : locationTags)
@@ -301,11 +311,10 @@ public class InterestTagPicker extends AppCompatActivity {
         for (String i : selectedInterestTags)
             tags.child("interestTags").child(i).setValue(true);
 
-        for (String loc : locationTags) {
-            for(String i : selectedInterestTags) {
+        for (String loc : locationTags)
+            for(String i : selectedInterestTags)
                 tags.child("locationInterestTags").child(loc).child(i).setValue(true);
-            }
-        }
+
 
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user);
@@ -316,27 +325,6 @@ public class InterestTagPicker extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("myUserDetails", string);
         editor.commit();
-
-        //dont need to use firestore. will delete after checking code for other dependencies on firestore
-/*        //Store the user details under the Users Collection
-        db.collection("Users")
-                .document(userId)
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        SessionStorage.saveUser(InterestTagPicker.this, user);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-                        firebaseAuth.getCurrentUser().delete();
-//                        firebaseAuth.getCurrentUser().
-
-                    }
-                });*/
     }
     @Override
     protected void onStart() {
