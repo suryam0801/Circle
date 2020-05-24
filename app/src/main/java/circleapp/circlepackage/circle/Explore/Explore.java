@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,9 +26,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CreateCircle;
@@ -48,11 +51,12 @@ public class Explore extends AppCompatActivity {
     private List<Circle> myCircleList = new ArrayList<>();
     private FloatingActionButton btnAddCircle;
     private FirebaseDatabase database;
-    private FirebaseFirestore db;
     private FirebaseAuth currentUser;
     private DatabaseReference circles;
     private ImageView profPic;
     User user;
+
+    long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,35 +67,24 @@ public class Explore extends AppCompatActivity {
         profPic = findViewById(R.id.explore_profilePicture);
 
         database = FirebaseDatabase.getInstance();
-        currentUser= FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        currentUser = FirebaseAuth.getInstance();
 
         circles = database.getReference("Circles");
-        //synchronizes and stores local copy of data
-        circles.keepSynced(true);
-//        setWorkbenchTabs();
+        circles.keepSynced(true); //synchronizes and stores local copy of data
 
-        DocumentReference docRef = db.collection("Users").document(currentUser.getUid());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (!documentSnapshot.exists()) {
-                    startActivity(new Intent(Explore.this, PhoneLogin.class));
-                } else {
-                    user = documentSnapshot.toObject(User.class);
-                    Log.d(TAG, user.toString());
-                    SessionStorage.saveUser(Explore.this, user);
-                    Glide.with(Explore.this)
-                            .load(user.getProfileImageLink())
-                            .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
-                            .into(profPic);
-                    setCircleTabs();
-                    setWorkbenchTabs();
-                }
+        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
+        String userJSON = sharedPreferences.getString("myUserDetails", "default");
+        user = new Gson().fromJson(userJSON, User.class);
+        Log.d(TAG, user.toString());
 
-            }
-        });
+        Glide.with(Explore.this)
+                .load(user.getProfileImageLink())
+                .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
+                .into(profPic);
 
+        startTime = System.currentTimeMillis();
+        setCircleTabs();
+        //setWorkbenchTabs();
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(new View.OnClickListener() {
@@ -106,27 +99,27 @@ public class Explore extends AppCompatActivity {
         //initialize  workbench recylcerview
         RecyclerView wbrecyclerView = findViewById(R.id.workRecyclerView);
         wbrecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getApplicationContext(), HORIZONTAL,false);
+        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getApplicationContext(), HORIZONTAL, false);
         wbrecyclerView.setLayoutManager(wblayoutManager);
         //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual circles in the recycler view
-        final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter( myCircleList,Explore.this);
+        final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter(myCircleList, Explore.this);
         wbrecyclerView.setAdapter(wbadapter);
 
         wbrecyclerView.addOnItemTouchListener(
                 //RecyclerItemClickListener is a gestureDectector class which recognises the type of touch
                 new RecyclerItemClickListener(this, wbrecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                SessionStorage.saveCircle(Explore.this, circleList.get(position));
-                startActivity(new Intent(Explore.this, CircleWall.class));
-            }
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        SessionStorage.saveCircle(Explore.this, circleList.get(position));
+                        startActivity(new Intent(Explore.this, CircleWall.class));
+                    }
 
-            @Override
-            public void onLongItemClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), "LONG PRESSED", Toast.LENGTH_SHORT).show();
-            }
-        }));
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(), "LONG PRESSED", Toast.LENGTH_SHORT).show();
+                    }
+                }));
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
@@ -155,8 +148,7 @@ public class Explore extends AppCompatActivity {
 
                     //setting the adapter initially
                     //filter for only circles associated with creator id
-                    if (circle.getCreatorID().equals(currentUser.getUid()))
-                    {
+                    if (circle.getCreatorID().equals(currentUser.getUid())) {
                         myCircleList.add(circle);
                         //notify the adapter each time a new item needs to be added to the recycler view
                         wbadapter.notifyDataSetChanged();
@@ -205,23 +197,24 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //filter through each Circle in the Circles database
+
+                Log.d(TAG, "TIME IN MILLISECONDS: " + TimeUnit.MILLISECONDS.toSeconds(startTime - System.currentTimeMillis()));
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
                     Circle circle = postSnapshot.getValue(Circle.class);
-
 
                     //*FROM HERE*
                     //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading circlesList at the same time
                     int position = 0;
                     List<Circle> tempList = new ArrayList<>(circleList);
-                    List<Circle> wbtempList = new ArrayList<>(myCircleList);
                     //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
                     for (Circle c : tempList) {
                         if (c.getId().equals(circle.getId())) {
                             circleList.remove(position);
                             adapter.notifyDataSetChanged();
+                            --position;
                         }
-                        position++;
+                        ++position;
                     }
                     //*TO HERE* only for changing values for updated or modified children in database
 
@@ -248,13 +241,12 @@ public class Explore extends AppCompatActivity {
             }
         });
     }
-    private void suggestInterests()
-    {
+
+    private void suggestInterests() {
         circles.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
-                {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
 
                 }

@@ -1,8 +1,10 @@
 package circleapp.circlepackage.circle.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,9 +23,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.MainActivity;
@@ -39,7 +47,8 @@ public class OtpActivity extends AppCompatActivity {
     private EditText mOtpText;
     private Button mVerifyBtn;
     private ProgressBar mOtpProgress;
-    private FirebaseFirestore db;
+    private DatabaseReference usersDB;
+    private FirebaseDatabase database;
     private TextView mOtpFeedback;
     String doc_id;
 
@@ -56,7 +65,9 @@ public class OtpActivity extends AppCompatActivity {
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
+        database = FirebaseDatabase.getInstance();
+        database.setPersistenceEnabled(true); //persistence automatically handles offline behavior
+        usersDB = database.getReference("Users");
 
         //Getting AuthCredentials from the PhoneLogin page
         mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
@@ -91,6 +102,7 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to check the given OTP
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(OtpActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -101,31 +113,26 @@ public class OtpActivity extends AppCompatActivity {
                             FirebaseUser user = task.getResult().getUser();
                             final String uid = user.getUid();
                             //To check the users is already registered or not
-                            db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            usersDB.child(uid).addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        if (!task.getResult().isEmpty()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                User user = document.toObject(User.class);
-                                                doc_id = document.getId();
-                                                if (doc_id.equals(uid)) {
-                                                    //if user is already registerd it send to home page and save the current users details
-                                                    sendUserToHome();
-                                                    SessionStorage.saveUser(OtpActivity.this, user);
-                                                    break;
-                                                } else {
-                                                    //if user not registered it send to Registration page
-                                                    senduserToReg();
-                                                }
-                                            }
-                                        } else {
-                                            //send to reg page if there is no user in the user collection
-                                            senduserToReg();
-                                        }
-
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    User user = dataSnapshot.getValue(User.class);
+                                    final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
+                                    String string = new Gson().toJson(user);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("myUserDetails", string);
+                                    editor.commit();
+                                    if(user.getUserId().equals(uid)){
+                                        Log.d("OTP ACTIVITY", "SENDING TO HOME: " + user.toString());
+                                        sendUserToHome();
                                     } else {
+                                        senduserToReg();
                                     }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                 }
                             });
                         } else {
