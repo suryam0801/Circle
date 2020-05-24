@@ -110,20 +110,19 @@ public class OtpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             //get the user instance from the firebase
-                            FirebaseUser user = task.getResult().getUser();
+                            final FirebaseUser user = task.getResult().getUser();
                             final String uid = user.getUid();
                             //To check the users is already registered or not
                             usersDB.child(uid).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    User user = dataSnapshot.getValue(User.class);
-                                    final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
-                                    String string = new Gson().toJson(user);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString("myUserDetails", string);
-                                    editor.commit();
-                                    if(user.getUserId().equals(uid)){
-                                        Log.d("OTP ACTIVITY", "SENDING TO HOME: " + user.toString());
+                                    if (dataSnapshot.exists()) {
+                                        User user = dataSnapshot.getValue(User.class);
+                                        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
+                                        String string = new Gson().toJson(user);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("myUserDetails", string);
+                                        editor.commit();
                                         sendUserToHome();
                                     } else {
                                         senduserToReg();
