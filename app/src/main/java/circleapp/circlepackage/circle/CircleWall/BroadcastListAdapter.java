@@ -185,7 +185,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
-        private RadioButton radioButton;
 
         public ViewHolder(View view) {
             super(view);
