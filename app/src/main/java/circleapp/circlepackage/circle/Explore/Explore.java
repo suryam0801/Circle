@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -86,7 +87,7 @@ public class Explore extends AppCompatActivity {
 
         startTime = System.currentTimeMillis();
         setCircleTabs();
-        setWorkbenchTabs();
+        //setWorkbenchTabs();
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(new View.OnClickListener() {
@@ -196,14 +197,20 @@ public class Explore extends AppCompatActivity {
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
         circles.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //filter through each Circle in the Circles database
-                Log.d(TAG, "TIME IN MILLISECONDS: " + TimeUnit.MILLISECONDS.toSeconds(startTime - System.currentTimeMillis()));
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
                     Circle circle = postSnapshot.getValue(Circle.class);
+
+                    //retrieve location & interest tags from circle object since tags are stored as hashmaps
+                    List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
+                    List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
+
+                    //retrieve location & interest tags from users
+                    List<String> userTemplocationTagsList = new ArrayList<>(user.getLocationTags().keySet());
+                    List<String> userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
                     //*FROM HERE*
                     //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading circlesList at the same time
@@ -222,10 +229,10 @@ public class Explore extends AppCompatActivity {
 
                     //setting the adapter initially
                     //filter for only circles associated with matching user location and interests
-                    for (String locIterator : user.getLocationTags()) {
-                        if (circle.getLocationTags().contains("#" + locIterator)) {
-                            for (String intIterator : user.getInterestTags()) {
-                                if (circle.getInterestTags().contains("#" + intIterator)) {
+                    for (String locIterator : userTemplocationTagsList) {
+                        if (circleIteratorlocationTagsList.contains(locIterator)) {
+                            for (String intIterator : userTempinterestTagsList) {
+                                if (circleIteratorinterestTagsList.contains(intIterator)) {
                                     exploreCircleList.add(circle);
                                     //notify the adapter each time a new item needs to be added to the recycler view
                                     adapter.notifyDataSetChanged();
@@ -233,7 +240,6 @@ public class Explore extends AppCompatActivity {
                             }
                         }
                     }
-
                 }
             }
 

@@ -1,11 +1,12 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class User {
 
     private String firstName, lastName, contact, profileImageLink, userId, token_id;
-    private List<String> locationTags, interestTags;
+    private HashMap<String, Boolean> locationTags, interestTags;
     private int createdProjects, workingProjects, completedProjects;
 
     public User(){
@@ -13,8 +14,8 @@ public class User {
     }
 
     public User(String firstName, String lastName, String contact,
-                String profileImageLink, List<String> locationTags,
-                List<String> interestTags, String userId, int createdProjects,
+                String profileImageLink, HashMap<String, Boolean> locationTags,
+                HashMap<String, Boolean> interestTags, String userId, int createdProjects,
                 int workingProjects, int completedProjects, String token_id) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,19 +30,19 @@ public class User {
         this.token_id = token_id;
     }
 
-    public List<String> getLocationTags() {
+    public HashMap<String, Boolean> getLocationTags() {
         return locationTags;
     }
 
-    public void setLocationTags(List<String> locationTags) {
+    public void setLocationTags(HashMap<String, Boolean> locationTags) {
         this.locationTags = locationTags;
     }
 
-    public List<String> getInterestTags() {
+    public HashMap<String, Boolean> getInterestTags() {
         return interestTags;
     }
 
-    public void setInterestTags(List<String> interestTags) {
+    public void setInterestTags(HashMap<String, Boolean> interestTags) {
         this.interestTags = interestTags;
     }
 
@@ -124,8 +125,8 @@ public class User {
                 ", lastName='" + lastName + '\n' +
                 ", contact='" + contact + '\n' +
                 ", profileImageLink='" + profileImageLink + '\n' +
-                ", locationTags=" + locationTags + '\n' +
-                ", interestTags=" + interestTags + '\n' +
+                ", locationTags=" + locationTags.toString() + '\n' +
+                ", interestTags=" + interestTags.toString() + '\n' +
                 ", userId='" + userId + '\n' +
                 ", createdProjects=" + createdProjects + '\n' +
                 ", workingProjects=" + workingProjects + '\n' +
