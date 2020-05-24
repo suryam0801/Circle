@@ -27,8 +27,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,7 +65,7 @@ public class CreateCircle extends AppCompatActivity {
     private ChipGroup locationTagsDisplay, interestTagsDisplay;
 
     private FirebaseDatabase database;
-    private DatabaseReference tags, circleDB;
+    private DatabaseReference tags, circleDB,userDB;
     private FirebaseAuth currentUser;
     private FirebaseFirestore db;
 
@@ -100,6 +102,7 @@ public class CreateCircle extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         db = FirebaseFirestore.getInstance();
         tags = database.getReference("Tags");
+        userDB = database.getReference("Users");
 
         tags.addValueEventListener(new ValueEventListener() {
             @Override
@@ -476,18 +479,31 @@ public class CreateCircle extends AppCompatActivity {
         createdProjects = createdProjects + 1;
 
         //update createdCircle count in user profile
-        db.collection("Users").document(currentUser.getInstance().getUid()).update("createdProjects", createdProjects)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "JOB SUCCESSFUL!!!!");
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG, "Circle Created SUCCESSFUL!!!!");
                 onBackPressed();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+
             }
         });
+
+//        db.collection("Users").document(currentUser.getInstance().getUid()).update("createdProjects", createdProjects)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//            }
+//        });
 
     }
 
