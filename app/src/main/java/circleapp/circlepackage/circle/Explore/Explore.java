@@ -232,19 +232,7 @@ public class Explore extends AppCompatActivity {
                     for (String locIterator : userTemplocationTagsList) {
                         if (circleIteratorlocationTagsList.contains(locIterator)) {
                             for (String intIterator : userTempinterestTagsList) {
-                                Log.d(TAG, "Interest Iterator: " + intIterator);
-                                Log.d(TAG, "Interest Tag List:  " + circleIteratorinterestTagsList.toString());
-                                Log.d(TAG, "Location Iterator " + circleIteratorinterestTagsList.contains(intIterator));
-                                Log.d(TAG, "____________________________________________________");
                                 if (circleIteratorinterestTagsList.contains(intIterator)) {
-/*
-                                    Log.d(TAG, "circleIteratorlocationTagsList" + circleIteratorlocationTagsList.toString());
-                                    Log.d(TAG, "circleIteratorinterestTagsList" + circleIteratorinterestTagsList.toString());
-                                    Log.d(TAG, "userTemplocationTagsList" + userTemplocationTagsList.toString());
-                                    Log.d(TAG, "userTempinterestTagsList" + userTempinterestTagsList.toString());
-                                    Log.d(TAG, "____________________________________________________");
-*/
-
                                     exploreCircleList.add(circle);
                                     //notify the adapter each time a new item needs to be added to the recycler view
                                     adapter.notifyDataSetChanged();
