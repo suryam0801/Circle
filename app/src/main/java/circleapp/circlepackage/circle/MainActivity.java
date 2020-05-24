@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth currentUser;
     private FirebaseFirestore db;
     public static final String TAG = MainActivity.class.getSimpleName();
-    private String userDoc,userId;
-    private boolean currentUserstate,userDocstate;
+    private String userDoc, userId;
+    private boolean currentUserstate, userDocstate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +34,9 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
-       currentUser=FirebaseAuth.getInstance();
+        currentUser = FirebaseAuth.getInstance();
 
-        if(currentUser.getCurrentUser()!=null)
-        {
+        if (currentUser.getCurrentUser() != null) {
             Log.d(TAG, currentUser.getCurrentUser().getUid());
             startActivity(new Intent(MainActivity.this, Explore.class));
             finish();
@@ -45,29 +44,13 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, PhoneLogin.class));
             finish();
         }
-
-/*
-         DocumentReference docRef = db.collection("Users").document(currentUser.getUid());
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (!documentSnapshot.exists()) {
-                            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
-                        } else {
-                            Log.d(TAG, currentUser.getCurrentUser().getUid());
-                            startActivity(new Intent(MainActivity.this, Explore.class));
-                            finish();
-                        }
-                    }
-                });
-*/
     }
+
     @Override
     protected void onStart() {
         super.onStart();
 
-        if(currentUser.getCurrentUser()!=null)
-        {
+        if (currentUser.getCurrentUser() != null) {
             Log.d(TAG, currentUser.getCurrentUser().getUid());
             startActivity(new Intent(MainActivity.this, Explore.class));
             finish();
@@ -75,22 +58,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, PhoneLogin.class));
             finish();
         }
-
-/*
-        DocumentReference docRef = db.collection("Users").document(currentUser.getUid());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (!documentSnapshot.exists()) {
-                    startActivity(new Intent(MainActivity.this, PhoneLogin.class));
-                } else {
-                    Log.d(TAG, currentUser.getCurrentUser().getUid());
-                    startActivity(new Intent(MainActivity.this, Explore.class));
-                    finish();
-                }
-
-            }
-        });
-*/
     }
 }

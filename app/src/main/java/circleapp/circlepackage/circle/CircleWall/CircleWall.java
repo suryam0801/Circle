@@ -277,7 +277,7 @@ public class CircleWall extends AppCompatActivity {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null);
-            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+            broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
 
         } else if (downloadUri != null && pollExists == false) {
 

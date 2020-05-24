@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.Login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -38,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +68,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private ChipGroup chipGroup;
     private Button interestTagAdd;
     private FirebaseDatabase database;
-    private DatabaseReference tags;
+    private DatabaseReference tags, usersDB, currentUserSyncDB;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
     @Override
@@ -280,6 +282,8 @@ public class InterestTagPicker extends AppCompatActivity {
     //function that adds the user to the firestore
     private void addUser() {
 
+        usersDB = database.getReference("Users");
+
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
 
@@ -302,7 +306,19 @@ public class InterestTagPicker extends AppCompatActivity {
                 tags.child("locationInterestTags").child(loc).child(i).setValue(true);
             }
         }
-        //Store the user details under the Users Collection
+
+        //store user in realtime database. (testing possible options for fastest retrieval)
+        usersDB.child(userId).setValue(user);
+
+        //store the current user locally for fastest retrieval of only current user
+        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
+        String string = new Gson().toJson(user);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("myUserDetails", string);
+        editor.commit();
+
+        //dont need to use firestore. will delete after checking code for other dependencies on firestore
+/*        //Store the user details under the Users Collection
         db.collection("Users")
                 .document(userId)
                 .set(user)
@@ -320,7 +336,7 @@ public class InterestTagPicker extends AppCompatActivity {
 //                        firebaseAuth.getCurrentUser().
 
                     }
-                });
+                });*/
     }
     @Override
     protected void onStart() {

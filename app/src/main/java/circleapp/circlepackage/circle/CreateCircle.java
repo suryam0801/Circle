@@ -442,9 +442,9 @@ public class CreateCircle extends AppCompatActivity {
         acceptanceButton = findViewById(radioId);
 
         String myCircleID = circleDB.push().getKey();
-        String creatorUserID = currentUser.getCurrentUser().getUid();//Objects.requireNonNull(currentUser.getCurrentUser()).getUid());
+        String creatorUserID = currentUser.getCurrentUser().getUid();
         String acceptanceType = acceptanceButton.getText().toString();
-        String creatorName = currentUser.getCurrentUser().getDisplayName(); //currentUser.getCurrentUser().getDisplayName();
+        String creatorName = currentUser.getCurrentUser().getDisplayName();
 
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, selectedLocations, selectedInterests);
 
@@ -460,14 +460,17 @@ public class CreateCircle extends AppCompatActivity {
             }
         }
 
-        database.getReference("Circles").push().setValue(circle);
+        //add circle in users realtime database
+        circleDB.push().setValue(circle);
 
         User user = SessionStorage.getUser(CreateCircle.this);
 
         int createdProjects = user.getCreatedProjects();
         createdProjects = createdProjects + 1;
 
-        db.collection("Users").document(currentUser.getInstance().getUid()).update("createdProjects", createdProjects).addOnSuccessListener(new OnSuccessListener<Void>() {
+        //update createdCircle count in user profile
+        db.collection("Users").document(currentUser.getInstance().getUid()).update("createdProjects", createdProjects)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "JOB SUCCESSFUL!!!!");
