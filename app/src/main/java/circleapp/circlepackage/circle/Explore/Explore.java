@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,9 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -35,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CreateCircle;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
-import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -47,8 +42,8 @@ import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 public class Explore extends AppCompatActivity {
 
     private String TAG = Explore.class.getSimpleName();
-    private List<Circle> circleList = new ArrayList<>();
-    private List<Circle> myCircleList = new ArrayList<>();
+    private List<Circle> exploreCircleList = new ArrayList<>();
+    private List<Circle> workbenchCircleList = new ArrayList<>();
     private FloatingActionButton btnAddCircle;
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
@@ -76,7 +71,7 @@ public class Explore extends AppCompatActivity {
         String userJSON = sharedPreferences.getString("myUserDetails", "default");
         Log.d(TAG, "!!!!! " + FirebaseAuth.getInstance().getCurrentUser().getUid());
         user = new Gson().fromJson(userJSON, User.class);
-        if(user == null || currentUser.getCurrentUser().getUid()==null){
+        if (user == null || currentUser.getCurrentUser().getUid() == null) {
             currentUser.signOut();
             startActivity(new Intent(Explore.this, PhoneLogin.class));
             finish();
@@ -110,7 +105,7 @@ public class Explore extends AppCompatActivity {
         wbrecyclerView.setLayoutManager(wblayoutManager);
         //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual circles in the recycler view
-        final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter(myCircleList, Explore.this);
+        final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, Explore.this);
         wbrecyclerView.setAdapter(wbadapter);
 
         wbrecyclerView.addOnItemTouchListener(
@@ -118,7 +113,9 @@ public class Explore extends AppCompatActivity {
                 new RecyclerItemClickListener(this, wbrecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        SessionStorage.saveCircle(Explore.this, circleList.get(position));
+                        Circle selectedWBCircle = workbenchCircleList.get(position);
+                        SessionStorage.saveCircle(Explore.this, workbenchCircleList.get(position));
+                        Log.d(TAG, "onItemClick: " + selectedWBCircle);
                         startActivity(new Intent(Explore.this, CircleWall.class));
                     }
 
@@ -137,16 +134,15 @@ public class Explore extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
                     Circle circle = postSnapshot.getValue(Circle.class);
-
-
+                    Log.d(TAG, circle.toString());
                     //*FROM HERE*
                     //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading myCircleList at the same time
                     int position = 0;
-                    List<Circle> wbtempList = new ArrayList<>(myCircleList);
+                    List<Circle> wbtempList = new ArrayList<>(workbenchCircleList);
                     //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
                     for (Circle c : wbtempList) {
                         if (c.getId().equals(circle.getId())) {
-                            myCircleList.remove(position);
+                            workbenchCircleList.remove(position);
                             wbadapter.notifyDataSetChanged();
                         }
                         position++;
@@ -156,7 +152,7 @@ public class Explore extends AppCompatActivity {
                     //setting the adapter initially
                     //filter for only circles associated with creator id
                     if (circle.getCreatorID().equals(currentUser.getUid())) {
-                        myCircleList.add(circle);
+                        workbenchCircleList.add(circle);
                         //notify the adapter each time a new item needs to be added to the recycler view
                         wbadapter.notifyDataSetChanged();
                     }
@@ -178,7 +174,7 @@ public class Explore extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
-        final RecyclerView.Adapter adapter = new CircleDisplayAdapter(Explore.this, circleList);
+        final RecyclerView.Adapter adapter = new CircleDisplayAdapter(Explore.this, exploreCircleList);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(
@@ -186,7 +182,7 @@ public class Explore extends AppCompatActivity {
                 new RecyclerItemClickListener(Explore.this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        SessionStorage.saveCircle(Explore.this, circleList.get(position));
+                        SessionStorage.saveCircle(Explore.this, exploreCircleList.get(position));
                         startActivity(new Intent(Explore.this, CircleWall.class));
                     }
 
@@ -212,11 +208,11 @@ public class Explore extends AppCompatActivity {
                     //*FROM HERE*
                     //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading circlesList at the same time
                     int position = 0;
-                    List<Circle> tempList = new ArrayList<>(circleList);
+                    List<Circle> tempList = new ArrayList<>(exploreCircleList);
                     //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
                     for (Circle c : tempList) {
                         if (c.getId().equals(circle.getId())) {
-                            circleList.remove(position);
+                            exploreCircleList.remove(position);
                             adapter.notifyDataSetChanged();
                             --position;
                         }
@@ -230,10 +226,9 @@ public class Explore extends AppCompatActivity {
                         if (circle.getLocationTags().contains("#" + locIterator)) {
                             for (String intIterator : user.getInterestTags()) {
                                 if (circle.getInterestTags().contains("#" + intIterator)) {
-                                    circleList.add(circle);
+                                    exploreCircleList.add(circle);
                                     //notify the adapter each time a new item needs to be added to the recycler view
                                     adapter.notifyDataSetChanged();
-
                                 }
                             }
                         }
