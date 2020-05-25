@@ -87,7 +87,7 @@ public class Explore extends AppCompatActivity {
 
         startTime = System.currentTimeMillis();
         setCircleTabs();
-        //setWorkbenchTabs();
+        setWorkbenchTabs();
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +135,6 @@ public class Explore extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
                     Circle circle = postSnapshot.getValue(Circle.class);
-                    Log.d(TAG, circle.toString());
                     //*FROM HERE*
                     //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading myCircleList at the same time
                     int position = 0;

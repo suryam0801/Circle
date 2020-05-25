@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/location_tags_entry"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
@@ -83,7 +83,7 @@
                     android:paddingRight="10dp"
                     android:textColor="@color/black"
                     android:textColorHint="#828282"
-                    android:textSize="14dp"></EditText>
+                    android:textSize="14dp"></AutoCompleteTextView>
 
                 <Button
                     android:id="@+id/location_tag_add_button"
