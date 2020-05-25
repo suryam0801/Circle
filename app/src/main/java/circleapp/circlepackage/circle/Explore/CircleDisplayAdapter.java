@@ -48,10 +48,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     }
 
     //initializes the views
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc;
         private AppCompatImageView foregroundImage;
         private LinearLayout container;
+
         public ViewHolder(View view) {
             super(view);
             container = view.findViewById(R.id.container);
@@ -59,8 +60,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             tv_creatorName = view.findViewById(R.id.circle_creatorName);
             tv_circleDesc = view.findViewById(R.id.circle_desc);
             foregroundImage = view.findViewById(R.id.explore_card_icon_foreground);
-
         }
-    }
 
+    }
 }

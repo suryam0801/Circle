@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tag_picker_popup_background"
+    android:layout_gravity="center"
+    android:padding="23dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Project Name"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/roboto_bold"
+        android:id="@+id/join_popup_circle_name">
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/popup_creatorname_display_view"
+        android:layout_marginBottom="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Created By: "
+            android:textColor="#B6B6B6"
+            android:textSize="12dp"
+            android:fontFamily="@font/roboto_regular">
+        </TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Creator Name"
+            android:textColor="#6CACFF"
+            android:textSize="12dp"
+            android:fontFamily="@font/roboto_regular"
+            android:id="@+id/join_popup_circle_creator">
+        </TextView>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F1F1F1" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Description"
+        android:textColor="@color/black"
+        android:id="@+id/placeholderDescription"
+        android:fontFamily="@font/roboto_regular"
+        android:textSize="12dp"
+        android:layout_marginBottom="15dp">
+    </TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:lineSpacingExtra="5dp"
+        android:textColor="#B6B6B6"
+        android:fontFamily="@font/roboto_regular"
+        android:textSize="12dp"
+        android:id="@+id/join_popup_cicle_description"
+        android:layout_marginBottom="15dp">
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter your reason to join / what are the skills you can contribute to the team?"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_marginBottom="10.5dp"
+            android:visibility="gone"
+            android:textSize="12dp"
+            android:id="@+id/applicationdisplaypopup"
+            android:textColor="@color/black">
+        </TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F1F1F1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="50"
+            android:text="Cancel"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="#828282"
+            android:background="@android:color/transparent"
+            android:id="@+id/join_popup_cancel_button">
+        </Button>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="50"
+            android:text="Join"
+            android:textColor="#35C80B"
+            android:textSize="14dp"
+            android:fontFamily="@font/roboto_medium"
+            android:background="@drawable/green_border_button"
+            android:id="@+id/join_popup_accept_button">
+        </Button>
+    </LinearLayout>
+</LinearLayout>

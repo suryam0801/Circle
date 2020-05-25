@@ -147,7 +147,8 @@
                     android:fontFamily="@font/roboto_regular"
                     android:text="Review"
                     android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
+                    android:theme="@style/MyRadioButtonTwo">
+                </RadioButton>
 
                 <RadioButton
                     android:id="@+id/acceptanceTypeAutomatic"
@@ -157,7 +158,8 @@
                     android:textColor="@color/black"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Automatic"
-                    android:layout_weight="50"></RadioButton>
+                    android:layout_weight="50">
+                </RadioButton>
 
             </RadioGroup>
 
