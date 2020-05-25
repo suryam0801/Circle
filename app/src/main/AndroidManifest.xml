@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PersonelDisplay.PersonelDisplay"></activity>
+        <activity android:name=".EditProfile.EditProfile"></activity>
+        <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity android:name=".Login.InterestTagPicker" />
         <activity android:name=".Login.LocationTagPicker" />
         <activity android:name=".Login.GatherUserDetails" />

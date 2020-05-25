@@ -1,6 +1,8 @@
 package circleapp.circlepackage.circle.Explore;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +40,16 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     @Override
     public void onBindViewHolder(@NonNull WorkbenchDisplayAdapter.ViewHolder holder, int position) {
 
+        GradientDrawable wbItemBackground = new GradientDrawable();
+        wbItemBackground.setShape(GradientDrawable.OVAL);
+
+        wbItemBackground.setColor(Color.parseColor("#E0F0FF"));
+        wbItemBackground.setStroke(4, Color.parseColor("#158BF1"));
+        holder.tv_MycircleName.setTextColor(Color.parseColor("#158BF1"));
+
         //set the details of each circle to its respective card.
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
+        holder.tv_MycircleName.setBackground(wbItemBackground);
         holder.tv_MycircleName.setText(MycircleList.get(position).getName());
     }
 

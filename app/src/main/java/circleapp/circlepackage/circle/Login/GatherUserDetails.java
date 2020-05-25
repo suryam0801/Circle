@@ -84,11 +84,7 @@ public class GatherUserDetails extends AppCompatActivity {
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             STORAGE_PERMISSION_CODE);
                 } else {
-
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+                    selectFile();
                 }
 
             }
@@ -115,6 +111,13 @@ public class GatherUserDetails extends AppCompatActivity {
         });
     }
 
+    public void selectFile(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -131,6 +134,7 @@ public class GatherUserDetails extends AppCompatActivity {
                         "Storage Permission Granted",
                         Toast.LENGTH_SHORT)
                         .show();
+                selectFile();
             } else {
                 Toast.makeText(GatherUserDetails.this,
                         "Storage Permission Denied",
