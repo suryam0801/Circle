@@ -23,6 +23,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,6 +53,7 @@ import java.util.UUID;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
+import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
@@ -73,6 +75,8 @@ public class CircleWall extends AppCompatActivity {
 
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
+
+    private ImageButton viewPersonel;
 
     //create broadcast popup ui elements
     private EditText setMessageET, setPollQuestionET, setPollOptionET;
@@ -99,11 +103,19 @@ public class CircleWall extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
+        viewPersonel = findViewById(R.id.circle_wall_view_members);
 
         createNewBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCreateBroadcastDialog();
+            }
+        });
+
+        viewPersonel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
             }
         });
 

@@ -20,6 +20,10 @@
         <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
 
+    <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14dp</item>
+    </style>
+
     <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>

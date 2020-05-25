@@ -480,6 +480,10 @@ public class CreateCircle extends AppCompatActivity {
 
         //update createdCircle count in user profile
         userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects);
+
+        //navigate back to explore. new circle will be available in workbench
+        startActivity(new Intent(CreateCircle.this, Explore.class));
+        finish();
     }
 
     @Override

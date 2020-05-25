@@ -2,12 +2,24 @@ package circleapp.circlepackage.circle.ObjectModels;
 
 public class Subscriber {
     String id, name, photoURI, token_id;
+    long timestamp;
 
-    public Subscriber(String id, String name, String photoURI, String token_id) {
+    public Subscriber(String id, String name, String photoURI, String token_id, long timestamp) {
         this.id = id;
         this.name = name;
         this.photoURI = photoURI;
         this.token_id = token_id;
+        this.timestamp = timestamp;
+    }
+
+    public Subscriber(){}
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getId() {
@@ -49,6 +61,7 @@ public class Subscriber {
                 ", name='" + name + '\'' +
                 ", photoURI='" + photoURI + '\'' +
                 ", token_id='" + token_id + '\'' +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }

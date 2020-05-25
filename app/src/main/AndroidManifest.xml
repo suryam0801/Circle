@@ -12,15 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login.InterestTagPicker"></activity>
+        <activity android:name=".PersonelDisplay.PersonelDisplay"></activity>
+        <activity android:name=".Login.InterestTagPicker" />
         <activity android:name=".Login.LocationTagPicker" />
         <activity android:name=".Login.GatherUserDetails" />
         <activity android:name=".Login.OtpActivity" />
-        <activity android:name=".Login.PhoneLogin"/>
-        <activity android:name=".CircleWall.CircleWall"></activity>
+        <activity android:name=".Login.PhoneLogin" />
+        <activity android:name=".CircleWall.CircleWall" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
