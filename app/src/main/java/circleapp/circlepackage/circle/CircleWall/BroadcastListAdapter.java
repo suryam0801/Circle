@@ -181,14 +181,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private CircleImageView profPicDisplay;
         private LinearLayout attachmentDisplay, pollDisplay;
         private ImageButton attachmentDownloadButton;
-        private View view;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
 
         public ViewHolder(View view) {
             super(view);
-            this.view = view;
             database = FirebaseDatabase.getInstance();
             broadcastDB = database.getReference("Broadcasts");
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);

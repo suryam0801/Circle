@@ -58,7 +58,7 @@ public class LocationTagPicker extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location_tag_picker);
+        setContentView(R.layout.activity_login_location_tag_picker);
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);

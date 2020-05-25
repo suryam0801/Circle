@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".PersonelDisplay.PersonelDisplay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="19dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/personel_bck_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX=".8"
+            android:scaleY=".8"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_chevron_left_black_24dp">
+        </ImageButton>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingRight="25dp"
+            android:gravity="center"
+            android:text="Circle Personel"
+            android:textColor="@color/black"
+            android:textSize="20dp">
+        </TextView>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="18.5dp"
+        android:layout_marginBottom="18.5dp"
+        android:background="#EEEEEE"></View>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/personel_tab_layout"
+        android:layout_width="match_parent"
+        app:tabIndicatorColor="#6CACFF"
+        app:tabIndicatorFullWidth="true"
+        app:tabSelectedTextColor="#6CACFF"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        app:tabTextAppearance="@style/MineCustomTabText"
+        app:tabTextColor="#D1D1D1"
+        android:layout_height="32dp">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/personel_new_requests"
+            android:text="New Requests">
+        </com.google.android.material.tabs.TabItem>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/personel_all_members"
+            android:text="All Members">
+        </com.google.android.material.tabs.TabItem>
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/personel_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="15dp"></androidx.viewpager.widget.ViewPager>
+
+</LinearLayout>

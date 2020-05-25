@@ -127,7 +127,6 @@ public class Explore extends AppCompatActivity {
                 new RecyclerItemClickListener(this, wbrecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Circle selectedWBCircle = workbenchCircleList.get(position);
                         SessionStorage.saveCircle(Explore.this, workbenchCircleList.get(position));
                         startActivity(new Intent(Explore.this, CircleWall.class));
                     }
@@ -289,12 +288,12 @@ public class Explore extends AppCompatActivity {
             public void onClick(View view) {
                 //creating a subscriber object to store. doesnt store private information such as tags and contact information.
                 Subscriber subscriber = new Subscriber(user.getUserId(),user.getFirstName()+" " + user.getLastName(),
-                        user.getProfileImageLink(), user.getToken_id());
+                        user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
                 if(("review").equalsIgnoreCase(circle.getAcceptanceType()))
-                    database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").setValue(subscriber);
+                    database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
                 else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
-                    database.getReference().child("CirclePersonel").child(circle.getId()).child("members").setValue(subscriber);
+                    database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             }
         });
 
