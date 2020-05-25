@@ -479,32 +479,7 @@ public class CreateCircle extends AppCompatActivity {
         createdProjects = createdProjects + 1;
 
         //update createdCircle count in user profile
-
-        userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d(TAG, "Circle Created SUCCESSFUL!!!!");
-                onBackPressed();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
-
-//        db.collection("Users").document(currentUser.getInstance().getUid()).update("createdProjects", createdProjects)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//            }
-//        });
-
+        userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects);
     }
 
     @Override

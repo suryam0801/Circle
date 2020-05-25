@@ -20,10 +20,7 @@ import circleapp.circlepackage.circle.Explore.Explore;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth currentUser;
-    private FirebaseFirestore db;
     public static final String TAG = MainActivity.class.getSimpleName();
-    private String userDoc, userId;
-    private boolean currentUserstate, userDocstate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
