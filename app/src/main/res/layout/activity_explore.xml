@@ -6,62 +6,90 @@
     android:layout_height="match_parent"
     tools:context=".Explore.Explore">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/exploreHeaderBar"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/roboto_regular"
-            android:gravity="center_vertical"
-            android:paddingLeft="13dp"
-            android:paddingTop="17dp"
-            android:paddingBottom="17dp"
-            android:text="Circle"
-            android:textColor="#3B3B3B"
-            android:textSize="25dp"></TextView>
+            android:id="@+id/exploreHeaderBar"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/main_activity_notifications_bell"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="60dp"
-            android:background="@drawable/ic_notifications_none_black_24dp"></ImageButton>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular"
+                android:gravity="center_vertical"
+                android:paddingLeft="13dp"
+                android:paddingTop="17dp"
+                android:paddingBottom="17dp"
+                android:text="Circle"
+                android:textColor="#3B3B3B"
+                android:textSize="25dp"></TextView>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/explore_profilePicture"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/ic_account_circle_black_24dp" />
+            <ImageButton
+                android:id="@+id/main_activity_notifications_bell"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="60dp"
+                android:background="@drawable/ic_notifications_none_black_24dp"></ImageButton>
 
-    </RelativeLayout>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/explore_profilePicture"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/ic_account_circle_black_24dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/workRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/exploreHeaderBar"
-        android:layout_marginTop="3dp"></androidx.recyclerview.widget.RecyclerView>
+        </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/circlesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/workRecyclerView"
-        android:layout_marginTop="3dp"
-        app:reverseLayout="true"></androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/workRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp"></androidx.recyclerview.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Explore"
+                android:layout_marginLeft="20dp"
+                android:textSize="18dp"
+                android:visibility="gone"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/black">
+            </TextView>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/circlesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                app:reverseLayout="true"></androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_circle_button"

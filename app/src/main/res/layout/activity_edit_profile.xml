@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".EditProfile.EditProfile">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="19dp"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/bck_view_edit_profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleX=".8"
+                    android:scaleY=".8"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_chevron_left_black_24dp">
+                </ImageButton>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:paddingRight="25dp"
+                    android:gravity="center"
+                    android:text="Profile"
+                    android:textColor="@color/black"
+                    android:textSize="20dp">
+                </TextView>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="18.5dp"
+                android:background="#EEEEEE">
+            </View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_view_profile_image"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="128dp"
+                        android:layout_height="128dp"
+                        android:background="@drawable/ic_account_circle_black_24dp" />
+
+                    <Button
+                        android:id="@+id/profile_view_profilePicSetterImage"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_alignBottom="@+id/profile_view_profile_image"
+                        android:layout_alignRight="@+id/profile_view_profile_image"
+                        android:layout_marginRight="8dp"
+                        android:background="@drawable/edit_project_button_background"
+                        android:foreground="@drawable/ic_camera_alt_white_24dp"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:foregroundGravity="center" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/viewProfile_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User Name"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="16dp"
+                        android:textColor="@color/black">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/viewProfile_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="UserEmail@email.com"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="12dp"
+                        android:textColor="#828282"
+                        android:gravity="center"></TextView>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="(only visible for you)"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="12dp"
+                        android:textColor="#828282"
+                        android:gravity="center"></TextView>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:layout_marginTop="26dp"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                android:background="@drawable/light_blue_rounded_background"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".33"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active Circles"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="12dp"
+                        android:layout_gravity="center"></TextView>
+
+                    <TextView
+                        android:id="@+id/viewProfileActiveCirclesCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:fontFamily="@font/roboto_bold"
+                        android:layout_marginTop="16dp"
+                        android:textSize="16dp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"></TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".33"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Created Circles"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="12dp"
+                        android:layout_gravity="center"></TextView>
+
+                    <TextView
+                        android:id="@+id/viewProfileCreatedCirclesCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:fontFamily="@font/roboto_bold"
+                        android:layout_marginTop="16dp"
+                        android:textSize="16dp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"></TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="11dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="20dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:background="@drawable/light_blue_rounded_background"
+                android:layout_marginLeft="11dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="99"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Your Location Tags"
+                            android:id="@+id/locationTagEditButton"
+                            android:textColor="#828282"
+                            android:drawableEnd="@drawable/ic_edit_black_24dp"
+                            android:textSize="12dp"></TextView>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/viewProfile_locationTags"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            >
+                        </com.google.android.material.chip.ChipGroup>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="99"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/interestTagEditButton"
+                            android:textSize="12dp"
+                            android:text="Your Interest Tags"
+                            android:textColor="#828282"
+                            android:drawableEnd="@drawable/ic_edit_black_24dp"
+                            android:fontFamily="@font/roboto_regular">
+                        </TextView>
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/viewProfile_interestTags"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="12dp"
+                            android:layout_marginTop="10dp">
+                        </com.google.android.material.chip.ChipGroup>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/profile_finalize_changes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:textAllCaps="false"
+                    android:text="Finalize Changes"
+                    android:textColor="#35C80B"
+                    android:visibility="gone"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="50"
+                    android:gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/green_border_button">
+                </Button>
+
+                <Button
+                    android:id="@+id/profile_logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:textAllCaps="false"
+                    android:text="Logout"
+                    android:layout_weight="50"
+                    android:textColor="#6CACFF"
+                    android:gravity="center"
+                    android:layout_marginBottom="40dp"
+                    android:background="@drawable/light_blue_rounded_background">
+                </Button>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>

@@ -10,8 +10,7 @@
     android:text="Ci"
     android:id="@+id/wbcircle"
     android:gravity="center"
-    android:padding="8dp"
-    android:textSize="55sp"
+    android:textSize="10dp"
     />
 
 </LinearLayout>

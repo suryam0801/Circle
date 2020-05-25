@@ -8,70 +8,42 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:id="@+id/explore_card_heading_background"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <TextView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="18dp"
-            android:id="@+id/explore_card_icon_background"
-            android:layout_marginTop="16dp">
+            android:text="S"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:id="@+id/explore_foreground_icon"
+            android:layout_marginLeft="20dp">
+        </TextView>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:scaleX=".7"
-                android:scaleY=".7"
-                android:id="@+id/explore_card_icon_foreground"
-                android:layout_gravity="center"></androidx.appcompat.widget.AppCompatImageView>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="16dp">
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
                 android:text="Name"
                 android:textSize="16dp"
+                android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_light"
-                android:paddingBottom="5dp"
+                android:fontFamily="@font/roboto_regular"
                 android:paddingLeft="7dp"
                 android:layout_marginRight="45dp"
-                android:paddingTop="15dp"
                 android:id="@+id/circle_name"
                 />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="  Created by "
-                    android:textSize="12dp"
-                    android:textColor="#B6B6B6"
-                    android:fontFamily="@font/roboto_regular"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Creator Name"
-                    android:textSize="12dp"
-                    android:textColor="#6CACFF"
-                    android:fontFamily="@font/roboto_regular"
-                    android:id="@+id/circle_creatorName"
-                    />
-            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
@@ -100,22 +72,29 @@
             />
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/apply_join_display_layout">
-
-        <Button
-            android:layout_alignParentEnd="true"
+        android:paddingLeft="19dp"
+        android:layout_marginBottom="13dp"
+        android:orientation="horizontal">
+        <TextView
             android:layout_width="wrap_content"
-            android:text="Join"
-            android:textColor="#35C80B"
-            android:textAllCaps="false"
-            android:layout_height="40dp"
-            android:background="@drawable/green_border_button">
-        </Button>
-
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:text="Created by "
+            android:textSize="12dp"
+            android:textColor="#B6B6B6"
+            android:fontFamily="@font/roboto_regular"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Creator Name"
+            android:textSize="12dp"
+            android:textColor="#6CACFF"
+            android:fontFamily="@font/roboto_regular"
+            android:id="@+id/circle_creatorName"
+            />
+    </LinearLayout>
 
 </LinearLayout>

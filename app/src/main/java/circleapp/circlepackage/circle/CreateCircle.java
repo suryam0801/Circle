@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -27,10 +26,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,8 +39,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -67,7 +60,6 @@ public class CreateCircle extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference tags, circleDB,userDB;
     private FirebaseAuth currentUser;
-    private FirebaseFirestore db;
 
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbLocationTags = new ArrayList<>(), dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
@@ -100,7 +92,6 @@ public class CreateCircle extends AppCompatActivity {
         interestTagSelectTitle = findViewById(R.id.create_circle_interest_tag_select_title);
 
         database = FirebaseDatabase.getInstance();
-        db = FirebaseFirestore.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
 
@@ -265,7 +256,7 @@ public class CreateCircle extends AppCompatActivity {
         interestTagDialog.show();
     }
 
-    public void setInterestTag(final String name, ChipGroup interestChipGroupPopup) {
+    public void setInterestTag(final String name, ChipGroup chipGroupLocation) {
         final Chip chip = new Chip(this);
         int paddingDp = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 10,
@@ -309,7 +300,7 @@ public class CreateCircle extends AppCompatActivity {
 
         });
 
-        interestChipGroupPopup.addView(chip);
+        chipGroupLocation.addView(chip);
         interestTagEntry.setText("#");
         interestTagEntry.setSelection(interestTagEntry.getText().length());
     }
@@ -388,7 +379,7 @@ public class CreateCircle extends AppCompatActivity {
 
     }
 
-    private void setLocationTag(final String name, ChipGroup locationChipGroupPopup) {
+    private void setLocationTag(final String name, ChipGroup chipGroupLocation) {
         final Chip chip = new Chip(this);
         int paddingDp = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 10,
@@ -431,7 +422,7 @@ public class CreateCircle extends AppCompatActivity {
 
         });
 
-        locationChipGroupPopup.addView(chip);
+        chipGroupLocation.addView(chip);
         locationTagEntry.setText("#");
         locationTagEntry.setSelection(locationTagEntry.getText().length());
     }
@@ -475,7 +466,7 @@ public class CreateCircle extends AppCompatActivity {
 
         User user = SessionStorage.getUser(CreateCircle.this);
 
-        int createdProjects = user.getCreatedProjects();
+        int createdProjects = user.getCreatedCircles();
         createdProjects = createdProjects + 1;
 
         //update createdCircle count in user profile

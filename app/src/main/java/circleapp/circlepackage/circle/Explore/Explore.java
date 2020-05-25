@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CreateCircle;
+import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -107,6 +108,13 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Explore.this, CreateCircle.class));
+            }
+        });
+
+        profPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Explore.this, EditProfile.class));
             }
         });
     }

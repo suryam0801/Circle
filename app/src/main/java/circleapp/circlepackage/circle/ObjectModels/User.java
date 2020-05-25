@@ -1,13 +1,12 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class User {
 
     private String firstName, lastName, contact, profileImageLink, userId, token_id;
     private HashMap<String, Boolean> locationTags, interestTags;
-    private int createdProjects, workingProjects, completedProjects;
+    private int createdCircles, activeCircles, completedProjects;
 
     public User(){
 
@@ -15,8 +14,8 @@ public class User {
 
     public User(String firstName, String lastName, String contact,
                 String profileImageLink, HashMap<String, Boolean> locationTags,
-                HashMap<String, Boolean> interestTags, String userId, int createdProjects,
-                int workingProjects, int completedProjects, String token_id) {
+                HashMap<String, Boolean> interestTags, String userId, int createdCircles,
+                int activeCircles, int completedProjects, String token_id) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contact = contact;
@@ -24,8 +23,8 @@ public class User {
         this.locationTags = locationTags;
         this.interestTags = interestTags;
         this.userId = userId;
-        this.createdProjects = createdProjects;
-        this.workingProjects = workingProjects;
+        this.createdCircles = createdCircles;
+        this.activeCircles = activeCircles;
         this.completedProjects = completedProjects;
         this.token_id = token_id;
     }
@@ -46,16 +45,16 @@ public class User {
         this.interestTags = interestTags;
     }
 
-    public void setCreatedProjects(int createdProjects) {
-        this.createdProjects = createdProjects;
+    public void setCreatedCircles(int createdCircles) {
+        this.createdCircles = createdCircles;
     }
 
-    public int getWorkingProjects() {
-        return workingProjects;
+    public int getActiveCircles() {
+        return activeCircles;
     }
 
-    public void setWorkingProjects(int workingProjects) {
-        this.workingProjects = workingProjects;
+    public void setActiveCircles(int activeCircles) {
+        this.activeCircles = activeCircles;
     }
 
     public int getCompletedProjects() {
@@ -74,8 +73,8 @@ public class User {
         this.token_id = token_id;
     }
 
-    public int getCreatedProjects() {
-        return createdProjects;
+    public int getCreatedCircles() {
+        return createdCircles;
     }
 
     public String getProfileImageLink() {
@@ -128,8 +127,8 @@ public class User {
                 ", locationTags=" + locationTags.toString() + '\n' +
                 ", interestTags=" + interestTags.toString() + '\n' +
                 ", userId='" + userId + '\n' +
-                ", createdProjects=" + createdProjects + '\n' +
-                ", workingProjects=" + workingProjects + '\n' +
+                ", createdProjects=" + createdCircles + '\n' +
+                ", workingProjects=" + activeCircles + '\n' +
                 ", completedProjects=" + completedProjects + '\n' +
                 ", token_id='" + token_id + '\n' +
                 '}';
