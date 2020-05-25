@@ -84,13 +84,14 @@ public class Explore extends AppCompatActivity {
                 setWorkbenchTabs();
             }
 
-            @Override
+          @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 currentUser.signOut();
                 startActivity(new Intent(Explore.this, PhoneLogin.class));
                 finish();
             }
         });
+
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(new View.OnClickListener() {
