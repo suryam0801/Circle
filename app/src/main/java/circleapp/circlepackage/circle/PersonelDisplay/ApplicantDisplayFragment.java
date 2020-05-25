@@ -86,7 +86,7 @@ public class ApplicantDisplayFragment extends Fragment {
         Circle circle = SessionStorage.getCircle(getActivity());
 
         database = FirebaseDatabase.getInstance();
-        circlesPersonelDB = database.getReference("CirclePersonel").child("5ecaa3af69fae6d313e2f740");//circle.getId()
+        circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId());//circle.getId()
 
         RecyclerView recyclerView = view.findViewById(R.id.allApplicants_RV);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
