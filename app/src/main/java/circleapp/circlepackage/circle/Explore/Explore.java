@@ -7,12 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -23,7 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,11 +45,11 @@ public class Explore extends AppCompatActivity {
     private FloatingActionButton btnAddCircle;
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
-    private DatabaseReference circles;
+    private DatabaseReference circlesDB, usersDB;
     private ImageView profPic;
     User user;
 
-    long startTime;
+    long startTimeCircle, startTimeUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,29 +62,35 @@ public class Explore extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance();
 
-        circles = database.getReference("Circles");
-        circles.keepSynced(true); //synchronizes and stores local copy of data
+        circlesDB = database.getReference("Circles");
+        circlesDB.keepSynced(true); //synchronizes and stores local copy of data
+        usersDB = database.getReference("Users").child(currentUser.getCurrentUser().getUid());
+        usersDB.keepSynced(true);
 
-        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
-        String userJSON = sharedPreferences.getString("myUserDetails", "default");
-        Log.d(TAG, "!!!!! " + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        user = new Gson().fromJson(userJSON, User.class);
-        if (user == null || currentUser.getCurrentUser().getUid() == null) {
-            currentUser.signOut();
-            startActivity(new Intent(Explore.this, PhoneLogin.class));
-            finish();
-        }
+        startTimeUser = System.currentTimeMillis();
+        usersDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "TIME TAKEN USERS: " + TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTimeUser));
+                user = dataSnapshot.getValue(User.class);
+                SessionStorage.saveUser(Explore.this, user);
+                Glide.with(Explore.this)
+                        .load(user.getProfileImageLink())
+                        .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
+                        .into(profPic);
 
-        Glide.with(Explore.this)
-                .load(user.getProfileImageLink())
-                .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
-                .into(profPic);
+                startTimeCircle = System.currentTimeMillis();
+                setCircleTabs();
+                setWorkbenchTabs();
+            }
 
-        SessionStorage.saveUser(Explore.this, user);
-
-        startTime = System.currentTimeMillis();
-        setCircleTabs();
-        //setWorkbenchTabs();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                currentUser.signOut();
+                startActivity(new Intent(Explore.this, PhoneLogin.class));
+                finish();
+            }
+        });
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +119,6 @@ public class Explore extends AppCompatActivity {
                     public void onItemClick(View view, int position) {
                         Circle selectedWBCircle = workbenchCircleList.get(position);
                         SessionStorage.saveCircle(Explore.this, workbenchCircleList.get(position));
-                        Log.d(TAG, "onItemClick: " + selectedWBCircle);
                         startActivity(new Intent(Explore.this, CircleWall.class));
                     }
 
@@ -128,14 +130,13 @@ public class Explore extends AppCompatActivity {
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-        circles.addValueEventListener(new ValueEventListener() {
+        circlesDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //filter through each Circle in the Circles database
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
                     Circle circle = postSnapshot.getValue(Circle.class);
-                    Log.d(TAG, circle.toString());
                     //*FROM HERE*
                     //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading myCircleList at the same time
                     int position = 0;
@@ -196,13 +197,19 @@ public class Explore extends AppCompatActivity {
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-        circles.addValueEventListener(new ValueEventListener() {
+        circlesDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "TIME TAKEN Cricles: " + TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTimeCircle));
                 //filter through each Circle in the Circles database
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     //casts the datasnapshot to Circle Object
-                    Circle circle = postSnapshot.getValue(Circle.class);
+                    Circle circle = null;
+                    try{
+                        circle = postSnapshot.getValue(Circle.class);
+                    } catch (Exception error) {
+                        Log.d(TAG, postSnapshot.toString());
+                    }
 
                     //retrieve location & interest tags from circle object since tags are stored as hashmaps
                     List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
@@ -250,7 +257,7 @@ public class Explore extends AppCompatActivity {
     }
 
     private void suggestInterests() {
-        circles.addValueEventListener(new ValueEventListener() {
+        circlesDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {

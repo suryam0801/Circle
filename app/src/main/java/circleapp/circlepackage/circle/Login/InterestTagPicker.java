@@ -71,6 +71,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private DatabaseReference tags, usersDB, currentUserSyncDB;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,8 +180,8 @@ public class InterestTagPicker extends AppCompatActivity {
             public void onClick(View view) {
                 String interestTag = interestTagsEntry.getText().toString();
                 if (!interestTag.isEmpty()) {
-                    selectedInterestTags.add(interestTag.replace("#",""));
-                    if(!dbInterestTags.contains(interestTag))
+                    selectedInterestTags.add(interestTag.replace("#", ""));
+                    if (!dbInterestTags.contains(interestTag))
                         dbInterestTags.add(interestTag);
 
                     setTag(interestTag);
@@ -204,12 +205,12 @@ public class InterestTagPicker extends AppCompatActivity {
                 ),
                 paddingDp, paddingDp, paddingDp);
         //chip name
-        if(!name.contains("#"))
+        if (!name.contains("#"))
             chip.setText("#" + name);
         else
             chip.setText(name);
 
-        if (selectedInterestTags.contains(name.replace("#",""))) {
+        if (selectedInterestTags.contains(name.replace("#", ""))) {
             chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
             chip.setTextColor(Color.WHITE);
         } else {
@@ -223,11 +224,11 @@ public class InterestTagPicker extends AppCompatActivity {
                 if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
                     chip.setTextColor(Color.BLACK);
-                    selectedInterestTags.remove(chip.getText().toString().replace("#",""));
+                    selectedInterestTags.remove(chip.getText().toString().replace("#", ""));
                 } else {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
                     chip.setTextColor(Color.WHITE);
-                    selectedInterestTags.add(chip.getText().toString().replace("#",""));
+                    selectedInterestTags.add(chip.getText().toString().replace("#", ""));
 
                 }
 
@@ -249,8 +250,7 @@ public class InterestTagPicker extends AppCompatActivity {
         if (!TextUtils.isEmpty(fName) && !TextUtils.isEmpty(lName)) {
             //getting the current user id
             userId = firebaseAuth.getInstance().getCurrentUser().getUid();
-            //Adding the user to collection
-            addUser();
+
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setDisplayName(fName + " " + lName)
@@ -263,9 +263,6 @@ public class InterestTagPicker extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                                //if the user registered and profile updated successfully  the mainActivity will be opened
-                                startActivity(new Intent(InterestTagPicker.this, Explore.class));
-                                finish();
                             } else {
                                 Toast.makeText(InterestTagPicker.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                 //to signout the current firebase user
@@ -275,10 +272,13 @@ public class InterestTagPicker extends AppCompatActivity {
                             }
                         }
                     });
+            //Adding the user to collection
+            addUser();
         } else {
             Toast.makeText(InterestTagPicker.this, "Enter Valid details", Toast.LENGTH_LONG).show();
         }
     }
+
     //function that adds the user to the firestore
     private void addUser() {
 
@@ -289,12 +289,12 @@ public class InterestTagPicker extends AppCompatActivity {
 
         //set interest and location tags as hashmaps
         HashMap<String, Boolean> locationTagHashmap = new HashMap<>();
-        for(String locationTemp:locationTags)
-            locationTagHashmap.put(locationTemp,true);
+        for (String locationTemp : locationTags)
+            locationTagHashmap.put(locationTemp, true);
 
         HashMap<String, Boolean> interestTagHashmap = new HashMap<>();
-        for(String interestTemp:selectedInterestTags)
-            interestTagHashmap.put(interestTemp,true);
+        for (String interestTemp : selectedInterestTags)
+            interestTagHashmap.put(interestTemp, true);
 
 
         //checking the dowloadUri to store the profile pic
@@ -312,20 +312,28 @@ public class InterestTagPicker extends AppCompatActivity {
             tags.child("interestTags").child(i).setValue(true);
 
         for (String loc : locationTags)
-            for(String i : selectedInterestTags)
+            for (String i : selectedInterestTags)
                 tags.child("locationInterestTags").child(loc).child(i).setValue(true);
 
 
         //store user in realtime database. (testing possible options for fastest retrieval)
-        usersDB.child(userId).setValue(user);
+        usersDB.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                //if the user registered and profile updated successfully  the mainActivity will be opened
+                startActivity(new Intent(InterestTagPicker.this, Explore.class));
+                finish();
+            }
+        });
 
         //store the current user locally for fastest retrieval of only current user
-        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
+/*        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
         String string = new Gson().toJson(user);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("myUserDetails", string);
-        editor.commit();
+        editor.commit();*/
     }
+
     @Override
     protected void onStart() {
         super.onStart();
