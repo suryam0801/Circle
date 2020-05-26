@@ -13,6 +13,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -44,17 +46,19 @@ public class LocationTagPicker extends AppCompatActivity {
 
     //Declare all UI elements for the LocationTagPicker Activity
     private String loc, fName, lName, userId, downloadUri, contact;
+    private List<String> suggestLocList = new ArrayList<>();
     private List<String> selectedLocList = new ArrayList<>();
     private List<String> loadlocList = new ArrayList<String>();
     ;
     private Button setInterestTags, locationTagAdd;
     private ChipGroup chipGroup;
-    private EditText locationTagEntry;
+    private AutoCompleteTextView locationTagEntry;
 
     private FirebaseDatabase database;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference tags;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +71,7 @@ public class LocationTagPicker extends AppCompatActivity {
         // Initialize all UI elements in the LocationTagPicker activity
         setInterestTags = findViewById(R.id.setInterestTags);
         chipGroup = findViewById(R.id.location_tag_chip_group);
-        locationTagEntry = findViewById(R.id.location_tags_entry);
+        locationTagEntry = (AutoCompleteTextView) findViewById(R.id.location_tags_entry);
         locationTagAdd = findViewById(R.id.location_tag_add_button);
         fName = getIntent().getStringExtra("fName");
         lName = getIntent().getStringExtra("lName");
@@ -89,7 +93,13 @@ public class LocationTagPicker extends AppCompatActivity {
                 if (!loadlocList.isEmpty()) {
                     for (String loc : loadlocList) {
                         setTag(loc);
+                        suggestLocList.add("#"+loc);
                     }
+                    Log.d(TAG,"Suggestion"+suggestLocList.toString());
+                    String[] arr = suggestLocList.toArray(new String[0]);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+                    locationTagEntry.setThreshold(1);
+                    locationTagEntry.setAdapter(adapter);
                 }
             }
 
@@ -97,7 +107,6 @@ public class LocationTagPicker extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
         //After Selecting loaction tags user has to set the interest tags
         setInterestTags.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Circle</string>
+    <string name="default_notification_channel_id">Circle_CH 01</string>
 </resources>

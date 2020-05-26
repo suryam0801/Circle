@@ -19,6 +19,7 @@
         <activity android:name=".Login.GatherUserDetails" />
         <activity android:name=".Login.OtpActivity" />
         <activity android:name=".Login.PhoneLogin" />
+        <activity android:name=".Notification.NotificationActivity"/>
         <activity android:name=".CircleWall.CircleWall" />
         <activity android:name=".MainActivity">
             <intent-filter>

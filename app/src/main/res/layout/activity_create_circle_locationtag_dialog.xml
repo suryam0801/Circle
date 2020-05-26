@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/circle_location_tags_entry"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
@@ -86,7 +86,7 @@
                     android:textColor="@color/black"
                     android:textColorHint="#828282"
                     android:maxLines="1"
-                    android:textSize="14dp"></EditText>
+                    android:textSize="14dp"></AutoCompleteTextView>
 
                 <Button
                     android:id="@+id/circle_location_tag_add_button"

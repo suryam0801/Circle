@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:hint="Eg: #sports #cse #eventmanagement"
@@ -90,7 +90,7 @@
                     android:paddingLeft="16dp"
                     android:background="@drawable/edittext_light_gray_rounded_bg"
                     android:textColorHint="#828282">
-                </EditText>
+                </AutoCompleteTextView>
 
                 <Button
                     android:id="@+id/circle_interest_tag_add_button"

@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:hint="Eg: #sports #cse #eventmanagement"
@@ -81,12 +81,13 @@
                     android:layout_margin="20dp"
                     android:textSize="14dp"
                     android:paddingRight="10dp"
+                    android:maxLines="1"
                     android:id="@+id/interest_tags_entry"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="16dp"
                     android:background="@drawable/skills_adder_background"
                     android:textColorHint="#828282">
-                </EditText>
+                </AutoCompleteTextView>
 
                 <Button
                     android:id="@+id/interest_tag_add_button"

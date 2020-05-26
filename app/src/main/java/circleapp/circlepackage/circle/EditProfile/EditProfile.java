@@ -22,6 +22,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -72,6 +74,7 @@ public class EditProfile extends AppCompatActivity {
     private Uri downloadUri;
     private Dialog interestTagDialog, locationTagDialog;
     private List<String> locationTagList, interestTagList, selectedLocationTags, selectedInterestTags;
+    private List<String> suggestInList = new ArrayList<>(),suggestlocList = new ArrayList<>();
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
@@ -87,7 +90,7 @@ public class EditProfile extends AppCompatActivity {
 
 
     //UI elements for location tag selector popup and interest tag selector popup
-    private EditText locationTagEntry, interestTagEntry;
+    private AutoCompleteTextView locationTagEntry, interestTagEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,7 +237,13 @@ public class EditProfile extends AppCompatActivity {
 
         for (String loc : dbLocationTags) {
             setLocationTags(loc, locationChipGroupPopup);
+            suggestlocList.add("#"+loc);
         }
+        Log.d(TAG,"Suggestion"+suggestlocList.toString());
+        String[] arr = suggestlocList.toArray(new String[0]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+        locationTagEntry.setThreshold(1);
+        locationTagEntry.setAdapter(adapter);
 
         finalizeLocationTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,7 +356,13 @@ public class EditProfile extends AppCompatActivity {
 
         for (String interest : dbInterestTags) {
             setInterestTag(interest, interestChipGroupPopup);
+            suggestInList.add("#"+interest);
         }
+        Log.d(TAG,"Suggestion"+suggestInList.toString());
+        String[] arr = suggestInList.toArray(new String[0]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+        interestTagEntry.setThreshold(1);
+        interestTagEntry.setAdapter(adapter);
 
         finalizeInterestTag.setOnClickListener(new View.OnClickListener() {
             @Override
