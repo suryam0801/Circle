@@ -357,14 +357,14 @@ public class Explore extends AppCompatActivity {
 
                 if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-
                     //adding userID to applicants list
                     circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
                 } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-
                     //adding userID to members list in circlesReference
                     circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+                    int nowActive = user.getActiveCircles() + 1;
+                    usersDB.child("activeCircles").setValue((nowActive));
                 }
 
                 circleJoinDialog.dismiss();
