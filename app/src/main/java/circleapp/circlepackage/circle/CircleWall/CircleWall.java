@@ -150,7 +150,8 @@ public class CircleWall extends AppCompatActivity {
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 int position = 0;
-                for(Broadcast b : broadcastList){
+                List<Broadcast> tempBroadcastList = new ArrayList<>(broadcastList); //avoids concurrent modification error
+                for(Broadcast b : tempBroadcastList){
                     if(b.getId().equals(broadcast.getId())){
                         broadcastList.remove(position);
                         broadcastList.add(position,broadcast);

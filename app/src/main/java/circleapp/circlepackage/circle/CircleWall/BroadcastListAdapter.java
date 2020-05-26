@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,12 +35,14 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private List<Broadcast> broadcastList;
     private Context context;
     private Circle circle;
+    private FirebaseAuth currentUser;
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
         this.context = context;
         this.broadcastList = broadcastList;
         this.circle = circle;
+        currentUser = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -102,8 +105,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 viewHolder.pollOptionsDisplayGroup.removeAllViews();
 
             if (poll.getUserResponse() != null)
-                if (poll.getUserResponse().containsKey("USERID"))
-                    viewHolder.setCurrentUserPollOption(poll.getUserResponse().get("USERID"));
+                if (poll.getUserResponse().containsKey(currentUser.getCurrentUser().getUid()))
+                    viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(currentUser.getCurrentUser().getUid()));
 
 
             for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
@@ -159,9 +162,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                         }
                     }
 
-                    HashMap<String, String> currentUserResponse = new HashMap<>();
-                    currentUserResponse.put("USERID", viewHolder.getCurrentUserPollOption());
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("userResponse").setValue(currentUserResponse);
+                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("userResponse")
+                            .child(currentUser.getCurrentUser().getUid()).setValue(viewHolder.getCurrentUserPollOption());
                     viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("options").setValue(pollOptions);
                 }
             });
