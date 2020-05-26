@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Explore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -202,8 +204,6 @@ public class Explore extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, int position) {
                         displayJoinPopup(exploreCircleList.get(position));
-                        //SessionStorage.saveCircle(Explore.this, exploreCircleList.get(position));
-                        //startActivity(new Intent(Explore.this, CircleWall.class));
                     }
 
                     @Override
@@ -300,8 +300,12 @@ public class Explore extends AppCompatActivity {
 
                 if(("review").equalsIgnoreCase(circle.getAcceptanceType()))
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-                else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
+                else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+                    if(circle.getMembersList()!=null){
+
+                    }
+                }
             }
         });
 

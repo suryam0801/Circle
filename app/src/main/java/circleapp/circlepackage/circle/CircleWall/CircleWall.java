@@ -295,21 +295,21 @@ public class CircleWall extends AppCompatActivity {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId,  false, System.currentTimeMillis(), null);
-            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+            broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
 
         } else if (downloadUri == null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId,  true, System.currentTimeMillis(), poll);
-            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+            broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
 
         } else if (downloadUri != null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId,  true, System.currentTimeMillis(), poll);
-            broadcastsDB.child(currentCircleId).push().setValue(broadcast);
+            broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
         }
     }
 
