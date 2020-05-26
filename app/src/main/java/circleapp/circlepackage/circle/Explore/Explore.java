@@ -330,17 +330,6 @@ public class Explore extends AppCompatActivity {
         final Button cancelButton = circleJoinDialog.findViewById(R.id.join_popup_cancel_button);
         final Button acceptButton = circleJoinDialog.findViewById(R.id.join_popup_accept_button);
 
-        //checking if user as already joined/applied
-        if (circle.getMembersList().keySet().contains(currentUser.getCurrentUser().getUid())) {
-            acceptButton.setClickable(false);
-            acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
-            acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
-        } else if (circle.getApplicantsList().keySet().contains(currentUser.getCurrentUser().getUid())) {
-            acceptButton.setClickable(false);
-            acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
-            acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
-        }
-
         circleName.setText(circle.getName());
         creatorName.setText(circle.getCreatorName());
         circleDescription.setText(circle.getDescription());
@@ -348,6 +337,16 @@ public class Explore extends AppCompatActivity {
 
         if (("review").equalsIgnoreCase(circle.getAcceptanceType()))
             acceptButton.setText("Apply");
+
+        //checking if user as already applied
+        if (circle.getApplicantsList() != null) {
+            if (circle.getApplicantsList().keySet().contains(currentUser.getCurrentUser().getUid())){
+                acceptButton.setClickable(false);
+                acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
+                acceptButton.setText("Pending Request");
+                acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
+            }
+        }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -360,17 +359,15 @@ public class Explore extends AppCompatActivity {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
 
                     //adding userID to applicants list
-                    HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
-                    tempUserForMemberList.put(user.getUserId(), true);
-                    circlesDB.child(circle.getId()).child("applicantsList").setValue(tempUserForMemberList);
+                    circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
                 } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
 
                     //adding userID to members list in circlesReference
-                    HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
-                    tempUserForMemberList.put(user.getUserId(), true);
-                    circlesDB.child(circle.getId()).child("membersList").setValue(tempUserForMemberList);
+                    circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
                 }
+
+                circleJoinDialog.dismiss();
             }
         });
 
