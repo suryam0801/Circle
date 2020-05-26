@@ -170,7 +170,7 @@ public class InterestTagPicker extends AppCompatActivity {
         interestTagAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String interestTag = interestTagsEntry.getText().toString();
+                String interestTag = interestTagsEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag.replace("#", ""));
                     if (!dbInterestTags.contains(interestTag))

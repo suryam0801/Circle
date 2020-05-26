@@ -448,8 +448,10 @@ public class CreateCircle extends AppCompatActivity {
         for(String interest : selectedInterests)
             interestHashmap.put(interest, true);
 
+        HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
+        tempUserForMemberList.put(creatorUserID, true);
 
-        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, locationHashmap, interestHashmap, null);
+        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, locationHashmap, interestHashmap, tempUserForMemberList, null);
 
         for (String l : selectedLocations)
             tags.child("locationTags").child(l).setValue(true);

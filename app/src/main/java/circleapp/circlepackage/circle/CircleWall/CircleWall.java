@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -35,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -136,28 +138,50 @@ public class CircleWall extends AppCompatActivity {
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
 
-        broadcastsDB.child(circle.getId()).addValueEventListener(new ValueEventListener() {
+        broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    //clears broadcast list if the database is updating the children (updates all values in document)
-                    if(!broadcastList.isEmpty())
-                        broadcastList.clear();
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
+                broadcastList.add(0,broadcast); //to store timestamp values descendingly
+                adapter.notifyDataSetChanged();
+            }
 
-                    //filter through each Circle in the Circles database
-                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                        //casts the datasnapshot to Broadcast Object
-                        Broadcast broadcast = postSnapshot.getValue(Broadcast.class);
-                        broadcast.setDocKey(postSnapshot.getKey());
-
-                        broadcastList.add(broadcast);
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
+                int position = 0;
+                List<Broadcast> tempBroadcastList = new ArrayList<>(broadcastList); //avoids concurrent modification error
+                for(Broadcast b : tempBroadcastList){
+                    if(b.getId().equals(broadcast.getId())){
+                        broadcastList.remove(position);
+                        broadcastList.add(position,broadcast);
                         adapter.notifyDataSetChanged();
+                    }
+                    ++position;
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
+                int position = 0;
+                for(Broadcast b : broadcastList){
+                    if(b.getId().equals(broadcast.getId())) {
+                        broadcastList.remove(position);
+                        adapter.notifyDataSetChanged();
+                        break;
                     }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
