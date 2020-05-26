@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Circle {
     private String id, name, description, acceptanceType, creatorID, creatorName;
-    private HashMap<String, Boolean> locationTags, interestTags, membersList;
+    private HashMap<String, Boolean> locationTags, interestTags, membersList, applicantsList;
 
     public Circle(){
 
@@ -13,7 +13,7 @@ public class Circle {
 
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
                   String creatorName, HashMap<String, Boolean> locationTags, HashMap<String, Boolean> interestTags,
-                  HashMap<String, Boolean> membersList) {
+                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -23,6 +23,7 @@ public class Circle {
         this.locationTags = locationTags;
         this.interestTags = interestTags;
         this.membersList = membersList;
+        this.applicantsList = applicantsList;
     }
 
     public String getId() {
@@ -97,18 +98,27 @@ public class Circle {
         this.membersList = membersList;
     }
 
+    public HashMap<String, Boolean> getApplicantsList() {
+        return applicantsList;
+    }
+
+    public void setApplicantsList(HashMap<String, Boolean> applicantsList) {
+        this.applicantsList = applicantsList;
+    }
+
     @Override
     public String toString() {
         return "Circle{" +
-                "id='" + id + '\n' +
-                ", name='" + name + '\n' +
-                ", description='" + description + '\n' +
-                ", acceptanceType='" + acceptanceType + '\n' +
-                ", creatorID='" + creatorID + '\n' +
-                ", creatorName='" + creatorName + '\n' +
-                ", locationTags=" + locationTags + '\n' +
-                ", interestTags=" + interestTags + '\n' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", acceptanceType='" + acceptanceType + '\'' +
+                ", creatorID='" + creatorID + '\'' +
+                ", creatorName='" + creatorName + '\'' +
+                ", locationTags=" + locationTags +
+                ", interestTags=" + interestTags +
                 ", membersList=" + membersList +
+                ", applicantsList=" + applicantsList +
                 '}';
     }
 }

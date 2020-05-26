@@ -59,6 +59,8 @@ public class Explore extends AppCompatActivity {
     private ImageView profPic;
     private Dialog circleJoinDialog;
     User user;
+    List<String> userTemplocationTagsList;
+    List<String> userTempinterestTagsList;
 
     long startTimeCircle, startTimeUser;
 
@@ -91,12 +93,16 @@ public class Explore extends AppCompatActivity {
                         .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
                         .into(profPic);
 
+                //retrieve location & interest tags from users
+                userTemplocationTagsList = new ArrayList<>(user.getLocationTags().keySet());
+                userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
+
                 startTimeCircle = System.currentTimeMillis();
                 setCircleTabs();
                 setWorkbenchTabs();
             }
 
-          @Override
+            @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 currentUser.signOut();
                 startActivity(new Intent(Explore.this, PhoneLogin.class));
@@ -215,43 +221,16 @@ public class Explore extends AppCompatActivity {
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-        circlesDB.addValueEventListener(new ValueEventListener() {
+        circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG, "TIME TAKEN Cricles: " + TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTimeCircle));
-                //filter through each Circle in the Circles database
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    //casts the datasnapshot to Circle Object
-                    Circle circle = null;
-                    try{
-                        circle = postSnapshot.getValue(Circle.class);
-                    } catch (Exception error) {
-                        Log.d(TAG, postSnapshot.toString());
-                    }
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Circle circle = dataSnapshot.getValue(Circle.class);
 
-                    //retrieve location & interest tags from circle object since tags are stored as hashmaps
-                    List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
-                    List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
+                //retrieve location & interest tags from circle object since tags are stored as hashmaps
+                List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
+                List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
 
-                    //retrieve location & interest tags from users
-                    List<String> userTemplocationTagsList = new ArrayList<>(user.getLocationTags().keySet());
-                    List<String> userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
-
-                    //*FROM HERE*
-                    //without cloning the arraylist, concurrency execption will be thrown since system is editing and reading circlesList at the same time
-                    int position = 0;
-                    List<Circle> tempList = new ArrayList<>(exploreCircleList);
-                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                    for (Circle c : tempList) {
-                        if (c.getId().equals(circle.getId())) {
-                            exploreCircleList.remove(position);
-                            adapter.notifyDataSetChanged();
-                            --position;
-                        }
-                        ++position;
-                    }
-                    //*TO HERE* only for changing values for updated or modified children in database
-
+                if (!circle.getCreatorID().equals(user.getUserId())) {
                     //setting the adapter initially
                     //filter for only circles associated with matching user location and interests
                     for (String locIterator : userTemplocationTagsList) {
@@ -269,12 +248,47 @@ public class Explore extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Circle circle = dataSnapshot.getValue(Circle.class);
+                int position = 0;
+                List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
+                for (Circle c : tempCircleList) {
+                    if (c.getId().equals(circle.getId())) {
+                        exploreCircleList.remove(position);
+                        exploreCircleList.add(position, circle);
+                        adapter.notifyDataSetChanged();
+                    }
+                    ++position;
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Circle circle = dataSnapshot.getValue(Circle.class);
+                int position = 0;
+                for (Circle c : exploreCircleList) {
+                    if (c.getId().equals(circle.getId())) {
+                        exploreCircleList.remove(position);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    }
+                    ++position;
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
 
-    private void displayJoinPopup(final Circle circle){
+    private void displayJoinPopup(final Circle circle) {
         circleJoinDialog.setContentView(R.layout.apply_popup_layout);
 
         final TextView circleName = circleJoinDialog.findViewById(R.id.join_popup_circle_name);
@@ -283,28 +297,47 @@ public class Explore extends AppCompatActivity {
         final Button cancelButton = circleJoinDialog.findViewById(R.id.join_popup_cancel_button);
         final Button acceptButton = circleJoinDialog.findViewById(R.id.join_popup_accept_button);
 
+        //checking if user as already joined/applied
+        if(circle.getMembersList().keySet().contains(currentUser.getCurrentUser().getUid())){
+            acceptButton.setClickable(false);
+            acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
+            acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
+        } else if (circle.getApplicantsList().keySet().contains(currentUser.getCurrentUser().getUid())){
+            acceptButton.setClickable(false);
+            acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
+            acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
+        }
+
         circleName.setText(circle.getName());
         creatorName.setText(circle.getCreatorName());
         circleDescription.setText(circle.getDescription());
         circleDescription.setMaxLines(Integer.MAX_VALUE);
 
-        if(("review").equalsIgnoreCase(circle.getAcceptanceType()))
+        if (("review").equalsIgnoreCase(circle.getAcceptanceType()))
             acceptButton.setText("Apply");
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //creating a subscriber object to store. doesnt store private information such as tags and contact information.
-                Subscriber subscriber = new Subscriber(user.getUserId(),user.getFirstName()+" " + user.getLastName(),
+                Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
                         user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-                if(("review").equalsIgnoreCase(circle.getAcceptanceType()))
+                if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
+
+                    //adding userID to applicants list
+                    HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
+                    tempUserForMemberList.put(user.getUserId(), true);
+                    circlesDB.child(circle.getId()).child("applicantsList").setValue(tempUserForMemberList);
+                }
                 else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-                    if(circle.getMembersList()!=null){
 
-                    }
+                    //adding userID to members list in circlesReference
+                    HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
+                    tempUserForMemberList.put(user.getUserId(), true);
+                    circlesDB.child(circle.getId()).child("membersList").setValue(tempUserForMemberList);
                 }
             }
         });
