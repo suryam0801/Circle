@@ -113,6 +113,7 @@ public class PhoneLogin extends AppCompatActivity {
                                 otpIntent.putExtra("AuthCredentials", s);
                                 otpIntent.putExtra("phn_num", complete_phone_number);
                                 startActivity(otpIntent);
+                                finish();
                             }
                         },
                         5000);

@@ -18,6 +18,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -65,12 +67,15 @@ public class CreateCircle extends AppCompatActivity {
     private List<String> dbLocationTags = new ArrayList<>(), dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
+
+    private List<String> suggestInList = new ArrayList<>(),suggestlocList = new ArrayList<>();
+
     private Dialog locationTagDialog, interestTagDialog;
 
     private List<String> selectedLocations = new ArrayList<>(), selectedInterests = new ArrayList<>();
 
     //UI elements for location tag selector popup and interest tag selector popup
-    private EditText locationTagEntry, interestTagEntry;
+    private AutoCompleteTextView locationTagEntry, interestTagEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,8 +193,14 @@ public class CreateCircle extends AppCompatActivity {
                     if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
                         dbInterestTags.add(interest);
                         setInterestTag(interest, interestChipGroupPopup);
+                        suggestInList.add("#"+interest);
                     }
                 }
+                Log.d(TAG,"Suggestion"+suggestInList.toString());
+                String[] arr = suggestInList.toArray(new String[0]);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+                interestTagEntry.setThreshold(1);
+                interestTagEntry.setAdapter(adapter);
                 //this for loop is used when the user wants to edit interest tag choices
                 for (String interest : selectedInterests) { //add selected interests as options even if they are not in the location-interest list
                     if (!dbInterestTags.contains(interest)) {
@@ -317,8 +328,16 @@ public class CreateCircle extends AppCompatActivity {
 
 
         if (!dbLocationTags.isEmpty()) {
-            for (String loc : dbLocationTags)
+            for (String loc : dbLocationTags){
                 setLocationTag(loc, locationChipGroupPopup);
+                suggestlocList.add("#"+loc);
+            }
+            Log.d(TAG,"Suggestion"+suggestlocList.toString());
+            String[] arr = suggestlocList.toArray(new String[0]);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+            locationTagEntry.setThreshold(1);
+            locationTagEntry.setAdapter(adapter);
+
         }
 
         finalizeLocationTag.setOnClickListener(new View.OnClickListener() {

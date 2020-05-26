@@ -80,6 +80,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Eg: #peelamedu #psgtech #coimbatore"
                     android:paddingLeft="16dp"
+                    android:maxLines="1"
                     android:paddingRight="10dp"
                     android:textColor="@color/black"
                     android:textColorHint="#828282"

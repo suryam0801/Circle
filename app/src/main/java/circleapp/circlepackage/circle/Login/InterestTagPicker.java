@@ -12,6 +12,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -55,7 +57,8 @@ public class InterestTagPicker extends AppCompatActivity {
     private String tempLoc, fName, lName, userId, downloadUri, contact;
     private List<String> locationTags = new ArrayList<>(), selectedInterestTags = new ArrayList<>();
     private List<String> dbInterestTags = new ArrayList<>();
-    private EditText interestTagsEntry;
+    private List<String> suggestInList = new ArrayList<>();
+    private AutoCompleteTextView interestTagsEntry;
     private User user;
     private ChipGroup chipGroup;
     private Button interestTagAdd;
@@ -75,7 +78,7 @@ public class InterestTagPicker extends AppCompatActivity {
 
         register = findViewById(R.id.registerButton);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
-        interestTagsEntry = findViewById(R.id.interest_tags_entry);
+        interestTagsEntry = (AutoCompleteTextView) findViewById(R.id.interest_tags_entry);
         interestTagAdd = findViewById(R.id.interest_tag_add_button);
 
         //Getting Firebase instances
@@ -116,8 +119,14 @@ public class InterestTagPicker extends AppCompatActivity {
                             if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
                                 dbInterestTags.add(interest);
                                 setTag(interest);
+                                suggestInList.add("#"+interest);
                             }
                         }
+                        Log.d(TAG,"Suggestion"+suggestInList.toString());
+                        String[] arr = suggestInList.toArray(new String[0]);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+                        interestTagsEntry.setThreshold(1);
+                        interestTagsEntry.setAdapter(adapter);
                         //this for loop is used when the user wants to edit interest tag choices
                         for (String interest : selectedInterestTags) { //add selected interests as options even if they are not in the location-interest list
                             if (!dbInterestTags.contains(interest)) {
@@ -131,6 +140,14 @@ public class InterestTagPicker extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //The function to register the Users with their appropriate details
+                UserReg();
             }
         });
 
@@ -158,13 +175,6 @@ public class InterestTagPicker extends AppCompatActivity {
             }
         });
 
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //The function to register the Users with their appropriate details
-                UserReg();
-            }
-        });
 
         //the add button in edittext to add the new interest in the list
         interestTagAdd.setOnClickListener(new View.OnClickListener() {
@@ -255,6 +265,8 @@ public class InterestTagPicker extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                                //Adding the user to collection
+                                addUser();
                             } else {
                                 Toast.makeText(InterestTagPicker.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                 //to signout the current firebase user
@@ -264,8 +276,7 @@ public class InterestTagPicker extends AppCompatActivity {
                             }
                         }
                     });
-            //Adding the user to collection
-            addUser();
+
         } else {
             Toast.makeText(InterestTagPicker.this, "Enter Valid details", Toast.LENGTH_LONG).show();
         }
