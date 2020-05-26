@@ -161,8 +161,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
                     HashMap<String, String> currentUserResponse = new HashMap<>();
                     currentUserResponse.put("USERID", viewHolder.getCurrentUserPollOption());
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getDocKey()).child("poll").child("userResponse").setValue(currentUserResponse);
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getDocKey()).child("poll").child("options").setValue(pollOptions);
+                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("userResponse").setValue(currentUserResponse);
+                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("options").setValue(pollOptions);
                 }
             });
         }
