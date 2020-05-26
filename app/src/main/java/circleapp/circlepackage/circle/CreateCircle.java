@@ -449,7 +449,7 @@ public class CreateCircle extends AppCompatActivity {
             interestHashmap.put(interest, true);
 
 
-        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, locationHashmap, interestHashmap);
+        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName, locationHashmap, interestHashmap, null);
 
         for (String l : selectedLocations)
             tags.child("locationTags").child(l).setValue(true);
@@ -462,7 +462,7 @@ public class CreateCircle extends AppCompatActivity {
                 tags.child("locationInterestTags").child(loc).child(i).setValue(true);
 
         //add circle in users realtime database
-        circleDB.push().setValue(circle);
+        circleDB.child(myCircleID).setValue(circle);
 
         User user = SessionStorage.getUser(CreateCircle.this);
 
