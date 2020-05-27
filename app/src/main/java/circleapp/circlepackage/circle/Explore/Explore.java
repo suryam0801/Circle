@@ -398,4 +398,12 @@ public class Explore extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        finishAffinity();
+        System.exit(0);
+    }
 }

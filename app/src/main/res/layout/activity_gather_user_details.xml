@@ -109,6 +109,7 @@
                     android:textColorHint="#ACA9A9"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="13dp"
+                    android:digits="@string/digits"
                     android:textColor="@color/black"
                     android:inputType="textEmailAddress" />
                 <TextView
@@ -129,6 +130,7 @@
                     android:textColorHint="#ACA9A9"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="13dp"
+                    android:digits="@string/digits"
                     android:textColor="@color/black"
                     android:inputType="textEmailAddress" />
 

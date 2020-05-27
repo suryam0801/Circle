@@ -65,8 +65,8 @@ public class OtpActivity extends AppCompatActivity {
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+//        database.setPersistenceEnabled(true); //persistence automatically handles offline behavior
         database = FirebaseDatabase.getInstance();
-        database.setPersistenceEnabled(true); //persistence automatically handles offline behavior
         usersDB = database.getReference("Users");
 
         //Getting AuthCredentials from the PhoneLogin page
