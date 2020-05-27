@@ -178,6 +178,8 @@ public class CreateCircle extends AppCompatActivity {
     public void displayInterestTagDialog() {
         interestTagDialog = new Dialog(CreateCircle.this);
         interestTagDialog.setContentView(R.layout.activity_create_circle_interesttag_dialog); //set dialog view
+        interestTagDialog.setCanceledOnTouchOutside(false);
+        interestTagDialog.setCancelable(false);
 
         //initialize elements in popup dialog
         final Button finalizeInterestTag = interestTagDialog.findViewById(R.id.circle_finalize_interest_tags);
@@ -319,7 +321,8 @@ public class CreateCircle extends AppCompatActivity {
     private void displayLocationTagDialog() {
         locationTagDialog = new Dialog(CreateCircle.this);
         locationTagDialog.setContentView(R.layout.activity_create_circle_locationtag_dialog); //set dialog view
-
+        locationTagDialog.setCancelable(false);
+        locationTagDialog.setCanceledOnTouchOutside(false);
         //initialize elements in popup dialog
         final Button finalizeLocationTag = locationTagDialog.findViewById(R.id.circle_finalize_location_tags);
         final ChipGroup locationChipGroupPopup = locationTagDialog.findViewById(R.id.circle_location_tag_chip_group);
@@ -502,6 +505,6 @@ public class CreateCircle extends AppCompatActivity {
     public void onBackPressed() {
         Intent about_intent = new Intent(this, Explore.class);
         startActivity(about_intent);
-        about_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
     }
 }

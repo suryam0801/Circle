@@ -96,6 +96,8 @@ public class EditProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        this.setFinishOnTouchOutside(false);
+
 
         user = SessionStorage.getUser(EditProfile.this);
 
@@ -211,6 +213,7 @@ public class EditProfile extends AppCompatActivity {
                 user.setInterestTags(tempIntTags);
 
                 userDB.child(user.getUserId()).setValue(user);
+                finalizeChanges.setVisibility(View.GONE);
             }
         });
 
@@ -228,6 +231,9 @@ public class EditProfile extends AppCompatActivity {
     private void displayLocationTagPopup() {
         locationTagDialog = new Dialog(EditProfile.this);
         locationTagDialog.setContentView(R.layout.activity_create_circle_locationtag_dialog); //set dialog view
+        locationTagDialog.setCanceledOnTouchOutside(false);
+        locationTagDialog.setCancelable(false);
+
 
         //initialize elements in popup dialog
         final Button finalizeLocationTag = locationTagDialog.findViewById(R.id.circle_finalize_location_tags);
@@ -250,6 +256,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View view) {
                 for (String loc : selectedLocationTags)
                     setLocationTags(loc, locationTagsEditDisplay);
+
                 locationTagDialog.dismiss();
                 finalizeChanges.setVisibility(View.VISIBLE);
             }
@@ -347,6 +354,8 @@ public class EditProfile extends AppCompatActivity {
     private void displayInterestTagPopup() {
         interestTagDialog = new Dialog(EditProfile.this);
         interestTagDialog.setContentView(R.layout.activity_create_circle_interesttag_dialog); //set dialog view
+        interestTagDialog.setCanceledOnTouchOutside(false);
+        interestTagDialog.setCancelable(false);
 
         //initialize elements in popup dialog
         final Button finalizeInterestTag = interestTagDialog.findViewById(R.id.circle_finalize_interest_tags);
@@ -407,6 +416,8 @@ public class EditProfile extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
 
                     setInterestTag(interestTag, interestChipGroupPopup);
+
+
                 }
 
                 interestTagEntry.setText("#");
