@@ -58,9 +58,9 @@ public class Explore extends AppCompatActivity {
     private DatabaseReference circlesDB, usersDB;
     private ImageView profPic;
     private Dialog circleJoinDialog;
-    User user;
-    List<String> userTemplocationTagsList;
-    List<String> userTempinterestTagsList;
+    private User user;
+    private List<String> userTemplocationTagsList;
+    private List<String> userTempinterestTagsList;
 
     long startTimeCircle, startTimeUser;
 
@@ -85,7 +85,7 @@ public class Explore extends AppCompatActivity {
         usersDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "TIME TAKEN USERS: " + TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTimeUser));
+                Log.d(TAG, "TIME TAKEN USERS: " + (System.currentTimeMillis() - startTimeUser));
                 user = dataSnapshot.getValue(User.class);
                 SessionStorage.saveUser(Explore.this, user);
                 Glide.with(Explore.this)
@@ -93,8 +93,7 @@ public class Explore extends AppCompatActivity {
                         .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
                         .into(profPic);
 
-                //retrieve location & interest tags from users
-                userTemplocationTagsList = new ArrayList<>(user.getLocationTags().keySet());
+                //retrieve interest tags from user
                 userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
                 startTimeCircle = System.currentTimeMillis();
@@ -251,6 +250,7 @@ public class Explore extends AppCompatActivity {
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "TIME TAKEN CIRCLES: " + (System.currentTimeMillis() - startTimeCircle));
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 //retrieve location & interest tags from circle object since tags are stored as hashmaps
@@ -283,8 +283,6 @@ public class Explore extends AppCompatActivity {
                                     if(circleExists == false){
                                         exploreCircleList.add(circle);
                                         adapter.notifyDataSetChanged();
-                                        Log.d(TAG, "CIRCLED ADDED INITIALLY: " + circle);
-                                        Log.d(TAG, "____________________________________ ");
                                     }
                                 }
                             }
@@ -393,23 +391,6 @@ public class Explore extends AppCompatActivity {
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         circleJoinDialog.show();
-    }
-
-    private void suggestInterests() {
-        circlesDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
