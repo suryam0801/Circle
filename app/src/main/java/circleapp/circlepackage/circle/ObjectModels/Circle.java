@@ -5,14 +5,14 @@ import java.util.List;
 
 public class Circle {
     private String id, name, description, acceptanceType, creatorID, creatorName;
-    private HashMap<String, Boolean> locationTags, interestTags, membersList, applicantsList;
+    private HashMap<String, Boolean>  interestTags, membersList, applicantsList;
 
     public Circle(){
 
     }
 
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
-                  String creatorName, HashMap<String, Boolean> locationTags, HashMap<String, Boolean> interestTags,
+                  String creatorName, HashMap<String, Boolean> interestTags,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList) {
         this.id = id;
         this.name = name;
@@ -20,7 +20,6 @@ public class Circle {
         this.acceptanceType = acceptanceType;
         this.creatorID = creatorID;
         this.creatorName = creatorName;
-        this.locationTags = locationTags;
         this.interestTags = interestTags;
         this.membersList = membersList;
         this.applicantsList = applicantsList;
@@ -74,14 +73,6 @@ public class Circle {
         this.creatorName = creatorName;
     }
 
-    public HashMap<String, Boolean> getLocationTags() {
-        return locationTags;
-    }
-
-    public void setLocationTags(HashMap<String, Boolean> locationTags) {
-        this.locationTags = locationTags;
-    }
-
     public HashMap<String, Boolean> getInterestTags() {
         return interestTags;
     }
@@ -115,7 +106,6 @@ public class Circle {
                 ", acceptanceType='" + acceptanceType + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorName='" + creatorName + '\'' +
-                ", locationTags=" + locationTags +
                 ", interestTags=" + interestTags +
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +

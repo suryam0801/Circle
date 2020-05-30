@@ -155,7 +155,7 @@ public class Explore extends AppCompatActivity {
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
 
-        circlesDB.addChildEventListener(new ChildEventListener() {
+        circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
@@ -169,6 +169,7 @@ public class Explore extends AppCompatActivity {
 
                 //setting the adapter initially
                 //filter for only circles associated with creator id
+                Log.d(TAG, "CIRCLE OBJECT: " + dataSnapshot.toString());
                 if (circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) {
                     workbenchCircleList.add(circle);
                     //notify the adapter each time a new item needs to be added to the recycler view
@@ -247,16 +248,15 @@ public class Explore extends AppCompatActivity {
 
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-        circlesDB.addChildEventListener(new ChildEventListener() {
+        circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "TIME TAKEN CIRCLES: " + (System.currentTimeMillis() - startTimeCircle));
+                Log.d(TAG, "TIME TAKEN CIRCLES: " + dataSnapshot.toString());
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 //retrieve location & interest tags from circle object since tags are stored as hashmaps
-                List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
                 List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
-
 
 
                 //checking if user is a member of the circle
@@ -269,22 +269,18 @@ public class Explore extends AppCompatActivity {
                 if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
                     //setting the adapter initially
                     //filter for only circles associated with matching user location and interests
-                    for (String locIterator : userTemplocationTagsList) {
-                        if (circleIteratorlocationTagsList.contains(locIterator)) {
-                            for (String intIterator : userTempinterestTagsList) {
-                                if (circleIteratorinterestTagsList.contains(intIterator)) {
-                                    //check if circle already exists
-                                    boolean circleExists = false;
-                                    for(Circle conditional : exploreCircleList) {
-                                        if(conditional.getId().equals(circle.getId()))
-                                            circleExists = true;
-                                    }
+                    for (String intIterator : userTempinterestTagsList) {
+                        if (circleIteratorinterestTagsList.contains(intIterator)) {
+                            //check if circle already exists
+                            boolean circleExists = false;
+                            for(Circle conditional : exploreCircleList) {
+                                if(conditional.getId().equals(circle.getId()))
+                                    circleExists = true;
+                            }
 
-                                    if(circleExists == false){
-                                        exploreCircleList.add(circle);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
+                            if(circleExists == false){
+                                exploreCircleList.add(circle);
+                                adapter.notifyDataSetChanged();
                             }
                         }
                     }

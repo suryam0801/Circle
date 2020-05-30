@@ -308,13 +308,10 @@ public class InterestTagPicker extends AppCompatActivity {
             user = new User(fName, lName, contact, "default", null, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
         }
 
-        for (String i : selectedInterestTags)
+        for (String i : selectedInterestTags) {
             tags.child("interestTags").child(i).setValue(true);
-
-        for (String loc : locationTags)
-            for (String i : selectedInterestTags)
-                tags.child("locationInterestTags").child(district).child(ward).child(i).setValue(true);
-
+            tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
+        }
 
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
