@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -284,6 +285,7 @@ public class CircleWall extends AppCompatActivity {
 
                 if (!setMessageET.getText().toString().isEmpty())
                     createBroadcast();
+
                 else
                     Toast.makeText(getApplicationContext(), "Set your broadcast message", Toast.LENGTH_SHORT).show();
             }
@@ -302,6 +304,8 @@ public class CircleWall extends AppCompatActivity {
 
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
+
+        SendNotification.sendBCinfo(broadcastId,circle.getName(),currentUserName,circle.getMembersList());
 
         HashMap<String, Integer> options = new HashMap<>();
         if(!pollAnswerOptionsList.isEmpty()) {

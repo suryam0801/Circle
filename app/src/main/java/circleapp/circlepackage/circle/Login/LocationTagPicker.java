@@ -160,8 +160,19 @@ public class LocationTagPicker extends AppCompatActivity {
                 if (!locationTag.isEmpty()) {
                     selectedLocList.add(locationTag);
                     if (!loadlocList.contains(locationTag))
+                    {
                         loadlocList.add(locationTag);
-                    setTag(locationTag);
+                        setTag(locationTag);
+                    }
+                    else{
+                        Toast.makeText(LocationTagPicker.this,"Tag already Available!!!!",Toast.LENGTH_SHORT).show();
+                        selectedLocList.add(locationTag);
+//                        loadlocList.remove(locationTag);
+                        setTag(locationTag);
+                        locationTagEntry.setText("#");
+                        locationTagEntry.setSelection(locationTagEntry.getText().length());
+                    }
+
                 }
             }
         });
@@ -233,7 +244,6 @@ public class LocationTagPicker extends AppCompatActivity {
         // Getting the Location access permission from the user
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            return;
         } else {
 
         }

@@ -183,10 +183,17 @@ public class InterestTagPicker extends AppCompatActivity {
                 String interestTag = interestTagsEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag.replace("#", ""));
-                    if (!dbInterestTags.contains(interestTag))
-                        dbInterestTags.add(interestTag);
+                    if (!dbInterestTags.contains(interestTag)) {
+                            dbInterestTags.add(interestTag);
+                            setTag(interestTag);
+                    }
+                    else
+                        {
+                            Toast.makeText(InterestTagPicker.this,"Tag already Available!!!!",Toast.LENGTH_SHORT).show();
+                            interestTagsEntry.setText("#");
+                            interestTagsEntry.setSelection(interestTagsEntry.getText().length());
+                        }
 
-                    setTag(interestTag);
                 }
             }
         });
