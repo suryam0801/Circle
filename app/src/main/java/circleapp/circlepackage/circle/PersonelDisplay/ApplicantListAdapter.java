@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -47,7 +48,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     String TAG = "APPLICANT_LIST_ADAPTER";
     private FirebaseDatabase database;
     private DatabaseReference circlesPersonelDB;
-
+    private String state;
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;
         this.ApplicantList = ApplicantList;
@@ -103,6 +104,8 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             public void onClick(View view) {
                 circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
                 circlesPersonelDB.child(circle.getId()).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
+                state="Accepted";
+                SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
             }
         });
 
@@ -110,6 +113,8 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             @Override
             public void onClick(View view) {
                 circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
+                state="Rejected";
+                SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
             }
         });
 

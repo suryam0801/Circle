@@ -1,0 +1,135 @@
+package circleapp.circlepackage.circle.Notification;
+
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Login.InterestTagPicker;
+import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.SessionStorage;
+
+public class SendNotification {
+    private static String TAG = SendNotification.class.getSimpleName();
+//    Circle circle = SessionStorage.getCircle(SendNotification.class.getCon);
+    public static void sendBCinfo(String broadcastId, String circleName, String creatorName, HashMap<String, Boolean> membersList)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userNotify;
+        FirebaseAuth currentUser =FirebaseAuth.getInstance();
+
+        userNotify = database.getReference("Notifications");
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+
+        String notificationId = userNotify.child(broadcastId).push().getKey();
+        //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
+        Map<String, Object> applicationStatus = new HashMap<>();
+        String from = firebaseAuth.getCurrentUser().getUid();
+        String getDate = getCurrentDateStamp();
+        applicationStatus.put("state", "broadcast_added");
+        applicationStatus.put("circleName", circleName);
+        applicationStatus.put("creatorName", creatorName);
+        applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
+        applicationStatus.put("notificationId", notificationId);
+        applicationStatus.put("date", getDate);
+        applicationStatus.put("timestamp", System.currentTimeMillis());
+
+        //Had to add the database write functionality......
+
+//        userNotify.child(toUserId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                Log.d(TAG,"Notification Sended Successfully !!!");
+//            }
+//        });
+
+
+    }
+    public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
+//        This is the function to store the
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userNotify;
+
+        userNotify = database.getReference("Notifications");
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+
+        String notificationId = userNotify.child(toUserId).push().getKey();
+        //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
+        Map<String, Object> applicationStatus = new HashMap<>();
+        applicationStatus.put("state", state);
+        applicationStatus.put("circleId", circleId);
+        String from = firebaseAuth.getCurrentUser().getUid();
+        String getDate = getCurrentDateStamp();
+        applicationStatus.put("from", from);
+        applicationStatus.put("notify_to", toUserId);
+        applicationStatus.put("circleName", circleName);
+        applicationStatus.put("notificationId", notificationId);
+        applicationStatus.put("date", getDate);
+        applicationStatus.put("timestamp", System.currentTimeMillis());
+
+        userNotify.child(toUserId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG,"Notification Sended Successfully !!!");
+            }
+        });
+//        userNotify.child(toUserId).child("Notifications").child(circleId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                Log.d(TAG,"Notification Sended Successfully !!!");
+//            }
+//        });
+//
+//        db.collection("Users/" + toUserId + "/Notifications").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//            @Override
+//            public void onSuccess(DocumentReference documentReference) {
+//
+//            }
+//
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//            }
+//        });
+
+
+    }
+
+    public static String getCurrentDateStamp() {
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+
+}

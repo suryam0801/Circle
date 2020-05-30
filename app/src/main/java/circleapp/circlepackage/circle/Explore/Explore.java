@@ -38,6 +38,7 @@ import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CreateCircle;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
+import circleapp.circlepackage.circle.Notification.NotificationActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -56,7 +57,7 @@ public class Explore extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
     private DatabaseReference circlesDB, usersDB;
-    private ImageView profPic;
+    private ImageView profPic,notificationBell;
     private Dialog circleJoinDialog;
     User user;
     List<String> userTemplocationTagsList;
@@ -71,6 +72,7 @@ public class Explore extends AppCompatActivity {
 
         btnAddCircle = findViewById(R.id.add_circle_button);
         profPic = findViewById(R.id.explore_profilePicture);
+        notificationBell = findViewById(R.id.main_activity_notifications_bell);
         circleJoinDialog = new Dialog(Explore.this);
 
         database = FirebaseDatabase.getInstance();
@@ -88,7 +90,7 @@ public class Explore extends AppCompatActivity {
                 Log.d(TAG, "TIME TAKEN USERS: " + TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTimeUser));
                 user = dataSnapshot.getValue(User.class);
                 SessionStorage.saveUser(Explore.this, user);
-                Glide.with(Explore.this)
+                Glide.with(getApplicationContext())
                         .load(user.getProfileImageLink())
                         .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
                         .into(profPic);
@@ -119,6 +121,12 @@ public class Explore extends AppCompatActivity {
             }
         });
 
+        notificationBell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Explore.this, NotificationActivity.class));
+            }
+        });
         profPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
