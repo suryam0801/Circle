@@ -265,6 +265,8 @@ public class Explore extends AppCompatActivity {
                 List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
                 List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
 
+
+
                 //checking if user is a member of the circle
                 boolean existingMember = false;
                 if (circle.getMembersList() != null) {
@@ -279,8 +281,19 @@ public class Explore extends AppCompatActivity {
                         if (circleIteratorlocationTagsList.contains(locIterator)) {
                             for (String intIterator : userTempinterestTagsList) {
                                 if (circleIteratorinterestTagsList.contains(intIterator)) {
-                                    exploreCircleList.add(circle);
-                                    adapter.notifyDataSetChanged();
+                                    //check if circle already exists
+                                    boolean circleExists = false;
+                                    for(Circle conditional : exploreCircleList) {
+                                        if(conditional.getId().equals(circle.getId()))
+                                            circleExists = true;
+                                    }
+
+                                    if(circleExists == false){
+                                        exploreCircleList.add(circle);
+                                        adapter.notifyDataSetChanged();
+                                        Log.d(TAG, "CIRCLED ADDED INITIALLY: " + circle);
+                                        Log.d(TAG, "____________________________________ ");
+                                    }
                                 }
                             }
                         }
