@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,7 +39,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -54,16 +52,16 @@ public class InterestTagPicker extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     private Button register;
-    private String tempLoc, fName, lName, userId, downloadUri, contact;
+    private String fName, lName, userId, downloadUri, contact, ward, district;
     private List<String> locationTags = new ArrayList<>(), selectedInterestTags = new ArrayList<>();
     private List<String> dbInterestTags = new ArrayList<>();
-    private List<String> suggestInList = new ArrayList<>();
+    private List<String> autoCompleteItemsList = new ArrayList<>();
     private AutoCompleteTextView interestTagsEntry;
     private User user;
     private ChipGroup chipGroup;
     private Button interestTagAdd;
     private FirebaseDatabase database;
-    private DatabaseReference tags, usersDB, currentUserSyncDB;
+    private DatabaseReference tags, usersDB;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -89,53 +87,54 @@ public class InterestTagPicker extends AppCompatActivity {
 
         fName = getIntent().getStringExtra("fName");
         lName = getIntent().getStringExtra("lName");
-        tempLoc = getIntent().getStringExtra("locationTags");
+
         downloadUri = getIntent().getStringExtra("uri");
         contact = getIntent().getStringExtra("contact");
+        ward = getIntent().getStringExtra("ward");
+        district = getIntent().getStringExtra("district");
 
-        //Removing the Braces from the "temploc"->string and store it in the "locationTags"->List
-        tempLoc = tempLoc.replace("[", "");
-        tempLoc = tempLoc.replace("]", "");
-        tempLoc = tempLoc.replace("#", "");
-        Scanner scan = new Scanner(tempLoc);
-        scan.useDelimiter(", ");
-        while (scan.hasNext()) {
-            //list to store the location from the location picker page
-            locationTags.add(scan.next());
-        }
-        Log.d(TAG, locationTags.toString());
         tags.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
 
-//                dbLocationTags = new ArrayList<>(((HashMap<String, Boolean>) tagsDBRetrieved.get("locationTags")).keySet());
-                locIntTags = (HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags");
+                Log.d(TAG, "WARD AND DISTRICT: " + ((HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags")).get(district));
+
+                locIntTags = (HashMap<String, Object>) ((HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags")).get(district);
+
+                Log.d(TAG, "LOC INT TAGS: " + locIntTags.toString());
+
                 chipGroup.removeAllViews();
                 for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
-                    if (locationTags.contains(entry.getKey())) {
-                        List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
-                        for (String interest : tempInterests) {
-                            if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
+                    Log.d(TAG, "ENTRY FOR LOC INT " + entry.toString());
+                    List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
+                    for (String interest : tempInterests) {
+                        if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
+                            if(entry.getKey().trim().equals(ward.trim()))
+                                dbInterestTags.add(0, interest);
+                             else
                                 dbInterestTags.add(interest);
-                                setTag(interest);
-                                suggestInList.add("#"+interest);
-                            }
+
+                            autoCompleteItemsList.add("#" + interest);
                         }
-                        Log.d(TAG,"Suggestion"+suggestInList.toString());
-                        String[] arr = suggestInList.toArray(new String[0]);
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
-                        interestTagsEntry.setThreshold(1);
-                        interestTagsEntry.setAdapter(adapter);
-                        //this for loop is used when the user wants to edit interest tag choices
-                        for (String interest : selectedInterestTags) { //add selected interests as options even if they are not in the location-interest list
-                            if (!dbInterestTags.contains(interest)) {
-                                dbInterestTags.add(interest);
-                                setTag(interest);
-                            }
+                    }
+
+                    String[] arr = autoCompleteItemsList.toArray(new String[0]);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, arr);
+                    interestTagsEntry.setThreshold(1);
+                    interestTagsEntry.setAdapter(adapter);
+                    //this for loop is used when the user wants to edit interest tag choices
+                    for (String interest : selectedInterestTags) { //add selected interests as options even if they are not in the location-interest list
+                        if (!dbInterestTags.contains(interest)) {
+                            dbInterestTags.add(interest);
+                            setTag(interest);
                         }
                     }
                 }
+                //set tags in ward order
+                for(String tag : dbInterestTags)
+                    setTag(tag);
+
             }
 
             @Override
@@ -311,20 +310,15 @@ public class InterestTagPicker extends AppCompatActivity {
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
             //creaeting the user object
-            user = new User(fName, lName, contact, downloadUri, locationTagHashmap, interestTagHashmap, userId, 0, 0, 0, token_id);
+            user = new User(fName, lName, contact, downloadUri, null, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
         } else {
-            user = new User(fName, lName, contact, "default", locationTagHashmap, interestTagHashmap, userId, 0, 0, 0, token_id);
+            user = new User(fName, lName, contact, "default", null, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
         }
 
-        for (String l : locationTags)
-            tags.child("locationTags").child(l).setValue(true);
-        for (String i : selectedInterestTags)
+        for (String i : selectedInterestTags) {
             tags.child("interestTags").child(i).setValue(true);
-
-        for (String loc : locationTags)
-            for (String i : selectedInterestTags)
-                tags.child("locationInterestTags").child(loc).child(i).setValue(true);
-
+            tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
+        }
 
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {

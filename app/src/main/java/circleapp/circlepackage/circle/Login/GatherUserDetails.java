@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +16,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,10 +26,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
@@ -32,10 +40,18 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class GatherUserDetails extends AppCompatActivity {
 
@@ -49,7 +65,13 @@ public class GatherUserDetails extends AppCompatActivity {
     private Uri downloadUri;
     private CircleImageView profilePic;
     SharedPreferences pref;
-    String loc, fName, lName, contact;
+    String city, fName, lName, contact;
+
+
+    //location services elements
+    private FusedLocationProviderClient client;
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+    private String ward, district;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +85,8 @@ public class GatherUserDetails extends AppCompatActivity {
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        client = LocationServices.getFusedLocationProviderClient(this);
 
 
         final EditText firstname = findViewById(R.id.fname);
@@ -94,21 +118,72 @@ public class GatherUserDetails extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fName = firstname.getText().toString();
-                lName = lastname.getText().toString();
-//                contact = "+91"+phn_num.getText().toString();
-                contact = pref.getString("key_name5", null);
+                if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                    requestPermission();
+                    return;
+                }
+                client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if(location != null){
+                            try {
+                                getAddress(location);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            fName = firstname.getText().toString();
+                            lName = lastname.getText().toString();
+                            //contact = "+91"+phn_num.getText().toString();
+                            contact = pref.getString("key_name5", null);
 
-                Intent intent = new Intent(GatherUserDetails.this, LocationTagPicker.class);
-                intent.putExtra("fName", fName);
-                intent.putExtra("lName", lName);
-                intent.putExtra("contact", contact);
-                if(downloadUri != null)
-                    intent.putExtra("uri", downloadUri.toString());
+                            Intent intent = new Intent(GatherUserDetails.this, InterestTagPicker.class);
+                            intent.putExtra("fName", fName);
+                            intent.putExtra("lName", lName);
+                            intent.putExtra("contact", contact);
+                            intent.putExtra("ward", ward);
+                            intent.putExtra("district", district);
 
-                startActivity(intent);
+                            Log.d(TAG, ward + " " + district);
+
+                            if(downloadUri != null)
+                                intent.putExtra("uri", downloadUri.toString());
+
+                            startActivity(intent);
+                        }
+                    }
+                });
             }
         });
+    }
+
+    public void getAddress(Location location) throws IOException {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+        district = addresses.get(0).getSubAdminArea();
+
+        //logic to get ward from address line
+        Scanner scan = new Scanner(addresses.get(0).getAddressLine(0));
+        scan.useDelimiter(",");
+        List<String> parsing = new ArrayList<>();
+        while (scan.hasNext()) {
+            String w = String.valueOf(scan.next());
+            if(w.trim().equals(district.trim())) {
+                ward = parsing.get(parsing.size()-1);
+            } else {
+                parsing.add(w);
+            }
+        }
+    }
+
+    private void requestPermission() {
+        Log.i(TAG, "Requesting permission");
+        ActivityCompat.requestPermissions(GatherUserDetails.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 
     public void selectFile(){
@@ -221,4 +296,5 @@ public class GatherUserDetails extends AppCompatActivity {
         super.onBackPressed();
         firebaseAuth.signOut();
     }
+
 }

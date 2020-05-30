@@ -59,9 +59,9 @@ public class Explore extends AppCompatActivity {
     private DatabaseReference circlesDB, usersDB;
     private ImageView profPic,notificationBell;
     private Dialog circleJoinDialog;
-    User user;
-    List<String> userTemplocationTagsList;
-    List<String> userTempinterestTagsList;
+    private User user;
+    private List<String> userTemplocationTagsList;
+    private List<String> userTempinterestTagsList;
 
     long startTimeCircle, startTimeUser;
 
@@ -87,7 +87,7 @@ public class Explore extends AppCompatActivity {
         usersDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "TIME TAKEN USERS: " + TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTimeUser));
+                Log.d(TAG, "TIME TAKEN USERS: " + (System.currentTimeMillis() - startTimeUser));
                 user = dataSnapshot.getValue(User.class);
                 SessionStorage.saveUser(Explore.this, user);
                 Glide.with(getApplicationContext())
@@ -95,8 +95,7 @@ public class Explore extends AppCompatActivity {
                         .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
                         .into(profPic);
 
-                //retrieve location & interest tags from users
-                userTemplocationTagsList = new ArrayList<>(user.getLocationTags().keySet());
+                //retrieve interest tags from user
                 userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
                 startTimeCircle = System.currentTimeMillis();
@@ -164,7 +163,7 @@ public class Explore extends AppCompatActivity {
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
 
-        circlesDB.addChildEventListener(new ChildEventListener() {
+        circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
@@ -178,6 +177,7 @@ public class Explore extends AppCompatActivity {
 
                 //setting the adapter initially
                 //filter for only circles associated with creator id
+                Log.d(TAG, "CIRCLE OBJECT: " + dataSnapshot.toString());
                 if (circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) {
                     workbenchCircleList.add(circle);
                     //notify the adapter each time a new item needs to be added to the recycler view
@@ -256,15 +256,15 @@ public class Explore extends AppCompatActivity {
 
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-        circlesDB.addChildEventListener(new ChildEventListener() {
+        circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "TIME TAKEN CIRCLES: " + (System.currentTimeMillis() - startTimeCircle));
+                Log.d(TAG, "TIME TAKEN CIRCLES: " + dataSnapshot.toString());
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 //retrieve location & interest tags from circle object since tags are stored as hashmaps
-                List<String> circleIteratorlocationTagsList = new ArrayList<>(circle.getLocationTags().keySet());
                 List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
-
 
 
                 //checking if user is a member of the circle
@@ -277,24 +277,18 @@ public class Explore extends AppCompatActivity {
                 if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
                     //setting the adapter initially
                     //filter for only circles associated with matching user location and interests
-                    for (String locIterator : userTemplocationTagsList) {
-                        if (circleIteratorlocationTagsList.contains(locIterator)) {
-                            for (String intIterator : userTempinterestTagsList) {
-                                if (circleIteratorinterestTagsList.contains(intIterator)) {
-                                    //check if circle already exists
-                                    boolean circleExists = false;
-                                    for(Circle conditional : exploreCircleList) {
-                                        if(conditional.getId().equals(circle.getId()))
-                                            circleExists = true;
-                                    }
+                    for (String intIterator : userTempinterestTagsList) {
+                        if (circleIteratorinterestTagsList.contains(intIterator)) {
+                            //check if circle already exists
+                            boolean circleExists = false;
+                            for(Circle conditional : exploreCircleList) {
+                                if(conditional.getId().equals(circle.getId()))
+                                    circleExists = true;
+                            }
 
-                                    if(circleExists == false){
-                                        exploreCircleList.add(circle);
-                                        adapter.notifyDataSetChanged();
-                                        Log.d(TAG, "CIRCLED ADDED INITIALLY: " + circle);
-                                        Log.d(TAG, "____________________________________ ");
-                                    }
-                                }
+                            if(circleExists == false){
+                                exploreCircleList.add(circle);
+                                adapter.notifyDataSetChanged();
                             }
                         }
                     }
@@ -401,23 +395,6 @@ public class Explore extends AppCompatActivity {
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         circleJoinDialog.show();
-    }
-
-    private void suggestInterests() {
-        circlesDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override

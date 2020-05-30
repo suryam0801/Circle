@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class User {
 
-    private String firstName, lastName, contact, profileImageLink, userId, token_id;
+    private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> locationTags, interestTags;
     private int createdCircles, activeCircles, completedProjects;
 
@@ -15,7 +15,7 @@ public class User {
     public User(String firstName, String lastName, String contact,
                 String profileImageLink, HashMap<String, Boolean> locationTags,
                 HashMap<String, Boolean> interestTags, String userId, int createdCircles,
-                int activeCircles, int completedProjects, String token_id) {
+                int activeCircles, int completedProjects, String token_id, String ward, String district) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contact = contact;
@@ -27,6 +27,8 @@ public class User {
         this.activeCircles = activeCircles;
         this.completedProjects = completedProjects;
         this.token_id = token_id;
+        this.ward = ward;
+        this.district = district;
     }
 
     public HashMap<String, Boolean> getLocationTags() {
@@ -116,22 +118,38 @@ public class User {
         this.userId = userId;
     }
 
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getWard() {
+        return ward;
+    }
+
+    public void setWard(String ward) {
+        this.ward = ward;
+    }
 
     @Override
     public String toString() {
         return "User{" +
-                "firstName='" + firstName + '\n' +
-                ", lastName='" + lastName + '\n' +
-                ", contact='" + contact + '\n' +
-                ", profileImageLink='" + profileImageLink + '\n' +
-                ", locationTags=" + locationTags.toString() + '\n' +
-                ", interestTags=" + interestTags.toString() + '\n' +
-                ", userId='" + userId + '\n' +
-                ", createdProjects=" + createdCircles + '\n' +
-                ", workingProjects=" + activeCircles + '\n' +
-                ", completedProjects=" + completedProjects + '\n' +
-                ", token_id='" + token_id + '\n' +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", contact='" + contact + '\'' +
+                ", profileImageLink='" + profileImageLink + '\'' +
+                ", userId='" + userId + '\'' +
+                ", token_id='" + token_id + '\'' +
+                ", district='" + district + '\'' +
+                ", ward='" + ward + '\'' +
+                ", locationTags=" + locationTags +
+                ", interestTags=" + interestTags +
+                ", createdCircles=" + createdCircles +
+                ", activeCircles=" + activeCircles +
+                ", completedProjects=" + completedProjects +
                 '}';
     }
-
 }
