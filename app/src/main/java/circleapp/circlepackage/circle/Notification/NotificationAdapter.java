@@ -125,7 +125,7 @@ public class NotificationAdapter extends BaseAdapter {
                 gd.setColor(Color.parseColor("#D856FF"));
                 backgroundColor.setBackground(gd);
                 notificationTitle.setText("New Member Onboard");
-                foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_person_add_black_24dp));
+                //foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_person_add_black_24dp));
                 newMember.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newMember);
                 break;
