@@ -251,7 +251,7 @@ public class Explore extends AppCompatActivity {
 
                     @Override
                     public void onLongItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(), "LONG PRESSED", Toast.LENGTH_SHORT).show();
+                        showShareCirclePopup(exploreCircleList.get(position));
                     }
                 })
         );
@@ -411,6 +411,21 @@ public class Explore extends AppCompatActivity {
         circleJoinDialog.show();
     }
 
+    private void showShareCirclePopup(Circle c) {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
+            String shareMessage= "\nLet me recommend you this application\n\n";
+            //https://play.google.com/store/apps/details?id=
+            Log.d(TAG, c.getId());
+            shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(shareIntent, "choose one"));
+        } catch (Exception error) {
+
+        }
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

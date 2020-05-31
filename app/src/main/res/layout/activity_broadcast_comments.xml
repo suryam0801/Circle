@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".CircleWall.BroadcastComments">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:id="@+id/comments_listView">
+    </ListView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp">
+
+        <EditText
+            android:id="@+id/comment_type_editText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:paddingRight="45dp"
+            android:paddingLeft="16dp"
+            android:textSize="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#D1D1D1"
+            android:hint="Type your comment..."
+            android:background="@drawable/unpressable_button">
+        </EditText>
+
+        <Button
+            android:id="@+id/comment_send_button"
+            android:layout_width="35dp"
+            android:layout_height="25dp"
+            android:background="@drawable/ic_send_black_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="25dp">
+        </Button>
+
+    </RelativeLayout>
+
+</LinearLayout>
