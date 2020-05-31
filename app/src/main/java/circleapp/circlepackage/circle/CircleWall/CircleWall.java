@@ -327,7 +327,7 @@ public class CircleWall extends AppCompatActivity {
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
 
-        SendNotification.sendBCinfo(broadcastId,circle.getName(),currentUserName,circle.getMembersList());
+        SendNotification.sendBCinfo(broadcastId,circle.getName(),circle.getId(),currentUserName,circle.getMembersList());
 
         HashMap<String, Integer> options = new HashMap<>();
         if(!pollAnswerOptionsList.isEmpty()) {

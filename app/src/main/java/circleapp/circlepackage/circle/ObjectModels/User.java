@@ -1,12 +1,22 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+
 import java.util.HashMap;
 
+//import circleapp.circlepackage.circle.LocalDatabase.Converters;
+
+//@Entity(tableName = "users")
 public class User {
+
 
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> interestTags;
     private int createdCircles, activeCircles, completedProjects;
+
 
     public User(){
 

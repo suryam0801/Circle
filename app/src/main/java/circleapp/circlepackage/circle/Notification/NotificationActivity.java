@@ -68,7 +68,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void loadNotifications() {
-            notifyDb.child(currentUser.getCurrentUser().getUid()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
+            notifyDb.orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     Notification notification=dataSnapshot.getValue(Notification.class);

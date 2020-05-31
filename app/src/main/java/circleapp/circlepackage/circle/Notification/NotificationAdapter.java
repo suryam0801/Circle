@@ -91,7 +91,7 @@ public class NotificationAdapter extends BaseAdapter {
 
         SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join "  + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
         SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join "  + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
-        SpannableStringBuilder newBroadCast = new SpannableStringBuilder("New BroadCast has been added to " + notif.getCircleName()); //start index: 28
+        SpannableStringBuilder newBroadCast = new SpannableStringBuilder("New BroadCast has been added to " + notif.getCircleName()); //start index: 32
         SpannableStringBuilder newMember = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
         SpannableStringBuilder taskUpdate = new SpannableStringBuilder("A task has been updated in " + notif.getCircleName()); //start index: 28
         SpannableStringBuilder resourceAdded = new SpannableStringBuilder("A resource has been added to " + notif.getCircleName() + ", check it out and give your opinion."); //start index: 29
@@ -118,8 +118,8 @@ public class NotificationAdapter extends BaseAdapter {
                 break;
             case "broadcast_added":
                 notificationTitle.setText("New BroadCast Added");
-                newBroadCast.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                notificationDescription.setText(acceptText);
+                newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                notificationDescription.setText(newBroadCast);
                 break;
             case "new member added":
                 gd.setColor(Color.parseColor("#D856FF"));

@@ -93,7 +93,7 @@ public class Explore extends AppCompatActivity {
                 user = dataSnapshot.getValue(User.class);
                 SessionStorage.saveUser(Explore.this, user);
                 Glide.with(getApplicationContext())
-                        .load(user.getProfileImageLink())
+                            .load(user.getProfileImageLink())
                         .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
                         .into(profPic);
 
