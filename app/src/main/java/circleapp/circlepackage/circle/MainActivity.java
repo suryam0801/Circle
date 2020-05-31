@@ -28,12 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Uri uri = getIntent().getData();
-        if(uri!=null){
-            List<String> params = uri.getPathSegments();
-            String circleID = params.get(params.size()-1);
-            Toast.makeText(this, "CIRCLEID="+circleID, Toast.LENGTH_LONG).show();
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //To set the Fullscreen
