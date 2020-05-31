@@ -99,11 +99,10 @@ public class CreateCircle extends AppCompatActivity {
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
 
-        tags.child("locationInterestTags").addValueEventListener(new ValueEventListener() {
+        tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
-                locIntTags = (HashMap<String, Object>) tagsDBRetrieved.get(user.getDistrict());
+                locIntTags = (HashMap<String, Object>) snapshot.getValue();
             }
 
             @Override
