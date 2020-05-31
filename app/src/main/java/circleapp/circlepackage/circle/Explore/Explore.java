@@ -168,6 +168,7 @@ public class Explore extends AppCompatActivity {
         circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "ADDEDDDDDDD");
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 //checking if user is a member of the circle
@@ -177,20 +178,27 @@ public class Explore extends AppCompatActivity {
                         existingMember = true;
                 }
 
+                //checking for duplicate
+                boolean duplicate = false;
+                for(Circle c : workbenchCircleList){
+                    if(c.getId().equals(circle.getId())) {
+                        duplicate = true;
+                    }
+                }
+
                 //setting the adapter initially
                 //filter for only circles associated with creator id
                 Log.d(TAG, "CIRCLE OBJECT: " + dataSnapshot.toString());
-                if (circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) {
+                if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
                     workbenchCircleList.add(circle);
                     //notify the adapter each time a new item needs to be added to the recycler view
                     wbadapter.notifyDataSetChanged();
                 }
-
-
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "CHANGEDDD");
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 int position = 0;
                 List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
@@ -251,7 +259,7 @@ public class Explore extends AppCompatActivity {
 
                     @Override
                     public void onLongItemClick(View view, int position) {
-                        showShareCirclePopup(exploreCircleList.get(position));
+                        //showShareCirclePopup(exploreCircleList.get(position));
                     }
                 })
         );
@@ -295,6 +303,8 @@ public class Explore extends AppCompatActivity {
                         }
                     }
                 }
+
+                //opening link joining
                 if(intentUri!=null){
                     List<String> params = intentUri.getPathSegments();
                     String circleID = params.get(params.size()-1);
@@ -312,13 +322,20 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
+                Log.d(TAG, circle.toString());
                 int position = 0;
                 List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
                 for (Circle c : tempCircleList) {
                     if (c.getId().equals(circle.getId())) {
-                        exploreCircleList.remove(position);
-                        exploreCircleList.add(position, circle);
-                        adapter.notifyDataSetChanged();
+                        if(circle.getMembersList()!=null && circle.getMembersList().containsKey(user.getUserId())) {
+                            exploreCircleList.remove(position);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            exploreCircleList.remove(position);
+                            exploreCircleList.add(position, circle);
+                            adapter.notifyDataSetChanged();
+                        }
+
                     }
                     ++position;
                 }

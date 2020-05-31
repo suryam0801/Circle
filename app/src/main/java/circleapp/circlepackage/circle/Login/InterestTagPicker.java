@@ -53,7 +53,6 @@ public class InterestTagPicker extends AppCompatActivity {
 
     //Declare all UI elements for the InterestTagPicker Activity
     private FirebaseAuth firebaseAuth;
-    private FirebaseFirestore db;
     private Button register;
     private String fName, lName, userId, downloadUri, contact, ward, district;
     private List<String> locationTags = new ArrayList<>(), selectedInterestTags = new ArrayList<>();
@@ -84,7 +83,6 @@ public class InterestTagPicker extends AppCompatActivity {
 
         //Getting Firebase instances
         firebaseAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
 
@@ -243,7 +241,7 @@ public class InterestTagPicker extends AppCompatActivity {
         });
         //Add a chip to the Chipgroup
         if(selectedInterestTags.contains(name))
-            chipGroup.addView(chip, selectedInterestTags.indexOf(name));
+            chipGroup.addView(chip, 0);
         else
             chipGroup.addView(chip);
 

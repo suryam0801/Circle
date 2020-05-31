@@ -74,7 +74,7 @@ public class EditProfile extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri downloadUri;
     private Dialog interestTagDialog;
-    private List<String> interestTagList, selectedInterestTags;
+    private List<String> selectedInterestTags;
     private List<String> suggestInList = new ArrayList<>();
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
@@ -127,7 +127,6 @@ public class EditProfile extends AppCompatActivity {
 
                 //load tags
                 for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
-                    Log.d(TAG, "ENTRY FOR LOC INT " + entry.toString());
                     List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
                     for (String interest : tempInterests) {
                         if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
@@ -138,6 +137,7 @@ public class EditProfile extends AppCompatActivity {
                         }
                     }
                 }
+                selectedInterestTags = new ArrayList<>(user.getInterestTags().keySet());
             }
 
             @Override
@@ -279,7 +279,9 @@ public class EditProfile extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     } else {
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        Log.d(TAG, "DB INTEREST TAGS: " + dbInterestTags.toString());
+                        Log.d(TAG, "DB SELECTED TAGS: " + selectedInterestTags.toString());
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     }
                 }
@@ -338,7 +340,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         if(selectedInterestTags.contains(name))
-            chipGroupLocation.addView(chip, selectedInterestTags.indexOf(name));
+            chipGroupLocation.addView(chip, 0);
         else
             chipGroupLocation.addView(chip);
 

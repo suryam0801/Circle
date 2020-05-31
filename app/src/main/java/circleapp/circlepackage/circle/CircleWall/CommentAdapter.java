@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -81,14 +82,15 @@ public class CommentAdapter extends BaseAdapter {
                 .placeholder(ContextCompat.getDrawable(mContext, R.drawable.ic_account_circle_black_24dp))
                 .into(profPic);
 
+
         if(seconds < 60) {
             timeElapsed.setText(seconds + "s ago");
-        } else if (minutes > 1 && minutes < 60){
+        } else if (minutes >= 1 && minutes < 60){
             timeElapsed.setText(minutes + "m ago");
-        } else if (hours > 1 && hours < 24) {
+        } else if (hours >= 1 && hours < 24) {
             timeElapsed.setText(hours + "h ago");
-        } else if (days > 1 && days < 365 ) {
-            if(days > 7)
+        } else if (days >= 1 && days < 365 ) {
+            if(days >= 7)
                 timeElapsed.setText((days/7) + "w ago");
             else
                 timeElapsed.setText(days + "d ago");
