@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -13,13 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditProfile.EditProfile"></activity>
+        <activity android:name=".CircleWall.BroadcastComments"></activity>
+        <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity android:name=".Login.InterestTagPicker" />
         <activity android:name=".Login.GatherUserDetails" />
         <activity android:name=".Login.OtpActivity" />
         <activity android:name=".Login.PhoneLogin" />
-        <activity android:name=".Notification.NotificationActivity"/>
+        <activity android:name=".Notification.NotificationActivity" />
         <activity android:name=".CircleWall.CircleWall" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -30,7 +31,28 @@
         </activity>
         <activity android:name=".CreateCircle" />
         <activity android:name=".Explore.CircleDisplayAdapter" />
-        <activity android:name=".Explore.Explore" />
+        <activity android:name=".Explore.Explore">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.circleneighborhoodapp.com"
+                    android:scheme="https" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.circleneighborhoodapp.com"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

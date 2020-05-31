@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CreateCircle;
+import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -65,16 +66,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfile extends AppCompatActivity {
 
     private CircleImageView profileImageView;
-    private TextView userName, userNumber, createdCircles, workingCircles, editLocTagBtn, editIntTagBtn;
+    private TextView userName, userNumber, createdCircles, workingCircles, editIntTagBtn;
     private Button editProfPic, finalizeChanges, logout;
     private ImageButton back;
-    private ChipGroup locationTagsEditDisplay, interestTagsEditDisplay;
+    private ChipGroup interestTagsEditDisplay;
     private Uri filePath;
     private StorageReference storageReference;
     private Uri downloadUri;
-    private Dialog interestTagDialog, locationTagDialog;
-    private List<String> locationTagList, interestTagList, selectedLocationTags, selectedInterestTags;
-    private List<String> suggestInList = new ArrayList<>(),suggestlocList = new ArrayList<>();
+    private Dialog interestTagDialog;
+    private List<String> interestTagList, selectedInterestTags;
+    private List<String> suggestInList = new ArrayList<>();
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
@@ -85,12 +86,12 @@ public class EditProfile extends AppCompatActivity {
     private FirebaseAuth currentUser;
 
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
-    private List<String> dbLocationTags = new ArrayList<>(), dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
+    private List<String> dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
 
     //UI elements for location tag selector popup and interest tag selector popup
-    private AutoCompleteTextView locationTagEntry, interestTagEntry;
+    private AutoCompleteTextView interestTagEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +111,7 @@ public class EditProfile extends AppCompatActivity {
         finalizeChanges = findViewById(R.id.profile_finalize_changes);
         logout = findViewById(R.id.profile_logout);
         back = findViewById(R.id.bck_view_edit_profile);
-        locationTagsEditDisplay = findViewById(R.id.viewProfile_locationTags);
         interestTagsEditDisplay = findViewById(R.id.viewProfile_interestTags);
-        editLocTagBtn = findViewById(R.id.locationTagEditButton);
         editIntTagBtn = findViewById(R.id.interestTagEditButton);
         currentUser = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -121,20 +120,21 @@ public class EditProfile extends AppCompatActivity {
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
 
-        tags.addValueEventListener(new ValueEventListener() {
+        tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
+                locIntTags = (HashMap<String, Object>) snapshot.getValue();
 
-                dbLocationTags = new ArrayList<>(((HashMap<String, Boolean>) tagsDBRetrieved.get("locationTags")).keySet());
-                locIntTags = (HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags");
-
-                //geting location tags and location-interestTags from the database
+                //load tags
                 for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
+                    Log.d(TAG, "ENTRY FOR LOC INT " + entry.toString());
                     List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
                     for (String interest : tempInterests) {
                         if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
-                            dbInterestTags.add(interest);
+                            if(entry.getKey().trim().equals(user.getWard().trim()))
+                                dbInterestTags.add(0, interest);
+                            else
+                                dbInterestTags.add(interest);
                         }
                     }
                 }
@@ -151,12 +151,9 @@ public class EditProfile extends AppCompatActivity {
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
 
-        selectedLocationTags = new ArrayList<>(user.getLocationTags().keySet());
         selectedInterestTags = new ArrayList<>(user.getInterestTags().keySet());
 
         //populate chip group with currently selectedTags
-        for (String loc : selectedLocationTags)
-            setLocationTags(loc, locationTagsEditDisplay);
         for (String interest : selectedInterestTags)
             setInterestTag(interest, interestTagsEditDisplay);
 
@@ -170,14 +167,6 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View view) {
                 interestTagsEditDisplay.removeAllViews();
                 displayInterestTagPopup();
-            }
-        });
-
-        editLocTagBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                locationTagsEditDisplay.removeAllViews();
-                displayLocationTagPopup();
             }
         });
 
@@ -202,10 +191,6 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View view) {
                 if(downloadUri!=null)
                     user.setProfileImageLink(downloadUri.toString());
-                HashMap<String, Boolean> tempLocTags = new HashMap<>();
-                for(String loc : selectedLocationTags)
-                    tempLocTags.put(loc, true);
-                user.setLocationTags(tempLocTags);
 
                 HashMap<String, Boolean> tempIntTags = new HashMap<>();
                 for(String interest : selectedInterestTags)
@@ -213,7 +198,8 @@ public class EditProfile extends AppCompatActivity {
                 user.setInterestTags(tempIntTags);
 
                 userDB.child(user.getUserId()).setValue(user);
-                finalizeChanges.setVisibility(View.GONE);
+                startActivity(new Intent(EditProfile.this, Explore.class));
+                finish();
             }
         });
 
@@ -226,129 +212,6 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void displayLocationTagPopup() {
-        locationTagDialog = new Dialog(EditProfile.this);
-        locationTagDialog.setContentView(R.layout.activity_create_circle_locationtag_dialog); //set dialog view
-        locationTagDialog.setCanceledOnTouchOutside(false);
-        locationTagDialog.setCancelable(false);
-
-
-        //initialize elements in popup dialog
-        final Button finalizeLocationTag = locationTagDialog.findViewById(R.id.circle_finalize_location_tags);
-        final ChipGroup locationChipGroupPopup = locationTagDialog.findViewById(R.id.circle_location_tag_chip_group);
-        locationTagEntry = locationTagDialog.findViewById(R.id.circle_location_tags_entry);
-        final Button locationTagAdd = locationTagDialog.findViewById(R.id.circle_location_tag_add_button);
-
-        for (String loc : dbLocationTags) {
-            setLocationTags(loc, locationChipGroupPopup);
-            suggestlocList.add("#"+loc);
-        }
-        Log.d(TAG,"Suggestion"+suggestlocList.toString());
-        String[] arr = suggestlocList.toArray(new String[0]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
-        locationTagEntry.setThreshold(1);
-        locationTagEntry.setAdapter(adapter);
-
-        finalizeLocationTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                for (String loc : selectedLocationTags)
-                    setLocationTags(loc, locationTagsEditDisplay);
-
-                locationTagDialog.dismiss();
-                finalizeChanges.setVisibility(View.VISIBLE);
-            }
-        });
-
-        locationTagEntry.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(locationTagEntry, InputMethodManager.SHOW_IMPLICIT);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            locationTagEntry.setShowSoftInputOnFocus(true);
-                        }
-                        locationTagEntry.setText("#");
-                        locationTagEntry.setSelection(locationTagEntry.getText().length());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        v.performClick();
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-
-            }
-        });
-
-        locationTagAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String locationTag = locationTagEntry.getText().toString().replace("#", "");
-                if (!locationTag.isEmpty()) {
-                    selectedLocationTags.add(locationTag);
-                    if (!dbLocationTags.contains(locationTag))
-                        dbLocationTags.add(locationTag);
-                    setLocationTags(locationTag, locationChipGroupPopup);
-                }
-            }
-        });
-
-
-        locationTagDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        locationTagDialog.show();
-
-    }
-
-    private void setLocationTags(final String name, ChipGroup chipGroupLocation) {
-        final Chip chip = new Chip(this);
-        int paddingDp = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 10,
-                getResources().getDisplayMetrics()
-        );
-        chip.setRippleColor(ColorStateList.valueOf(Color.WHITE));
-        chip.setPadding(
-                (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 3,
-                        getResources().getDisplayMetrics()
-                ),
-                paddingDp, paddingDp, paddingDp);
-        if (!name.contains("#"))
-            chip.setText("#" + name);
-        else
-            chip.setText(name);
-
-        if (selectedLocationTags.contains(name)) {
-            chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
-            chip.setTextColor(Color.WHITE);
-        } else {
-            chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
-            chip.setTextColor(Color.BLACK);
-        }
-
-        chip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
-                    chip.setTextColor(Color.BLACK);
-                    selectedLocationTags.remove(chip.getText().toString().replace("#", ""));
-                } else {
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
-                    chip.setTextColor(Color.WHITE);
-                    selectedLocationTags.add(chip.getText().toString().replace("#", ""));
-                }
-
-            }
-
-        });
-
-        chipGroupLocation.addView(chip);
     }
 
     private void displayInterestTagPopup() {
@@ -412,12 +275,13 @@ public class EditProfile extends AppCompatActivity {
                 String interestTag = interestTagEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag);
-                    if (!dbInterestTags.contains(interestTag))
+                    if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
-
-                    setInterestTag(interestTag, interestChipGroupPopup);
-
-
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    } else {
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    }
                 }
 
                 interestTagEntry.setText("#");
@@ -473,7 +337,11 @@ public class EditProfile extends AppCompatActivity {
 
         });
 
-        chipGroupLocation.addView(chip);
+        if(selectedInterestTags.contains(name))
+            chipGroupLocation.addView(chip, selectedInterestTags.indexOf(name));
+        else
+            chipGroupLocation.addView(chip);
+
     }
 
     public void selectFile() {

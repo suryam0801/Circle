@@ -140,8 +140,8 @@ public class GatherUserDetails extends AppCompatActivity {
                             intent.putExtra("fName", fName);
                             intent.putExtra("lName", lName);
                             intent.putExtra("contact", contact);
-                            intent.putExtra("ward", ward);
-                            intent.putExtra("district", district);
+                            intent.putExtra("ward", ward.trim());
+                            intent.putExtra("district", district.trim());
 
                             Log.d(TAG, ward + " " + district);
 

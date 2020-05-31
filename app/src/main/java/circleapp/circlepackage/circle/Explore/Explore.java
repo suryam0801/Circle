@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -60,13 +61,14 @@ public class Explore extends AppCompatActivity {
     private ImageView profPic,notificationBell;
     private Dialog circleJoinDialog;
     private User user;
-    private List<String> userTemplocationTagsList;
     private List<String> userTempinterestTagsList;
+    private Uri intentUri;
 
     long startTimeCircle, startTimeUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        intentUri = getIntent().getData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
@@ -249,7 +251,7 @@ public class Explore extends AppCompatActivity {
 
                     @Override
                     public void onLongItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(), "LONG PRESSED", Toast.LENGTH_SHORT).show();
+                        showShareCirclePopup(exploreCircleList.get(position));
                     }
                 })
         );
@@ -289,6 +291,18 @@ public class Explore extends AppCompatActivity {
                             if(circleExists == false){
                                 exploreCircleList.add(circle);
                                 adapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+                if(intentUri!=null){
+                    List<String> params = intentUri.getPathSegments();
+                    String circleID = params.get(params.size()-1);
+                    Log.d(TAG, "INTENT CIRCLEID: " + circleID);
+                    if(!exploreCircleList.isEmpty()) {
+                        for(Circle c : exploreCircleList) {
+                            if(c.getId().equals(circleID)){
+                                displayJoinPopup(c);
                             }
                         }
                     }
@@ -373,11 +387,11 @@ public class Explore extends AppCompatActivity {
                 if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
                     //adding userID to applicants list
-                    circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+                    circlesDB.child(user.getDistrict()).child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
                 } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
                     //adding userID to members list in circlesReference
-                    circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+                    circlesDB.child(user.getDistrict()).child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
                     int nowActive = user.getActiveCircles() + 1;
                     usersDB.child("activeCircles").setValue((nowActive));
                 }
@@ -397,6 +411,21 @@ public class Explore extends AppCompatActivity {
         circleJoinDialog.show();
     }
 
+    private void showShareCirclePopup(Circle c) {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
+            String shareMessage= "\nLet me recommend you this application\n\n";
+            //https://play.google.com/store/apps/details?id=
+            Log.d(TAG, c.getId());
+            shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(shareIntent, "choose one"));
+        } catch (Exception error) {
+
+        }
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

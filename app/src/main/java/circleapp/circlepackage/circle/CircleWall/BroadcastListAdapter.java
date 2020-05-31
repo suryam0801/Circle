@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
@@ -78,6 +79,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             else
                 viewHolder.timeElapsedDisplay.setText(days + "d ago");
         }
+
+        viewHolder.viewComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context.getApplicationContext(), BroadcastComments.class));
+            }
+        });
 
 
         //set the details of each circle to its respective card.
@@ -178,7 +186,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, attachmentNameDisplay,
-                pollQuestionDisplay, timeElapsedDisplay;
+                pollQuestionDisplay, timeElapsedDisplay, viewComments;
         private RadioGroup pollOptionsDisplayGroup;
         private CircleImageView profPicDisplay;
         private LinearLayout attachmentDisplay, pollDisplay;
@@ -201,6 +209,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             attachmentDisplay = view.findViewById(R.id.attachment_display);
             pollDisplay = view.findViewById(R.id.broadcastWall_poll_display_view);
             attachmentDownloadButton = view.findViewById(R.id.attachment_download_btn);
+            viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
         }
 
         public String getCurrentUserPollOption() {

@@ -99,11 +99,10 @@ public class CreateCircle extends AppCompatActivity {
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
 
-        tags.child("locationInterestTags").addValueEventListener(new ValueEventListener() {
+        tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
-                locIntTags = (HashMap<String, Object>) tagsDBRetrieved.get(user.getDistrict());
+                locIntTags = (HashMap<String, Object>) snapshot.getValue();
             }
 
             @Override
@@ -239,10 +238,13 @@ public class CreateCircle extends AppCompatActivity {
                 String interestTag = interestTagEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterests.add(interestTag);
-                    if(!dbInterestTags.contains(interestTag))
+                    if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
-
-                    setInterestTag(interestTag, interestChipGroupPopup);
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    } else {
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    }
                 }
             }
         });
@@ -295,7 +297,11 @@ public class CreateCircle extends AppCompatActivity {
 
         });
 
-        chipGroupLocation.addView(chip);
+        if(selectedInterests.contains(name))
+            chipGroupLocation.addView(chip, selectedInterests.indexOf(name));
+        else
+            chipGroupLocation.addView(chip);
+
         interestTagEntry.setText("#");
         interestTagEntry.setSelection(interestTagEntry.getText().length());
     }
