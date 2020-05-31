@@ -179,18 +179,14 @@ public class InterestTagPicker extends AppCompatActivity {
             public void onClick(View view) {
                 String interestTag = interestTagsEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
-                    selectedInterestTags.add(interestTag.replace("#", ""));
+                    selectedInterestTags.add(interestTag);
                     if (!dbInterestTags.contains(interestTag)) {
-                            dbInterestTags.add(interestTag);
-                            setTag(interestTag);
+                        dbInterestTags.add(interestTag);
+                        setTag(interestTag);
+                    } else {
+                        chipGroup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setTag(interestTag);
                     }
-                    else
-                        {
-                            Toast.makeText(InterestTagPicker.this,"Tag already Available!!!!",Toast.LENGTH_SHORT).show();
-                            interestTagsEntry.setText("#");
-                            interestTagsEntry.setSelection(interestTagsEntry.getText().length());
-                        }
-
                 }
             }
         });
@@ -243,7 +239,10 @@ public class InterestTagPicker extends AppCompatActivity {
 
         });
         //Add a chip to the Chipgroup
-        chipGroup.addView(chip);
+        if(selectedInterestTags.contains(name))
+            chipGroup.addView(chip, selectedInterestTags.indexOf(name));
+        else
+            chipGroup.addView(chip);
 
         //set the # in edittext after adding the new location
         interestTagsEntry.setText("#");

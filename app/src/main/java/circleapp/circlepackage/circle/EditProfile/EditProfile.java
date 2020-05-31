@@ -275,12 +275,13 @@ public class EditProfile extends AppCompatActivity {
                 String interestTag = interestTagEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag);
-                    if (!dbInterestTags.contains(interestTag))
+                    if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
-
-                    setInterestTag(interestTag, interestChipGroupPopup);
-
-
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    } else {
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    }
                 }
 
                 interestTagEntry.setText("#");
@@ -336,7 +337,11 @@ public class EditProfile extends AppCompatActivity {
 
         });
 
-        chipGroupLocation.addView(chip);
+        if(selectedInterestTags.contains(name))
+            chipGroupLocation.addView(chip, selectedInterestTags.indexOf(name));
+        else
+            chipGroupLocation.addView(chip);
+
     }
 
     public void selectFile() {
