@@ -88,7 +88,7 @@ public class CircleWall extends AppCompatActivity {
     private ImageView uploadCloudImageView;
     private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText;
     private Button btnAddPollOption, btnUploadBroadcast;
-    private Dialog createBroadcastPopup, shareCirclePopup;
+    private Dialog createBroadcastPopup;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
