@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.BuildConfig;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -79,7 +80,7 @@ public class CircleWall extends AppCompatActivity {
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
 
-    private ImageButton viewPersonel;
+    private ImageButton viewPersonel, shareCircle;
 
     //create broadcast popup ui elements
     private EditText setMessageET, setPollQuestionET, setPollOptionET;
@@ -87,7 +88,7 @@ public class CircleWall extends AppCompatActivity {
     private ImageView uploadCloudImageView;
     private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText;
     private Button btnAddPollOption, btnUploadBroadcast;
-    private Dialog createBroadcastPopup;
+    private Dialog createBroadcastPopup, shareCirclePopup;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
@@ -107,6 +108,7 @@ public class CircleWall extends AppCompatActivity {
 
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
         viewPersonel = findViewById(R.id.circle_wall_view_members);
+        shareCircle = findViewById(R.id.share_with_friend_button);
 
         createNewBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,8 +124,28 @@ public class CircleWall extends AppCompatActivity {
             }
         });
 
+        shareCircle.setOnClickListener(view -> {
+            showShareCirclePopup();
+        });
+
         loadCircleBroadcasts();
 
+    }
+
+    private void showShareCirclePopup() {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
+            String shareMessage= "\nLet me recommend you this application\n\n";
+            //https://play.google.com/store/apps/details?id=
+            Log.d(TAG, circle.getId());
+            shareMessage = "www.circleneighborhoodapp.com/" + circle.getId();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(shareIntent, "choose one"));
+        } catch (Exception error) {
+
+        }
     }
 
     private void loadCircleBroadcasts() {
