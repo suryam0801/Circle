@@ -117,12 +117,6 @@ public class OtpActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
-                                        User user = dataSnapshot.getValue(User.class);
-                                        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
-                                        String string = new Gson().toJson(user);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString("myUserDetails", string);
-                                        editor.commit();
                                         sendUserToHome();
                                     } else {
                                         senduserToReg();
