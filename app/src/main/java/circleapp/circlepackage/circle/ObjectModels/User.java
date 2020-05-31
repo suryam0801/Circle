@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class User {
 
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
-    private HashMap<String, Boolean> locationTags, interestTags;
+    private HashMap<String, Boolean> interestTags;
     private int createdCircles, activeCircles, completedProjects;
 
     public User(){
@@ -13,14 +13,13 @@ public class User {
     }
 
     public User(String firstName, String lastName, String contact,
-                String profileImageLink, HashMap<String, Boolean> locationTags,
-                HashMap<String, Boolean> interestTags, String userId, int createdCircles,
-                int activeCircles, int completedProjects, String token_id, String ward, String district) {
+                String profileImageLink, HashMap<String, Boolean> interestTags, String userId,
+                int createdCircles, int activeCircles, int completedProjects, String token_id,
+                String ward, String district) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
-        this.locationTags = locationTags;
         this.interestTags = interestTags;
         this.userId = userId;
         this.createdCircles = createdCircles;
@@ -29,14 +28,6 @@ public class User {
         this.token_id = token_id;
         this.ward = ward;
         this.district = district;
-    }
-
-    public HashMap<String, Boolean> getLocationTags() {
-        return locationTags;
-    }
-
-    public void setLocationTags(HashMap<String, Boolean> locationTags) {
-        this.locationTags = locationTags;
     }
 
     public HashMap<String, Boolean> getInterestTags() {
@@ -145,7 +136,6 @@ public class User {
                 ", token_id='" + token_id + '\'' +
                 ", district='" + district + '\'' +
                 ", ward='" + ward + '\'' +
-                ", locationTags=" + locationTags +
                 ", interestTags=" + interestTags +
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +

@@ -93,47 +93,45 @@ public class InterestTagPicker extends AppCompatActivity {
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
 
-        tags.addValueEventListener(new ValueEventListener() {
+        tags.child("locationInterestTags").child(district).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                HashMap<String, Object> tagsDBRetrieved = (HashMap<String, Object>) snapshot.getValue();
+                if(snapshot.exists()) {
+                    locIntTags = (HashMap<String, Object>) snapshot.getValue();
 
-                Log.d(TAG, "WARD AND DISTRICT: " + ((HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags")).get(district));
+                    Log.d(TAG, "LOC INT TAGS: " + locIntTags.toString());
 
-                locIntTags = (HashMap<String, Object>) ((HashMap<String, Object>) tagsDBRetrieved.get("locationInterestTags")).get(district);
+                    chipGroup.removeAllViews();
+                    for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
+                        Log.d(TAG, "ENTRY FOR LOC INT " + entry.toString());
+                        List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
+                        for (String interest : tempInterests) {
+                            if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
+                                if(entry.getKey().trim().equals(ward.trim()))
+                                    dbInterestTags.add(0, interest);
+                                else
+                                    dbInterestTags.add(interest);
 
-                Log.d(TAG, "LOC INT TAGS: " + locIntTags.toString());
+                                autoCompleteItemsList.add("#" + interest);
+                            }
+                        }
 
-                chipGroup.removeAllViews();
-                for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
-                    Log.d(TAG, "ENTRY FOR LOC INT " + entry.toString());
-                    List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
-                    for (String interest : tempInterests) {
-                        if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
-                            if(entry.getKey().trim().equals(ward.trim()))
-                                dbInterestTags.add(0, interest);
-                             else
+                        String[] arr = autoCompleteItemsList.toArray(new String[0]);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, arr);
+                        interestTagsEntry.setThreshold(1);
+                        interestTagsEntry.setAdapter(adapter);
+                        //this for loop is used when the user wants to edit interest tag choices
+                        for (String interest : selectedInterestTags) { //add selected interests as options even if they are not in the location-interest list
+                            if (!dbInterestTags.contains(interest)) {
                                 dbInterestTags.add(interest);
-
-                            autoCompleteItemsList.add("#" + interest);
+                                setTag(interest);
+                            }
                         }
                     }
-
-                    String[] arr = autoCompleteItemsList.toArray(new String[0]);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, arr);
-                    interestTagsEntry.setThreshold(1);
-                    interestTagsEntry.setAdapter(adapter);
-                    //this for loop is used when the user wants to edit interest tag choices
-                    for (String interest : selectedInterestTags) { //add selected interests as options even if they are not in the location-interest list
-                        if (!dbInterestTags.contains(interest)) {
-                            dbInterestTags.add(interest);
-                            setTag(interest);
-                        }
-                    }
+                    //set tags in ward order
+                    for(String tag : dbInterestTags)
+                        setTag(tag);
                 }
-                //set tags in ward order
-                for(String tag : dbInterestTags)
-                    setTag(tag);
 
             }
 
@@ -310,9 +308,9 @@ public class InterestTagPicker extends AppCompatActivity {
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
             //creaeting the user object
-            user = new User(fName, lName, contact, downloadUri, null, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
+            user = new User(fName, lName, contact, downloadUri, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
         } else {
-            user = new User(fName, lName, contact, "default", null, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
+            user = new User(fName, lName, contact, "default", interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
         }
 
         for (String i : selectedInterestTags) {
