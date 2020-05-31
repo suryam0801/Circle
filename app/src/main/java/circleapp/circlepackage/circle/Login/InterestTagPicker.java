@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -33,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -324,11 +327,28 @@ public class InterestTagPicker extends AppCompatActivity {
         usersDB.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                //if the user registered and profile updated successfully  the mainActivity will be opened
-                startActivity(new Intent(InterestTagPicker.this, Explore.class));
+
+                db.collection("Users")
+                        .document(userId)
+                        .set(user)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                //if the user registered and profile updated successfully  the mainActivity will be opened
+                                startActivity(new Intent(InterestTagPicker.this, Explore.class));
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                            }
+                        });
                 finish();
             }
         });
+
+
 
         //store the current user locally for fastest retrieval of only current user
 /*        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);

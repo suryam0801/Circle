@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Login.InterestTagPicker;
@@ -29,11 +30,13 @@ import circleapp.circlepackage.circle.SessionStorage;
 public class SendNotification {
     private static String TAG = SendNotification.class.getSimpleName();
 //    Circle circle = SessionStorage.getCircle(SendNotification.class.getCon);
-    public static void sendBCinfo(String broadcastId, String circleName, String creatorName, HashMap<String, Boolean> membersList)
+
+    public static void sendBCinfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userNotify;
         FirebaseAuth currentUser =FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         userNotify = database.getReference("Notifications");
 
@@ -47,13 +50,15 @@ public class SendNotification {
         String getDate = getCurrentDateStamp();
         applicationStatus.put("state", "broadcast_added");
         applicationStatus.put("circleName", circleName);
+        applicationStatus.put("circleId", circleId);
         applicationStatus.put("creatorName", creatorName);
         applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
         applicationStatus.put("notificationId", notificationId);
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
 
-        //Had to add the database write functionality......
+        Set<String> member = membersList.keySet();
+
 
 //        userNotify.child(toUserId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
 //            @Override
@@ -62,6 +67,32 @@ public class SendNotification {
 //            }
 //        });
 
+        for (String i :member)
+        {
+            db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Successfully !!!");
+                }
+
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Failed !!!"+e.toString());
+                }
+            });
+
+            userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d(TAG,"Notification Sended Successfully !!!");
+                }
+            });
+
+        }
+
+
+
 
     }
     public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
@@ -69,6 +100,8 @@ public class SendNotification {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userNotify;
+        FirebaseAuth currentUser =FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         userNotify = database.getReference("Notifications");
 
@@ -95,24 +128,18 @@ public class SendNotification {
                 Log.d(TAG,"Notification Sended Successfully !!!");
             }
         });
-//        userNotify.child(toUserId).child("Notifications").child(circleId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                Log.d(TAG,"Notification Sended Successfully !!!");
-//            }
-//        });
-//
-//        db.collection("Users/" + toUserId + "/Notifications").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//            @Override
-//            public void onSuccess(DocumentReference documentReference) {
-//
-//            }
-//
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//            }
-//        });
+
+        db.collection("Users/" + toUserId + "/Notifications").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.d(TAG,"Firestore::"+"Notification Sended Successfully !!!");
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
 
 
     }

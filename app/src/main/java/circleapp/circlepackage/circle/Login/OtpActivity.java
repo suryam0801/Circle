@@ -34,6 +34,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.Explore.Explore;
+//import circleapp.circlepackage.circle.LocalDatabase.AppDatabase;
+import circleapp.circlepackage.circle.LocalDatabase.AppExecutors;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -50,6 +52,8 @@ public class OtpActivity extends AppCompatActivity {
     private DatabaseReference usersDB;
     private FirebaseDatabase database;
     private TextView mOtpFeedback;
+    private User userldb;
+//    private AppDatabase lDb;
     String doc_id;
 
     @Override
@@ -117,6 +121,20 @@ public class OtpActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
+//                                        userldb = dataSnapshot.getValue(User.class);
+//
+//                                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                if (userldb!=null)
+//                                                {
+//                                                    lDb.userDao().insertUser(userldb);
+//                                                    Log.d("OtpActivity","user data stored locally"+userldb);
+//                                                }
+//
+//                                            }
+//                                        });
+
                                         sendUserToHome();
                                     } else {
                                         senduserToReg();
