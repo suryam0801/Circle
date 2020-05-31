@@ -164,18 +164,23 @@ public class GatherUserDetails extends AppCompatActivity {
 
         addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-        district = addresses.get(0).getSubAdminArea();
-
-        //logic to get ward from address line
-        Scanner scan = new Scanner(addresses.get(0).getAddressLine(0));
-        scan.useDelimiter(",");
-        List<String> parsing = new ArrayList<>();
-        while (scan.hasNext()) {
-            String w = String.valueOf(scan.next());
-            if(w.trim().equals(district.trim())) {
-                ward = parsing.get(parsing.size()-1);
-            } else {
-                parsing.add(w);
+        //need to figure out different
+        if(addresses.get(0).getCountryName().toLowerCase().equals("united states")) {
+            district = addresses.get(0).getSubAdminArea();
+            ward = addresses.get(0).getLocality();
+        } else {
+            district = addresses.get(0).getSubAdminArea();
+            //logic to get ward from address line
+            Scanner scan = new Scanner(addresses.get(0).getAddressLine(0));
+            scan.useDelimiter(",");
+            List<String> parsing = new ArrayList<>();
+            while (scan.hasNext()) {
+                String w = String.valueOf(scan.next());
+                if(w.trim().equals(district.trim())) {
+                    ward = parsing.get(parsing.size()-1);
+                } else {
+                    parsing.add(w);
+                }
             }
         }
     }
