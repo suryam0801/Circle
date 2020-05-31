@@ -298,7 +298,7 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         if(selectedInterests.contains(name))
-            chipGroupLocation.addView(chip, selectedInterests.indexOf(name));
+            chipGroupLocation.addView(chip, 0);
         else
             chipGroupLocation.addView(chip);
 

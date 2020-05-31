@@ -69,12 +69,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         if (seconds < 60) {
             viewHolder.timeElapsedDisplay.setText(seconds + "s ago");
-        } else if (minutes > 1 && minutes < 60) {
+        } else if (minutes >= 1 && minutes < 60) {
             viewHolder.timeElapsedDisplay.setText(minutes + "m ago");
-        } else if (hours > 1 && hours < 24) {
+        } else if (hours >= 1 && hours < 24) {
             viewHolder.timeElapsedDisplay.setText(hours + "h ago");
-        } else if (days > 1 && days < 365) {
-            if (days > 7)
+        } else if (days >= 1 && days < 365) {
+            if (days >= 7)
                 viewHolder.timeElapsedDisplay.setText((days / 7) + "w ago");
             else
                 viewHolder.timeElapsedDisplay.setText(days + "d ago");
