@@ -238,10 +238,13 @@ public class CreateCircle extends AppCompatActivity {
                 String interestTag = interestTagEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterests.add(interestTag);
-                    if(!dbInterestTags.contains(interestTag))
+                    if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
-
-                    setInterestTag(interestTag, interestChipGroupPopup);
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    } else {
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setInterestTag(interestTag, interestChipGroupPopup);
+                    }
                 }
             }
         });
@@ -294,7 +297,11 @@ public class CreateCircle extends AppCompatActivity {
 
         });
 
-        chipGroupLocation.addView(chip);
+        if(selectedInterests.contains(name))
+            chipGroupLocation.addView(chip, selectedInterests.indexOf(name));
+        else
+            chipGroupLocation.addView(chip);
+
         interestTagEntry.setText("#");
         interestTagEntry.setSelection(interestTagEntry.getText().length());
     }
