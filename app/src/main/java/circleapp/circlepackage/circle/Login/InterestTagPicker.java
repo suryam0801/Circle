@@ -64,6 +64,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private FirebaseDatabase database;
     private DatabaseReference tags, usersDB;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 

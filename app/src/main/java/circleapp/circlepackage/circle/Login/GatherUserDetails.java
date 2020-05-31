@@ -16,8 +16,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +30,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
@@ -47,7 +44,6 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -65,7 +61,9 @@ public class GatherUserDetails extends AppCompatActivity {
     private Uri downloadUri;
     private CircleImageView profilePic;
     SharedPreferences pref;
-    String city, fName, lName, contact;
+    String fName, lName, contact;
+    EditText firstname;
+    EditText lastname;
 
 
     //location services elements
@@ -88,9 +86,8 @@ public class GatherUserDetails extends AppCompatActivity {
 
         client = LocationServices.getFusedLocationProviderClient(this);
 
-
-        final EditText firstname = findViewById(R.id.fname);
-        final EditText lastname = findViewById(R.id.lname);
+        firstname = findViewById(R.id.fname);
+        lastname = findViewById(R.id.lname);
         Button register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         profilePic = findViewById(R.id.profile_image);
@@ -119,41 +116,45 @@ public class GatherUserDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                    requestPermission();
+                    requestLocationPermission();
                     return;
                 }
-                client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if(location != null){
-                            try {
-                                getAddress(location);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            fName = firstname.getText().toString();
-                            lName = lastname.getText().toString();
-                            //contact = "+91"+phn_num.getText().toString();
-                            contact = pref.getString("key_name5", null);
-
-                            Intent intent = new Intent(GatherUserDetails.this, InterestTagPicker.class);
-                            intent.putExtra("fName", fName);
-                            intent.putExtra("lName", lName);
-                            intent.putExtra("contact", contact);
-                            intent.putExtra("ward", ward.trim());
-                            intent.putExtra("district", district.trim());
-
-                            Log.d(TAG, ward + " " + district);
-
-                            if(downloadUri != null)
-                                intent.putExtra("uri", downloadUri.toString());
-
-                            startActivity(intent);
-                        }
-                    }
-                });
             }
         });
+    }
+
+    public void getLocation(){
+        client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location != null){
+                    try {
+                        getAddress(location);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    finalizeAndNextActivity();
+                }
+            }
+        });
+    }
+
+    public void finalizeAndNextActivity() {
+        fName = firstname.getText().toString();
+        lName = lastname.getText().toString();
+        contact = pref.getString("key_name5", null);
+
+        Intent intent = new Intent(GatherUserDetails.this, InterestTagPicker.class);
+        intent.putExtra("fName", fName);
+        intent.putExtra("lName", lName);
+        intent.putExtra("contact", contact);
+        intent.putExtra("ward", ward.trim());
+        intent.putExtra("district", district.trim());
+
+        if(downloadUri != null)
+            intent.putExtra("uri", downloadUri.toString());
+
+        startActivity(intent);
     }
 
     public void getAddress(Location location) throws IOException {
@@ -179,7 +180,7 @@ public class GatherUserDetails extends AppCompatActivity {
         }
     }
 
-    private void requestPermission() {
+    private void requestLocationPermission() {
         Log.i(TAG, "Requesting permission");
         ActivityCompat.requestPermissions(GatherUserDetails.this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -213,6 +214,18 @@ public class GatherUserDetails extends AppCompatActivity {
             } else {
                 Toast.makeText(GatherUserDetails.this,
                         "Storage Permission Denied",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+
+        if(requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation();
+            } else {
+                Toast.makeText(GatherUserDetails.this,
+                        "Location is required to continue",
                         Toast.LENGTH_SHORT)
                         .show();
             }
