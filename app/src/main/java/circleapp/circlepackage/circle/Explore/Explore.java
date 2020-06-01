@@ -174,7 +174,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                if(circle.getCircleDistrict()!=null && circle.getCircleDistrict().equals(user.getDistrict())){
                     //checking if user is a member of the circle
                     boolean existingMember = false;
                     if (circle.getMembersList() != null) {
@@ -279,7 +279,15 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict().equals(user.getDistrict())){
+
+                //adding default circles
+                //admin circle
+                if(circle.getId().equals("adminCircle")){
+                    exploreCircleList.add(circle);
+                    adapter.notifyDataSetChanged();
+                }
+
+                if(circle.getCircleDistrict()!= null && circle.getCircleDistrict().equals(user.getDistrict())){
 
                     //retrieve location & interest tags from circle object since tags are stored as hashmaps
                     List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
@@ -311,13 +319,6 @@ public class Explore extends AppCompatActivity {
                         }
                     }
 
-                    //adding default circles
-                    //admin circle
-                    if(circle.getId().equals("adminCircle")){
-                        exploreCircleList.add(circle);
-                        adapter.notifyDataSetChanged();
-                    }
-
                     //running circle
 
                     //recipe circle
@@ -342,7 +343,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                if(circle.getCircleDistrict()!=null && circle.getCircleDistrict().equals(user.getDistrict())){
                     int position = 0;
                     List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
                     for (Circle c : tempCircleList) {

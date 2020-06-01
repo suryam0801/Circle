@@ -327,7 +327,7 @@ public class CreateCircle extends AppCompatActivity {
         Circle circle = new Circle (myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,
                 interestHashmap, tempUserForMemberList, null, user.getDistrict(), user.getWard());
 
-        circleDB.child(user.getDistrict()).child(myCircleID).setValue(circle);
+        circleDB.child(myCircleID).setValue(circle);
 
         //updating tags
         for (String i : selectedInterests) {

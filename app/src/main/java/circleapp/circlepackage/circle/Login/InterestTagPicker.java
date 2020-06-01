@@ -101,13 +101,15 @@ public class InterestTagPicker extends AppCompatActivity {
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
 
-        tags.child("locationInterestTags").child(district).addValueEventListener(new ValueEventListener() {
+        tags.child("locationInterestTags").child(district.trim()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
                     locIntTags = (HashMap<String, Object>) snapshot.getValue();
 
-                    Log.d(TAG, "LOC INT TAGS: " + locIntTags.toString());
+                    Log.d(TAG, "LOC INT TAGS: " + locIntTags.keySet().toString());
+                    Log.d(TAG, "LOC INT TAGS: " + ward);
+
 
                     chipGroup.removeAllViews();
                     for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
