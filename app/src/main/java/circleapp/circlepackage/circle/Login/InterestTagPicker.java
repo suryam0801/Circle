@@ -374,7 +374,6 @@ public class InterestTagPicker extends AppCompatActivity {
         super.onStop();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
