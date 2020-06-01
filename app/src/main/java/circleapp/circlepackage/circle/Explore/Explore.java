@@ -55,6 +55,7 @@ public class Explore extends AppCompatActivity {
     private String TAG = Explore.class.getSimpleName();
     private List<Circle> exploreCircleList = new ArrayList<>();
     private List<Circle> workbenchCircleList = new ArrayList<>();
+    private List<Circle> allCircles = new ArrayList<>();
     private FloatingActionButton btnAddCircle;
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
@@ -72,6 +73,9 @@ public class Explore extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         intentUri = getIntent().getData();
+        //opening link joining
+        Log.d(TAG, "RECIEVED INTENT");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
@@ -120,24 +124,19 @@ public class Explore extends AppCompatActivity {
 
 
         //onClick listener for create project button
-        btnAddCircle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Explore.this, CreateCircle.class));
-            }
+        btnAddCircle.setOnClickListener(view -> {
+            startActivity(new Intent(Explore.this, CreateCircle.class));
+            finish();
         });
 
-        notificationBell.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Explore.this, NotificationActivity.class));
-            }
+        notificationBell.setOnClickListener(v -> {
+            startActivity(new Intent(Explore.this, NotificationActivity.class));
+            finish();
         });
-        profPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(Explore.this, EditProfile.class));
-            }
+
+        profPic.setOnClickListener(view -> {
+            startActivity(new Intent(Explore.this, EditProfile.class));
+            finish();
         });
     }
 
@@ -159,6 +158,7 @@ public class Explore extends AppCompatActivity {
                     public void onItemClick(View view, int position) {
                         SessionStorage.saveCircle(Explore.this, workbenchCircleList.get(position));
                         startActivity(new Intent(Explore.this, CircleWall.class));
+                        finish();
                     }
 
                     @Override
@@ -279,12 +279,19 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-
+                allCircles.add(circle);
                 //adding default circles
                 //admin circle
                 if(circle.getId().equals("adminCircle")){
-                    exploreCircleList.add(circle);
-                    adapter.notifyDataSetChanged();
+                    boolean contains = false;
+                    for(Circle c : exploreCircleList){
+                        if(c.getId().equals(circle.getId()))
+                            contains=true;
+                    }
+                    if(contains==false){
+                        exploreCircleList.add(circle);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
 
                 if(circle.getCircleDistrict()!= null && circle.getCircleDistrict().equals(user.getDistrict())){
@@ -318,24 +325,6 @@ public class Explore extends AppCompatActivity {
                             }
                         }
                     }
-
-                    //running circle
-
-                    //recipe circle
-
-                    //opening link joining
-                    if(intentUri!=null){
-                        List<String> params = intentUri.getPathSegments();
-                        String circleID = params.get(params.size()-1);
-                        Log.d(TAG, "INTENT CIRCLEID: " + circleID);
-                        if(!exploreCircleList.isEmpty()) {
-                            for(Circle c : exploreCircleList) {
-                                if(c.getId().equals(circleID)){
-                                    displayJoinPopup(c);
-                                }
-                            }
-                        }
-                    }
                 }
 
             }
@@ -343,6 +332,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
+                Log.d(TAG, "ADDEDDDDDDDDDDD");
                 if(circle.getCircleDistrict()!=null && circle.getCircleDistrict().equals(user.getDistrict())){
                     int position = 0;
                     List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
@@ -426,20 +416,23 @@ public class Explore extends AppCompatActivity {
             if(circle.getId().equals("adminCircle")){
                 SessionStorage.saveCircle(Explore.this, circle);
                 startActivity(new Intent(Explore.this, CircleWall.class));
+                finish();
+            } else {
+
+                if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
+                    database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
+                    //adding userID to applicants list
+                    circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+                } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
+                    database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+                    //adding userID to members list in circlesReference
+                    circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+                    int nowActive = user.getActiveCircles() + 1;
+                    usersDB.child("activeCircles").setValue((nowActive));
+                }
+                circleJoinDialog.dismiss();
             }
 
-            if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-                database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-                //adding userID to applicants list
-                circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-                database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-                //adding userID to members list in circlesReference
-                circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-                int nowActive = user.getActiveCircles() + 1;
-                usersDB.child("activeCircles").setValue((nowActive));
-            }
-            circleJoinDialog.dismiss();
         });
 
         cancelButton.setOnClickListener(view -> circleJoinDialog.dismiss());
@@ -461,6 +454,25 @@ public class Explore extends AppCompatActivity {
             startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
 
+        }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.d(TAG, "RECIEVED INTENT");
+        if(intentUri!=null) {
+            Log.d(TAG, "INTENT NOT NULL");
+            List<String> params = intentUri.getPathSegments();
+            String circleID = params.get(params.size() - 1);
+            Log.d(TAG, "INTENT CIRCLEID: " + circleID);
+            if(!allCircles.isEmpty()){
+                for(Circle c : allCircles){
+                    if (c.getId().equals(circleID)) {
+                        displayJoinPopup(c);
+                    }
+                }
+            }
         }
     }
 

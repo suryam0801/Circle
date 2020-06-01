@@ -251,6 +251,7 @@ public class EditProfile extends AppCompatActivity {
         interestTagEntry.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "TOUCHEDDDD!!!!!");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
