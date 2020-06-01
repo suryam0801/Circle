@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -63,6 +64,8 @@ public class Explore extends AppCompatActivity {
     private User user;
     private List<String> userTempinterestTagsList;
     private Uri intentUri;
+    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
+            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
 
     long startTimeCircle, startTimeUser;
 
@@ -92,9 +95,11 @@ public class Explore extends AppCompatActivity {
                 Log.d(TAG, "TIME TAKEN USERS: " + (System.currentTimeMillis() - startTimeUser));
                 user = dataSnapshot.getValue(User.class);
                 SessionStorage.saveUser(Explore.this, user);
+                Random r = new Random();
+                int count = r.nextInt((4 - 0) + 1);
                 Glide.with(getApplicationContext())
-                            .load(user.getProfileImageLink())
-                        .placeholder(ContextCompat.getDrawable(Explore.this, R.drawable.profile_image))
+                        .load(user.getProfileImageLink())
+                        .placeholder(ContextCompat.getDrawable(Explore.this, myImageList[count]))
                         .into(profPic);
 
                 //retrieve interest tags from user

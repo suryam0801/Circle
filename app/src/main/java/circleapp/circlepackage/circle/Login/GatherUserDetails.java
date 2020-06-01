@@ -189,6 +189,7 @@ public class GatherUserDetails extends AppCompatActivity {
         ActivityCompat.requestPermissions(GatherUserDetails.this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 REQUEST_PERMISSIONS_REQUEST_CODE);
+        getLocation();
     }
 
     public void selectFile(){

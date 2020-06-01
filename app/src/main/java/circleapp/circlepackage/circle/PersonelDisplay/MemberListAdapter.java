@@ -28,6 +28,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     private Context mContext;
     private List<Subscriber> memberList;
     String TAG = "APPLICANT_LIST_ADAPTER";
+    private int count = 0;
+    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
+            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList) {
         Log.d(TAG, "SIZE: " + memberList.size());
@@ -49,8 +53,11 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
 
         Glide.with(mContext)
                 .load(member.getPhotoURI())
-                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.profile_image))
+                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
                 .into(holder.profPic);
+
+        ++count;
+        if(count == 4) count = 0;
 
         //Set text for TextView
         final String nameDisplay = member.getName();

@@ -1,11 +1,9 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -23,6 +21,10 @@ public class CommentAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Comment> CommentList;
+    private int count = 0;
+    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
+            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+
 
     public CommentAdapter(Context mContext, List<Comment> CommentList) {
         this.mContext = mContext;
@@ -76,10 +78,14 @@ public class CommentAdapter extends BaseAdapter {
 
         userName.setText(name);
         comment.setText(cmnt);
+
         Glide.with(mContext)
                 .load(profPicURI)
-                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.profile_image))
+                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
                 .into(profPic);
+
+        ++count;
+        if(count == 4) count = 0;
 
         if(seconds < 60) {
             timeElapsed.setText(seconds + "s ago");
