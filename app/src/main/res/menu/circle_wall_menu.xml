@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_share_black_24dp"
+        android:title="Share this circle"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/viewMembers"
+        android:title="View members"
+        android:icon="@drawable/ic_person_outline_black_24dp"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/exitCircle"
+        android:title="Exit circle"
+        app:showAsAction="always">
+
+    </item>
+
+</menu>

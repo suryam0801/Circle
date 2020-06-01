@@ -40,23 +40,13 @@
                 android:textSize="20dp"></TextView>
 
             <ImageButton
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="40dp"
-                android:id="@+id/circle_wall_view_members"
-                android:background="@drawable/ic_person_outline_black_24dp">
-            </ImageButton>
-
-            <ImageButton
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
                 android:id="@+id/share_with_friend_button"
-                android:background="@drawable/ic_share_black_24dp">
+                android:background="@drawable/ic_menu_black_24dp">
             </ImageButton>
 
         </RelativeLayout>

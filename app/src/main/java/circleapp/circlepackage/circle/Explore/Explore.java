@@ -168,7 +168,6 @@ public class Explore extends AppCompatActivity {
         circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "ADDEDDDDDDD");
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 //checking if user is a member of the circle
@@ -188,7 +187,6 @@ public class Explore extends AppCompatActivity {
 
                 //setting the adapter initially
                 //filter for only circles associated with creator id
-                Log.d(TAG, "CIRCLE OBJECT: " + dataSnapshot.toString());
                 if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
                     workbenchCircleList.add(circle);
                     //notify the adapter each time a new item needs to be added to the recycler view
@@ -198,7 +196,6 @@ public class Explore extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "CHANGEDDD");
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 int position = 0;
                 List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
@@ -443,6 +440,7 @@ public class Explore extends AppCompatActivity {
 
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
