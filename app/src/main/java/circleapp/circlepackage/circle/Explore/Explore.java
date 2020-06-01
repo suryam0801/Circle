@@ -170,62 +170,69 @@ public class Explore extends AppCompatActivity {
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
 
-        circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
+        circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-
-                //checking if user is a member of the circle
-                boolean existingMember = false;
-                if (circle.getMembersList() != null) {
-                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
-                        existingMember = true;
-                }
-
-                //checking for duplicate
-                boolean duplicate = false;
-                for(Circle c : workbenchCircleList){
-                    if(c.getId().equals(circle.getId())) {
-                        duplicate = true;
+                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                    //checking if user is a member of the circle
+                    boolean existingMember = false;
+                    if (circle.getMembersList() != null) {
+                        if (circle.getMembersList().keySet().contains(currentUser.getUid()))
+                            existingMember = true;
                     }
-                }
 
-                //setting the adapter initially
-                //filter for only circles associated with creator id
-                if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
-                    workbenchCircleList.add(circle);
-                    //notify the adapter each time a new item needs to be added to the recycler view
-                    wbadapter.notifyDataSetChanged();
+                    //checking for duplicate
+                    boolean duplicate = false;
+                    for(Circle c : workbenchCircleList){
+                        if(c.getId().equals(circle.getId())) {
+                            duplicate = true;
+                        }
+                    }
+
+                    //setting the adapter initially
+                    //filter for only circles associated with creator id
+                    if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
+                        workbenchCircleList.add(circle);
+                        //notify the adapter each time a new item needs to be added to the recycler view
+                        wbadapter.notifyDataSetChanged();
+                    }
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                int position = 0;
-                List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
-                for (Circle c : tempCircleList) {
-                    if (c.getId().equals(circle.getId())) {
-                        workbenchCircleList.remove(position);
-                        workbenchCircleList.add(position, circle);
-                        wbadapter.notifyDataSetChanged();
+                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                    int position = 0;
+                    List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
+                    for (Circle c : tempCircleList) {
+                        if (c.getId().equals(circle.getId())) {
+                            workbenchCircleList.remove(position);
+                            workbenchCircleList.add(position, circle);
+                            wbadapter.notifyDataSetChanged();
+                        }
+                        ++position;
                     }
-                    ++position;
                 }
+
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                int position = 0;
-                for (Circle c : workbenchCircleList) {
-                    if (c.getId().equals(circle.getId())) {
-                        workbenchCircleList.remove(position);
-                        wbadapter.notifyDataSetChanged();
-                        break;
+                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                    int position = 0;
+                    for (Circle c : workbenchCircleList) {
+                        if (c.getId().equals(circle.getId())) {
+                            workbenchCircleList.remove(position);
+                            wbadapter.notifyDataSetChanged();
+                            break;
+                        }
+                        ++position;
                     }
-                    ++position;
                 }
+
             }
 
             @Override
@@ -268,100 +275,106 @@ public class Explore extends AppCompatActivity {
 
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-        circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
+        circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
+                if(circle.getCircleDistrict().equals(user.getDistrict())){
 
-                //retrieve location & interest tags from circle object since tags are stored as hashmaps
-                List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
+                    //retrieve location & interest tags from circle object since tags are stored as hashmaps
+                    List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
 
-                //checking if user is a member of the circle
-                boolean existingMember = false;
-                if (circle.getMembersList() != null) {
-                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
-                        existingMember = true;
-                }
+                    //checking if user is a member of the circle
+                    boolean existingMember = false;
+                    if (circle.getMembersList() != null) {
+                        if (circle.getMembersList().keySet().contains(currentUser.getUid()))
+                            existingMember = true;
+                    }
 
-                if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
-                    //setting the adapter initially
-                    //filter for only circles associated with matching user location and interests
-                    for (String intIterator : userTempinterestTagsList) {
-                        if (circleIteratorinterestTagsList.contains(intIterator)) {
-                            //check if circle already exists
-                            boolean circleExists = false;
-                            for(Circle conditional : exploreCircleList) {
-                                if(conditional.getId().equals(circle.getId()))
-                                    circleExists = true;
+                    if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
+                        //setting the adapter initially
+                        //filter for only circles associated with matching user location and interests
+                        for (String intIterator : userTempinterestTagsList) {
+                            if (circleIteratorinterestTagsList.contains(intIterator)) {
+                                //check if circle already exists
+                                boolean circleExists = false;
+                                for(Circle conditional : exploreCircleList) {
+                                    if(conditional.getId().equals(circle.getId()))
+                                        circleExists = true;
+                                }
+
+                                if(circleExists == false){
+                                    exploreCircleList.add(circle);
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
+                        }
+                    }
 
-                            if(circleExists == false){
-                                exploreCircleList.add(circle);
-                                adapter.notifyDataSetChanged();
+                    //adding default circles
+                    //admin circle
+                    if(circle.getId().equals("adminCircle")){
+                        exploreCircleList.add(circle);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    //running circle
+
+                    //recipe circle
+
+                    //opening link joining
+                    if(intentUri!=null){
+                        List<String> params = intentUri.getPathSegments();
+                        String circleID = params.get(params.size()-1);
+                        Log.d(TAG, "INTENT CIRCLEID: " + circleID);
+                        if(!exploreCircleList.isEmpty()) {
+                            for(Circle c : exploreCircleList) {
+                                if(c.getId().equals(circleID)){
+                                    displayJoinPopup(c);
+                                }
                             }
                         }
                     }
                 }
 
-                //adding default circles
-                //admin circle
-                if(circle.getId().equals("adminCircle")){
-                    exploreCircleList.add(circle);
-                    adapter.notifyDataSetChanged();
-                }
-
-                //running circle
-
-                //recipe circle
-
-                //opening link joining
-                if(intentUri!=null){
-                    List<String> params = intentUri.getPathSegments();
-                    String circleID = params.get(params.size()-1);
-                    Log.d(TAG, "INTENT CIRCLEID: " + circleID);
-                    if(!exploreCircleList.isEmpty()) {
-                        for(Circle c : exploreCircleList) {
-                            if(c.getId().equals(circleID)){
-                                displayJoinPopup(c);
-                            }
-                        }
-                    }
-                }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                Log.d(TAG, circle.toString());
-                int position = 0;
-                List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
-                for (Circle c : tempCircleList) {
-                    if (c.getId().equals(circle.getId())) {
-                        if(circle.getMembersList()!=null && circle.getMembersList().containsKey(user.getUserId())) {
-                            exploreCircleList.remove(position);
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            exploreCircleList.remove(position);
-                            exploreCircleList.add(position, circle);
-                            adapter.notifyDataSetChanged();
-                        }
+                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                    int position = 0;
+                    List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
+                    for (Circle c : tempCircleList) {
+                        if (c.getId().equals(circle.getId())) {
+                            if(circle.getMembersList()!=null && circle.getMembersList().containsKey(user.getUserId())) {
+                                exploreCircleList.remove(position);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                exploreCircleList.remove(position);
+                                exploreCircleList.add(position, circle);
+                                adapter.notifyDataSetChanged();
+                            }
 
+                        }
+                        ++position;
                     }
-                    ++position;
                 }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                int position = 0;
-                for (Circle c : exploreCircleList) {
-                    if (c.getId().equals(circle.getId())) {
-                        exploreCircleList.remove(position);
-                        adapter.notifyDataSetChanged();
-                        break;
+                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                    int position = 0;
+                    for (Circle c : exploreCircleList) {
+                        if (c.getId().equals(circle.getId())) {
+                            exploreCircleList.remove(position);
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
+                        ++position;
                     }
-                    ++position;
                 }
             }
 
@@ -417,11 +430,11 @@ public class Explore extends AppCompatActivity {
             if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
                 database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
                 //adding userID to applicants list
-                circlesDB.child(user.getDistrict()).child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+                circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
             } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                 database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
                 //adding userID to members list in circlesReference
-                circlesDB.child(user.getDistrict()).child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+                circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
                 int nowActive = user.getActiveCircles() + 1;
                 usersDB.child("activeCircles").setValue((nowActive));
             }

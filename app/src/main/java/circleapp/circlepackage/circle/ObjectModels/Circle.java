@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Circle {
-    private String id, name, description, acceptanceType, creatorID, creatorName;
+    private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard;
     private HashMap<String, Boolean>  interestTags, membersList, applicantsList;
 
     public Circle(){
@@ -13,7 +13,7 @@ public class Circle {
 
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
                   String creatorName, HashMap<String, Boolean> interestTags,
-                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList) {
+                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList, String circleDistrict, String circleWard) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -23,6 +23,8 @@ public class Circle {
         this.interestTags = interestTags;
         this.membersList = membersList;
         this.applicantsList = applicantsList;
+        this.circleDistrict = circleDistrict;
+        this.circleWard = circleWard;
     }
 
     public String getId() {
@@ -97,6 +99,22 @@ public class Circle {
         this.applicantsList = applicantsList;
     }
 
+    public String getCircleDistrict() {
+        return circleDistrict;
+    }
+
+    public void setCircleDistrict(String circleDistrict) {
+        this.circleDistrict = circleDistrict;
+    }
+
+    public String getCircleWard() {
+        return circleWard;
+    }
+
+    public void setCircleWard(String circleWard) {
+        this.circleWard = circleWard;
+    }
+
     @Override
     public String toString() {
         return "Circle{" +
@@ -106,6 +124,8 @@ public class Circle {
                 ", acceptanceType='" + acceptanceType + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorName='" + creatorName + '\'' +
+                ", circleDistrict='" + circleDistrict + '\'' +
+                ", circleWard='" + circleWard + '\'' +
                 ", interestTags=" + interestTags +
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +

@@ -222,7 +222,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle adminCircle = new Circle("adminCircle", "Welcome To Circle",
                 "Join this circle to learn more about how you can easy connect with your neighbors",
                 "automatic", "CreatorAdmin", "Admin", circleIntTags,
-                null, null);
+                null, null, null, null);
 
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
         pollOptions.put("I really like it!", 8);
@@ -238,7 +238,7 @@ public class InterestTagPicker extends AppCompatActivity {
                 "information you might have about that particular broadcast",
                 "adminCommentId", null, System.currentTimeMillis());
 
-        circlesDB.child(district).child("adminCircle").setValue(adminCircle);
+        circlesDB.child("adminCircle").setValue(adminCircle);
         broadcastsDB.child("adminCircle").child("adminBroadcast").setValue(broadcast);
         commentsDB.child("adminCircle").child("adminCommentId").setValue(comment);
 
@@ -246,13 +246,13 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle runningCircle = new Circle("admin", district + " Morning Runner's",
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
                 "automatic", "CreatorAdmin", "CreatorAdmin", null,
-                null, null);
+                null, null, district, ward);
 
         //cooking circle
         Circle cookingCircle = new Circle("admin", district + " Recipe Sharing Circle",
                 "Hello Cooks, join our circle and get access to the best recipes cooking in " + district + " and share your own dishes!",
                 "automatic", "CreatorAdmin", "CreatorAdmin", null,
-                null, null);
+                null, null, district, ward);
     }
 
     // Function to add a chip to chipgroup
