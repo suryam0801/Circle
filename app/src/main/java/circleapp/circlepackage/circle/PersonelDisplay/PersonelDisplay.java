@@ -39,12 +39,9 @@ public class PersonelDisplay extends AppCompatActivity {
         pagerAdapter = new PersonelTabAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
-                finish();
-            }
+        back.setOnClickListener(view -> {
+            startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
+            finish();
         });
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.android.gms.common.internal.service.Common;
@@ -47,6 +48,7 @@ public class BroadcastComments extends AppCompatActivity {
     private Circle circle;
     private FirebaseDatabase database;
     private DatabaseReference broadcastCommentsDB;
+    private ImageButton back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class BroadcastComments extends AppCompatActivity {
         commentsListView = findViewById(R.id.comments_listView);
         commentEditText = findViewById(R.id.comment_type_editText);
         commentSend = findViewById(R.id.comment_send_button);
+        back = findViewById(R.id.bck_broadcastComments);
         commentsList = new ArrayList<>();
 
         commentAdapter= new CommentAdapter(BroadcastComments.this, commentsList);
@@ -70,12 +73,14 @@ public class BroadcastComments extends AppCompatActivity {
 
         loadComments();
 
-        commentSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!commentEditText.getText().toString().trim().equals(""))
-                    makeCommentEntry();
-            }
+        commentSend.setOnClickListener(view -> {
+            if (!commentEditText.getText().toString().trim().equals(""))
+                makeCommentEntry();
+        });
+
+        back.setOnClickListener(view -> {
+            startActivity(new Intent(BroadcastComments.this, CircleWall.class));
+            finish();
         });
     }
 

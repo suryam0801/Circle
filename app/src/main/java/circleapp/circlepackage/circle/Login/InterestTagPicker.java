@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -133,8 +134,9 @@ public class InterestTagPicker extends AppCompatActivity {
                     //set tags in ward order
                     for(String tag : dbInterestTags)
                         setTag(tag);
+                } else {
+                    //if location does not exist... write create manual circles
                 }
-
             }
 
             @Override

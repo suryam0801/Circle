@@ -110,42 +110,37 @@ public class CreateCircle extends AppCompatActivity {
             }
         });
 
-        btn_createCircle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String cName = circleNameEntry.getText().toString();
-                String cDescription = circleDescriptionEntry.getText().toString();
+        btn_createCircle.setOnClickListener(view -> {
+            String cName = circleNameEntry.getText().toString();
+            String cDescription = circleDescriptionEntry.getText().toString();
 
-                if (!cName.isEmpty() || !cDescription.isEmpty() || !selectedInterests.isEmpty()) {
-                    createCirlce(cName, cDescription);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
-                }
+            if (!cName.isEmpty() || !cDescription.isEmpty() || !selectedInterests.isEmpty()) {
+                createCirlce(cName, cDescription);
+            } else {
+                Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
             }
         });
 
+        back.setOnClickListener(view -> {
+            startActivity(new Intent(CreateCircle.this, Explore.class));
+            finish();
+        });
 
-        tv_selectInterestTags.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        tv_selectInterestTags.setOnClickListener(view -> {
+            //show dialogue for selecting interest tags
+            displayInterestTagDialog();
+        });
+
+        interestTagSelectTitle.setOnClickListener(view -> {
+            if (selectedInterests.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Select Location Tags First", Toast.LENGTH_LONG).show();
+            } else {
                 //show dialogue for selecting interest tags
+                dbInterestTags.clear();
+                interestTagsDisplay.removeAllViews();
                 displayInterestTagDialog();
             }
-        });
 
-        interestTagSelectTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedInterests.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Select Location Tags First", Toast.LENGTH_LONG).show();
-                } else {
-                    //show dialogue for selecting interest tags
-                    dbInterestTags.clear();
-                    interestTagsDisplay.removeAllViews();
-                    displayInterestTagDialog();
-                }
-
-            }
         });
 
 

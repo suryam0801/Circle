@@ -20,6 +20,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -27,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +44,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -52,11 +54,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.BuildConfig;
+import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -64,7 +67,7 @@ import circleapp.circlepackage.circle.SessionStorage;
 public class CircleWall extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB;
+    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB;
     private FirebaseAuth currentUser;
 
     private String TAG = CircleWall.class.getSimpleName();
@@ -80,7 +83,8 @@ public class CircleWall extends AppCompatActivity {
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
 
-    private ImageButton viewPersonel, shareCircle;
+    private ImageButton menuButton, back;
+    private User user;
 
     //create broadcast popup ui elements
     private EditText setMessageET, setPollQuestionET, setPollOptionET;
@@ -100,15 +104,18 @@ public class CircleWall extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
+        circlesPersonelDB = database.getReference("CirclePersonel");
+        circlesDB = database.getReference("Circles");
         broadcastsDB.keepSynced(true);
         currentUser=FirebaseAuth.getInstance();
+        user = SessionStorage.getUser(CircleWall.this);
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
-        viewPersonel = findViewById(R.id.circle_wall_view_members);
-        shareCircle = findViewById(R.id.share_with_friend_button);
+        menuButton = findViewById(R.id.share_with_friend_button);
+        back = findViewById(R.id.bck_Circlewall);
 
         createNewBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,19 +124,48 @@ public class CircleWall extends AppCompatActivity {
             }
         });
 
-        viewPersonel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
-            }
+        menuButton.setOnClickListener(view -> {
+            showPopup(view);
         });
 
-        shareCircle.setOnClickListener(view -> {
-            showShareCirclePopup();
+        back.setOnClickListener(view -> {
+            startActivity(new Intent(CircleWall.this, Explore.class));
+            finish();
         });
 
         loadCircleBroadcasts();
 
+    }
+
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.circle_wall_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.share:
+                        showShareCirclePopup();
+                        return true;
+                    case R.id.viewMembers:
+                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
+                        return true;
+                    case R.id.exitCircle:
+                        exitCircle();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.show();
+    }
+
+    private void exitCircle() {
+        circlesDB.child(user.getDistrict()).child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
+        circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
+        startActivity(new Intent(CircleWall.this, Explore.class));
     }
 
     private void showShareCirclePopup() {
