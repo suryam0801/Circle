@@ -1,19 +1,20 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class Broadcast {
-    public String id, message, attachmentURI, creatorName, creatorID;
+    public String id, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
     public boolean pollExists;
     public long timeStamp;
     public Poll poll;
 
     public Broadcast(String id, String message, String attachmentURI, String creatorName,
-                     String creatorID, boolean pollExists, long timeStamp, Poll poll) {
+                     String creatorID, boolean pollExists, long timeStamp, Poll poll, String creatorPhotoURI) {
         this.id = id;
         this.message = message;
         this.attachmentURI = attachmentURI;
         this.creatorName = creatorName;
         this.creatorID = creatorID;
         this.pollExists = pollExists;
+        this.creatorPhotoURI = creatorPhotoURI;
         this.timeStamp = timeStamp;
         this.poll = poll;
     }
@@ -86,6 +87,14 @@ public class Broadcast {
         this.pollExists = pollExists;
     }
 
+    public String getCreatorPhotoURI() {
+        return creatorPhotoURI;
+    }
+
+    public void setCreatorPhotoURI(String creatorPhotoURI) {
+        this.creatorPhotoURI = creatorPhotoURI;
+    }
+
     @Override
     public String toString() {
         return "Broadcast{" +
@@ -94,9 +103,10 @@ public class Broadcast {
                 ", attachmentURI='" + attachmentURI + '\'' +
                 ", creatorName='" + creatorName + '\'' +
                 ", creatorID='" + creatorID + '\'' +
+                ", creatorPhotoURI='" + creatorPhotoURI + '\'' +
                 ", pollExists=" + pollExists +
                 ", timeStamp=" + timeStamp +
-                ", poll=" + poll.toString() +
+                ", poll=" + poll +
                 '}';
     }
 }

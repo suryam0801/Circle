@@ -85,7 +85,7 @@ public class InterestTagPicker extends AppCompatActivity {
 
         register = findViewById(R.id.registerButton);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
-        interestTagsEntry = (AutoCompleteTextView) findViewById(R.id.interest_tags_entry);
+        interestTagsEntry = findViewById(R.id.interest_tags_entry);
         interestTagAdd = findViewById(R.id.interest_tag_add_button);
 
         //Getting Firebase instances
@@ -126,7 +126,6 @@ public class InterestTagPicker extends AppCompatActivity {
 
                         String[] arr = autoCompleteItemsList.toArray(new String[0]);
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, arr);
-                        interestTagsEntry.setThreshold(1);
                         interestTagsEntry.setAdapter(adapter);
                         //this for loop is used when the user wants to edit interest tag choices
                         for (String interest : selectedInterestTags) { //add selected interests as options even if they are not in the location-interest list
@@ -159,6 +158,16 @@ public class InterestTagPicker extends AppCompatActivity {
         });
 
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
+        interestTagsEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "CLICKED!!!!!!!");
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
+                interestTagsEntry.setText("#");
+                interestTagsEntry.setSelection(interestTagsEntry.getText().length());
+            }
+        });
         interestTagsEntry.setOnTouchListener(new View.OnTouchListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -223,7 +232,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Broadcast broadcast = new Broadcast("adminBroadcast", "Hello and welcome to your circle wall. You can create and share messages, " +
                 "attachments, and your custom polls to all your circle members. Say bye to the useless forward messages of whatsapp and " +
                 "focus on what truly matters", null, "Admin", "AdminId", true,
-                System.currentTimeMillis(), adminPoll);
+                System.currentTimeMillis(), adminPoll, "default");
 
         Comment comment = new Comment("Admin", "This is where you can clarify any questions or share any " +
                 "information you might have about that particular broadcast",

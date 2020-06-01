@@ -115,15 +115,12 @@
 
                         </TextView>
 
-                        <RadioGroup
-                            android:id="@+id/poll_options_radio_group"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:outlineSpotShadowColor="@drawable/gradient_button_background"
-                            android:orientation="vertical"
-                            android:theme="@style/MyRadioButtonTwo">
-
-                        </RadioGroup>
+                            android:id="@+id/poll_options_radio_group"
+                            android:orientation="vertical">
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -159,8 +156,10 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_height="1dp"
-                android:background="#F6F6F6"></View>
+                android:background="#D3D0D0"></View>
 
         </LinearLayout>
 

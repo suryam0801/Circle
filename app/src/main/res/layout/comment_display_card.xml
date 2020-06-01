@@ -47,6 +47,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
                     android:layout_marginTop="5dp"
+                    android:background="@drawable/broadcast_message_background"
+                    android:padding="15dp"
                     android:text="Description"
                     android:lineSpacingExtra="3dp"
                     android:textColor="#9D9D9D"
@@ -68,6 +70,8 @@
 
         <View
             android:layout_width="match_parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_height="1dp"
             android:layout_marginTop="6dp"
             android:background="#D3D0D0"></View>

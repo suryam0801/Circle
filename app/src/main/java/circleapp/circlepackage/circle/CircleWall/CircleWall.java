@@ -359,27 +359,27 @@ public class CircleWall extends AppCompatActivity {
         if (downloadUri == null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
-                    currentUserName, currentUserId, false, System.currentTimeMillis(), null);
+                    currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
 
         } else if (downloadUri != null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
-                    currentUserName, currentUserId,  false, System.currentTimeMillis(), null);
+                    currentUserName, currentUserId,  false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
 
         } else if (downloadUri == null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
-                    currentUserName, currentUserId,  true, System.currentTimeMillis(), poll);
+                    currentUserName, currentUserId,  true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
 
         } else if (downloadUri != null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
-                    currentUserName, currentUserId,  true, System.currentTimeMillis(), poll);
+                    currentUserName, currentUserId,  true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
         }
     }

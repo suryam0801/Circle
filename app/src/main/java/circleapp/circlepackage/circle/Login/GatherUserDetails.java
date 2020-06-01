@@ -118,23 +118,22 @@ public class GatherUserDetails extends AppCompatActivity {
                 if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                     requestLocationPermission();
                     return;
+                } else {
+                    getLocation();
                 }
             }
         });
     }
 
     public void getLocation(){
-        client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if(location != null){
-                    try {
-                        getAddress(location);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    finalizeAndNextActivity();
+        client.getLastLocation().addOnSuccessListener(location -> {
+            if(location != null){
+                try {
+                    getAddress(location);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                finalizeAndNextActivity();
             }
         });
     }
