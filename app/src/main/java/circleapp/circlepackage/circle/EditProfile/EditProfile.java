@@ -54,10 +54,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CreateCircle;
 import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
+import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -162,54 +164,47 @@ public class EditProfile extends AppCompatActivity {
                 .placeholder(ContextCompat.getDrawable(EditProfile.this, R.drawable.profile_image))
                 .into(profileImageView);
 
-        editIntTagBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                interestTagsEditDisplay.removeAllViews();
-                displayInterestTagPopup();
-            }
+        editIntTagBtn.setOnClickListener(view -> {
+            interestTagsEditDisplay.removeAllViews();
+            displayInterestTagPopup();
         });
 
-        editProfPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(EditProfile.this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(EditProfile.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            STORAGE_PERMISSION_CODE);
-                } else {
-                    selectFile();
-                }
-
+        editProfPic.setOnClickListener(view -> {
+            if (ContextCompat.checkSelfPermission(EditProfile.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(EditProfile.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            } else {
+                selectFile();
             }
+
         });
 
-        finalizeChanges.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(downloadUri!=null)
-                    user.setProfileImageLink(downloadUri.toString());
+        finalizeChanges.setOnClickListener(view -> {
+            if(downloadUri!=null)
+                user.setProfileImageLink(downloadUri.toString());
 
-                HashMap<String, Boolean> tempIntTags = new HashMap<>();
-                for(String interest : selectedInterestTags)
-                    tempIntTags.put(interest, true);
-                user.setInterestTags(tempIntTags);
+            HashMap<String, Boolean> tempIntTags = new HashMap<>();
+            for(String interest : selectedInterestTags)
+                tempIntTags.put(interest, true);
+            user.setInterestTags(tempIntTags);
 
-                userDB.child(user.getUserId()).setValue(user);
-                startActivity(new Intent(EditProfile.this, Explore.class));
-                finish();
-            }
+            userDB.child(user.getUserId()).setValue(user);
+            startActivity(new Intent(EditProfile.this, Explore.class));
+            finish();
         });
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentUser.signOut();
-                startActivity(new Intent(EditProfile.this, PhoneLogin.class));
-                finish();
-            }
+        logout.setOnClickListener(view -> {
+            currentUser.signOut();
+            startActivity(new Intent(EditProfile.this, PhoneLogin.class));
+            finish();
+        });
+
+        back.setOnClickListener(view -> {
+            startActivity(new Intent(EditProfile.this, Explore.class));
+            finish();
         });
 
     }

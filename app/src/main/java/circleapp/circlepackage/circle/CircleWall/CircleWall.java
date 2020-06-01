@@ -83,7 +83,7 @@ public class CircleWall extends AppCompatActivity {
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
 
-    private ImageButton shareCircle;
+    private ImageButton menuButton, back;
     private User user;
 
     //create broadcast popup ui elements
@@ -114,7 +114,8 @@ public class CircleWall extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
-        shareCircle = findViewById(R.id.share_with_friend_button);
+        menuButton = findViewById(R.id.share_with_friend_button);
+        back = findViewById(R.id.bck_Circlewall);
 
         createNewBroadcast.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,8 +124,13 @@ public class CircleWall extends AppCompatActivity {
             }
         });
 
-        shareCircle.setOnClickListener(view -> {
+        menuButton.setOnClickListener(view -> {
             showPopup(view);
+        });
+
+        back.setOnClickListener(view -> {
+            startActivity(new Intent(CircleWall.this, Explore.class));
+            finish();
         });
 
         loadCircleBroadcasts();
