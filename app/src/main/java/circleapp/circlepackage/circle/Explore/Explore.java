@@ -266,13 +266,10 @@ public class Explore extends AppCompatActivity {
         circlesDB.child(user.getDistrict()).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "TIME TAKEN CIRCLES: " + (System.currentTimeMillis() - startTimeCircle));
-                Log.d(TAG, "TIME TAKEN CIRCLES: " + dataSnapshot.toString());
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 //retrieve location & interest tags from circle object since tags are stored as hashmaps
                 List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
-
 
                 //checking if user is a member of the circle
                 boolean existingMember = false;
@@ -300,6 +297,17 @@ public class Explore extends AppCompatActivity {
                         }
                     }
                 }
+
+                //adding default circles
+                //admin circle
+                if(circle.getId().equals("adminCircle")){
+                    exploreCircleList.add(circle);
+                    adapter.notifyDataSetChanged();
+                }
+
+                //running circle
+
+                //recipe circle
 
                 //opening link joining
                 if(intentUri!=null){
@@ -391,35 +399,31 @@ public class Explore extends AppCompatActivity {
             }
         }
 
-        acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //creating a subscriber object to store. doesnt store private information such as tags and contact information.
-                Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
-                        user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
+        acceptButton.setOnClickListener(view -> {
+            //creating a subscriber object to store. doesnt store private information such as tags and contact information.
+            Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
+                    user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-                if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-                    database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-                    //adding userID to applicants list
-                    circlesDB.child(user.getDistrict()).child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-                } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-                    database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-                    //adding userID to members list in circlesReference
-                    circlesDB.child(user.getDistrict()).child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-                    int nowActive = user.getActiveCircles() + 1;
-                    usersDB.child("activeCircles").setValue((nowActive));
-                }
-
-                circleJoinDialog.dismiss();
+            if(circle.getId().equals("adminCircle")){
+                SessionStorage.saveCircle(Explore.this, circle);
+                startActivity(new Intent(Explore.this, CircleWall.class));
             }
+
+            if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
+                database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
+                //adding userID to applicants list
+                circlesDB.child(user.getDistrict()).child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+            } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
+                database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+                //adding userID to members list in circlesReference
+                circlesDB.child(user.getDistrict()).child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+                int nowActive = user.getActiveCircles() + 1;
+                usersDB.child("activeCircles").setValue((nowActive));
+            }
+            circleJoinDialog.dismiss();
         });
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                circleJoinDialog.dismiss();
-            }
-        });
+        cancelButton.setOnClickListener(view -> circleJoinDialog.dismiss());
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         circleJoinDialog.show();

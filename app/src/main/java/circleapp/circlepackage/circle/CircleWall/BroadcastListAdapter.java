@@ -119,62 +119,77 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
             for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
                 button = new RadioButton(context);
-                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                lparams.setMargins(0, 10, 20, 10);
-                button.setPadding(50, 0, 0, 10);
-                button.setLayoutParams(lparams);
+                LinearLayout.LayoutParams rbParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+                rbParams.weight = 90;
+                rbParams.setMargins(0, 0, 0, 0);
+                button.setPadding(10, 0, 0, 0);
+                button.setLayoutParams(rbParams);
                 button.setHighlightColor(Color.BLACK);
                 ColorStateList colorStateList = new ColorStateList(
                         new int[][]{
-                                new int[]{-android.R.attr.state_enabled}, //disabled
-                                new int[]{android.R.attr.state_enabled} //enabled
+                                new int[]{Color.parseColor("#6CACFF")}, //disabled
+                                new int[]{Color.parseColor("#6CACFF")} //enabled
                         },
                         new int[]{
-                                Color.BLACK //disabled
-                                , Color.BLUE //enabled
+                                Color.parseColor("#6CACFF") //disabled
+                                , Color.parseColor("#6CACFF") //enabled
                         }
                 );
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     button.setButtonTintList(colorStateList);
                 }
+                int percentage = 0;
                 if (totalValue != 0) {
-                    int percentage = (int) (((double) entry.getValue() / totalValue) * 100);
-                    button.setBackground(new PercentDrawable(percentage));
+                    percentage = (int) (((double) entry.getValue() / totalValue) * 100);
+                    button.setBackground(new PercentDrawable(percentage, "#D8E9FF"));
                 }
                 button.setTextColor(Color.BLACK);
                 button.setText(entry.getKey());
-                viewHolder.pollOptionsDisplayGroup.addView(button);
-                button.setPressed(true);
-            }
 
-            viewHolder.pollOptionsDisplayGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    RadioButton rb = group.findViewById(checkedId);
-                    String option = rb.getText().toString();
-                    HashMap<String, Integer> pollOptions = poll.getOptions();
+                if(viewHolder.currentUserPollOption.equals(button.getText()))
+                    button.setChecked(true);
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.HORIZONTAL);
+                LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+                linearLayoutParams.setMargins(0, 10, 0, 10);
+                linearLayoutParams.weight = 100;
+                layout.setLayoutParams(linearLayoutParams);
+                layout.addView(button);
+                TextView tv = new TextView(context);
+                tv.setText(percentage + "%");
+                tv.setTextAppearance(context, R.style.poll_percentage_textview_style);
+                tv.setPadding(0,0,30,0);
+                layout.addView(tv);
+                layout.setBackground(new PercentDrawable(100, "#EFF6FF"));
+                RadioButton finalButton = button;
+                button.setOnClickListener(view -> {
+                    String option = finalButton.getText().toString();
+                    HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
                     int currentSelectedVotes = poll.getOptions().get(option);
 
                     if (viewHolder.getCurrentUserPollOption() == null) {
                         ++currentSelectedVotes;
-                        pollOptions.put(option, currentSelectedVotes);
+                        pollOptionsTemp.put(option, currentSelectedVotes);
                         viewHolder.setCurrentUserPollOption(option);
                     } else {
                         if(!viewHolder.getCurrentUserPollOption().equals(option)){
                             int userPreviousVote = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //if user already saved an answer, this will regulate voting count
                             --userPreviousVote;
                             ++currentSelectedVotes;
-                            pollOptions.put(option, currentSelectedVotes);
-                            pollOptions.put(viewHolder.getCurrentUserPollOption(), userPreviousVote);
+                            pollOptionsTemp.put(option, currentSelectedVotes);
+                            pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVote);
                             viewHolder.setCurrentUserPollOption(option);
                         }
                     }
 
                     viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("userResponse")
                             .child(currentUser.getCurrentUser().getUid()).setValue(viewHolder.getCurrentUserPollOption());
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("options").setValue(pollOptions);
-                }
-            });
+                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").child("options").setValue(pollOptionsTemp);
+                });
+                viewHolder.pollOptionsDisplayGroup.addView(layout);
+                button.setPressed(true);
+            }
         }
     }
 
