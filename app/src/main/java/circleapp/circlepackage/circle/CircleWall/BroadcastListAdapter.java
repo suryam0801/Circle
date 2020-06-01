@@ -14,8 +14,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -66,6 +68,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
+
+        Glide.with(context)
+                .load(broadcast.creatorPhotoURI)
+                .placeholder(ContextCompat.getDrawable(context, R.drawable.profile_image))
+                .into(viewHolder.profPicDisplay);
 
         if (seconds < 60) {
             viewHolder.timeElapsedDisplay.setText(seconds + "s ago");
@@ -146,7 +153,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 button.setTextColor(Color.BLACK);
                 button.setText(entry.getKey());
 
-                if(viewHolder.currentUserPollOption.equals(button.getText()))
+                if(viewHolder.currentUserPollOption!= null && viewHolder.currentUserPollOption.equals(button.getText()))
                     button.setChecked(true);
 
                 LinearLayout layout = new LinearLayout(context);
@@ -202,9 +209,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, attachmentNameDisplay,
                 pollQuestionDisplay, timeElapsedDisplay, viewComments;
-        private RadioGroup pollOptionsDisplayGroup;
         private CircleImageView profPicDisplay;
-        private LinearLayout attachmentDisplay, pollDisplay;
+        private LinearLayout attachmentDisplay, pollDisplay, pollOptionsDisplayGroup;
         private ImageButton attachmentDownloadButton;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;

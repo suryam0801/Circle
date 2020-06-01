@@ -23,7 +23,6 @@ public class CommentAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Comment> CommentList;
-    private LinearLayout iconBackground, headerBackground;
 
     public CommentAdapter(Context mContext, List<Comment> CommentList) {
         this.mContext = mContext;
@@ -79,9 +78,8 @@ public class CommentAdapter extends BaseAdapter {
         comment.setText(cmnt);
         Glide.with(mContext)
                 .load(profPicURI)
-                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.ic_account_circle_black_24dp))
+                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.profile_image))
                 .into(profPic);
-
 
         if(seconds < 60) {
             timeElapsed.setText(seconds + "s ago");
