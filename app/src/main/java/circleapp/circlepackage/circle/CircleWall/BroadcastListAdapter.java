@@ -39,6 +39,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Context context;
     private Circle circle;
     private FirebaseAuth currentUser;
+    private int count = 0;
+    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
+            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
@@ -71,8 +75,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         Glide.with(context)
                 .load(broadcast.creatorPhotoURI)
-                .placeholder(ContextCompat.getDrawable(context, R.drawable.profile_image))
+                .placeholder(ContextCompat.getDrawable(context, myImageList[count]))
                 .into(viewHolder.profPicDisplay);
+
+        ++count;
+        if(count == 4) count = 0;
 
         if (seconds < 60) {
             viewHolder.timeElapsedDisplay.setText(seconds + "s ago");

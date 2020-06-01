@@ -52,6 +52,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -82,6 +83,10 @@ public class EditProfile extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
     User user;
+    private int count = 0;
+    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
+            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+
 
     private FirebaseDatabase database;
     private DatabaseReference tags, userDB;
@@ -158,10 +163,11 @@ public class EditProfile extends AppCompatActivity {
         //populate chip group with currently selectedTags
         for (String interest : selectedInterestTags)
             setInterestTag(interest, interestTagsEditDisplay);
-
+        Random r = new Random();
+        int count = r.nextInt((4 - 0) + 1);
         Glide.with(EditProfile.this)
                 .load(user.getProfileImageLink())
-                .placeholder(ContextCompat.getDrawable(EditProfile.this, R.drawable.profile_image))
+                .placeholder(ContextCompat.getDrawable(EditProfile.this, myImageList[count]))
                 .into(profileImageView);
 
         editIntTagBtn.setOnClickListener(view -> {
