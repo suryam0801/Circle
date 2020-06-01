@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -66,6 +67,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public PhoneAuthCredential mAuthCredentials;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -357,8 +359,30 @@ public class InterestTagPicker extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostResume() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(mAuthCredentials!=null)
+            firebaseAuth.signInWithCredential(mAuthCredentials);
+
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onStop() {
+        firebaseAuth.signOut();
+        firebaseAuth = null;
+        super.onStop();
+    }
+
+
+    @Override
     protected void onStart() {
         super.onStart();
         chipGroup.removeAllViews();
     }
+
+    public void credentialSetter(PhoneAuthCredential cred){
+        mAuthCredentials = cred;
+    }
+
 }

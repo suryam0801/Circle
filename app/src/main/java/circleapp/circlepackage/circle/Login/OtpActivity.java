@@ -137,6 +137,8 @@ public class OtpActivity extends AppCompatActivity {
 
                                         sendUserToHome();
                                     } else {
+                                        GatherUserDetails g = new GatherUserDetails();
+                                        g.credentialSetter(credential);
                                         senduserToReg();
                                     }
                                 }
