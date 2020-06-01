@@ -29,7 +29,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,9 +42,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -67,7 +69,6 @@ public class InterestTagPicker extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public PhoneAuthCredential mAuthCredentials;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -138,6 +139,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         setTag(tag);
                 } else {
                     //if location does not exist... write create manual circles
+                    createInitialCirlces();
                 }
             }
 
@@ -196,6 +198,37 @@ public class InterestTagPicker extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void createInitialCirlces() {
+        //admin circle
+        Circle adminCircle = new Circle("admin", "Welcome To Circle",
+                "Join this circle to learn more about how you can easy connect with your neighbors",
+                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+                null, null);
+
+        HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
+        pollOptions.put("your custom answers", 0);
+        pollOptions.put("add as many answers as needed", 0);
+        pollOptions.put("i dont even need this one :D", 0);
+        Poll adminPoll = new Poll("This is where you would ask your question", pollOptions, null);
+        Broadcast broadcast = new Broadcast("adminBroadcast", "Hello and welcome to your circle wall. You can create and share messages, " +
+                "attachments, and your custom polls to all your circle members. Say bye to the useless forward messages of whatsapp and " +
+                "focus on what truly matters", null, "AdminCreator", "AdminId", true,
+                System.currentTimeMillis(), adminPoll);
+
+
+        //running circle
+        Circle runningCircle = new Circle("admin", user.getDistrict() + " Morning Runner's",
+                "Hi guys, i would love to form a morning running group for anybody in " + user.getDistrict() + ". Please join if you would like to be part of this friendly runner's circle",
+                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+                null, null);
+
+        //cooking circle
+        Circle cookingCircle = new Circle("admin", user.getDistrict() + " Recipe Sharing Circle",
+                "Hello Cooks, join our circle and get access to the best recipes cooking in " + user.getDistrict() + " and share your own dishes!",
+                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+                null, null);
     }
 
     // Function to add a chip to chipgroup
@@ -359,29 +392,8 @@ public class InterestTagPicker extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostResume() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        if(mAuthCredentials!=null)
-            firebaseAuth.signInWithCredential(mAuthCredentials);
-
-        super.onPostResume();
-    }
-
-    @Override
-    protected void onStop() {
-        firebaseAuth.signOut();
-        firebaseAuth = null;
-        super.onStop();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         chipGroup.removeAllViews();
     }
-
-    public void credentialSetter(PhoneAuthCredential cred){
-        mAuthCredentials = cred;
-    }
-
 }

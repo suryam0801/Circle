@@ -31,7 +31,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -65,7 +64,6 @@ public class GatherUserDetails extends AppCompatActivity {
     String fName, lName, contact;
     EditText firstname;
     EditText lastname;
-    public PhoneAuthCredential mAuthCredentials;
 
 
     //location services elements
@@ -155,9 +153,6 @@ public class GatherUserDetails extends AppCompatActivity {
 
         if(downloadUri != null)
             intent.putExtra("uri", downloadUri.toString());
-
-        InterestTagPicker i = new InterestTagPicker();
-        i.credentialSetter(mAuthCredentials);
 
         startActivity(intent);
     }
@@ -318,27 +313,7 @@ public class GatherUserDetails extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         firebaseAuth.signOut();
-        firebaseAuth = null;
-    }
 
-    @Override
-    protected void onPostResume() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        if(mAuthCredentials!=null)
-            firebaseAuth.signInWithCredential(mAuthCredentials);
-
-        super.onPostResume();
-    }
-
-    @Override
-    protected void onStop() {
-        firebaseAuth.signOut();
-        firebaseAuth = null;
-        super.onStop();
-    }
-
-    public void credentialSetter(PhoneAuthCredential cred){
-        mAuthCredentials = cred;
     }
 
 }
