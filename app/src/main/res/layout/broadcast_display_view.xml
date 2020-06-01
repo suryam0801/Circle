@@ -41,7 +41,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
-                        android:textColor="#000000"
+                        android:fontFamily="@font/roboto_regular"
+                         android:textColor="#000000"
                         android:textSize="12dp"></TextView>
 
                     <TextView
@@ -49,9 +50,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:lineSpacingExtra="3dp"
+                        android:background="@drawable/broadcast_message_background"
                         android:text="Message"
-                        android:textColor="#9D9D9D"
-                        android:textSize="12dp"></TextView>
+                        android:fontFamily="@font/roboto_regular"
+                        android:padding="15dp"
+                        android:textColor="#000000"
+                        android:textSize="14dp"></TextView>
 
                     <LinearLayout
                         android:id="@+id/attachment_display"
@@ -94,7 +99,7 @@
                         android:id="@+id/broadcastWall_poll_display_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_marginTop="20dp"
                         android:orientation="vertical">
 
@@ -102,7 +107,10 @@
                             android:id="@+id/broadcastWall_poll_question_textview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:layout_marginBottom="5dp"
                             android:text="poll question"
+                            android:textSize="14dp"
                             android:textColor="@color/black">
 
                         </TextView>

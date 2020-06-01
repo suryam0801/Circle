@@ -198,6 +198,7 @@ public class EditProfile extends AppCompatActivity {
 
         logout.setOnClickListener(view -> {
             currentUser.signOut();
+            currentUser = null;
             startActivity(new Intent(EditProfile.this, PhoneLogin.class));
             finish();
         });

@@ -46,9 +46,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
+                    android:layout_marginTop="5dp"
                     android:text="Description"
+                    android:lineSpacingExtra="3dp"
                     android:textColor="#9D9D9D"
-                    android:textSize="12dp"></TextView>
+                    android:textSize="14dp"></TextView>
 
                 <TextView
                     android:id="@+id/comments_object_postedTime"
@@ -68,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="6dp"
-            android:background="#F6F6F6"></View>
+            android:background="#D3D0D0"></View>
 
     </LinearLayout>
 </LinearLayout>

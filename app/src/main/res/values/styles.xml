@@ -9,9 +9,11 @@
     </style>
 
     <style name="MyRadioButtonTwo" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">#D1D1D1</item>
-        <item name="android:colorControlActivated" tools:targetApi="lollipop">#11F692</item>
+        <item name="android:colorControlNormal" tools:targetApi="lollipop">#6CACFF</item>
+        <item name="android:colorControlActivated" tools:targetApi="lollipop">#6CACFF</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat</item>
+        <item name="android:textSize">13dp</item>
+        <item name="fontFamily">@font/roboto_regular</item>
     </style>
 
     <style name="ChipTextStyle_Selected">
@@ -29,5 +31,12 @@
         <item name="cornerSize">50%</item>
         <item name="color">#3A8BF3</item>
     </style>
+
+    <style name="poll_percentage_textview_style">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">#6CACFF</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
 
 </resources>

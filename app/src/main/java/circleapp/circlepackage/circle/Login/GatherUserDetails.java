@@ -313,6 +313,7 @@ public class GatherUserDetails extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         firebaseAuth.signOut();
+
     }
 
 }

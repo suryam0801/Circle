@@ -42,9 +42,13 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -54,6 +58,8 @@ public class InterestTagPicker extends AppCompatActivity {
 
     //Declare all UI elements for the InterestTagPicker Activity
     private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference broadcastsDB, circlesDB, commentsDB;
     private Button register;
     private String fName, lName, userId, downloadUri, contact, ward, district;
     private List<String> locationTags = new ArrayList<>(), selectedInterestTags = new ArrayList<>();
@@ -63,7 +69,6 @@ public class InterestTagPicker extends AppCompatActivity {
     private User user;
     private ChipGroup chipGroup;
     private Button interestTagAdd;
-    private FirebaseDatabase database;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -136,6 +141,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         setTag(tag);
                 } else {
                     //if location does not exist... write create manual circles
+                    createInitialCirlces();
                 }
             }
 
@@ -194,6 +200,50 @@ public class InterestTagPicker extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void createInitialCirlces() {
+        broadcastsDB = database.getReference("Broadcasts");
+        circlesDB = database.getReference("Circles");
+        commentsDB = database.getReference("BroadcastComments");
+
+        //admin circle
+        HashMap<String, Boolean> circleIntTags = new HashMap<>();
+        circleIntTags.put("sample", true);
+        Circle adminCircle = new Circle("adminCircle", "Welcome To Circle",
+                "Join this circle to learn more about how you can easy connect with your neighbors",
+                "automatic", "CreatorAdmin", "Admin", circleIntTags,
+                null, null);
+
+        HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
+        pollOptions.put("I really like it!", 8);
+        pollOptions.put("Still exploring", 4);
+        pollOptions.put("Not really feeling it :(", 2);
+        Poll adminPoll = new Poll("How are you liking circle so far?", pollOptions, null);
+        Broadcast broadcast = new Broadcast("adminBroadcast", "Hello and welcome to your circle wall. You can create and share messages, " +
+                "attachments, and your custom polls to all your circle members. Say bye to the useless forward messages of whatsapp and " +
+                "focus on what truly matters", null, "Admin", "AdminId", true,
+                System.currentTimeMillis(), adminPoll);
+
+        Comment comment = new Comment("Admin", "This is where you can clarify any questions or share any " +
+                "information you might have about that particular broadcast",
+                "adminCommentId", null, System.currentTimeMillis());
+
+        circlesDB.child(district).child("adminCircle").setValue(adminCircle);
+        broadcastsDB.child("adminCircle").child("adminBroadcast").setValue(broadcast);
+        commentsDB.child("adminCircle").child("adminCommentId").setValue(comment);
+
+        //running circle
+        Circle runningCircle = new Circle("admin", district + " Morning Runner's",
+                "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
+                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+                null, null);
+
+        //cooking circle
+        Circle cookingCircle = new Circle("admin", district + " Recipe Sharing Circle",
+                "Hello Cooks, join our circle and get access to the best recipes cooking in " + district + " and share your own dishes!",
+                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+                null, null);
     }
 
     // Function to add a chip to chipgroup

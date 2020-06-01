@@ -264,89 +264,74 @@ public class CircleWall extends AppCompatActivity {
         btnAddPollOption = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
         btnUploadBroadcast = createBroadcastPopup.findViewById(R.id.upload_broadcast_btn);
 
-        tvUploadFileOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tvUploadFileOption.setVisibility(View.GONE);
-                tvMiddleOrPlaceHolder.setVisibility(View.GONE);
-                uploadFileView.setVisibility(View.VISIBLE);
-                if (tvCreatePollOption.getVisibility() == View.GONE)
-                    additionalSelector.setVisibility(View.GONE);
+        tvUploadFileOption.setOnClickListener(view -> {
+            tvUploadFileOption.setVisibility(View.GONE);
+            tvMiddleOrPlaceHolder.setVisibility(View.GONE);
+            uploadFileView.setVisibility(View.VISIBLE);
+            if (tvCreatePollOption.getVisibility() == View.GONE)
+                additionalSelector.setVisibility(View.GONE);
+        });
+
+        tvCreatePollOption.setOnClickListener(view -> {
+            tvCreatePollOption.setVisibility(View.GONE);
+            tvMiddleOrPlaceHolder.setVisibility(View.GONE);
+            pollCreateView.setVisibility(View.VISIBLE);
+            if (tvUploadFileOption.getVisibility() == View.GONE)
+                additionalSelector.setVisibility(View.GONE);
+        });
+
+        uploadFileView.setOnClickListener(view -> {
+            if (ContextCompat.checkSelfPermission(CircleWall.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(CircleWall.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            } else {
+                selectFile();
             }
         });
 
-        tvCreatePollOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tvCreatePollOption.setVisibility(View.GONE);
-                tvMiddleOrPlaceHolder.setVisibility(View.GONE);
-                pollCreateView.setVisibility(View.VISIBLE);
-                if (tvUploadFileOption.getVisibility() == View.GONE)
-                    additionalSelector.setVisibility(View.GONE);
+        btnAddPollOption.setOnClickListener(view -> {
+            String option = setPollOptionET.getText().toString();
+            if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
+                lparams.setMargins(0, 10, 20, 0);
+                final TextView tv = new TextView(CircleWall.this);
+                tv.setLayoutParams(lparams);
+                tv.setText(option);
+                tv.setTextColor(Color.BLACK);
+                tv.setGravity(Gravity.CENTER_VERTICAL);
+                tv.setBackground(getResources().getDrawable(R.drawable.light_blue_rounded_background));
+                tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_blue_24dp, 0);
+                tv.setPaddingRelative(40, 10, 40, 10);
+                tv.setTextColor(Color.parseColor("#6CACFF"));
+                tv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        pollOptionsDisplay.removeView(tv);
+                        pollAnswerOptionsList.remove(tv.getText());
+                        Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
+                    }
+                });
+                pollAnswerOptionsList.add(option);
+                Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
+                pollOptionsDisplay.addView(tv);
+                setPollOptionET.setText("");
+            } else {
+                Toast.makeText(getApplicationContext(), "Fill out all poll fields", Toast.LENGTH_SHORT).show();
             }
         });
 
-        uploadFileView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (ContextCompat.checkSelfPermission(CircleWall.this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(CircleWall.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            STORAGE_PERMISSION_CODE);
-                } else {
-                    selectFile();
-                }
-            }
-        });
+        btnUploadBroadcast.setOnClickListener(view -> {
+            if (!pollAnswerOptionsList.isEmpty())
+                pollExists = true;
 
-        btnAddPollOption.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String option = setPollOptionET.getText().toString();
-                if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
-                    LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
-                    lparams.setMargins(0, 10, 20, 0);
-                    final TextView tv = new TextView(CircleWall.this);
-                    tv.setLayoutParams(lparams);
-                    tv.setText(option);
-                    tv.setTextColor(Color.BLACK);
-                    tv.setGravity(Gravity.CENTER_VERTICAL);
-                    tv.setBackground(getResources().getDrawable(R.drawable.light_blue_rounded_background));
-                    tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_blue_24dp, 0);
-                    tv.setPaddingRelative(40, 10, 40, 10);
-                    tv.setTextColor(Color.parseColor("#6CACFF"));
-                    tv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            pollOptionsDisplay.removeView(tv);
-                            pollAnswerOptionsList.remove(tv.getText());
-                            Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
-                        }
-                    });
-                    pollAnswerOptionsList.add(option);
-                    Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
-                    pollOptionsDisplay.addView(tv);
-                    setPollOptionET.setText("");
-                } else {
-                    Toast.makeText(getApplicationContext(), "Fill out all poll fields", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            if (!setMessageET.getText().toString().isEmpty())
+                createBroadcast();
 
-        btnUploadBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!pollAnswerOptionsList.isEmpty())
-                    pollExists = true;
-
-                if (!setMessageET.getText().toString().isEmpty())
-                    createBroadcast();
-
-                else
-                    Toast.makeText(getApplicationContext(), "Set your broadcast message", Toast.LENGTH_SHORT).show();
-            }
+            else
+                Toast.makeText(getApplicationContext(), "Set your broadcast message", Toast.LENGTH_SHORT).show();
         });
 
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
