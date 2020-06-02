@@ -203,7 +203,6 @@
                     android:text="Select tags"
                     android:textColor="#5B86E5"></TextView>
             </LinearLayout>
-
         </LinearLayout>
 
 

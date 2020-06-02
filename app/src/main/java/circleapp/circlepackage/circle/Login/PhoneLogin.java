@@ -1,18 +1,26 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseException;
@@ -54,7 +62,30 @@ public class PhoneLogin extends AppCompatActivity {
         editor = pref.edit();
 
 
+        mCountryCode.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(mCountryCode, InputMethodManager.SHOW_IMPLICIT);
+                        mCountryCode.setShowSoftInputOnFocus(true);
+                        mCountryCode.setText("+");
+                        mCountryCode.setSelection(mCountryCode.getText().length());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.performClick();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
         mGenerateBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
 
@@ -62,8 +93,9 @@ public class PhoneLogin extends AppCompatActivity {
                 String country_code = mCountryCode.getText().toString();
                 String phone_number = mPhoneNumber.getText().toString();
 
+
                 //combining the country code and mobile number
-                complete_phone_number = "+" + country_code + phone_number;
+                complete_phone_number = country_code + phone_number;
                 editor.putString("key_name5", complete_phone_number);
                 editor.apply();
 

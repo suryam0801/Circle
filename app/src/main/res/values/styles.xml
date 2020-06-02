@@ -37,6 +37,8 @@
         <item name="android:textColor">#6CACFF</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
-
+<style name="progressbar">
+    <item name="colorAccent">@color/white</item>
+</style>
 
 </resources>
