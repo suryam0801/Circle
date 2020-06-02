@@ -21,6 +21,7 @@
             android:textSize="16dp">
         </TextView>
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,18 +36,94 @@
             android:id="@+id/broadcastDescriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:padding="20dp"
             android:textColor="@color/black"
-            android:background="@drawable/unpressable_button"></EditText>
+            android:background="@drawable/blue_border_background"></EditText>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:id="@+id/poll_create_layout"
+            android:layout_height="wrap_content"
+            android:background="@drawable/poll_background_file"
+            android:padding="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Poll"
+                android:textColor="#6CACFF"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="16dp">
+            </TextView>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="What would you like to ask?"
+                android:textColor="@color/black"
+                android:id="@+id/poll_create_question_editText"
+                android:textColorHint="#9D9D9D"
+                android:textSize="12dp"
+                android:padding="20dp"
+                android:fontFamily="@font/roboto_medium"
+                android:background="@drawable/blue_border_background">
+            </EditText>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:id="@+id/poll_create_answer_option_display"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter the answer options"
+                    android:textColor="@color/black"
+                    android:textSize="12dp"
+                    android:paddingLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:textColorHint="#9D9D9D"
+                    android:id="@+id/poll_create_answer_option_editText"
+                    android:backgroundTint="#6CACFF"
+                    android:layout_weight="1"></EditText>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:id="@+id/poll_create_answer_option_add_btn"
+                    android:background="@drawable/blue_border_background"
+                    android:textColor="#6CACFF"
+                    android:textAllCaps="false"
+                    android:text="Add">
+                </Button>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:id="@+id/attachmentUploadView"
-            android:visibility="gone"
+            android:visibility="visible"
             android:gravity="center"
             android:orientation="horizontal"
             android:background="@drawable/dashed_background">
@@ -73,79 +150,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:id="@+id/poll_create_layout"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Create Poll"
-                android:textColor="#3B3B3B"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/roboto_medium"
-                android:textSize="16dp">
-            </TextView>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="What would you like to ask?"
-                android:textColor="@color/black"
-                android:id="@+id/poll_create_question_editText"
-                android:textColorHint="#9D9D9D"
-                android:textSize="12dp"
-                android:padding="20dp"
-                android:fontFamily="@font/roboto_medium"
-                android:background="@drawable/unpressable_button">
-            </EditText>
-
-            <LinearLayout
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:id="@+id/poll_create_answer_option_display"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="100"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter the answer options"
-                    android:textColor="@color/black"
-                    android:textSize="12dp"
-                    android:paddingLeft="10dp"
-                    android:textColorHint="#9D9D9D"
-                    android:id="@+id/poll_create_answer_option_editText"
-                    android:backgroundTint="#9D9D9D"
-                    android:layout_weight="1"></EditText>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:id="@+id/poll_create_answer_option_add_btn"
-                    android:background="@drawable/green_border_button"
-                    android:textColor="#35C80B"
-                    android:textAllCaps="false"
-                    android:text="Add">
-                </Button>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/additional_selector_view"
             android:orientation="horizontal">
 

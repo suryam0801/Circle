@@ -300,12 +300,11 @@ public class CircleWall extends AppCompatActivity {
                 final TextView tv = new TextView(CircleWall.this);
                 tv.setLayoutParams(lparams);
                 tv.setText(option);
-                tv.setTextColor(Color.BLACK);
+                tv.setTextColor(Color.WHITE);
                 tv.setGravity(Gravity.CENTER_VERTICAL);
-                tv.setBackground(getResources().getDrawable(R.drawable.light_blue_rounded_background));
-                tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_blue_24dp, 0);
+                tv.setBackground(getResources().getDrawable(R.drawable.poll_creation_item_option_background));
+                tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_white_24dp, 0);
                 tv.setPaddingRelative(40, 10, 40, 10);
-                tv.setTextColor(Color.parseColor("#6CACFF"));
                 tv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
