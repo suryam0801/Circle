@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import circleapp.circlepackage.circle.ObjectModels.Circle;
+
 
 public class PersonelTabAdapter extends FragmentPagerAdapter {
 
@@ -18,11 +20,11 @@ public class PersonelTabAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 0:
-                return new ApplicantDisplayFragment();
-            case 1:
                 return new AllMembersFragment();
+            case 1:
+                return new ApplicantDisplayFragment();
             default:
                 return null;
         }

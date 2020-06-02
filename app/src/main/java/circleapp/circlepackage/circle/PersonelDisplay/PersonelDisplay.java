@@ -32,8 +32,6 @@ public class PersonelDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personel_display);
 
-
-
         tabLayout = findViewById(R.id.personel_tab_layout);
         back = findViewById(R.id.personel_bck_btn);
         newRequests = findViewById(R.id.personel_new_requests);
