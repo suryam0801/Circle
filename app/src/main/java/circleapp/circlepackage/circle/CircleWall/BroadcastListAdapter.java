@@ -1,11 +1,17 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +25,19 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
@@ -36,12 +48,17 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
+
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {
     private List<Broadcast> broadcastList;
     private Context context;
     private Circle circle;
     private FirebaseAuth currentUser;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReference,ref;
     private int count = 0;
+    Bitmap bitmap=null;
     int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
             R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
 
@@ -110,6 +127,26 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.attachmentDisplay.setVisibility(View.VISIBLE);
             viewHolder.attachmentNameDisplay.setText("Click to download attachment");
         }
+
+
+        viewHolder.attachmentDownloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                storageReference = firebaseStorage.getInstance().getReference();
+                ref = storageReference.child("/ProjectWall");
+                DownloadManager downloadManager = (DownloadManager) context.
+                        getSystemService(Context.DOWNLOAD_SERVICE);
+
+                Uri uri = Uri.parse(broadcast.getAttachmentURI());
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+                Log.d("Download File",uri.toString());
+                Log.d("Download File",request.toString());
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalFilesDir(context,DIRECTORY_DOWNLOADS,"image"+".jpg");
+
+                downloadManager.enqueue(request);
+            }
+        });
 
         if (broadcast.isPollExists() == true) {
             poll = broadcast.getPoll();
@@ -239,6 +276,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             attachmentDownloadButton = view.findViewById(R.id.attachment_download_btn);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
         }
+
+
+
 
         public String getCurrentUserPollOption() {
             return currentUserPollOption;

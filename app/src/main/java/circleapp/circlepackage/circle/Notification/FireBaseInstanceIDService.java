@@ -45,8 +45,8 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this,getString(R.string.default_notification_channel_id))
                         .setContentTitle(messageTitle)
                         .setContentText(messageBody)
-                        .setSmallIcon(R.drawable.art_cuisine_icon)
                         .setAutoCancel(true)
+                        .setSmallIcon(R.drawable.art_cuisine_icon)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
 

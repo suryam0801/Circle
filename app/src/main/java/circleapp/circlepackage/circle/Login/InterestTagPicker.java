@@ -1,9 +1,12 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,12 +57,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.MainActivity;
+import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+
+import static circleapp.circlepackage.circle.Notification.SendNotification.getCurrentDateStamp;
 
 public class InterestTagPicker extends AppCompatActivity {
 
@@ -462,6 +470,7 @@ public class InterestTagPicker extends AppCompatActivity {
                             public void onSuccess(Void aVoid) {
                                 //if the user registered and profile updated successfully  the mainActivity will be opened
                                 startActivity(new Intent(InterestTagPicker.this, Explore.class));
+                                sendnotify();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -473,6 +482,27 @@ public class InterestTagPicker extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void sendnotify() {
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle("Circle")
+                        .setSmallIcon(R.drawable.ic_notifications_none_black_24dp)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentText("Welcome to the Circle "+firebaseAuth.getCurrentUser().getDisplayName() +
+                                " You can find the people with same Interest in your Locality");
+
+        Intent notificationIntent = new Intent(this, Explore.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
 
     private void storeUserFile(String data,Context context) {
