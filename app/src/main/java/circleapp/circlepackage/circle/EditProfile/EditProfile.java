@@ -205,7 +205,7 @@ public class EditProfile extends AppCompatActivity {
             String string = new Gson().toJson(user);
             storeUserFile(string, getApplicationContext());
             SessionStorage.saveUser(EditProfile.this, user);
-            
+
             startActivity(new Intent(EditProfile.this, Explore.class));
             finish();
         });
@@ -213,6 +213,7 @@ public class EditProfile extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             currentUser.signOut();
             currentUser = null;
+            storeUserFile("", getApplicationContext());
             startActivity(new Intent(EditProfile.this, PhoneLogin.class));
             finish();
         });
