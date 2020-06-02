@@ -495,4 +495,11 @@ public class CircleWall extends AppCompatActivity {
             tvUploadPlaceholderText.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(CircleWall.this,Explore.class);
+        startActivity(intent);
+    }
 }

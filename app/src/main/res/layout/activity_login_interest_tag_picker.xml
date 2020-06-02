@@ -82,6 +82,7 @@
                     android:textSize="14dp"
                     android:paddingRight="10dp"
                     android:inputType="text"
+                    android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:id="@+id/interest_tags_entry"
                     android:fontFamily="@font/roboto_regular"
