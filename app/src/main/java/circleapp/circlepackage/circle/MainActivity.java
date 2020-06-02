@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             InputStream inputStream = context.openFileInput("user.txt");
 
-            if ( inputStream != null || !inputStream.equals("")) {
+            if ( inputStream != null || !inputStream.equals("") ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";

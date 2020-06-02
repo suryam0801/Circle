@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +50,7 @@ public class BroadcastComments extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference broadcastCommentsDB;
     private ImageButton back;
+    private Broadcast broadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,8 @@ public class BroadcastComments extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
+
+        broadcast = SessionStorage.getBroadcast(BroadcastComments.this);
 
         commentsListView = findViewById(R.id.comments_listView);
         commentEditText = findViewById(R.id.comment_type_editText);
@@ -76,6 +80,7 @@ public class BroadcastComments extends AppCompatActivity {
         commentSend.setOnClickListener(view -> {
             if (!commentEditText.getText().toString().trim().equals(""))
                 makeCommentEntry();
+            commentEditText.setText("");
         });
 
         back.setOnClickListener(view -> {
@@ -87,7 +92,7 @@ public class BroadcastComments extends AppCompatActivity {
     public void loadComments() {
 
 
-        broadcastCommentsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
+        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
@@ -97,7 +102,9 @@ public class BroadcastComments extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Comment tempComment = dataSnapshot.getValue(Comment.class);
+                commentsList.add(0, tempComment); //to store timestamp values descendingly
+                commentAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -126,6 +133,6 @@ public class BroadcastComments extends AppCompatActivity {
         map.put("commentorName", SessionStorage.getUser(BroadcastComments.this).getFirstName().trim() + " " +
                 SessionStorage.getUser(BroadcastComments.this).getLastName().trim());
 
-        broadcastCommentsDB.child(circle.getId()).push().setValue(map);
+        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
     }
 }
