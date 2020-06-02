@@ -95,6 +95,7 @@
         android:layout_height="16dp"
         android:layout_marginEnd="16dp"
         android:visibility="invisible"
+        android:theme="@style/progressbar"
         app:layout_constraintBottom_toBottomOf="@+id/verify_btn"
         app:layout_constraintEnd_toEndOf="@+id/verify_btn"
         app:layout_constraintTop_toTopOf="@+id/verify_btn" />
