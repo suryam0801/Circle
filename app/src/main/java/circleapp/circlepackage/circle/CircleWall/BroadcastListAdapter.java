@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.CircleWall;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -32,6 +33,7 @@ import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.PercentDrawable;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {
@@ -94,11 +96,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 viewHolder.timeElapsedDisplay.setText(days + "d ago");
         }
 
-        viewHolder.viewComments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.startActivity(new Intent(context.getApplicationContext(), BroadcastComments.class));
-            }
+        viewHolder.viewComments.setOnClickListener(view -> {
+            SessionStorage.saveBroadcast((Activity) context, broadcast);
+            context.startActivity(new Intent(context.getApplicationContext(), BroadcastComments.class));
         });
 
 

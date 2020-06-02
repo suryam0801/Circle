@@ -69,7 +69,7 @@ public class Explore extends AppCompatActivity {
     int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
             R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
 
-    long startTimeCircle, startTimeUser;
+    long startTimeCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +77,17 @@ public class Explore extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
+        currentUser = FirebaseAuth.getInstance();
+
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
+        usersDB = database.getReference().child(currentUser.getUid());
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
 
         btnAddCircle = findViewById(R.id.add_circle_button);
         profPic = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
         circleJoinDialog = new Dialog(Explore.this);
-
-        currentUser = FirebaseAuth.getInstance();
 
         user = SessionStorage.getUser(Explore.this);
         SessionStorage.saveUser(Explore.this, user);
@@ -155,6 +156,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
+                allCircles.add(circle);
                 //checking if user is a member of the circle
                 boolean existingMember = false;
                 if (circle.getMembersList() != null) {
@@ -182,6 +184,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
+
                 if(circle.getCircleDistrict().equals(user.getDistrict())){
                     int position = 0;
                     List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
@@ -194,6 +197,26 @@ public class Explore extends AppCompatActivity {
                         ++position;
                     }
                 }
+
+                boolean existingMember = false;
+                if (circle.getMembersList() != null) {
+                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
+                        existingMember = true;
+                }
+
+                //checking for duplicate
+                boolean duplicate = false;
+                for(Circle c : workbenchCircleList){
+                    if(c.getId().equals(circle.getId())) {
+                        duplicate = true;
+                    }
+                }
+
+                if(existingMember == true && duplicate == false){
+                    workbenchCircleList.add(circle);
+                    wbadapter.notifyDataSetChanged();
+                }
+
 
             }
 
@@ -257,16 +280,14 @@ public class Explore extends AppCompatActivity {
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "LOADING TIME FOR CIRCLES!!! " + (startTimeCircle-System.currentTimeMillis()));
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 allCircles.add(circle);
 
                 //recieve request on opening
                 if(intentUri!=null) {
-                    Log.d(TAG, "INTENT NOT NULL");
                     List<String> params = intentUri.getPathSegments();
                     String circleID = params.get(params.size() - 1);
-                    Log.d(TAG, "INTENT CIRCLEID: " + circleID);
+
                     if(circle.getId().equals(circleID)){
                         displayJoinPopup(circle);
                     }
@@ -323,7 +344,6 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                Log.d(TAG, "ADDEDDDDDDDDDDD");
                 if(circle.getCircleDistrict()!=null && circle.getCircleDistrict().equals(user.getDistrict())){
                     int position = 0;
                     List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
@@ -399,6 +419,17 @@ public class Explore extends AppCompatActivity {
             }
         }
 
+        //testing if popup is already in workbench
+
+        for(Circle wbCircle : allCircles){
+            if(wbCircle.getMembersList().keySet().contains((user.getUserId()))){
+                acceptButton.setClickable(false);
+                acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
+                acceptButton.setText("Joined");
+                acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
+            }
+        }
+
         acceptButton.setOnClickListener(view -> {
             //creating a subscriber object to store. doesnt store private information such as tags and contact information.
             Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
@@ -418,6 +449,7 @@ public class Explore extends AppCompatActivity {
                     database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
                     //adding userID to members list in circlesReference
                     circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+                    Log.d(TAG, "USER ACTIVE CIRCLES: " + user.getActiveCircles());
                     int nowActive = user.getActiveCircles() + 1;
                     usersDB.child("activeCircles").setValue((nowActive));
                 }
@@ -455,10 +487,9 @@ public class Explore extends AppCompatActivity {
         intentUri = getIntent().getData();
         //opening link joining
         if(intentUri!=null) {
-            Log.d(TAG, "INTENT NOT NULL");
             List<String> params = intentUri.getPathSegments();
             String circleID = params.get(params.size() - 1);
-            Log.d(TAG, "INTENT CIRCLEID: " + circleID);
+
             if(!allCircles.isEmpty()){
                 for(Circle c : allCircles){
                     if (c.getId().equals(circleID)) {

@@ -101,15 +101,16 @@
             android:textColor="@color/black"
             android:textColorHint="#D1D1D1"
             android:hint="Type your comment..."
-            android:background="@drawable/unpressable_button">
+            android:background="@drawable/blue_border_background">
         </EditText>
 
         <Button
             android:id="@+id/comment_send_button"
-            android:layout_width="35dp"
-            android:layout_height="25dp"
+            android:layout_width="31dp"
+            android:layout_height="26dp"
             android:background="@drawable/ic_send_black_24dp"
             android:layout_alignParentEnd="true"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_marginTop="12dp"
             android:layout_marginRight="25dp">
         </Button>

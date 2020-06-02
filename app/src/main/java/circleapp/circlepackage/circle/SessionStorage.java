@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
@@ -50,6 +51,21 @@ public class SessionStorage {
         return new Gson().fromJson(string, User.class);
     }
 
+    public static void saveBroadcast(Activity activity, Broadcast broadcast)
+    {
+        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String string = new Gson().toJson(broadcast);
+        editor.putString("tempBroadcast", string);
+        editor.apply();
+    }
+
+    public static Broadcast getBroadcast(Activity activity)
+    {
+        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
+        String string = sharedPref.getString("tempBroadcast","1234");
+        return new Gson().fromJson(string, Broadcast.class);
+    }
 
 /*
     public static void saveWorker(Activity activity, Worker worker)
