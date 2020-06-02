@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -38,6 +39,7 @@ public class NotificationActivity extends AppCompatActivity {
     private List<Notification> thisWeekNotifs, previousNotifs;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private ImageButton back;
+    private TextView prevnotify;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     private DatabaseReference notifyDb;
@@ -50,6 +52,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         thisWeekListView = findViewById(R.id.thisweek_notifications_display);
         previousListView = findViewById(R.id.all_time_notifications_display);
+        prevnotify = findViewById(R.id.prevnotifytext);
         back = findViewById(R.id.bck_notifications);
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
@@ -89,6 +92,15 @@ public class NotificationActivity extends AppCompatActivity {
                         previousNotifs.add(notification);
                     else
                         thisWeekNotifs.add(notification);
+
+                    if (previousNotifs.size()==0)
+                    {
+                        prevnotify.setVisibility(View.INVISIBLE);
+                    }
+                    else
+                        {
+                            prevnotify.setVisibility(View.VISIBLE);
+                        }
 
                     adapterThisWeek = new NotificationAdapter(getApplicationContext(), thisWeekNotifs);
                     adapterPrevious = new NotificationAdapter(getApplicationContext(), previousNotifs);

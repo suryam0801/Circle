@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="23dp"
-                    android:id="@+id/placeholder1"
+                    android:id="@+id/prevnotifytext"
                     android:layout_below="@id/thisweek_notifications_display"
                     android:text="Previous"
                     android:textColor="#828282"
@@ -104,7 +104,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_below="@id/placeholder1"
+                    android:layout_below="@id/prevnotifytext"
                     android:divider="@color/white">
 
                 </ListView>
