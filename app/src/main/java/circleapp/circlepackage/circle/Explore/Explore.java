@@ -298,7 +298,7 @@ public class Explore extends AppCompatActivity {
                 }
 
                 //admin circle
-                if(circle.getId().equals("adminCircle")){
+                if(circle.getCreatorID().equals("CreatorAdmin")){
                     boolean contains = false;
                     for(Circle c : exploreCircleList){
                         if(c.getId().equals(circle.getId()))

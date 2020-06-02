@@ -279,11 +279,11 @@ public class InterestTagPicker extends AppCompatActivity {
         String runningCommentID = UUID.randomUUID().toString();
         Circle runningCircle = new Circle(runningCircleID, district + " Morning Runner's",
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
-                "automatic", "CreatorAdmin", "CreatorAdmin", circleIntTags,
+                "automatic", "CreatorAdmin", "Vijay Ram", circleIntTags,
                 null, null, district, ward);
         HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
-        pollOptions.put("Sure!", 8);
-        pollOptions.put("Thats too early :(", 4);
+        pollOptionsRunningCircle.put("Sure!", 8);
+        pollOptionsRunningCircle.put("Thats too early :(", 4);
         Poll runningPoll = new Poll("Hey guys! Can we go running every friday early in the morning?", pollOptionsRunningCircle, null);
         Broadcast runnersBroadcast = new Broadcast(runningBroadcastID, "Lets go running guys!", null, "Vijay Ram", "AdminId", true,
                 System.currentTimeMillis(), runningPoll, "default");
@@ -291,7 +291,7 @@ public class InterestTagPicker extends AppCompatActivity {
                 runningCommentID, null, System.currentTimeMillis());
         circlesDB.child(runningCircleID).setValue(runningCircle);
         broadcastsDB.child(runningCircleID).child(runningBroadcastID).setValue(runnersBroadcast);
-        commentsDB.child(runningCircleID).child(runningCommentID).setValue(comment);
+        commentsDB.child(runningCircleID).child(runningBroadcastID).child(runningCommentID).setValue(runnerComment);
 
         //cooking circle
         String cookingCircleID = UUID.randomUUID().toString();
@@ -316,8 +316,8 @@ public class InterestTagPicker extends AppCompatActivity {
                 cookingCommentIDResponse, null, System.currentTimeMillis());
         circlesDB.child(cookingCircleID).setValue(cookingCircle);
         broadcastsDB.child(cookingCircleID).child(cookingBroadcastID).setValue(cookingBroadcast);
-        commentsDB.child(cookingCircleID).child(cookingCommentID).setValue(cookingComment);
-        commentsDB.child(cookingCircleID).child(cookingCommentIDResponse).setValue(cookingCommentResponse);
+        commentsDB.child(cookingCircleID).child(cookingBroadcastID).child(cookingCommentID).setValue(cookingComment);
+        commentsDB.child(cookingCircleID).child(cookingBroadcastID).child(cookingCommentIDResponse).setValue(cookingCommentResponse);
     }
 
     // Function to add a chip to chipgroup
