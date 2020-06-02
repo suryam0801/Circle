@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,7 @@ public class Explore extends AppCompatActivity {
     private User user;
     private List<String> userTempinterestTagsList;
     private Uri intentUri;
+    private boolean link_flag = false;
     int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
             R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
 
@@ -289,6 +292,7 @@ public class Explore extends AppCompatActivity {
                     String circleID = params.get(params.size() - 1);
 
                     if(circle.getId().equals(circleID)){
+                        link_flag = true;
                         displayJoinPopup(circle);
                     }
                 }
@@ -420,13 +424,14 @@ public class Explore extends AppCompatActivity {
         }
 
         //testing if popup is already in workbench
-
-        for(Circle wbCircle : allCircles){
-            if(wbCircle.getMembersList().keySet().contains((user.getUserId()))){
-                acceptButton.setClickable(false);
-                acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
-                acceptButton.setText("Joined");
-                acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
+        if(link_flag == true) {
+            for(Circle wbCircle : allCircles){
+                if(wbCircle.getMembersList()!=null && wbCircle.getMembersList().keySet().contains((user.getUserId()))){
+                    acceptButton.setClickable(false);
+                    acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
+                    acceptButton.setText("Joined");
+                    acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
+                }
             }
         }
 
@@ -437,6 +442,7 @@ public class Explore extends AppCompatActivity {
 
             if(circle.getId().equals("adminCircle")){
                 SessionStorage.saveCircle(Explore.this, circle);
+                link_flag = false;
                 startActivity(new Intent(Explore.this, CircleWall.class));
                 finish();
             } else {
@@ -456,6 +462,13 @@ public class Explore extends AppCompatActivity {
                 circleJoinDialog.dismiss();
             }
 
+        });
+
+        circleJoinDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                link_flag = false;
+            }
         });
 
         cancelButton.setOnClickListener(view -> circleJoinDialog.dismiss());
@@ -493,6 +506,7 @@ public class Explore extends AppCompatActivity {
             if(!allCircles.isEmpty()){
                 for(Circle c : allCircles){
                     if (c.getId().equals(circleID)) {
+                        link_flag = true;
                         displayJoinPopup(c);
                     }
                 }
@@ -503,12 +517,14 @@ public class Explore extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        link_flag = false;
         getIntent().setData(null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        link_flag = false;
         getIntent().setData(null);
     }
 
