@@ -58,19 +58,18 @@
         app:tabTextAppearance="@style/MineCustomTabText"
         app:tabTextColor="#D1D1D1"
         android:layout_height="32dp">
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/personel_all_members"
+            android:text="All Members">
+        </com.google.android.material.tabs.TabItem>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/personel_new_requests"
             android:text="New Requests">
-        </com.google.android.material.tabs.TabItem>
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/personel_all_members"
-            android:text="All Members">
         </com.google.android.material.tabs.TabItem>
 
     </com.google.android.material.tabs.TabLayout>

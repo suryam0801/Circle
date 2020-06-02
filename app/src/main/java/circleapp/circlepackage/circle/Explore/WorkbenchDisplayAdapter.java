@@ -23,6 +23,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     private List<Circle> MycircleList;
     private Context context;
+    private int counter = 0;
 
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
