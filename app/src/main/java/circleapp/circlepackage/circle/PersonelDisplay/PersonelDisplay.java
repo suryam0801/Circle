@@ -16,7 +16,9 @@ import com.google.android.material.tabs.TabLayout;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.SessionStorage;
 
 public class PersonelDisplay extends AppCompatActivity {
     private TabLayout tabLayout;
@@ -29,6 +31,8 @@ public class PersonelDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personel_display);
+
+
 
         tabLayout = findViewById(R.id.personel_tab_layout);
         back = findViewById(R.id.personel_bck_btn);

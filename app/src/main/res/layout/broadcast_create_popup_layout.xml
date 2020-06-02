@@ -131,8 +131,10 @@
 
                 <Button
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:id="@+id/poll_create_answer_option_add_btn"
+                    android:background="@drawable/green_border_button"
+                    android:textColor="#35C80B"
                     android:textAllCaps="false"
                     android:text="Add">
                 </Button>
