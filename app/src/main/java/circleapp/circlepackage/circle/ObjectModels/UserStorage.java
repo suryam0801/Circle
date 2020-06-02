@@ -5,26 +5,27 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.realm.RealmObject;
 
-public class User  {
+public class UserStorage extends RealmObject {
 
 
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
-    private HashMap<String, Boolean> interestTags;
+    private String interestTags;
     private int createdCircles, activeCircles, completedProjects;
 
 
-    public User(){
+    public UserStorage(){
 
     }
 
-    public User(String firstName, String lastName, String contact,
-                String profileImageLink, HashMap<String, Boolean> interestTags, String userId,
-                int createdCircles, int activeCircles, int completedProjects, String token_id,
-                String ward, String district) {
+    public UserStorage(String firstName, String lastName, String contact,
+                       String profileImageLink, String interestTags, String userId,
+                       int createdCircles, int activeCircles, int completedProjects, String token_id,
+                       String ward, String district) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contact = contact;
@@ -39,11 +40,11 @@ public class User  {
         this.district = district;
     }
 
-    public HashMap<String, Boolean> getInterestTags() {
+    public String getInterestTags() {
         return interestTags;
     }
 
-    public void setInterestTags(HashMap<String, Boolean> interestTags) {
+    public void setInterestTags(String interestTags) {
         this.interestTags = interestTags;
     }
 

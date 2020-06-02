@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;

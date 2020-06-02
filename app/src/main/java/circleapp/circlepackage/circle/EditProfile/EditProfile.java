@@ -473,4 +473,11 @@ public class EditProfile extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(EditProfile.this,Explore.class);
+        startActivity(intent);
+    }
 }
