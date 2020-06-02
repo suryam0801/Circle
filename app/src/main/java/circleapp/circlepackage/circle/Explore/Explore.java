@@ -63,7 +63,7 @@ public class Explore extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
     private DatabaseReference circlesDB, usersDB;
-    private ImageView profPic,notificationBell;
+    private ImageView profPic, notificationBell;
     private Dialog circleJoinDialog;
     private User user;
     private List<String> userTempinterestTagsList;
@@ -169,8 +169,8 @@ public class Explore extends AppCompatActivity {
 
                 //checking for duplicate
                 boolean duplicate = false;
-                for(Circle c : workbenchCircleList){
-                    if(c.getId().equals(circle.getId())) {
+                for (Circle c : workbenchCircleList) {
+                    if (c.getId().equals(circle.getId())) {
                         duplicate = true;
                     }
                 }
@@ -188,7 +188,7 @@ public class Explore extends AppCompatActivity {
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
-                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                if (circle.getCircleDistrict().equals(user.getDistrict())) {
                     int position = 0;
                     List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
                     for (Circle c : tempCircleList) {
@@ -209,13 +209,13 @@ public class Explore extends AppCompatActivity {
 
                 //checking for duplicate
                 boolean duplicate = false;
-                for(Circle c : workbenchCircleList){
-                    if(c.getId().equals(circle.getId())) {
+                for (Circle c : workbenchCircleList) {
+                    if (c.getId().equals(circle.getId())) {
                         duplicate = true;
                     }
                 }
 
-                if(existingMember == true && duplicate == false){
+                if (existingMember == true && duplicate == false) {
                     workbenchCircleList.add(circle);
                     wbadapter.notifyDataSetChanged();
                 }
@@ -226,7 +226,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                if (circle.getCircleDistrict().equals(user.getDistrict())) {
                     int position = 0;
                     for (Circle c : workbenchCircleList) {
                         if (c.getId().equals(circle.getId())) {
@@ -287,35 +287,50 @@ public class Explore extends AppCompatActivity {
                 allCircles.add(circle);
 
                 //recieve request on opening
-                if(intentUri!=null) {
+                if (intentUri != null) {
                     List<String> params = intentUri.getPathSegments();
                     String circleID = params.get(params.size() - 1);
 
-                    if(circle.getId().equals(circleID)){
+                    if (circle.getId().equals(circleID)) {
                         link_flag = true;
                         displayJoinPopup(circle);
                     }
                 }
 
                 //admin circle
-                if(circle.getCreatorID().equals("CreatorAdmin")){
+                if (circle.getCreatorID().equals("CreatorAdmin")) {
                     boolean contains = false;
-                    for(Circle c : exploreCircleList){
-                        if(c.getId().equals(circle.getId()))
-                            contains=true;
+                    for (Circle c : exploreCircleList) {
+                        if (c.getId().equals(circle.getId()))
+                            contains = true;
                     }
-                    if(contains==false){
-                        if((circle.getMembersList()!=null && circle.getMembersList().keySet().contains(user.getUserId()))){
+                    if (contains == false) {
+                        if ((circle.getMembersList() != null && circle.getMembersList().keySet().contains(user.getUserId())) && circle.getCreatorName().equals("Admin")) {
 
                         } else {
-                            exploreCircleList.add(circle);
-                            adapter.notifyDataSetChanged();
+
+                            if (circle.getCreatorName().equals("Admin") && contains == false) {
+                                exploreCircleList.add(circle);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                boolean membersExist = true;
+                                if(circle.getMembersList()==null)
+                                    membersExist = false;
+                                else if (circle.getMembersList().containsKey(user.getUserId()))
+                                    membersExist = true;
+
+                                if(circle.getCircleDistrict().equals("test") || circle.getCircleDistrict().equals(user.getDistrict()) ){
+                                    if(membersExist==false){
+                                        exploreCircleList.add(circle);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
-
-                if(circle.getCircleDistrict()!= null && circle.getCircleDistrict().equals(user.getDistrict())){
-
+                
+                if (circle.getCircleDistrict() != null && circle.getCircleDistrict().equals(user.getDistrict())) {
                     //retrieve location & interest tags from circle object since tags are stored as hashmaps
                     List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
 
@@ -333,12 +348,12 @@ public class Explore extends AppCompatActivity {
                             if (circleIteratorinterestTagsList.contains(intIterator)) {
                                 //check if circle already exists
                                 boolean circleExists = false;
-                                for(Circle conditional : exploreCircleList) {
-                                    if(conditional.getId().equals(circle.getId()))
+                                for (Circle conditional : exploreCircleList) {
+                                    if (conditional.getId().equals(circle.getId()))
                                         circleExists = true;
                                 }
 
-                                if(circleExists == false){
+                                if (circleExists == false) {
                                     exploreCircleList.add(circle);
                                     adapter.notifyDataSetChanged();
                                 }
@@ -352,12 +367,12 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict()!=null && circle.getCircleDistrict().equals(user.getDistrict())){
+                if (circle.getCircleDistrict() != null && circle.getCircleDistrict().equals(user.getDistrict())) {
                     int position = 0;
                     List<Circle> tempCircleList = new ArrayList<>(exploreCircleList);
                     for (Circle c : tempCircleList) {
                         if (c.getId().equals(circle.getId())) {
-                            if(circle.getMembersList()!=null && circle.getMembersList().containsKey(user.getUserId())) {
+                            if (circle.getMembersList() != null && circle.getMembersList().containsKey(user.getUserId())) {
                                 exploreCircleList.remove(position);
                                 adapter.notifyDataSetChanged();
                             } else {
@@ -375,7 +390,7 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict().equals(user.getDistrict())){
+                if (circle.getCircleDistrict().equals(user.getDistrict())) {
                     int position = 0;
                     for (Circle c : exploreCircleList) {
                         if (c.getId().equals(circle.getId())) {
@@ -419,7 +434,7 @@ public class Explore extends AppCompatActivity {
 
         //checking if user as already applied
         if (circle.getApplicantsList() != null) {
-            if (circle.getApplicantsList().keySet().contains(currentUser.getCurrentUser().getUid())){
+            if (circle.getApplicantsList().keySet().contains(currentUser.getCurrentUser().getUid())) {
                 acceptButton.setClickable(false);
                 acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
                 acceptButton.setText("Pending Request");
@@ -428,9 +443,9 @@ public class Explore extends AppCompatActivity {
         }
 
         //testing if popup is already in workbench
-        if(link_flag == true) {
-            for(Circle wbCircle : allCircles){
-                if(wbCircle.getMembersList()!=null && wbCircle.getMembersList().keySet().contains((user.getUserId()))){
+        if (link_flag == true) {
+            for (Circle wbCircle : allCircles) {
+                if (wbCircle.getMembersList() != null && wbCircle.getMembersList().keySet().contains((user.getUserId()))) {
                     acceptButton.setClickable(false);
                     acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
                     acceptButton.setText("Joined");
@@ -444,7 +459,7 @@ public class Explore extends AppCompatActivity {
             Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
                     user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-            if(circle.getId().equals("adminCircle")){
+            if (circle.getId().equals("adminCircle")) {
                 SessionStorage.saveCircle(Explore.this, circle);
                 link_flag = false;
                 startActivity(new Intent(Explore.this, CircleWall.class));
@@ -486,7 +501,7 @@ public class Explore extends AppCompatActivity {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage= "\nLet me recommend you this application\n\n";
+            String shareMessage = "\nLet me recommend you this application\n\n";
             //https://play.google.com/store/apps/details?id=
             Log.d(TAG, c.getId());
             shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
@@ -503,12 +518,12 @@ public class Explore extends AppCompatActivity {
         super.onStart();
         intentUri = getIntent().getData();
         //opening link joining
-        if(intentUri!=null) {
+        if (intentUri != null) {
             List<String> params = intentUri.getPathSegments();
             String circleID = params.get(params.size() - 1);
 
-            if(!allCircles.isEmpty()){
-                for(Circle c : allCircles){
+            if (!allCircles.isEmpty()) {
+                for (Circle c : allCircles) {
                     if (c.getId().equals(circleID)) {
                         link_flag = true;
                         displayJoinPopup(c);

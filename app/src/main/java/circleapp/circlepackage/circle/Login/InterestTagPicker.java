@@ -253,7 +253,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle adminCircle = new Circle("adminCircle", "Welcome To Circle",
                 "Join this circle to learn more about how you can easy connect with your neighbors",
                 "automatic", "CreatorAdmin", "Admin", circleIntTags,
-                null, null, null, null);
+                null, null, "test", null);
 
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
         pollOptions.put("I really like it!", 8);

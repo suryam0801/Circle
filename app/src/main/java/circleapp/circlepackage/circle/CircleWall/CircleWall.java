@@ -76,6 +76,7 @@ public class CircleWall extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri filePath = null;
     private String downloadUri = null;
+    private LinearLayout emptyDisplay;
 
     private Circle circle;
     private FloatingActionButton createNewBroadcast;
@@ -83,7 +84,7 @@ public class CircleWall extends AppCompatActivity {
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
 
-    private ImageButton menuButton, back;
+    private ImageButton menuButton, back, shareCircle;
     private User user;
 
     //create broadcast popup ui elements
@@ -116,16 +117,18 @@ public class CircleWall extends AppCompatActivity {
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
         menuButton = findViewById(R.id.share_with_friend_button);
         back = findViewById(R.id.bck_Circlewall);
+        shareCircle = findViewById(R.id.shareCircle);
+        emptyDisplay = findViewById(R.id.circle_wall_empty_display);
+        emptyDisplay.setVisibility(View.VISIBLE);
 
-        createNewBroadcast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showCreateBroadcastDialog();
-            }
-        });
+        createNewBroadcast.setOnClickListener(view -> showCreateBroadcastDialog());
 
         menuButton.setOnClickListener(view -> {
             showPopup(view);
+        });
+
+        shareCircle.setOnClickListener(view -> {
+            showShareCirclePopup();
         });
 
         back.setOnClickListener(view -> {
@@ -145,9 +148,6 @@ public class CircleWall extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.share:
-                        showShareCirclePopup();
-                        return true;
                     case R.id.viewMembers:
                         startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
                         return true;
@@ -203,6 +203,7 @@ public class CircleWall extends AppCompatActivity {
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 broadcastList.add(0,broadcast); //to store timestamp values descendingly
                 adapter.notifyDataSetChanged();
+                emptyDisplay.setVisibility(View.GONE);
             }
 
             @Override
@@ -338,6 +339,7 @@ public class CircleWall extends AppCompatActivity {
     }
 
     private void createBroadcast() {
+        createBroadcastPopup.dismiss();
         String currentCircleId = circle.getId();
 
         String message = setMessageET.getText().toString();

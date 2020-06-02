@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/share"
-        android:icon="@drawable/ic_share_black_24dp"
-        android:title="Share this circle"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/viewMembers"
         android:title="View members"
         android:icon="@drawable/ic_person_outline_black_24dp"
