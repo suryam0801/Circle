@@ -330,6 +330,7 @@ public class Explore extends AppCompatActivity {
                     }
                 }
 
+
                 if (circle.getCircleDistrict() != null && circle.getCircleDistrict().equals(user.getDistrict())) {
                     //retrieve location & interest tags from circle object since tags are stored as hashmaps
                     List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
