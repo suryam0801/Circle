@@ -29,21 +29,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import circleapp.circlepackage.circle.Explore.Explore;
-//import circleapp.circlepackage.circle.LocalDatabase.AppDatabase;
-import circleapp.circlepackage.circle.LocalDatabase.AppExecutors;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
 
 public class OtpActivity extends AppCompatActivity {
 
