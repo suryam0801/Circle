@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
@@ -248,16 +250,50 @@ public class InterestTagPicker extends AppCompatActivity {
         commentsDB.child("adminCircle").child("adminCommentId").setValue(comment);
 
         //running circle
-        Circle runningCircle = new Circle("admin", district + " Morning Runner's",
+        String runningCircleID = UUID.randomUUID().toString();
+        String runningBroadcastID = UUID.randomUUID().toString();
+        String runningCommentID = UUID.randomUUID().toString();
+        Circle runningCircle = new Circle(runningCircleID, district + " Morning Runner's",
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
-                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+                "automatic", "CreatorAdmin", "CreatorAdmin", circleIntTags,
                 null, null, district, ward);
+        HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
+        pollOptions.put("Sure!", 8);
+        pollOptions.put("Thats too early :(", 4);
+        Poll runningPoll = new Poll("Hey guys! Can we go running every friday early in the morning?", pollOptionsRunningCircle, null);
+        Broadcast runnersBroadcast = new Broadcast(runningBroadcastID, "Lets go running guys!", null, "Vijay Ram", "AdminId", true,
+                System.currentTimeMillis(), runningPoll, "default");
+        Comment runnerComment = new Comment("Madhu mitha", "Hey where do you guys go running?",
+                runningCommentID, null, System.currentTimeMillis());
+        circlesDB.child(runningCircleID).setValue(runningCircle);
+        broadcastsDB.child(runningCircleID).child(runningBroadcastID).setValue(runnersBroadcast);
+        commentsDB.child(runningCircleID).child(runningCommentID).setValue(comment);
 
         //cooking circle
-        Circle cookingCircle = new Circle("admin", district + " Recipe Sharing Circle",
-                "Hello Cooks, join our circle and get access to the best recipes cooking in " + district + " and share your own dishes!",
-                "automatic", "CreatorAdmin", "CreatorAdmin", null,
+        String cookingCircleID = UUID.randomUUID().toString();
+        String cookingBroadcastID = UUID.randomUUID().toString();
+        String cookingCommentID = UUID.randomUUID().toString();
+        String cookingCommentIDResponse = UUID.randomUUID().toString();
+        String uri = "https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProjectWall%2F-M8R_D4hy1GfNqW7EohE%2Fhealthy_cookies.jpg?alt=media&token=2a33036a-eaba-4017-9684-d7629f49847f";
+        Circle cookingCircle = new Circle(cookingCircleID, district + " Recipe Sharing Circle",
+                "Hello Cooks, join our circle and get access to the best recipes in " + district + " and share your own dishes!",
+                "automatic", "CreatorAdmin", "Mekkala Nair", circleIntTags,
                 null, null, district, ward);
+        HashMap<String, Integer> pollOptionsCookingCircle = new HashMap<>(); //creating poll options
+        pollOptionsCookingCircle.put("I loved them!", 8);
+        pollOptionsCookingCircle.put("Could be a little more sweet", 4);
+        Poll cookingPoll = new Poll("How did you guys like the healthy cookies?", pollOptionsCookingCircle, null);
+        Broadcast cookingBroadcast = new Broadcast(cookingBroadcastID, "Hey guys! I have shared an attachment for my healthy cookie recipe :) " +
+                "Please take a look at let me know what you think", uri, "Mekkala Nair", "AdminId", true,
+                System.currentTimeMillis(), cookingPoll, "default");
+        Comment cookingComment = new Comment("Arijit Samuel", "Is it fine if i use normal milk instead of almond milk?",
+                cookingCommentID, null, (System.currentTimeMillis()-(1800*1000)));
+        Comment cookingCommentResponse = new Comment("Mekkala Nair", "Yeah that's not a problem!",
+                cookingCommentIDResponse, null, System.currentTimeMillis());
+        circlesDB.child(cookingCircleID).setValue(cookingCircle);
+        broadcastsDB.child(cookingCircleID).child(cookingBroadcastID).setValue(cookingBroadcast);
+        commentsDB.child(cookingCircleID).child(cookingCommentID).setValue(cookingComment);
+        commentsDB.child(cookingCircleID).child(cookingCommentIDResponse).setValue(cookingCommentResponse);
     }
 
     // Function to add a chip to chipgroup
