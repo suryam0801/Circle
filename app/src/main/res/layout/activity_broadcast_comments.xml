@@ -48,17 +48,18 @@
             android:background="#EEEEEE"></View>
 
         <LinearLayout
-            android:id="@+id/projectWall_empty_display"
+            android:id="@+id/commentWall_empty_display"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginTop="150dp"
             android:visibility="gone">
 
             <ImageView
                 android:layout_width="167dp"
                 android:layout_height="160dp"
-                android:background="@drawable/empty_members_placeholder"></ImageView>
+                android:background="@drawable/empty_comments_placeholder"></ImageView>
 
             <TextView
                 android:layout_width="248dp"

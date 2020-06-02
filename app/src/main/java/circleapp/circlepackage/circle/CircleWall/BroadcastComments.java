@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.android.gms.common.internal.service.Common;
@@ -52,6 +53,7 @@ public class BroadcastComments extends AppCompatActivity {
     private DatabaseReference broadcastCommentsDB;
     private ImageButton back;
     private Broadcast broadcast;
+    private LinearLayout emptyHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class BroadcastComments extends AppCompatActivity {
         commentSend = findViewById(R.id.comment_send_button);
         back = findViewById(R.id.bck_broadcastComments);
         commentsList = new ArrayList<>();
+        emptyHolder = findViewById(R.id.commentWall_empty_display);
+        emptyHolder.setVisibility(View.VISIBLE);
 
         commentAdapter= new CommentAdapter(BroadcastComments.this, commentsList);
         commentsListView.setAdapter(commentAdapter);
@@ -91,11 +95,10 @@ public class BroadcastComments extends AppCompatActivity {
     }
 
     public void loadComments() {
-
-
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timestamp").limitToLast(13).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                emptyHolder.setVisibility(View.GONE);
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();

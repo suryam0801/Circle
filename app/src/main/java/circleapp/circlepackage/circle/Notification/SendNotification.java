@@ -57,7 +57,35 @@ public class SendNotification {
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
 
-        Set<String> member = membersList.keySet();
+        Set<String> member;
+
+        if(membersList!=null) {
+            member = membersList.keySet();
+            for (String i :member)
+            {
+                db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Successfully !!!");
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Failed !!!"+e.toString());
+                    }
+                });
+
+                userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG,"Notification Sended Successfully !!!");
+                    }
+                });
+
+            }
+        }
+
 
 
 //        userNotify.child(toUserId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -66,34 +94,6 @@ public class SendNotification {
 //                Log.d(TAG,"Notification Sended Successfully !!!");
 //            }
 //        });
-
-        for (String i :member)
-        {
-            db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Successfully !!!");
-                }
-
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Failed !!!"+e.toString());
-                }
-            });
-
-            userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Log.d(TAG,"Notification Sended Successfully !!!");
-                }
-            });
-
-        }
-
-
-
-
     }
     public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
 //        This is the function to store the

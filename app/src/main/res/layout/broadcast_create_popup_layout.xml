@@ -44,7 +44,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             android:id="@+id/poll_create_layout"
             android:layout_height="wrap_content"
             android:background="@drawable/poll_background_file"
@@ -123,7 +123,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:id="@+id/attachmentUploadView"
-            android:visibility="visible"
+            android:visibility="gone"
             android:gravity="center"
             android:orientation="horizontal"
             android:background="@drawable/dashed_background">

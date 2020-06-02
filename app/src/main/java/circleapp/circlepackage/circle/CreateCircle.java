@@ -237,7 +237,7 @@ public class CreateCircle extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     } else {
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)-1);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     }
                 }
