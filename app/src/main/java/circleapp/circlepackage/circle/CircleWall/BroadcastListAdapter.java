@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -143,7 +144,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 Log.d("Download File",request.toString());
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                 request.setDestinationInExternalFilesDir(context,DIRECTORY_DOWNLOADS,"image"+".jpg");
-
+                Toast.makeText(context, "Successfully Downloaded", Toast.LENGTH_SHORT).show();
                 downloadManager.enqueue(request);
             }
         });
