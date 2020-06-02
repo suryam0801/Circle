@@ -77,16 +77,16 @@ public class Explore extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
+        database = FirebaseDatabase.getInstance();
+        circlesDB = database.getReference("Circles");
+        circlesDB.keepSynced(true); //synchronizes and stores local copy of data
+
         btnAddCircle = findViewById(R.id.add_circle_button);
         profPic = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
         circleJoinDialog = new Dialog(Explore.this);
 
-        database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance();
-
-        circlesDB = database.getReference("Circles");
-        circlesDB.keepSynced(true); //synchronizes and stores local copy of data
 
         user = SessionStorage.getUser(Explore.this);
         SessionStorage.saveUser(Explore.this, user);

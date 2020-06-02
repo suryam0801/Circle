@@ -47,8 +47,9 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     private Circle circle;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private FirebaseDatabase database;
-    private DatabaseReference circlesPersonelDB;
+    private DatabaseReference circlesPersonelDB, circleDB;
     private String state;
+
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;
         this.ApplicantList = ApplicantList;
@@ -68,6 +69,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
 
         database = FirebaseDatabase.getInstance();
         circlesPersonelDB = database.getReference("CirclePersonel");
+        circleDB = database.getReference("Circles");
 
         Glide.with(mContext)
                 .load(selectedApplicant.getPhotoURI())
@@ -104,6 +106,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             public void onClick(View view) {
                 circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
                 circlesPersonelDB.child(circle.getId()).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
+                circleDB.child(circle.getId()).child("membersList").child(selectedApplicant.getId()).setValue(true);
                 state="Accepted";
                 SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
             }
@@ -113,6 +116,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             @Override
             public void onClick(View view) {
                 circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
+                circleDB.child(circle.getId()).child("applicantsList").child(selectedApplicant.getId()).removeValue();
                 state="Rejected";
                 SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
             }
