@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -92,23 +93,23 @@ public class BroadcastComments extends AppCompatActivity {
     public void loadComments() {
 
 
-        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
+        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timestamp").limitToLast(13).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
-                commentsList.add(0, tempComment); //to store timestamp values descendingly
+                commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
+                commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Comment tempComment = dataSnapshot.getValue(Comment.class);
-                commentsList.add(0, tempComment); //to store timestamp values descendingly
-                commentAdapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
             }
 
             @Override

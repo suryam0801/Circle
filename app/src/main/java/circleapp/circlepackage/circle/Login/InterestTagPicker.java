@@ -271,7 +271,7 @@ public class InterestTagPicker extends AppCompatActivity {
 
         circlesDB.child("adminCircle").setValue(adminCircle);
         broadcastsDB.child("adminCircle").child("adminBroadcast").setValue(broadcast);
-        commentsDB.child("adminCircle").child("adminCommentId").setValue(comment);
+        commentsDB.child("adminCircle").child("adminBroadcast").child("adminCommentId").setValue(comment);
 
         //running circle
         String runningCircleID = UUID.randomUUID().toString();
