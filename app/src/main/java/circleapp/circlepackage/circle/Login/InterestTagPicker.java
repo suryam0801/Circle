@@ -38,7 +38,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -382,6 +385,10 @@ public class InterestTagPicker extends AppCompatActivity {
             tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
         }
 
+        //storing user as a json in file locally
+        String string = new Gson().toJson(user);
+        storeUserFile(string, getApplicationContext());
+
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -406,15 +413,17 @@ public class InterestTagPicker extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
-
-
-        //store the current user locally for fastest retrieval of only current user
-/*        final SharedPreferences sharedPreferences = getSharedPreferences("LocalUserPermaStore", MODE_PRIVATE);
-        String string = new Gson().toJson(user);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("myUserDetails", string);
-        editor.commit();*/
+    private void storeUserFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
     @Override

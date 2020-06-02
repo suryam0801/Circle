@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,9 +74,6 @@ public class Explore extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         intentUri = getIntent().getData();
-        //opening link joining
-        Log.d(TAG, "RECIEVED INTENT");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
 
@@ -89,39 +87,22 @@ public class Explore extends AppCompatActivity {
 
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
-        usersDB = database.getReference("Users").child(currentUser.getCurrentUser().getUid());
-        usersDB.keepSynced(true);
 
-        startTimeUser = System.currentTimeMillis();
-        usersDB.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "TIME TAKEN USERS: " + (System.currentTimeMillis() - startTimeUser));
-                user = dataSnapshot.getValue(User.class);
-                SessionStorage.saveUser(Explore.this, user);
-                Random r = new Random();
-                int count = r.nextInt((4 - 0) + 1);
-                Glide.with(getApplicationContext())
-                        .load(user.getProfileImageLink())
-                        .placeholder(ContextCompat.getDrawable(Explore.this, myImageList[count]))
-                        .into(profPic);
+        user = SessionStorage.getUser(Explore.this);
+        SessionStorage.saveUser(Explore.this, user);
+        Random r = new Random();
+        int count = r.nextInt((4 - 0) + 1);
+        Glide.with(getApplicationContext())
+                .load(user.getProfileImageLink())
+                .placeholder(ContextCompat.getDrawable(Explore.this, myImageList[count]))
+                .into(profPic);
 
-                //retrieve interest tags from user
-                userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
+        //retrieve interest tags from user
+        userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
-                startTimeCircle = System.currentTimeMillis();
-                setCircleTabs();
-                setWorkbenchTabs();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                currentUser.signOut();
-                startActivity(new Intent(Explore.this, PhoneLogin.class));
-                finish();
-            }
-        });
-
+        startTimeCircle = System.currentTimeMillis();
+        setCircleTabs();
+        setWorkbenchTabs();
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(view -> {
@@ -174,29 +155,27 @@ public class Explore extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if(circle.getCircleDistrict()!=null && circle.getCircleDistrict().equals(user.getDistrict())){
-                    //checking if user is a member of the circle
-                    boolean existingMember = false;
-                    if (circle.getMembersList() != null) {
-                        if (circle.getMembersList().keySet().contains(currentUser.getUid()))
-                            existingMember = true;
-                    }
+                //checking if user is a member of the circle
+                boolean existingMember = false;
+                if (circle.getMembersList() != null) {
+                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
+                        existingMember = true;
+                }
 
-                    //checking for duplicate
-                    boolean duplicate = false;
-                    for(Circle c : workbenchCircleList){
-                        if(c.getId().equals(circle.getId())) {
-                            duplicate = true;
-                        }
+                //checking for duplicate
+                boolean duplicate = false;
+                for(Circle c : workbenchCircleList){
+                    if(c.getId().equals(circle.getId())) {
+                        duplicate = true;
                     }
+                }
 
-                    //setting the adapter initially
-                    //filter for only circles associated with creator id
-                    if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
-                        workbenchCircleList.add(circle);
-                        //notify the adapter each time a new item needs to be added to the recycler view
-                        wbadapter.notifyDataSetChanged();
-                    }
+                //setting the adapter initially
+                //filter for only circles associated with creator id
+                if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
+                    workbenchCircleList.add(circle);
+                    //notify the adapter each time a new item needs to be added to the recycler view
+                    wbadapter.notifyDataSetChanged();
                 }
             }
 
@@ -278,9 +257,21 @@ public class Explore extends AppCompatActivity {
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "LOADING TIME FOR CIRCLES!!! " + (startTimeCircle-System.currentTimeMillis()));
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 allCircles.add(circle);
-                //adding default circles
+
+                //recieve request on opening
+                if(intentUri!=null) {
+                    Log.d(TAG, "INTENT NOT NULL");
+                    List<String> params = intentUri.getPathSegments();
+                    String circleID = params.get(params.size() - 1);
+                    Log.d(TAG, "INTENT CIRCLEID: " + circleID);
+                    if(circle.getId().equals(circleID)){
+                        displayJoinPopup(circle);
+                    }
+                }
+
                 //admin circle
                 if(circle.getId().equals("adminCircle")){
                     boolean contains = false;
@@ -457,10 +448,12 @@ public class Explore extends AppCompatActivity {
         }
     }
 
+
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        Log.d(TAG, "RECIEVED INTENT");
+    protected void onStart() {
+        super.onStart();
+        intentUri = getIntent().getData();
+        //opening link joining
         if(intentUri!=null) {
             Log.d(TAG, "INTENT NOT NULL");
             List<String> params = intentUri.getPathSegments();
@@ -474,6 +467,18 @@ public class Explore extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getIntent().setData(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getIntent().setData(null);
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -48,7 +49,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,9 +87,9 @@ public class EditProfile extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
     User user;
-    private int count = 0;
     int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
             R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+    boolean emptyDismiss = true;
 
 
     private FirebaseDatabase database;
@@ -171,7 +175,6 @@ public class EditProfile extends AppCompatActivity {
                 .into(profileImageView);
 
         editIntTagBtn.setOnClickListener(view -> {
-            interestTagsEditDisplay.removeAllViews();
             displayInterestTagPopup();
         });
 
@@ -198,6 +201,11 @@ public class EditProfile extends AppCompatActivity {
             user.setInterestTags(tempIntTags);
 
             userDB.child(user.getUserId()).setValue(user);
+            //storing user as a json in file locally
+            String string = new Gson().toJson(user);
+            storeUserFile(string, getApplicationContext());
+            SessionStorage.saveUser(EditProfile.this, user);
+            
             startActivity(new Intent(EditProfile.this, Explore.class));
             finish();
         });
@@ -216,11 +224,21 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    private void storeUserFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+
     private void displayInterestTagPopup() {
         interestTagDialog = new Dialog(EditProfile.this);
         interestTagDialog.setContentView(R.layout.activity_create_circle_interesttag_dialog); //set dialog view
-        interestTagDialog.setCanceledOnTouchOutside(false);
-        interestTagDialog.setCancelable(false);
 
         //initialize elements in popup dialog
         final Button finalizeInterestTag = interestTagDialog.findViewById(R.id.circle_finalize_interest_tags);
@@ -238,14 +256,18 @@ public class EditProfile extends AppCompatActivity {
         interestTagEntry.setThreshold(1);
         interestTagEntry.setAdapter(adapter);
 
-        finalizeInterestTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        interestTagDialog.setOnDismissListener(dialogInterface -> {
+            if(emptyDismiss == false) {
+                interestTagsEditDisplay.removeAllViews();
                 for (String interest : selectedInterestTags)
                     setInterestTag(interest, interestTagsEditDisplay);
-                interestTagDialog.dismiss();
-                finalizeChanges.setVisibility(View.VISIBLE);
             }
+        });
+
+        finalizeInterestTag.setOnClickListener(view -> {
+            emptyDismiss = false;
+            interestTagDialog.dismiss();
+            finalizeChanges.setVisibility(View.VISIBLE);
         });
 
         interestTagEntry.setOnTouchListener(new View.OnTouchListener() {
