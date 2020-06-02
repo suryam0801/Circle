@@ -305,8 +305,12 @@ public class Explore extends AppCompatActivity {
                             contains=true;
                     }
                     if(contains==false){
-                        exploreCircleList.add(circle);
-                        adapter.notifyDataSetChanged();
+                        if((circle.getMembersList()!=null && circle.getMembersList().keySet().contains(user.getUserId()))){
+
+                        } else {
+                            exploreCircleList.add(circle);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
 

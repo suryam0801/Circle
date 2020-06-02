@@ -50,7 +50,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //set the details of each circle to its respective card.
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
-        holder.tv_MycircleName.setBackground(wbItemBackground);
+        holder.container.setBackground(wbItemBackground);
         holder.tv_MycircleName.setText(MycircleList.get(position).getName());
     }
 
