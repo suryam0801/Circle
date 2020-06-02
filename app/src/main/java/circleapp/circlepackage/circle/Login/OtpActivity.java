@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
@@ -32,6 +33,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import circleapp.circlepackage.circle.Explore.Explore;
 //import circleapp.circlepackage.circle.LocalDatabase.AppDatabase;
@@ -121,21 +125,9 @@ public class OtpActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
-//                                        userldb = dataSnapshot.getValue(User.class);
-//
-//                                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                if (userldb!=null)
-//                                                {
-//                                                    lDb.userDao().insertUser(userldb);
-//                                                    Log.d("OtpActivity","user data stored locally"+userldb);
-//                                                }
-//
-//                                            }
-//                                        });
-
-                                        sendUserToHome();
+                                        User user = dataSnapshot.getValue(User.class);
+                                        String string = new Gson().toJson(user);
+                                        storeUserFile(string, getApplicationContext());
                                     } else {
                                         senduserToReg();
                                     }
@@ -159,6 +151,18 @@ public class OtpActivity extends AppCompatActivity {
                 });
     }
 
+    private void storeUserFile(String data, Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+            sendUserToHome();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -174,7 +178,7 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the  user to HomePage
     public void sendUserToHome() {
-        Intent homeIntent = new Intent(OtpActivity.this, Explore.class);
+        Intent homeIntent = new Intent(OtpActivity.this, MainActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(homeIntent);
