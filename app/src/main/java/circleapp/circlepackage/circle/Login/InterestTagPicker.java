@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -165,6 +168,27 @@ public class InterestTagPicker extends AppCompatActivity {
         });
 
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
+        interestTagsEntry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String interestTag = interestTagsEntry.getText().toString().replace("#", "");
+                    if (!interestTag.isEmpty()) {
+                        selectedInterestTags.add(interestTag);
+                        if (!dbInterestTags.contains(interestTag)) {
+                            dbInterestTags.add(interestTag);
+                            setTag(interestTag);
+                        } else {
+                            chipGroup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                            setTag(interestTag);
+                        }
+                    }
+                    handled = true;
+                }
+                return handled;
+            }
+        });
         interestTagsEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

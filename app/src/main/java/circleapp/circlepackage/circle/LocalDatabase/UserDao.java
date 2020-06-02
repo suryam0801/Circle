@@ -15,25 +15,26 @@
 //import java.util.List;
 //
 //import circleapp.circlepackage.circle.ObjectModels.User;
+//import circleapp.circlepackage.circle.ObjectModels.UserStorage;
 //
 //@Dao
 //public interface UserDao {
 //
 //
-//    @Query("SELECT * FROM users")
-//    List<User> loadalluser();
+//    @Query("SELECT * FROM user")
+//    List<UserStorage> loadalluser();
 //
 //    @Insert
-//    void insertUser(User user);
+//    void insertUser(String user);
 //
 //    @Update
-//    void updateUser(User user);
+//    void updateUser(String user);
 //
 //    @Delete
-//    void delete(User user);
+//    void delete(String user);
 //
-//    @Query("SELECT * FROM users WHERE userId =:uid")
-//    User loadUser(String uid);
+//    @Query("SELECT * FROM user WHERE id =:id")
+//    User loadUser(int id);
 //
 //}
 //

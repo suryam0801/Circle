@@ -162,4 +162,11 @@ public class NotificationActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(NotificationActivity.this,Explore.class);
+        startActivity(intent);
+    }
 }

@@ -9,9 +9,10 @@
 //import androidx.room.TypeConverters;
 //
 //import circleapp.circlepackage.circle.ObjectModels.User;
+//import circleapp.circlepackage.circle.ObjectModels.UserStorage;
 //
-//@Database(entities = {User.class},version = 1,exportSchema = false)
-//@TypeConverters({Converters.class})
+//@Database(entities = {UserStorage.class},version = 1,exportSchema = false)
+////@TypeConverters({Converters.class})
 //public abstract class AppDatabase extends RoomDatabase {
 //    private static final String LOG_TAG = AppDatabase.class.getSimpleName();
 //    private static final Object LOCK = new Object();
