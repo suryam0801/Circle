@@ -84,7 +84,7 @@ public class Explore extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
-        usersDB = database.getReference().child(currentUser.getUid());
+        usersDB = database.getReference().child("Users").child(currentUser.getUid());
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
 
         btnAddCircle = findViewById(R.id.add_circle_button);

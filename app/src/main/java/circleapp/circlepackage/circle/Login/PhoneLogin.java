@@ -52,7 +52,6 @@ public class PhoneLogin extends AppCompatActivity {
 //        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
-
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
         mGenerateBtn = findViewById(R.id.generate_btn);
@@ -71,7 +70,6 @@ public class PhoneLogin extends AppCompatActivity {
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.showSoftInput(mCountryCode, InputMethodManager.SHOW_IMPLICIT);
                         mCountryCode.setShowSoftInputOnFocus(true);
-                        mCountryCode.setText("+");
                         mCountryCode.setSelection(mCountryCode.getText().length());
                         break;
                     case MotionEvent.ACTION_UP:
