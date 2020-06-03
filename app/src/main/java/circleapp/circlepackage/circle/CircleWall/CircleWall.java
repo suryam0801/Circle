@@ -91,7 +91,7 @@ public class CircleWall extends AppCompatActivity {
     private EditText setMessageET, setPollQuestionET, setPollOptionET;
     private LinearLayout uploadFileView, pollCreateView, additionalSelector, pollOptionsDisplay;
     private ImageView uploadCloudImageView;
-    private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText;
+    private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText, circleBannerName;
     private Button btnAddPollOption, btnUploadBroadcast;
     private Dialog createBroadcastPopup;
 
@@ -114,12 +114,15 @@ public class CircleWall extends AppCompatActivity {
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        circleBannerName = findViewById(R.id.circleBannerName);
         createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
         menuButton = findViewById(R.id.share_with_friend_button);
         back = findViewById(R.id.bck_Circlewall);
         shareCircle = findViewById(R.id.shareCircle);
         emptyDisplay = findViewById(R.id.circle_wall_empty_display);
         emptyDisplay.setVisibility(View.VISIBLE);
+
+        circleBannerName.setText(circle.getName());
 
         createNewBroadcast.setOnClickListener(view -> showCreateBroadcastDialog());
 
