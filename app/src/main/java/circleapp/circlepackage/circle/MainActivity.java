@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth currentUser;
     public static final String TAG = MainActivity.class.getSimpleName();
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +47,23 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
+        // [START shared_tracker]
+        // Obtain the shared Tracker instance.
+        // [END shared_tracker]
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
         readFromFile(getApplicationContext());
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String name = "GAnalytics";
+        Log.i(TAG, "Setting screen name: " + name);
+        mTracker.setScreenName("Image~" + name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private String readFromFile(Context context) {

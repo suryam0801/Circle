@@ -76,4 +76,8 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.16.20'
     annotationProcessor 'org.projectlombok:lombok:1.16.20'
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //analytics
+    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
+
 }
