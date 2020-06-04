@@ -44,6 +44,9 @@ public class PhoneLogin extends AppCompatActivity {
     private String complete_phone_number = "";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+    public PhoneAuthProvider.ForceResendingToken resendingToken;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,9 +155,11 @@ public class PhoneLogin extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                setResendingToken(forceResendingToken);
                                 Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
                                 otpIntent.putExtra("AuthCredentials", s);
                                 otpIntent.putExtra("phn_num", complete_phone_number);
+                                otpIntent.putExtra("resendToken", forceResendingToken);
                                 startActivity(otpIntent);
                                 finish();
                             }
@@ -162,6 +167,14 @@ public class PhoneLogin extends AppCompatActivity {
                         5000);
             }
         };
+    }
+
+    public PhoneAuthProvider.ForceResendingToken getResendingToken() {
+        return resendingToken;
+    }
+
+    public void setResendingToken(PhoneAuthProvider.ForceResendingToken resendingToken) {
+        this.resendingToken = resendingToken;
     }
 }
 

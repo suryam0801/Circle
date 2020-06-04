@@ -2,20 +2,24 @@ package circleapp.circlepackage.circle.Login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -31,6 +35,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -47,6 +52,10 @@ public class OtpActivity extends AppCompatActivity {
     private DatabaseReference usersDB;
     private FirebaseDatabase database;
     private TextView mOtpFeedback;
+    private TextView resendTextView;
+    private int counter = 30;
+    private PhoneAuthProvider.ForceResendingToken resendingToken;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private User userldb;
     //    private AppDatabase lDb;
     String doc_id;
@@ -71,32 +80,81 @@ public class OtpActivity extends AppCompatActivity {
         //Getting AuthCredentials from the PhoneLogin page
         mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
         phn_number = getIntent().getStringExtra("phn_num");
+        resendingToken = getIntent().getParcelableExtra("resendToken");
 
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
         mVerifyBtn = findViewById(R.id.verify_btn);
+        resendTextView = findViewById(R.id.resend_otp_counter);
+        resendTextView.setClickable(false);
 
-        mVerifyBtn.setOnClickListener(new View.OnClickListener() {
+        new CountDownTimer(30000, 1000) {
             @Override
-            public void onClick(View v) {
-                String otp = mOtpText.getText().toString();
+            public void onTick(long millisUntilFinished) {
+                resendTextView.setText("Resend OTP in: " + counter);
+                counter--;
+            }
 
-                if (otp.isEmpty()) {
-                    mOtpFeedback.setVisibility(View.VISIBLE);
-                    mOtpFeedback.setText("Please fill in the form and try again.");
+            @Override
+            public void onFinish() {
+                resendTextView.setText("Click here to resend OTP");
+                resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+                resendTextView.setClickable(true);
+                resendTextView.setOnClickListener(view -> {
+                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                            phn_number,
+                            15,
+                            TimeUnit.SECONDS,
+                            OtpActivity.this,
+                            mCallbacks
+                    );
+                });
+            }
+        }.start();
 
-                } else {
+        mVerifyBtn.setOnClickListener(v -> {
+            String otp = mOtpText.getText().toString();
 
-                    mOtpProgress.setVisibility(View.VISIBLE);
-                    mVerifyBtn.setEnabled(false);
+            if (otp.isEmpty()) {
+                mOtpFeedback.setVisibility(View.VISIBLE);
+                mOtpFeedback.setText("Please fill in the form and try again.");
 
-                    //Pasing the OTP and credentials for the Verification
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
-                    signInWithPhoneAuthCredential(credential);
-                }
+            } else {
+
+                mOtpProgress.setVisibility(View.VISIBLE);
+                mVerifyBtn.setEnabled(false);
+
+                //Pasing the OTP and credentials for the Verification
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
+                signInWithPhoneAuthCredential(credential);
             }
         });
+
+        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                // Here we can add the code for Auto Read the OTP
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                //Display the Error msg to the user through the Textview when error occurs
+            }
+
+            @Override
+            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                Toast.makeText(getApplicationContext(), "OTP Resent", Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        5000);
+            }
+        };
     }
 
     //Function to check the given OTP
