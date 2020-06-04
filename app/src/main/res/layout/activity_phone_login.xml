@@ -67,7 +67,6 @@
         android:padding="16dp"
         android:textColor="@color/color_blue"
         android:textColorHint="@color/grey"
-        android:text="+91"
         android:clickable="false"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"

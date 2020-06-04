@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,6 +62,17 @@ public class PhoneLogin extends AppCompatActivity {
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
 
+        TelephonyManager tm =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        String countryCodeValue = tm.getNetworkCountryIso();
+        Log.d("PhoneLogin for ","The Counrty Code :::" +countryCodeValue);
+        switch(countryCodeValue)
+    {
+        case "in":
+            mCountryCode.setText("+91");
+            break;
+        case "us":
+            mCountryCode.setText("+1");
+    }
 
         mCountryCode.setOnTouchListener(new View.OnTouchListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
