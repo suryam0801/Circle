@@ -115,12 +115,18 @@ public class GatherUserDetails extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                    requestLocationPermission();
-                    return;
+
+                if(firstname.getText().equals("") || lastname.getText().equals("") || firstname.getText().toString().isEmpty()|| lastname.getText().toString().isEmpty()){
+                    Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    getLocation();
+                    if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                        requestLocationPermission();
+                        return;
+                    } else {
+                        getLocation();
+                    }
                 }
+
             }
         });
     }
