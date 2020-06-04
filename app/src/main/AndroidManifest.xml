@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CircleWall.BroadcastComments"></activity>
+        <activity android:name=".Login.EntryPage"></activity>
+        <activity android:name=".CircleWall.BroadcastComments" />
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity android:name=".Login.InterestTagPicker" />

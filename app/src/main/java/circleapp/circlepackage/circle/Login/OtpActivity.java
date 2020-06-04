@@ -2,14 +2,12 @@ package circleapp.circlepackage.circle.Login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -34,7 +32,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -44,14 +41,14 @@ public class OtpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private String mAuthVerificationId, phn_number;
-    private EditText mOtpText;
+    private PinEntryEditText mOtpText;
     private Button mVerifyBtn;
     private ProgressBar mOtpProgress;
     private DatabaseReference usersDB;
     private FirebaseDatabase database;
     private TextView mOtpFeedback;
     private User userldb;
-//    private AppDatabase lDb;
+    //    private AppDatabase lDb;
     String doc_id;
 
     @Override
@@ -151,8 +148,7 @@ public class OtpActivity extends AppCompatActivity {
             outputStreamWriter.write(data);
             outputStreamWriter.close();
             sendUserToHome();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
