@@ -68,14 +68,14 @@ public class PhoneLogin extends AppCompatActivity {
         TelephonyManager tm =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         String countryCodeValue = tm.getNetworkCountryIso();
         Log.d("PhoneLogin for ","The Counrty Code :::" +countryCodeValue);
-        switch(countryCodeValue)
-    {
-        case "in":
-            mCountryCode.setText("+91");
-            break;
-        case "us":
-            mCountryCode.setText("+1");
-    }
+        switch(countryCodeValue) {
+            case "in":
+                 mCountryCode.setText("+91");
+                break;
+            case "us":
+                mCountryCode.setText("+1");
+                break;
+         }
 
         mCountryCode.setOnTouchListener(new View.OnTouchListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
