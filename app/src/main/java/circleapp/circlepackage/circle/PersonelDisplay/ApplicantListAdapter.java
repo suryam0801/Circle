@@ -73,7 +73,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
 
         Glide.with(mContext)
                 .load(selectedApplicant.getPhotoURI())
-                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.profile_image))
+                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.person_singing))
                 .into(holder.profPic);
 
         //Set text for TextView
