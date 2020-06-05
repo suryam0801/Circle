@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,7 +34,10 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth currentUser;
+    private FirebaseAnalytics firebaseAnalytics;
     public static final String TAG = MainActivity.class.getSimpleName();
+    private int mainActivityFb = 0;
+    private String userDistrict, userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +48,32 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
+        // Obtain the Firebase Analytics instance.
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        //bundle to send to fb
+        Bundle bundle = new Bundle();
+        bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, mainActivityFb);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "In main activity bitch");
+
+        //Logs an app event.
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        firebaseAnalytics.logEvent("Checkout_analytics", bundle);
+
+        //Sets whether analytics collection is enabled for this app on this device.
+        firebaseAnalytics.setAnalyticsCollectionEnabled(true);
+
+        //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds)
+        //firebaseAnalytics.setMinimumSessionDuration(15000);
+
+        //Sets the duration of inactivity that terminates the current session. The default value is 1800000 (30 minutes).
+        firebaseAnalytics.setSessionTimeoutDuration(5000);
 
         readFromFile(getApplicationContext());
+
+        //Sets the user ID property.
+        firebaseAnalytics.setUserId(String.valueOf(userId));
+        //Sets a user property to a given value.
+        firebaseAnalytics.setUserProperty("District", userDistrict);
 
     }
 
@@ -71,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
                 User user = new Gson().fromJson(ret, User.class);
                 SessionStorage.saveUser(MainActivity.this, user);
+                userDistrict = user.getDistrict();
+                userId = user.getUserId();
 
                 startActivity(new Intent(MainActivity.this, Explore.class));
                 finish();
@@ -98,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         readFromFile(getApplicationContext());
-
+        Bundle bundle = new Bundle();
+        bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, 1234);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "In onStart at main");
+        firebaseAnalytics.logEvent("Checkout_analytics_at_onSTART", bundle);
     }
 }
