@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseException;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -46,12 +47,11 @@ public class PhoneLogin extends AppCompatActivity {
     SharedPreferences.Editor editor;
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
+
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
@@ -68,14 +68,14 @@ public class PhoneLogin extends AppCompatActivity {
         TelephonyManager tm =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         String countryCodeValue = tm.getNetworkCountryIso();
         Log.d("PhoneLogin for ","The Counrty Code :::" +countryCodeValue);
-        switch(countryCodeValue)
-    {
-        case "in":
-            mCountryCode.setText("+91");
-            break;
-        case "us":
-            mCountryCode.setText("+1");
-    }
+        switch(countryCodeValue) {
+            case "in":
+                 mCountryCode.setText("+91");
+                break;
+            case "us":
+                mCountryCode.setText("+1");
+                break;
+         }
 
         mCountryCode.setOnTouchListener(new View.OnTouchListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

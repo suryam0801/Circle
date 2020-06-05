@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.Explore.Explore;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -33,7 +34,6 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth currentUser;
     private FirebaseAnalytics firebaseAnalytics;
     public static final String TAG = MainActivity.class.getSimpleName();
     private int mainActivityFb = 0;
@@ -106,17 +106,17 @@ public class MainActivity extends AppCompatActivity {
                 finish();
 
             } else {
-                startActivity(new Intent(MainActivity.this, PhoneLogin.class));
+                startActivity(new Intent(MainActivity.this, EntryPage.class));
                 finish();
             }
         }
         catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
-            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
+            startActivity(new Intent(MainActivity.this, EntryPage.class));
             finish();
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
-            startActivity(new Intent(MainActivity.this, PhoneLogin.class));
+            startActivity(new Intent(MainActivity.this, EntryPage.class));
             finish();
         }
 
