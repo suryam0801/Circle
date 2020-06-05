@@ -57,7 +57,6 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private User userldb;
     //    private AppDatabase lDb;
@@ -67,8 +66,6 @@ public class OtpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.setCurrentScreen(OtpActivity.this, "OTP Verification", null /* class override */);
 
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

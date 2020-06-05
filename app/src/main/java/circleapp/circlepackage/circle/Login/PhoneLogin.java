@@ -45,17 +45,12 @@ public class PhoneLogin extends AppCompatActivity {
     private String complete_phone_number = "";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
-    private FirebaseAnalytics mFirebaseAnalytics;
     public PhoneAuthProvider.ForceResendingToken resendingToken;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Phone Number Entry", null /* class override */);
 
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
