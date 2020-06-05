@@ -65,7 +65,6 @@ public class GatherUserDetails extends AppCompatActivity {
     String fName, lName, contact;
     EditText firstname;
     EditText lastname;
-    FirebaseAnalytics mFirebaseAnalytics;
 
 
     //location services elements
@@ -77,9 +76,6 @@ public class GatherUserDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.setCurrentScreen(GatherUserDetails.this, "User Details Entry", null /* class override */);
-
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);

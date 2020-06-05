@@ -88,7 +88,6 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -96,8 +95,6 @@ public class InterestTagPicker extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_interest_tag_picker);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mFirebaseAnalytics.setCurrentScreen(InterestTagPicker.this, "Interest Tag Picker", null /* class override */);
 
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
