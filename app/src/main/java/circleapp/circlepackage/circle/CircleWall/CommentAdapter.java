@@ -22,8 +22,8 @@ public class CommentAdapter extends BaseAdapter {
     private Context mContext;
     private List<Comment> CommentList;
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
-            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
+            R.drawable.person_teacher, R.drawable.person_woman_dancing};
 
 
     public CommentAdapter(Context mContext, List<Comment> CommentList) {

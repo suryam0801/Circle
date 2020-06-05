@@ -69,8 +69,8 @@ public class Explore extends AppCompatActivity {
     private List<String> userTempinterestTagsList;
     private Uri intentUri;
     private boolean link_flag = false;
-    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
-            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
+            R.drawable.person_teacher, R.drawable.person_woman_dancing};
 
     long startTimeCircle;
 
@@ -260,23 +260,8 @@ public class Explore extends AppCompatActivity {
         exploreRecyclerView.setLayoutManager(layoutManager);
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
-        final RecyclerView.Adapter adapter = new CircleDisplayAdapter(Explore.this, exploreCircleList);
+        final RecyclerView.Adapter adapter = new CircleDisplayAdapter(Explore.this, exploreCircleList, user);
         exploreRecyclerView.setAdapter(adapter);
-
-        exploreRecyclerView.addOnItemTouchListener(
-                //RecyclerItemClickListener is a gestureDectector class which recognises the type of touch
-                new RecyclerItemClickListener(Explore.this, exploreRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        displayJoinPopup(exploreCircleList.get(position));
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                        //showShareCirclePopup(exploreCircleList.get(position));
-                    }
-                })
-        );
 
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
@@ -295,7 +280,6 @@ public class Explore extends AppCompatActivity {
 
                     if (circle.getId().equals(circleID)) {
                         link_flag = true;
-                        displayJoinPopup(circle);
                     }
                 }
 
@@ -315,7 +299,7 @@ public class Explore extends AppCompatActivity {
 
                 if(contains == false) {
                     if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
-                        exploreCircleList.add(circle);
+                        exploreCircleList.add(0,circle);
                         adapter.notifyDataSetChanged();
                     } else if(circle.getCircleDistrict().equals(user.getDistrict())){
 
@@ -391,104 +375,6 @@ public class Explore extends AppCompatActivity {
         });
     }
 
-    private void displayJoinPopup(final Circle circle) {
-        circleJoinDialog.setContentView(R.layout.apply_popup_layout);
-
-        final TextView circleName = circleJoinDialog.findViewById(R.id.join_popup_circle_name);
-        final TextView creatorName = circleJoinDialog.findViewById(R.id.join_popup_circle_creator);
-        final TextView circleDescription = circleJoinDialog.findViewById(R.id.join_popup_cicle_description);
-        final Button cancelButton = circleJoinDialog.findViewById(R.id.join_popup_cancel_button);
-        final Button acceptButton = circleJoinDialog.findViewById(R.id.join_popup_accept_button);
-
-        circleName.setText(circle.getName());
-        creatorName.setText(circle.getCreatorName());
-        circleDescription.setText(circle.getDescription());
-        circleDescription.setMaxLines(Integer.MAX_VALUE);
-
-        if (("review").equalsIgnoreCase(circle.getAcceptanceType()))
-            acceptButton.setText("Apply");
-
-        //checking if user as already applied
-        if (circle.getApplicantsList() != null) {
-            if (circle.getApplicantsList().keySet().contains(currentUser.getCurrentUser().getUid())) {
-                acceptButton.setClickable(false);
-                acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
-                acceptButton.setText("Pending Request");
-                acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
-            }
-        }
-
-        //testing if popup is already in workbench
-        if (link_flag == true) {
-            for (Circle wbCircle : allCircles) {
-                if (wbCircle.getMembersList() != null && wbCircle.getMembersList().keySet().contains((user.getUserId()))) {
-                    acceptButton.setClickable(false);
-                    acceptButton.setBackground(getResources().getDrawable(R.drawable.unpressable_button));
-                    acceptButton.setText("Joined");
-                    acceptButton.setTextColor(Color.parseColor("#D1D1D1"));
-                }
-            }
-        }
-
-        acceptButton.setOnClickListener(view -> {
-            //creating a subscriber object to store. doesnt store private information such as tags and contact information.
-            Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
-                    user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
-
-            if (circle.getId().equals("adminCircle")) {
-                SessionStorage.saveCircle(Explore.this, circle);
-                link_flag = false;
-                startActivity(new Intent(Explore.this, CircleWall.class));
-                finish();
-            } else {
-
-                if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-                    database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-                    //adding userID to applicants list
-                    circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-                } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-                    database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-                    //adding userID to members list in circlesReference
-                    circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-                    Log.d(TAG, "USER ACTIVE CIRCLES: " + user.getActiveCircles());
-                    int nowActive = user.getActiveCircles() + 1;
-                    usersDB.child("activeCircles").setValue((nowActive));
-                }
-                circleJoinDialog.dismiss();
-            }
-
-        });
-
-        circleJoinDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                link_flag = false;
-            }
-        });
-
-        cancelButton.setOnClickListener(view -> circleJoinDialog.dismiss());
-
-        circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        circleJoinDialog.show();
-    }
-
-    private void showShareCirclePopup(Circle c) {
-        try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nLet me recommend you this application\n\n";
-            //https://play.google.com/store/apps/details?id=
-            Log.d(TAG, c.getId());
-            shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch (Exception error) {
-
-        }
-    }
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -502,7 +388,6 @@ public class Explore extends AppCompatActivity {
                 for (Circle c : allCircles) {
                     if (c.getId().equals(circleID)) {
                         link_flag = true;
-                        displayJoinPopup(c);
                     }
                 }
             }
