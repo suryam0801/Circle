@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -56,6 +57,8 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private User userldb;
     //    private AppDatabase lDb;
     String doc_id;
@@ -64,6 +67,8 @@ public class OtpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setCurrentScreen(OtpActivity.this, "OTP Verification", null /* class override */);
 
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -109,6 +114,7 @@ public class OtpActivity extends AppCompatActivity {
                             OtpActivity.this,
                             mCallbacks
                     );
+                    resendTextView.setVisibility(View.GONE);
                 });
             }
         }.start();
