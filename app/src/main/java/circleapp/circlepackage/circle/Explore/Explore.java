@@ -286,6 +286,8 @@ public class Explore extends AppCompatActivity {
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 allCircles.add(circle);
 
+                List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
+
                 //recieve request on opening
                 if (intentUri != null) {
                     List<String> params = intentUri.getPathSegments();
@@ -297,64 +299,38 @@ public class Explore extends AppCompatActivity {
                     }
                 }
 
-                //admin circle
-                if (circle.getCreatorID().equals("CreatorAdmin")) {
-                    boolean contains = false;
-                    for (Circle c : exploreCircleList) {
-                        if (c.getId().equals(circle.getId()))
-                            contains = true;
-                    }
-                    if (contains == false) {
-                        if ((circle.getMembersList() != null && circle.getMembersList().keySet().contains(user.getUserId())) && circle.getCreatorName().equals("Admin")) {
-
-                        } else {
-
-                            if (circle.getCreatorName().equals("Admin") && contains == false) {
-                                exploreCircleList.add(circle);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                boolean membersExist = true;
-                                if(circle.getMembersList()==null)
-                                    membersExist = false;
-                                else if (circle.getMembersList().containsKey(user.getUserId()))
-                                    membersExist = true;
-
-                                if(circle.getCircleDistrict().equals("test") || circle.getCircleDistrict().equals(user.getDistrict()) ){
-                                    if(membersExist==false){
-                                        exploreCircleList.add(circle);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-                        }
-                    }
+                //checking if circle already exists
+                boolean contains = false;
+                for (Circle c : exploreCircleList) {
+                    if (c.getId().equals(circle.getId()))
+                        contains = true;
                 }
 
+                //checking if user is a member of the circle
+                boolean existingMember = false;
+                if (circle.getMembersList() != null) {
+                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
+                        existingMember = true;
+                }
 
-                if (circle.getCircleDistrict() != null && circle.getCircleDistrict().equals(user.getDistrict())) {
-                    //retrieve location & interest tags from circle object since tags are stored as hashmaps
-                    List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
+                if(contains == false) {
+                    if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
+                        exploreCircleList.add(circle);
+                        adapter.notifyDataSetChanged();
+                    } else if(circle.getCircleDistrict().equals(user.getDistrict())){
 
-                    //checking if user is a member of the circle
-                    boolean existingMember = false;
-                    if (circle.getMembersList() != null) {
-                        if (circle.getMembersList().keySet().contains(currentUser.getUid()))
-                            existingMember = true;
-                    }
+                        //add both cooking and running tags
+                        if(circle.getInterestTags().keySet().contains("sample")){
+                            exploreCircleList.add(circle);
+                            adapter.notifyDataSetChanged();
+                        }
 
-                    if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
-                        //setting the adapter initially
-                        //filter for only circles associated with matching user location and interests
-                        for (String intIterator : userTempinterestTagsList) {
-                            if (circleIteratorinterestTagsList.contains(intIterator)) {
-                                //check if circle already exists
-                                boolean circleExists = false;
-                                for (Circle conditional : exploreCircleList) {
-                                    if (conditional.getId().equals(circle.getId()))
-                                        circleExists = true;
-                                }
-
-                                if (circleExists == false) {
+                        //add all relevant tags in that area
+                        if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
+                            //filter for only circles associated with matching user location and interests
+                            for (String intIterator : userTempinterestTagsList) {
+                                if (circleIteratorinterestTagsList.contains(intIterator)) {
+                                    //check if circle already exists
                                     exploreCircleList.add(circle);
                                     adapter.notifyDataSetChanged();
                                 }
@@ -362,7 +338,6 @@ public class Explore extends AppCompatActivity {
                         }
                     }
                 }
-
             }
 
             @Override

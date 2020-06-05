@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
@@ -64,6 +65,7 @@ public class GatherUserDetails extends AppCompatActivity {
     String fName, lName, contact;
     EditText firstname;
     EditText lastname;
+    FirebaseAnalytics mFirebaseAnalytics;
 
 
     //location services elements
@@ -75,6 +77,9 @@ public class GatherUserDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setCurrentScreen(GatherUserDetails.this, "User Details Entry", null /* class override */);
+
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
@@ -126,7 +131,6 @@ public class GatherUserDetails extends AppCompatActivity {
                         getLocation();
                     }
                 }
-
             }
         });
     }
