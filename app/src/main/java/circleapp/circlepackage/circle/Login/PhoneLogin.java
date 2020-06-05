@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseException;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
@@ -47,11 +48,15 @@ public class PhoneLogin extends AppCompatActivity {
     private Spinner ccp;
     String[] options;
 
+    public PhoneAuthProvider.ForceResendingToken resendingToken;
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
+
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
@@ -65,12 +70,6 @@ public class PhoneLogin extends AppCompatActivity {
         ccp = findViewById(R.id.ccp);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
-
-        mCountryCode.setEnabled(false);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.countries_array, android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
@@ -173,9 +172,11 @@ public class PhoneLogin extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                setResendingToken(forceResendingToken);
                                 Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
                                 otpIntent.putExtra("AuthCredentials", s);
                                 otpIntent.putExtra("phn_num", complete_phone_number);
+                                otpIntent.putExtra("resendToken", forceResendingToken);
                                 startActivity(otpIntent);
                                 finish();
                             }
@@ -184,6 +185,7 @@ public class PhoneLogin extends AppCompatActivity {
             }
         };
     }
+
     public String getCountryCode(String countryName) {
 
         // Get all country codes in a string array.
@@ -208,5 +210,13 @@ public class PhoneLogin extends AppCompatActivity {
         return countryMap.get(countryName); // "NL" for Netherlands.
     }
 
+
+    public PhoneAuthProvider.ForceResendingToken getResendingToken() {
+        return resendingToken;
+    }
+
+    public void setResendingToken(PhoneAuthProvider.ForceResendingToken resendingToken) {
+        this.resendingToken = resendingToken;
+    }
 }
 

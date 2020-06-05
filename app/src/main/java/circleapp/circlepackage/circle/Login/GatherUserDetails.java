@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
@@ -126,7 +127,6 @@ public class GatherUserDetails extends AppCompatActivity {
                         getLocation();
                     }
                 }
-
             }
         });
     }
