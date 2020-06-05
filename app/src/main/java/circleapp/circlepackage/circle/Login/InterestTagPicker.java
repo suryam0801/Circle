@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -491,7 +492,9 @@ public class InterestTagPicker extends AppCompatActivity {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setContentTitle("Circle")
-                        .setSmallIcon(R.drawable.ic_notifications_none_black_24dp)
+                        .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                                R.mipmap.ic_launcher))
+                        .setSmallIcon(R.drawable.circle_logo)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentText("Welcome to the Circle "+firebaseAuth.getCurrentUser().getDisplayName() +

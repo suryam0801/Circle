@@ -3,22 +3,18 @@ package circleapp.circlepackage.circle.Login;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Switch;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,13 +25,17 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.mikepenz.fastadapter.listeners.OnClickListener;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import circleapp.circlepackage.circle.R;
 
 public class PhoneLogin extends AppCompatActivity {
 
+    private static final String TAG = PhoneLogin.class.getSimpleName();
     private EditText mCountryCode;
     private EditText mPhoneNumber;
     private Button mGenerateBtn;
@@ -45,8 +45,13 @@ public class PhoneLogin extends AppCompatActivity {
     private String complete_phone_number = "";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+    private Spinner ccp;
+    String[] options;
+
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,21 +67,35 @@ public class PhoneLogin extends AppCompatActivity {
         mGenerateBtn = findViewById(R.id.generate_btn);
         mLoginProgress = findViewById(R.id.login_progress_bar);
         mLoginFeedbackText = findViewById(R.id.login_form_feedback);
+        ccp = findViewById(R.id.ccp);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
 
-        TelephonyManager tm =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-        String countryCodeValue = tm.getNetworkCountryIso();
-        Log.d("PhoneLogin for ","The Counrty Code :::" +countryCodeValue);
-        switch(countryCodeValue) {
-            case "in":
-                 mCountryCode.setText("+91");
-                break;
-            case "us":
-                mCountryCode.setText("+1");
-                break;
-         }
 
+        options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
+
+        ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String code = getCountryCode(ccp.getSelectedItem().toString());
+                String contryDialCode = null;
+                String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
+                for(int i=0; i<arrContryCode.length; i++){
+                    String[] arrDial = arrContryCode[i].split(",");
+                    if(arrDial[1].trim().equals(code.trim())){
+                        contryDialCode = arrDial[0];
+                        mCountryCode.setText("+"+contryDialCode);
+                        break;
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mCountryCode.setText("");
+            }
+        });
         mCountryCode.setOnTouchListener(new View.OnTouchListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -122,9 +141,7 @@ public class PhoneLogin extends AppCompatActivity {
                     mGenerateBtn.setEnabled(false);
                     //Sending the OTP to the user mobile number
                     PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            complete_phone_number,
-                            15,
-                            TimeUnit.SECONDS,
+                            complete_phone_number,60,TimeUnit.SECONDS,
                             PhoneLogin.this,
                             mCallbacks
                     );
@@ -168,6 +185,31 @@ public class PhoneLogin extends AppCompatActivity {
             }
         };
     }
+
+    public String getCountryCode(String countryName) {
+
+        // Get all country codes in a string array.
+        String[] isoCountryCodes = Locale.getISOCountries();
+        Map<String, String> countryMap = new HashMap<>();
+        Locale locale;
+        String name;
+
+        // Iterate through all country codes:
+        for (String code : isoCountryCodes) {
+            // Create a locale using each country code
+            locale = new Locale("", code);
+            // Get country name for each code.
+            name = locale.getDisplayCountry();
+            // Map all country names and codes in key - value pairs.
+            countryMap.put(name, code);
+        }
+
+        // Return the country code for the given country name using the map.
+        // Here you will need some validation or better yet
+        // a list of countries to give to user to choose from.
+        return countryMap.get(countryName); // "NL" for Netherlands.
+    }
+
 
     public PhoneAuthProvider.ForceResendingToken getResendingToken() {
         return resendingToken;
