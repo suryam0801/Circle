@@ -48,7 +48,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
-          this.context = context;
+        this.context = context;
         this.circleList = circleList;
         this.user = user;
         circleJoinDialog = new Dialog(context);
@@ -71,10 +71,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Circle current = circleList.get(i);
 
         //check if circle acceptance is review
-        if(current.getAcceptanceType().equalsIgnoreCase("review"))
+        if (current.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
 
-        if(current.getApplicantsList()!=null && current.getApplicantsList().keySet().contains(currentUser.getUid())){
+        if (current.getApplicantsList() != null && current.getApplicantsList().keySet().contains(currentUser.getUid())) {
             viewHolder.join.setText("Pending Request");
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
         }
@@ -94,7 +94,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         String chipColor = "";
 
-        switch (i%3){
+        switch (i % 3) {
             case 0:
                 wbItemBackground.setColor(Color.parseColor("#FE42AE"));
                 moreMembersColor.setColor(Color.parseColor("#FF6DC1"));
@@ -125,13 +125,16 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.divider.setBackground(dividerColor);
 
         //set the chips
-        for(String name : current.getInterestTags().keySet())
+        for (String name : current.getInterestTags().keySet())
             setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
 
 
         viewHolder.join.setOnClickListener(view -> {
-            if(current.getApplicantsList()!=null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
+            if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
                 applyOrJoin(viewHolder, current);
+            else if (current.getApplicantsList() == null)
+                applyOrJoin(viewHolder, current);
+
         });
 
         viewHolder.share.setOnClickListener(view -> {
@@ -146,7 +149,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     }
 
     //initializes the views
-    public class ViewHolder extends RecyclerView.ViewHolder  {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc;
         private LinearLayout container;
         private ChipGroup circleDisplayTags;
@@ -184,14 +187,14 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 ),
                 paddingDp, paddingDp, paddingDp);
 
-        int[][] states = new int[][] {
-                new int[] { android.R.attr.state_enabled}, // enabled
-                new int[] {-android.R.attr.state_enabled}, // disabled
-                new int[] {-android.R.attr.state_checked}, // unchecked
-                new int[] { android.R.attr.state_pressed}  // pressed
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled}, // enabled
+                new int[]{-android.R.attr.state_enabled}, // disabled
+                new int[]{-android.R.attr.state_checked}, // unchecked
+                new int[]{android.R.attr.state_pressed}  // pressed
         };
 
-        int[] colors = new int[] {
+        int[] colors = new int[]{
                 Color.parseColor(chipColor),
                 Color.parseColor(chipColor),
                 Color.parseColor(chipColor),
@@ -204,7 +207,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         chip.setChipCornerRadius(60);
         chip.setChipMinHeight(100);
         chip.setTextColor(Color.WHITE);
-        if(!name.contains("#"))
+        if (!name.contains("#"))
             chip.setText("#" + name);
         else
             chip.setText(name);
@@ -278,11 +281,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         closeDialogButton.setOnClickListener(view -> circleJoinDialog.dismiss());
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        if(adminCircle == false){
+        if (adminCircle == false) {
             circleJoinDialog.show();
         }
     }
-
 
 
 }

@@ -52,6 +52,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         holder.container.setBackground(wbItemBackground);
         holder.tv_MycircleName.setText(MycircleList.get(position).getName());
+        holder.tv_circleCreatorName.setText(MycircleList.get(position).getCreatorName());
     }
 
     @Override
@@ -61,13 +62,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tv_MycircleName;
+        private TextView tv_MycircleName, tv_circleCreatorName;
         private LinearLayout container;
         public ViewHolder(View view) {
             super(view);
             container = view.findViewById(R.id.wbContainer);
-            tv_MycircleName = view.findViewById(R.id.wbcircle);
-
+            tv_MycircleName = view.findViewById(R.id.wbcircleName);
+            tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
         }
     }
 }

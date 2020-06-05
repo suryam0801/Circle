@@ -5,17 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -23,12 +16,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Login.EntryPage;
-import circleapp.circlepackage.circle.Login.PhoneLogin;
-import circleapp.circlepackage.circle.Explore.Explore;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 User user = new Gson().fromJson(ret, User.class);
                 SessionStorage.saveUser(MainActivity.this, user);
 
-                startActivity(new Intent(MainActivity.this, Explore.class));
+                startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
                 finish();
 
             } else {
