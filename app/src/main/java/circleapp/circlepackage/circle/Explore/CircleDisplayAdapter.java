@@ -93,7 +93,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         GradientDrawable dividerColor = new GradientDrawable();
         dividerColor.setShape(GradientDrawable.LINE);
 
-
         String chipColor = "";
 
         switch (i % 3) {
@@ -132,15 +131,32 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.tv_createdDate.setText(date);
 
         //set the chips
-        for (String name : current.getInterestTags().keySet())
-            setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
+        if(current.getInterestTags().keySet().contains("sample")){
+            if(current.getName().contains("Runner")){
+                setInterestTag("running",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Running",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("earlymorningrunning",viewHolder.circleDisplayTags, chipColor);
+            } else if(current.getName().contains("Recipe")) {
+                setInterestTag("cooking",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Recipes",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("recipes",viewHolder.circleDisplayTags, chipColor);
+            } else {
+                setInterestTag("Welcome",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Introduction",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Tutorial",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Tutorial",viewHolder.circleDisplayTags, chipColor);
+            }
+        } else {
+            for (String name : current.getInterestTags().keySet())
+                setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
+        }
+
 
         viewHolder.join.setOnClickListener(view -> {
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
                 applyOrJoin(viewHolder, current);
             else if (current.getApplicantsList() == null)
                 applyOrJoin(viewHolder, current);
-
         });
 
         viewHolder.share.setOnClickListener(view -> {
@@ -176,7 +192,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             membersCount = view.findViewById(R.id.members_count_button);
             divider = view.findViewById(R.id.project_item_divider);
         }
-
     }
 
     public void setInterestTag(final String name, ChipGroup chipGroupLocation, String chipColor) {
@@ -284,7 +299,12 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             }
         });
 
-        closeDialogButton.setOnClickListener(view -> circleJoinDialog.dismiss());
+        closeDialogButton.setOnClickListener(view -> {
+            circleJoinDialog.dismiss();
+            if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
+                SessionStorage.saveCircle((Activity) context, circle);
+                context.startActivity(new Intent(context, CircleWall.class));
+        });
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         if (adminCircle == false) {
