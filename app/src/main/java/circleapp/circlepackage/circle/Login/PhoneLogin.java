@@ -3,8 +3,11 @@ package circleapp.circlepackage.circle.Login;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,13 +24,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +58,9 @@ public class PhoneLogin extends AppCompatActivity {
     SharedPreferences.Editor editor;
     private Spinner ccp;
     String[] options;
+    private FusedLocationProviderClient client;
+    List<String> al = new ArrayList<String>();
+    int pos;
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
@@ -61,7 +75,7 @@ public class PhoneLogin extends AppCompatActivity {
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
-
+        FirebaseApp.initializeApp(PhoneLogin.this);
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
         mGenerateBtn = findViewById(R.id.generate_btn);
@@ -70,9 +84,57 @@ public class PhoneLogin extends AppCompatActivity {
         ccp = findViewById(R.id.ccp);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
+        client = LocationServices.getFusedLocationProviderClient(this);
 
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
+        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String countryCode = tm.getSimCountryIso();
+        String countryName = tm.getNetworkCountryIso();
+
+        al = Arrays.asList(options);
+
+        client.getLastLocation().addOnSuccessListener(location -> {
+            if(location != null){
+                List<Address> addresses=null;
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                try {
+                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    System.out.println("add in string "+addresses.toArray().toString());
+                    String countryname = addresses.get(0).getCountryName();
+                    String countrycode = addresses.get(0).getCountryCode();
+                    Log.d(TAG,"Location :: "+countryname+" :: "+countrycode);
+
+                    for (String cn : al)
+                    {
+                        pos = pos+1;
+                        if (cn.equals(countryname))
+                        {
+                            ccp.setSelection(pos-1);
+                            String code = getCountryCode(ccp.getSelectedItem().toString());
+                            String contryDialCode = null;
+                            String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
+                            for(int i=0; i<arrContryCode.length; i++){
+                                String[] arrDial = arrContryCode[i].split(",");
+                                if(arrDial[1].trim().equals(countrycode.trim())){
+                                    contryDialCode = arrDial[0];
+                                    mCountryCode.setText("+"+contryDialCode);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
 
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
