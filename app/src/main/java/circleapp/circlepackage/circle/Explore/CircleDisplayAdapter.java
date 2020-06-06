@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -28,7 +29,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -123,6 +126,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.membersCount.setBackground(moreMembersColor);
         viewHolder.divider.setBackground(dividerColor);
 
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(current.getTimestamp());
+        String date = DateFormat.format("dd MMM, yyyy", cal).toString();
+        viewHolder.tv_createdDate.setText(date);
+
         //set the chips
         for (String name : current.getInterestTags().keySet())
             setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
@@ -148,7 +156,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_circleName, tv_creatorName, tv_circleDesc;
+        private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate;
         private LinearLayout container;
         private ChipGroup circleDisplayTags;
         private ImageButton share;
@@ -158,6 +166,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         public ViewHolder(View view) {
             super(view);
             container = view.findViewById(R.id.container);
+            tv_createdDate = view.findViewById(R.id.circle_created_date);
             tv_circleName = view.findViewById(R.id.circle_name);
             tv_creatorName = view.findViewById(R.id.circle_creatorName);
             tv_circleDesc = view.findViewById(R.id.circle_desc);
@@ -166,7 +175,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             join = view.findViewById(R.id.circle_card_join);
             membersCount = view.findViewById(R.id.members_count_button);
             divider = view.findViewById(R.id.project_item_divider);
-
         }
 
     }

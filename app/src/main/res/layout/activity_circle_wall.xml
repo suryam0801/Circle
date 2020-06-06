@@ -113,6 +113,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/menu"
         android:layout_width="wrap_content"
@@ -120,24 +121,23 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         android:visibility="visible"
         fab:menu_animationDelayPerItem="50"
-        fab:menu_backgroundColor="@android:color/transparent"
         fab:menu_buttonSpacing="0dp"
-        fab:menu_colorNormal="#DA4336"
-        fab:menu_colorPressed="#E75043"
-        fab:menu_colorRipple="#99FFFFFF"
+        fab:menu_colorNormal="#43A047"
+        fab:menu_colorPressed="#2E7D32"
+        fab:menu_colorRipple="#1B5E20"
         fab:menu_fab_hide_animation="@anim/my_hide_animation"
-        fab:menu_fab_label="New Broadcast"
         fab:menu_fab_show_animation="@anim/my_show_animation"
         fab:menu_fab_size="normal"
         fab:menu_icon="@drawable/fab_add"
-        fab:menu_labels_colorNormal="@color/white_transparent"
+        fab:menu_labels_colorNormal="@color/white"
         fab:menu_labels_colorPressed="#444444"
         fab:menu_labels_colorRipple="#66FFFFFF"
-        fab:menu_labels_cornerRadius="3dp"
+        fab:menu_labels_cornerRadius="15dp"
         fab:menu_labels_ellipsize="none"
         fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
         fab:menu_labels_margin="0dp"
@@ -160,20 +160,22 @@
         fab:menu_shadowYOffset="3dp"
         fab:menu_showShadow="true">
 
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/menu_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_poll"
-        fab:fab_label="New poll"
-        fab:fab_size="mini" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/poll_creation_FAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_poll"
+            app:fab_size="normal"
+            fab:fab_label="New poll"
 
-    <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/menu_item_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_message"
-        fab:fab_label="New post"
-        fab:fab_size="mini" />
+            style="@style/MenuButtonsSmall"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/message_creation_FAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_message"
+            fab:fab_label="New message"
+            fab:fab_size="normal" />
     </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>

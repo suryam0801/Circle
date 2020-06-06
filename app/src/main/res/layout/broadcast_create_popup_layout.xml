@@ -1,28 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/create_broadcast_popup_background"
     android:layout_width="380dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:padding="20dp"
-    android:orientation="vertical">
+    android:background="@drawable/create_broadcast_popup_background"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create New Broadcast"
-            android:textColor="#3B3B3B"
-            android:fontFamily="@font/roboto_bold"
-            android:drawableEnd="@drawable/ic_clear_light_black_24dp"
-            android:textSize="16dp">
-        </TextView>
+            android:weightSum="100"
+            android:orientation="horizontal">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:layout_weight="99"
+                android:text="Create New Broadcast"
+                android:textColor="#3B3B3B"
+                android:textSize="16dp">
+            </TextView>
+
+            <Button
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/clear_broadcast_popup"
+                android:background="@drawable/ic_clear_light_black_24dp">
+            </Button>
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/description_placeholder_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -37,51 +52,49 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/blue_border_background"
             android:padding="20dp"
-            android:textColor="@color/black"
-            android:background="@drawable/blue_border_background"></EditText>
+            android:textColor="@color/black"></EditText>
 
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:visibility="gone"
             android:id="@+id/poll_create_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:background="@drawable/poll_background_file"
+            android:orientation="vertical"
             android:padding="20dp"
-            android:orientation="vertical">
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create Poll"
-                android:textColor="#6CACFF"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/roboto_medium"
-                android:textSize="16dp">
-            </TextView>
+                android:text="Create Poll"
+                android:textColor="#6CACFF"
+                android:textSize="16dp"></TextView>
 
             <EditText
+                android:id="@+id/poll_create_question_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="What would you like to ask?"
-                android:textColor="@color/black"
-                android:id="@+id/poll_create_question_editText"
-                android:textColorHint="#9D9D9D"
-                android:textSize="12dp"
-                android:padding="20dp"
+                android:background="@drawable/blue_border_background"
                 android:fontFamily="@font/roboto_medium"
-                android:background="@drawable/blue_border_background">
-            </EditText>
+                android:hint="What would you like to ask?"
+                android:padding="20dp"
+                android:textColor="@color/black"
+                android:textColorHint="#9D9D9D"
+                android:textSize="12dp"></EditText>
 
             <LinearLayout
+                android:id="@+id/poll_create_answer_option_display"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:id="@+id/poll_create_answer_option_display"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -90,27 +103,26 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    android:id="@+id/poll_create_answer_option_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter the answer options"
-                    android:textColor="@color/black"
-                    android:textSize="12dp"
-                    android:paddingLeft="10dp"
                     android:layout_marginRight="5dp"
-                    android:textColorHint="#9D9D9D"
-                    android:id="@+id/poll_create_answer_option_editText"
+                    android:layout_weight="1"
                     android:backgroundTint="#6CACFF"
-                    android:layout_weight="1"></EditText>
+                    android:hint="Enter the answer options"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="#9D9D9D"
+                    android:textSize="12dp"></EditText>
 
                 <Button
+                    android:id="@+id/poll_create_answer_option_add_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:id="@+id/poll_create_answer_option_add_btn"
                     android:background="@drawable/blue_border_background"
-                    android:textColor="#6CACFF"
+                    android:text="Add"
                     android:textAllCaps="false"
-                    android:text="Add">
-                </Button>
+                    android:textColor="#6CACFF"></Button>
 
             </LinearLayout>
 
@@ -118,58 +130,58 @@
 
 
         <LinearLayout
+            android:id="@+id/attachmentUploadView"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:id="@+id/attachmentUploadView"
-            android:visibility="gone"
+            android:background="@drawable/dashed_background"
             android:gravity="center"
             android:orientation="horizontal"
-            android:background="@drawable/dashed_background">
+            android:visibility="gone">
 
             <ImageView
+                android:id="@+id/create_broadcast_file_upload_cloud_image_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/create_broadcast_file_upload_cloud_image_btn"
-                android:background="@drawable/ic_cloud_upload_blue_24dp">
-            </ImageView>
+                android:background="@drawable/ic_cloud_upload_blue_24dp"></ImageView>
 
             <TextView
+                android:id="@+id/create_broadcast_file_upload_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6CACFF"
-                android:id="@+id/create_broadcast_file_upload_text"
                 android:layout_marginLeft="13dp"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Click to upload your files"
-                android:textSize="12dp"
-                android:fontFamily="@font/roboto_regular">
-            </TextView>
+                android:textColor="#6CACFF"
+                android:textSize="12dp"></TextView>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/additional_selector_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:id="@+id/additional_selector_view"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Click to "
-                android:textSize="12dp"
                 android:fontFamily="@font/roboto_regular"
-                android:textColor="#9D9D9D"></TextView>
+                android:text="Click to "
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
             <TextView
+                android:id="@+id/upload_file_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/upload_file_btn"
-                android:text="upload file "
-                android:textSize="12dp"
                 android:fontFamily="@font/roboto_regular"
-                android:textColor="#6CACFF"></TextView>
+                android:text="upload file "
+                android:textColor="#6CACFF"
+                android:textSize="12dp"></TextView>
 
             <TextView
                 android:id="@+id/upload_or_poll_or_textview"
@@ -193,14 +205,13 @@
 
         <Button
             android:id="@+id/upload_broadcast_btn"
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
+            android:layout_marginTop="20dp"
             android:background="@drawable/gradient_button_background"
-            android:text="Send Broadcast">
-        </Button>
+            android:text="Send Broadcast"
+            android:textAllCaps="false"
+            android:textColor="@color/white"></Button>
     </LinearLayout>
 
 </ScrollView>

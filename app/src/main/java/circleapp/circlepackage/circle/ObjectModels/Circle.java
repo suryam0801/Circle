@@ -6,6 +6,7 @@ import java.util.List;
 public class Circle {
     private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard;
     private HashMap<String, Boolean>  interestTags, membersList, applicantsList;
+    private long timestamp;
 
     public Circle(){
 
@@ -13,7 +14,8 @@ public class Circle {
 
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
                   String creatorName, HashMap<String, Boolean> interestTags,
-                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList, String circleDistrict, String circleWard) {
+                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
+                  String circleDistrict, String circleWard, long timestamp) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -25,6 +27,7 @@ public class Circle {
         this.applicantsList = applicantsList;
         this.circleDistrict = circleDistrict;
         this.circleWard = circleWard;
+        this.timestamp = timestamp;
     }
 
     public String getId() {
@@ -115,6 +118,14 @@ public class Circle {
         this.circleWard = circleWard;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return "Circle{" +
@@ -129,6 +140,8 @@ public class Circle {
                 ", interestTags=" + interestTags +
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +
+                ", timestamp=" + timestamp +
                 '}';
     }
+
 }

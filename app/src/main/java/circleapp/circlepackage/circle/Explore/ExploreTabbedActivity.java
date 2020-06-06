@@ -60,7 +60,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             finish();
         });
 
-
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
     }

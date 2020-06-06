@@ -136,7 +136,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:gravity="center_vertical"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:background="@drawable/ic_chevron_right_appblue_24dp">
                         </Button>
 

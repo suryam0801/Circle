@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Explore;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.R;
@@ -67,6 +71,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         } else {
             holder.membersDisplay.setText("+0");
         }
+
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(circle.getTimestamp());
+        String date = DateFormat.format("dd MMM, yyyy", cal).toString();
+        holder.tv_circleCreatedDateWB.setText(date);
     }
 
     @Override
@@ -76,7 +85,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tv_MycircleName, tv_circleCreatorName;
+        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB;
         private LinearLayout container;
         private Button membersDisplay;
         public ViewHolder(View view) {
@@ -85,6 +94,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             tv_MycircleName = view.findViewById(R.id.wbcircleName);
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
             membersDisplay = view.findViewById(R.id.wb_members_count_button);
+            tv_circleCreatedDateWB = view.findViewById(R.id.circle_created_date);
         }
     }
 }
