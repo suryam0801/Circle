@@ -87,9 +87,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         moreMembersColor.setShape(GradientDrawable.RECTANGLE);
         moreMembersColor.setCornerRadius(130.0f);
 
-
         GradientDrawable dividerColor = new GradientDrawable();
-        moreMembersColor.setShape(GradientDrawable.LINE);
+        dividerColor.setShape(GradientDrawable.LINE);
 
 
         String chipColor = "";
@@ -103,13 +102,13 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 break;
             case 1:
                 wbItemBackground.setColor(Color.parseColor("#A274FF"));
-                moreMembersColor.setColor(Color.parseColor("#BB99FF"));
+                moreMembersColor.setColor(Color.parseColor("#AE85FF"));
                 dividerColor.setColor(Color.parseColor("#AE85FF"));
                 chipColor = "#7344D4";
                 break;
             case 2:
                 wbItemBackground.setColor(Color.parseColor("#3CD2C3"));
-                moreMembersColor.setColor(Color.parseColor("#5FE9DB"));
+                moreMembersColor.setColor(Color.parseColor("#5FDFD2"));
                 dividerColor.setColor(Color.parseColor("#5FDFD2"));
                 chipColor = "#13A697";
                 break;
@@ -127,7 +126,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         //set the chips
         for (String name : current.getInterestTags().keySet())
             setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
-
 
         viewHolder.join.setOnClickListener(view -> {
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))

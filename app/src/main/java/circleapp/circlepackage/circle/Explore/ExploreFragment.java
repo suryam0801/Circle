@@ -140,7 +140,7 @@ public class ExploreFragment extends Fragment {
                         existingMember = true;
                 }
 
-                if(contains == false) {
+                if(contains == false && existingMember == false) {
                     if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
                         exploreCircleList.add(0,circle);
                         adapter.notifyDataSetChanged();
