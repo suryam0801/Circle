@@ -16,7 +16,8 @@
     <color name="grey">#C0C0C0</color>
     <color name="disabledBtnBg">#999999</color>
     <color name="white">#FFFFFF</color>
-
+    <color name="grey_20">#cccccc</color>
+    <color name="grey_80">#37474F</color>
     <color name="lightGray">#F2F2F2</color>
 
 </resources>
