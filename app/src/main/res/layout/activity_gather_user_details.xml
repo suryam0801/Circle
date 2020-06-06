@@ -37,11 +37,11 @@
                 android:id="@+id/beneathTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_black"
-                android:text="Login to Continue"
                 android:layout_gravity="center"
-                android:textSize="14dp"
-                android:textColor="#D1D1D1" />
+                android:fontFamily="@font/roboto_black"
+                android:text="The Friendly Neighbourhood App"
+                android:textColor="#D1D1D1"
+                android:textSize="14dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -143,21 +143,21 @@
                     android:digits="@string/digits"
                     android:textColor="@color/black"/>
 
-                <Button
-                    android:id="@+id/registerButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:background="@drawable/gradient_button"
-                    android:fontFamily="@font/roboto_black"
-                    android:text="Continue To Set Location Tags"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFFFF"
-                    android:paddingRight="19dp"
-                    android:paddingLeft="19dp"
-                    android:textSize="15dp"
-                    android:gravity="start|center"
-                    android:drawableEnd="@drawable/right_forward_arrow"/>
+              <Button
+                  android:id="@+id/registerButton"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="40dp"
+                  android:background="@drawable/gradient_button"
+                  android:drawableEnd="@drawable/right_forward_arrow"
+                  android:fontFamily="@font/roboto_black"
+                  android:gravity="start|center"
+                  android:paddingLeft="19dp"
+                  android:paddingRight="19dp"
+                  android:text="Continue To Set Interest Tags"
+                  android:textAllCaps="false"
+                  android:textColor="#FFFFFFFF"
+                  android:textSize="15dp" />
             </LinearLayout>
 
         </LinearLayout>

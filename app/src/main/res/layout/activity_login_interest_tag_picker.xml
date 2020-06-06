@@ -61,17 +61,17 @@
             android:layout_height="match_parent"
             android:layout_weight="99"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Select or add your interest preferences to show updates from the selected tags."
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp">
-            </TextView>
+                android:fontFamily="@font/roboto_regular"
+                android:text="Select or add your interest preferences to view content  from the selected tags."
+                android:textColor="@color/black"
+                android:textSize="14dp"></TextView>
 
             <RelativeLayout
                 android:layout_width="match_parent"
