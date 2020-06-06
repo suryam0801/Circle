@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -73,6 +74,7 @@ public class Explore extends AppCompatActivity {
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
 
     long startTimeCircle;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,8 @@ public class Explore extends AppCompatActivity {
         startTimeCircle = System.currentTimeMillis();
         setCircleTabs();
         setWorkbenchTabs();
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(Explore.this, "Viewing explore tab", null);
 
         //onClick listener for create project button
         btnAddCircle.setOnClickListener(view -> {

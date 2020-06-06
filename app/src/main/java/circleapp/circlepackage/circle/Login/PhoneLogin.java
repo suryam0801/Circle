@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -47,6 +48,7 @@ public class PhoneLogin extends AppCompatActivity {
     SharedPreferences.Editor editor;
     private Spinner ccp;
     String[] options;
+    private FirebaseAnalytics firebaseAnalytics;
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
@@ -60,7 +62,7 @@ public class PhoneLogin extends AppCompatActivity {
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
-//        getSupportActionBar().hide();
+//        getSupportActionBar().hide()
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
@@ -71,6 +73,8 @@ public class PhoneLogin extends AppCompatActivity {
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
 
@@ -140,6 +144,7 @@ public class PhoneLogin extends AppCompatActivity {
                     mLoginProgress.setVisibility(View.VISIBLE);
                     mGenerateBtn.setEnabled(false);
                     //Sending the OTP to the user mobile number
+                    FirebaseApp.initializeApp(PhoneLogin.this);
                     PhoneAuthProvider.getInstance().verifyPhoneNumber(
                             complete_phone_number,60,TimeUnit.SECONDS,
                             PhoneLogin.this,
