@@ -1,3 +1,5 @@
+import com.google.gms.googleservices.GoogleServicesPlugin
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
@@ -16,6 +18,14 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+//    ext {
+//        if (project.extensions.findByName('googleServices') == null) {
+//            // apply plugin: 'com.google.gms.google-services'
+//            // class must be used instead of id(string) to be able to apply plugin from non-root gradle file
+//            apply plugin:'com.google.gms.google-services'
+//            googleServices { disableVersionCheck = true }
+//        }
+//    }
 }
 
 allprojects {
@@ -29,3 +39,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
