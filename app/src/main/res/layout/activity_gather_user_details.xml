@@ -5,14 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
+    android:paddingLeft="14dp"
+    android:paddingRight="14dp"
     android:orientation="vertical"
     tools:context=".Login.GatherUserDetails">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbarSize="0.1dp"
+        android:scrollbarStyle="insideInset">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -86,9 +89,9 @@
                 </RelativeLayout>
             </LinearLayout>
 
-            <LinearLayout
+          <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="40dp"
                 android:orientation="vertical">
                 <TextView
@@ -101,17 +104,20 @@
                     android:layout_marginTop="20dp"
                     android:textSize="11dp">
                 </TextView>
-                <com.google.android.material.textfield.TextInputEditText
+                <EditText
                     android:id="@+id/fname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#ACA9A9"
                     android:textColorHint="#ACA9A9"
+                    android:imeOptions="actionDone"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="13dp"
+                    android:ems="10"
+                    android:nextFocusDown="@id/lname"
                     android:digits="@string/digits"
                     android:textColor="@color/black"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textPersonName" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -122,7 +128,7 @@
                     android:layout_marginTop="20dp"
                     android:textSize="11dp">
                 </TextView>
-                <com.google.android.material.textfield.TextInputEditText
+                <EditText
                     android:id="@+id/lname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -130,9 +136,12 @@
                     android:textColorHint="#ACA9A9"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="13dp"
+                    android:ems="10"
+                    android:nextFocusDown="@id/registerButton"
+                    android:inputType="textPersonName"
+                    android:imeOptions="actionDone"
                     android:digits="@string/digits"
-                    android:textColor="@color/black"
-                    android:inputType="textEmailAddress" />
+                    android:textColor="@color/black"/>
 
                 <Button
                     android:id="@+id/registerButton"
@@ -150,6 +159,7 @@
                     android:gravity="start|center"
                     android:drawableEnd="@drawable/right_forward_arrow"/>
             </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

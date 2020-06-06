@@ -212,7 +212,9 @@ public class PhoneLogin extends AppCompatActivity {
                     //Sending the OTP to the user mobile number
                     FirebaseApp.initializeApp(PhoneLogin.this);
                     PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            complete_phone_number,60,TimeUnit.SECONDS,
+                            complete_phone_number,
+                            60,
+                            TimeUnit.SECONDS,
                             PhoneLogin.this,
                             mCallbacks
                     );
