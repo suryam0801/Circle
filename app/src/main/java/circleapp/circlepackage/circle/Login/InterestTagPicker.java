@@ -82,6 +82,8 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAnalytics firebaseAnalytics;
+    private int noOfTagsChosen=0;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -95,6 +97,8 @@ public class InterestTagPicker extends AppCompatActivity {
 //        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(InterestTagPicker.this, "Select tags", null);
         register = findViewById(R.id.registerButton);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
         interestTagsEntry = findViewById(R.id.interest_tags_entry);
@@ -168,6 +172,12 @@ public class InterestTagPicker extends AppCompatActivity {
             public void onClick(View view) {
                 //The function to register the Users with their appropriate details
                 UserReg();
+                //bundle to send to fb
+                Bundle bundle = new Bundle();
+                bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, noOfTagsChosen);
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ItemId is number of tags user has picked");
+                firebaseAnalytics.logEvent("No_of_interest_tags", bundle);
+
             }
         });
 
@@ -399,6 +409,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                noOfTagsChosen = selectedInterestTags.size();
                                 Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                                 //Adding the user to collection
                                 addUser();

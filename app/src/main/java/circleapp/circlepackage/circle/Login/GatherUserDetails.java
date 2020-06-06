@@ -65,6 +65,7 @@ public class GatherUserDetails extends AppCompatActivity {
     String fName, lName, contact;
     EditText firstname;
     EditText lastname;
+    private FirebaseAnalytics firebaseAnalytics;
 
 
     //location services elements
@@ -83,6 +84,8 @@ public class GatherUserDetails extends AppCompatActivity {
 
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(GatherUserDetails.this, "Enter names", null);
         storageReference = FirebaseStorage.getInstance().getReference();
 
         client = LocationServices.getFusedLocationProviderClient(this);

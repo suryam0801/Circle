@@ -13,6 +13,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +43,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     private DatabaseReference notifyDb;
     private FirebaseAuth currentUser;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class NotificationActivity extends AppCompatActivity {
         previousNotifs = new ArrayList<>();
         currentUser = FirebaseAuth.getInstance();
         notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(NotificationActivity.this, "Viewing notifications", null);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override

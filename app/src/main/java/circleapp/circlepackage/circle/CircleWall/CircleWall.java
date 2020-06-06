@@ -38,6 +38,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -94,6 +95,7 @@ public class CircleWall extends AppCompatActivity {
     private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText, circleBannerName;
     private Button btnAddPollOption, btnUploadBroadcast;
     private Dialog createBroadcastPopup;
+    private FirebaseAnalytics firebaseAnalytics;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
@@ -125,6 +127,8 @@ public class CircleWall extends AppCompatActivity {
         circleBannerName.setText(circle.getName());
 
         createNewBroadcast.setOnClickListener(view -> showCreateBroadcastDialog());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
         menuButton.setOnClickListener(view -> {
             showPopup(view);
