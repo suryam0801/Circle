@@ -249,6 +249,7 @@ public class InterestTagPicker extends AppCompatActivity {
                     }
                 } else {
                     interestTagsEntry.setText("#");
+                    interestTagsEntry.setSelection(interestTagsEntry.getText().length());
                 }
             }
         });
