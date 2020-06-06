@@ -12,8 +12,10 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -50,7 +52,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class GatherUserDetails extends AppCompatActivity {
+public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
 
     private String TAG = GatherUserDetails.class.getSimpleName();
 
@@ -66,6 +68,7 @@ public class GatherUserDetails extends AppCompatActivity {
     EditText firstname;
     EditText lastname;
     private FirebaseAnalytics firebaseAnalytics;
+    Button register;
 
 
     //location services elements
@@ -78,8 +81,8 @@ public class GatherUserDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
         //To set the Fullscreen
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setFormat(PixelFormat.RGB_565);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
         //Getting the instance and references
@@ -92,10 +95,11 @@ public class GatherUserDetails extends AppCompatActivity {
 
         firstname = findViewById(R.id.fname);
         lastname = findViewById(R.id.lname);
-        Button register = findViewById(R.id.registerButton);
+        register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         profilePic = findViewById(R.id.profile_image);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+
 
         //listener for button to add the profilepic
         profilepicButton.setOnClickListener(new View.OnClickListener() {
@@ -325,4 +329,34 @@ public class GatherUserDetails extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        EditText myEditText = (EditText) v;
+
+        if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+
+            if (!event.isShiftPressed()) {
+                Log.v("AndroidEnterKeyActivity","Enter Key Pressed!");
+                switch (v.getId()) {
+                    case R.id.fname:
+                        firstname.clearFocus();
+                        lastname.requestFocus();
+                        break;
+                    case R.id.lname:
+                        lastname.clearFocus();
+                        register.requestFocus();
+                        break;
+                }
+                return true;
+            }
+
+        }
+        return false; // pass on to other listeners.
+
+    }
+
 }
+

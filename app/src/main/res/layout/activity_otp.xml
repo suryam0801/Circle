@@ -9,91 +9,91 @@
     tools:context=".Login.OtpActivity">
 
 
-    <TextView
-        android:id="@+id/otp_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_bold"
-        android:text="Enter Verification Code"
-        android:textColor="@color/color_blue"
-        android:textSize="22sp" />
+            <TextView
+                android:id="@+id/otp_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Enter Verification Code"
+                android:textColor="@color/color_blue"
+                android:textSize="22sp" />
 
-    <TextView
-        android:id="@+id/otp_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/roboto_medium"
-        android:text="We have sent you an OTP \n for phone number verification"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="12sp" />
-    
-    <circleapp.circlepackage.circle.Login.PinEntryEditText
-        android:id="@+id/otp_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="70dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="70dp"
-        android:cursorVisible="false"
-        android:digits="1234567890"
-        android:inputType="number"
-        android:maxLength="6"
-        android:textIsSelectable="false"
-        android:textSize="20sp"></circleapp.circlepackage.circle.Login.PinEntryEditText>
+            <TextView
+                android:id="@+id/otp_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="We have sent you an OTP \n for phone number verification"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
 
-    <TextView
-        android:id="@+id/resend_otp_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Resend code in: "
-        android:textSize="15dp"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/black">
-    </TextView>
+            <circleapp.circlepackage.circle.Login.PinEntryEditText
+                android:id="@+id/otp_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="70dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="70dp"
+                android:cursorVisible="false"
+                android:digits="1234567890"
+                android:inputType="number"
+                android:maxLength="6"
+                android:textIsSelectable="false"
+                android:textSize="20sp"></circleapp.circlepackage.circle.Login.PinEntryEditText>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp">
+            <TextView
+                android:id="@+id/resend_otp_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Resend code in: "
+                android:textColor="@color/black"
+                android:textSize="15dp"></TextView>
 
-        <Button
-            android:id="@+id/verify_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/gradient_button"
-            android:fontFamily="@font/roboto_medium"
-            android:text="Verify OTP"
-            android:textAllCaps="false"
-            android:textColor="@android:color/background_light"
-            android:textSize="16sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
 
-        <ProgressBar
-            android:id="@+id/otp_progress_bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_alignRight="@+id/verify_btn"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:theme="@style/progressbar"
-            android:visibility="invisible" />
+                <Button
+                    android:id="@+id/verify_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/gradient_button"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="Verify OTP"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="16sp" />
 
-    </RelativeLayout>
+                <ProgressBar
+                    android:id="@+id/otp_progress_bar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_alignRight="@+id/verify_btn"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    android:theme="@style/progressbar"
+                    android:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/otp_form_feedback"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:fontFamily="@font/roboto_bold"
-        android:text="Working . . ."
-        android:textColor="@android:color/holo_red_light"
-        android:layout_marginBottom="100dp"
-        android:visibility="invisible" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/otp_form_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="100dp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Working . . ."
+                android:textColor="@android:color/holo_red_light"
+                android:visibility="invisible" />
+
 </LinearLayout>
