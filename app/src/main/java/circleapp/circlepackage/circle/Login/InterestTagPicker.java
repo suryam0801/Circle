@@ -160,6 +160,16 @@ public class InterestTagPicker extends AppCompatActivity {
                 } else {
                     //if location does not exist... write create manual circles
                     createInitialCirlces();
+                    dbInterestTags.add("running");
+                    dbInterestTags.add("writing");
+                    dbInterestTags.add("cooking");
+                    dbInterestTags.add("fitness");
+                    dbInterestTags.add("music");
+                    dbInterestTags.add("biking");
+
+                    for(String interest : dbInterestTags){
+                        setTag(interest);
+                    }
                 }
             }
 
