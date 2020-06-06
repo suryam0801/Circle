@@ -87,6 +87,7 @@ public class CommentAdapter extends BaseAdapter {
         ++count;
         if(count == 4) count = 0;
 
+
         if(seconds < 60) {
             timeElapsed.setText(seconds + "s ago");
         } else if (minutes >= 1 && minutes < 60){
