@@ -23,6 +23,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -52,7 +53,7 @@ public class CreateCircle extends AppCompatActivity {
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
     private TextView tv_selectInterestTags, interestTagSelectTitle;
-    private Button btn_createCircle;
+    private Button btn_createCircle, btn_previewCircle;
     private ImageButton back;
     private RadioGroup acceptanceGroup;
     private RadioButton acceptanceButton;
@@ -69,7 +70,7 @@ public class CreateCircle extends AppCompatActivity {
 
 
     private List<String> autoCompleteItemsList = new ArrayList<>();
-    private Dialog interestTagDialog;
+    private Dialog interestTagDialog, previewCircleDialog;
 
     private List<String> selectedInterests = new ArrayList<>();
 
@@ -93,6 +94,7 @@ public class CreateCircle extends AppCompatActivity {
         back = findViewById(R.id.bck_create);
         interestTagsDisplay = findViewById(R.id.selected_interest_tags_display);
         interestTagSelectTitle = findViewById(R.id.create_circle_interest_tag_select_title);
+        btn_previewCircle = findViewById(R.id.preview_circle);
 
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
@@ -141,6 +143,8 @@ public class CreateCircle extends AppCompatActivity {
             }
 
         });
+
+        btn_previewCircle.setOnClickListener(view -> showPreviewDialog());
 
 
     }
@@ -350,4 +354,78 @@ public class CreateCircle extends AppCompatActivity {
         startActivity(about_intent);
         finish();
     }
+
+    public void showPreviewDialog(){
+        previewCircleDialog = new Dialog(CreateCircle.this);
+        previewCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
+
+        TextView tv_circleName, tv_creatorName, tv_circleDesc;
+        ChipGroup circleDisplayTags;
+
+        tv_circleName = previewCircleDialog.findViewById(R.id.circle_name);
+        tv_creatorName = previewCircleDialog.findViewById(R.id.circle_creatorName);
+        tv_circleDesc = previewCircleDialog.findViewById(R.id.circle_desc);
+        circleDisplayTags = previewCircleDialog.findViewById(R.id.circle_display_tags);
+
+        if(!circleNameEntry.getText().toString().isEmpty())
+            tv_circleName.setText(circleNameEntry.getText().toString());
+        if(!circleDescriptionEntry.getText().toString().isEmpty())
+            tv_circleDesc.setText(circleDescriptionEntry.getText().toString());
+
+        tv_creatorName.setText(user.getFirstName() + " " + user.getLastName());
+
+        if(!selectedInterests.isEmpty()){
+            for(String tag : selectedInterests)
+                setInterestTag(tag, circleDisplayTags, "#D42D8D");
+        }
+
+        int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
+        previewCircleDialog.getWindow().setLayout(width, height);
+        previewCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        previewCircleDialog.show();
+    }
+
+    public void setInterestTag(final String name, ChipGroup chipGroupLocation, String chipColor) {
+        final Chip chip = new Chip(CreateCircle.this);
+        int paddingDp = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 10,
+                getResources().getDisplayMetrics()
+        );
+        chip.setRippleColor(ColorStateList.valueOf(Color.WHITE));
+        chip.setPadding(
+                (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 3,
+                        getResources().getDisplayMetrics()
+                ),
+                paddingDp, paddingDp, paddingDp);
+
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_enabled}, // enabled
+                new int[]{-android.R.attr.state_enabled}, // disabled
+                new int[]{-android.R.attr.state_checked}, // unchecked
+                new int[]{android.R.attr.state_pressed}  // pressed
+        };
+
+        int[] colors = new int[]{
+                Color.parseColor(chipColor),
+                Color.parseColor(chipColor),
+                Color.parseColor(chipColor),
+                Color.parseColor(chipColor)
+        };
+
+        ColorStateList myList = new ColorStateList(states, colors);
+
+        chip.setChipBackgroundColor(myList);
+        chip.setChipCornerRadius(60);
+        chip.setChipMinHeight(100);
+        chip.setTextColor(Color.WHITE);
+        if (!name.contains("#"))
+            chip.setText("#" + name);
+        else
+            chip.setText(name);
+
+        chipGroupLocation.addView(chip);
+    }
+
 }

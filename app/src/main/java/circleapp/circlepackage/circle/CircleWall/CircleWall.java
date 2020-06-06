@@ -128,7 +128,6 @@ public class CircleWall extends AppCompatActivity {
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
 
-
         circleBannerName.setText(circle.getName());
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);

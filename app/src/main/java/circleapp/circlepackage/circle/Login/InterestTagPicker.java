@@ -214,36 +214,31 @@ public class InterestTagPicker extends AppCompatActivity {
                 interestTagsEntry.setSelection(interestTagsEntry.getText().length());
             }
         });
-        interestTagsEntry.setOnTouchListener(new View.OnTouchListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
-                        interestTagsEntry.setShowSoftInputOnFocus(true);
-                        interestTagsEntry.setText("#");
-                        interestTagsEntry.setSelection(interestTagsEntry.getText().length());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        v.performClick();
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-
+        interestTagsEntry.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
+                    interestTagsEntry.setShowSoftInputOnFocus(true);
+                    interestTagsEntry.setText("#");
+                    interestTagsEntry.setSelection(interestTagsEntry.getText().length());
+                    break;
+                case MotionEvent.ACTION_UP:
+                    v.performClick();
+                    break;
+                default:
+                    break;
             }
+            return true;
+
         });
 
 
         //the add button in edittext to add the new interest in the list
-        interestTagAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String interestTag = interestTagsEntry.getText().toString().replace("#", "");
-                if (!interestTag.isEmpty()) {
+        interestTagAdd.setOnClickListener(view -> {
+            String interestTag = interestTagsEntry.getText().toString().replace("#", "");
+            if (!interestTag.isEmpty()) {
+                if(!selectedInterestTags.contains(interestTag)){
                     selectedInterestTags.add(interestTag);
                     if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
@@ -252,6 +247,8 @@ public class InterestTagPicker extends AppCompatActivity {
                         chipGroup.removeViewAt(dbInterestTags.indexOf(interestTag));
                         setTag(interestTag);
                     }
+                } else {
+                    interestTagsEntry.setText("#");
                 }
             }
         });
