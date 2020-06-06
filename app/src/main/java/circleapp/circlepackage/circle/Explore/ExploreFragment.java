@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,14 +141,14 @@ public class ExploreFragment extends Fragment {
                         existingMember = true;
                 }
 
-                if(contains == false && existingMember == false) {
+                if (contains == false && existingMember == false) {
                     if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
-                        exploreCircleList.add(0,circle);
+                        exploreCircleList.add(0, circle);
                         adapter.notifyDataSetChanged();
-                    } else if(circle.getCircleDistrict().equals(user.getDistrict())){
+                    } else if (circle.getCircleDistrict().equals(user.getDistrict())) {
 
                         //add both cooking and running tags
-                        if(circle.getInterestTags().keySet().contains("sample")){
+                        if (circle.getInterestTags().keySet().contains("sample")) {
                             exploreCircleList.add(circle);
                             adapter.notifyDataSetChanged();
                         }
@@ -158,8 +159,15 @@ public class ExploreFragment extends Fragment {
                             for (String intIterator : userTempinterestTagsList) {
                                 if (circleIteratorinterestTagsList.contains(intIterator)) {
                                     //check if circle already exists
-                                    exploreCircleList.add(circle);
-                                    adapter.notifyDataSetChanged();
+                                    boolean exists = false;
+                                    for (Circle c : exploreCircleList) {
+                                        if (circle.getId().equals(c.getId()))
+                                            exists = true;
+                                    }
+                                    if(exists == false){
+                                        exploreCircleList.add(circle);
+                                        adapter.notifyDataSetChanged();
+                                    }
                                 }
                             }
                         }
@@ -176,8 +184,9 @@ public class ExploreFragment extends Fragment {
                     for (Circle c : tempCircleList) {
                         if (c.getId().equals(circle.getId())) {
                             if (circle.getMembersList() != null && circle.getMembersList().containsKey(user.getUserId())) {
+                                Log.d("wefkjwenfkjnwefe", "kjwnefkjwenfkjnwfkjn");
                                 exploreCircleList.remove(position);
-                                adapter.notifyDataSetChanged();
+                                adapter.notifyItemRemoved(position);
                             } else {
                                 exploreCircleList.remove(position);
                                 exploreCircleList.add(position, circle);
