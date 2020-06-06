@@ -81,7 +81,6 @@ public class CircleWall extends AppCompatActivity {
     private LinearLayout emptyDisplay;
 
     private Circle circle;
-    private FloatingActionButton createNewBroadcast;
 
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
