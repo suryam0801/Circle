@@ -87,6 +87,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         final Poll poll;
         RadioButton button;
 
+        if(broadcast.creatorID.equals(currentUser.getUid()))
+            viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+
         //calculating time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime =broadcast.getTimeStamp();

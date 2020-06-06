@@ -98,7 +98,7 @@
                         android:id="@+id/broadcastWall_poll_display_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:layout_marginTop="20dp"
                         android:layout_weight="100"
                         android:orientation="horizontal">
@@ -117,6 +117,7 @@
                                 android:layout_marginBottom="5dp"
                                 android:text="poll question"
                                 android:textSize="14dp"
+
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -135,6 +136,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:gravity="center_vertical"
+                            android:visibility="gone"
                             android:background="@drawable/ic_chevron_right_appblue_24dp">
                         </Button>
 
