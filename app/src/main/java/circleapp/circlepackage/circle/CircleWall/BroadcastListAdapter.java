@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.CreatorPollAnswersView;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -84,6 +86,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         final Broadcast broadcast = broadcastList.get(i);
         final Poll poll;
         RadioButton button;
+
+        if(broadcast.creatorID.equals(currentUser.getUid()))
+            viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
 
         //calculating time elapsed
         long currentTime = System.currentTimeMillis();
@@ -129,6 +134,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.attachmentNameDisplay.setText("Click to download attachment");
         }
 
+        viewHolder.viewPollAnswers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SessionStorage.saveBroadcast((Activity) context, broadcast);
+                context.startActivity(new Intent(context, CreatorPollAnswersView.class));
+            }
+        });
 
         viewHolder.attachmentDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,6 +272,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
+        private Button viewPollAnswers;
 
         public ViewHolder(View view) {
             super(view);
@@ -276,10 +289,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             pollDisplay = view.findViewById(R.id.broadcastWall_poll_display_view);
             attachmentDownloadButton = view.findViewById(R.id.attachment_download_btn);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
+            viewPollAnswers = view.findViewById(R.id.view_poll_answers);
         }
-
-
-
 
         public String getCurrentUserPollOption() {
             return currentUserPollOption;
