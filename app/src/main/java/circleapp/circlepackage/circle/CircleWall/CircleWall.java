@@ -54,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -135,7 +135,7 @@ public class CircleWall extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
-            startActivity(new Intent(CircleWall.this, Explore.class));
+            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
             finish();
         });
 
@@ -168,7 +168,7 @@ public class CircleWall extends AppCompatActivity {
     private void exitCircle() {
         circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
         circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
-        startActivity(new Intent(CircleWall.this, Explore.class));
+        startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
     private void showShareCirclePopup() {
@@ -503,7 +503,7 @@ public class CircleWall extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(CircleWall.this,Explore.class);
+        Intent intent = new Intent(CircleWall.this,ExploreTabbedActivity.class);
         startActivity(intent);
     }
 }

@@ -37,7 +37,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +44,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
@@ -55,20 +53,15 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.Explore.Explore;
-import circleapp.circlepackage.circle.MainActivity;
-import circleapp.circlepackage.circle.Notification.SendNotification;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-
-import static circleapp.circlepackage.circle.Notification.SendNotification.getCurrentDateStamp;
 
 public class InterestTagPicker extends AppCompatActivity {
 
@@ -472,7 +465,7 @@ public class InterestTagPicker extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 //if the user registered and profile updated successfully  the mainActivity will be opened
-                                startActivity(new Intent(InterestTagPicker.this, Explore.class));
+                                startActivity(new Intent(InterestTagPicker.this, ExploreTabbedActivity.class));
                                 sendnotify();
                             }
                         })
@@ -500,7 +493,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         .setContentText("Welcome to the Circle "+firebaseAuth.getCurrentUser().getDisplayName() +
                                 " You can find the people with same Interest in your Locality");
 
-        Intent notificationIntent = new Intent(this, Explore.class);
+        Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);

@@ -3,10 +3,12 @@ package circleapp.circlepackage.circle.Explore;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,6 +43,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     @Override
     public void onBindViewHolder(@NonNull WorkbenchDisplayAdapter.ViewHolder holder, int position) {
 
+        Circle circle = MycircleList.get(position);
+
         GradientDrawable wbItemBackground = new GradientDrawable();
         wbItemBackground.setShape(GradientDrawable.OVAL);
 
@@ -51,7 +55,18 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         //set the details of each circle to its respective card.
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         holder.container.setBackground(wbItemBackground);
-        holder.tv_MycircleName.setText(MycircleList.get(position).getName());
+        holder.tv_MycircleName.setText(circle.getName());
+        holder.tv_circleCreatorName.setText(circle.getCreatorName());
+
+        if(circle.getMembersList()!=null){
+            if(circle.getMembersList().keySet().size()>3){
+                holder.membersDisplay.setText("+" + circle.getMembersList().keySet().size());
+            } else {
+                holder.membersDisplay.setText("+0" + circle.getMembersList().keySet().size());
+            }
+        } else {
+            holder.membersDisplay.setText("+0");
+        }
     }
 
     @Override
@@ -61,13 +76,15 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tv_MycircleName;
+        private TextView tv_MycircleName, tv_circleCreatorName;
         private LinearLayout container;
+        private Button membersDisplay;
         public ViewHolder(View view) {
             super(view);
             container = view.findViewById(R.id.wbContainer);
-            tv_MycircleName = view.findViewById(R.id.wbcircle);
-
+            tv_MycircleName = view.findViewById(R.id.wbcircleName);
+            tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
+            membersDisplay = view.findViewById(R.id.wb_members_count_button);
         }
     }
 }

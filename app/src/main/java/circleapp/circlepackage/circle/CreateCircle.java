@@ -36,13 +36,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
@@ -122,7 +121,7 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
-            startActivity(new Intent(CreateCircle.this, Explore.class));
+            startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
             finish();
         });
 
@@ -341,13 +340,13 @@ public class CreateCircle extends AppCompatActivity {
         userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects);
 
         //navigate back to explore. new circle will be available in workbench
-        startActivity(new Intent(CreateCircle.this, Explore.class));
+        startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        Intent about_intent = new Intent(this, Explore.class);
+        Intent about_intent = new Intent(this, ExploreTabbedActivity.class);
         startActivity(about_intent);
         finish();
     }
