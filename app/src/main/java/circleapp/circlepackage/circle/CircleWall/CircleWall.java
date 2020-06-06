@@ -33,6 +33,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -96,6 +97,8 @@ public class CircleWall extends AppCompatActivity {
     private Button btnAddPollOption, btnUploadBroadcast;
     private Dialog createBroadcastPopup;
     private FirebaseAnalytics firebaseAnalytics;
+    FloatingActionMenu floatingActionMenu;
+    FloatingActionButton poll, newPost;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
@@ -117,7 +120,6 @@ public class CircleWall extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         circleBannerName = findViewById(R.id.circleBannerName);
-        createNewBroadcast = findViewById(R.id.create_new_broadcast_btn);
         menuButton = findViewById(R.id.share_with_friend_button);
         back = findViewById(R.id.bck_Circlewall);
         shareCircle = findViewById(R.id.shareCircle);
