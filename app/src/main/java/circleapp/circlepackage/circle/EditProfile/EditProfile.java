@@ -9,7 +9,6 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -26,7 +25,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -59,12 +58,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.CreateCircle;
-import circleapp.circlepackage.circle.Explore.Explore;
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -87,8 +82,8 @@ public class EditProfile extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
     User user;
-    int[] myImageList = new int[]{R.drawable.profile_image, R.drawable.profile_image_black_dude, R.drawable.profile_image_black_woman,
-            R.drawable.profile_image_italian_dude, R.drawable.profile_image_lady_glasses};
+    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
+            R.drawable.person_teacher, R.drawable.person_woman_dancing};
     boolean emptyDismiss = true;
 
 
@@ -103,6 +98,7 @@ public class EditProfile extends AppCompatActivity {
 
     //UI elements for location tag selector popup and interest tag selector popup
     private AutoCompleteTextView interestTagEntry;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +126,9 @@ public class EditProfile extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(EditProfile.this, "Viewing profile", null);
 
         tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -206,7 +205,7 @@ public class EditProfile extends AppCompatActivity {
             storeUserFile(string, getApplicationContext());
             SessionStorage.saveUser(EditProfile.this, user);
 
-            startActivity(new Intent(EditProfile.this, Explore.class));
+            startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
             finish();
         });
 
@@ -219,7 +218,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
-            startActivity(new Intent(EditProfile.this, Explore.class));
+            startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
             finish();
         });
 
@@ -477,7 +476,7 @@ public class EditProfile extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(EditProfile.this,Explore.class);
+        Intent intent = new Intent(EditProfile.this,ExploreTabbedActivity.class);
         startActivity(intent);
     }
 }

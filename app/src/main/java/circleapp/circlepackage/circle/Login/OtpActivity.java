@@ -57,6 +57,7 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private FirebaseAnalytics firebaseAnalytics;
 
     private User userldb;
     //    private AppDatabase lDb;
@@ -90,6 +91,9 @@ public class OtpActivity extends AppCompatActivity {
         mVerifyBtn = findViewById(R.id.verify_btn);
         resendTextView = findViewById(R.id.resend_otp_counter);
         resendTextView.setClickable(false);
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(OtpActivity.this, "Entering otp", null);
 
         new CountDownTimer(30000, 1000) {
             @Override

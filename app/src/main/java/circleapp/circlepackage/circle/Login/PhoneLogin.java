@@ -24,8 +24,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -58,9 +60,13 @@ public class PhoneLogin extends AppCompatActivity {
     SharedPreferences.Editor editor;
     private Spinner ccp;
     String[] options;
+
     private FusedLocationProviderClient client;
     List<String> al = new ArrayList<String>();
     int pos;
+
+    private FirebaseAnalytics firebaseAnalytics;
+
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
@@ -74,8 +80,8 @@ public class PhoneLogin extends AppCompatActivity {
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
-//        getSupportActionBar().hide();
         FirebaseApp.initializeApp(PhoneLogin.this);
+
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
         mGenerateBtn = findViewById(R.id.generate_btn);
@@ -86,6 +92,8 @@ public class PhoneLogin extends AppCompatActivity {
         editor = pref.edit();
         client = LocationServices.getFusedLocationProviderClient(this);
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
@@ -202,6 +210,7 @@ public class PhoneLogin extends AppCompatActivity {
                     mLoginProgress.setVisibility(View.VISIBLE);
                     mGenerateBtn.setEnabled(false);
                     //Sending the OTP to the user mobile number
+                    FirebaseApp.initializeApp(PhoneLogin.this);
                     PhoneAuthProvider.getInstance().verifyPhoneNumber(
                             complete_phone_number,60,TimeUnit.SECONDS,
                             PhoneLogin.this,

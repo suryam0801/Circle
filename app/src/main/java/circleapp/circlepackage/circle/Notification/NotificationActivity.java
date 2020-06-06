@@ -13,14 +13,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
 
@@ -44,6 +43,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     private DatabaseReference notifyDb;
     private FirebaseAuth currentUser;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +58,13 @@ public class NotificationActivity extends AppCompatActivity {
         previousNotifs = new ArrayList<>();
         currentUser = FirebaseAuth.getInstance();
         notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(NotificationActivity.this, "Viewing notifications", null);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(NotificationActivity.this, Explore.class));
+                startActivity(new Intent(NotificationActivity.this, ExploreTabbedActivity.class));
                 finish();
             }
         });
@@ -178,7 +180,7 @@ public class NotificationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(NotificationActivity.this,Explore.class);
+        Intent intent = new Intent(NotificationActivity.this,ExploreTabbedActivity.class);
         startActivity(intent);
     }
 }

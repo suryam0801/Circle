@@ -38,6 +38,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -54,7 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.Explore.Explore;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -94,6 +95,7 @@ public class CircleWall extends AppCompatActivity {
     private TextView tvUploadFileOption, tvCreatePollOption, tvMiddleOrPlaceHolder, tvUploadPlaceholderText, circleBannerName;
     private Button btnAddPollOption, btnUploadBroadcast;
     private Dialog createBroadcastPopup;
+    private FirebaseAnalytics firebaseAnalytics;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
@@ -125,6 +127,8 @@ public class CircleWall extends AppCompatActivity {
         circleBannerName.setText(circle.getName());
 
         createNewBroadcast.setOnClickListener(view -> showCreateBroadcastDialog());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
         menuButton.setOnClickListener(view -> {
             showPopup(view);
@@ -135,7 +139,7 @@ public class CircleWall extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
-            startActivity(new Intent(CircleWall.this, Explore.class));
+            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
             finish();
         });
 
@@ -168,7 +172,7 @@ public class CircleWall extends AppCompatActivity {
     private void exitCircle() {
         circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
         circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
-        startActivity(new Intent(CircleWall.this, Explore.class));
+        startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
     private void showShareCirclePopup() {
@@ -503,7 +507,7 @@ public class CircleWall extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(CircleWall.this,Explore.class);
+        Intent intent = new Intent(CircleWall.this,ExploreTabbedActivity.class);
         startActivity(intent);
     }
 }
