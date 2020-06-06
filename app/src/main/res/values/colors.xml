@@ -16,6 +16,10 @@
     <color name="grey">#C0C0C0</color>
     <color name="disabledBtnBg">#999999</color>
     <color name="white">#FFFFFF</color>
+    <color name="app_primary">#1976D2</color>
+    <color name="app_primary_dark">#1565C0</color>
+    <color name="light_grey">#EEEEEE</color>
+    <color name="white_transparent">#99FFFFFF</color>
 
     <color name="lightGray">#F2F2F2</color>
 

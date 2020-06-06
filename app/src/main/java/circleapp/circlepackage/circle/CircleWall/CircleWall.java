@@ -128,7 +128,6 @@ public class CircleWall extends AppCompatActivity {
 
         circleBannerName.setText(circle.getName());
 
-        createNewBroadcast.setOnClickListener(view -> showCreateBroadcastDialog());
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
