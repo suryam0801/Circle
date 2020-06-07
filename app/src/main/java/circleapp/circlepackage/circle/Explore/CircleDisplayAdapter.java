@@ -97,16 +97,16 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         switch (i % 3) {
             case 0:
-                wbItemBackground.setColor(Color.parseColor("#FE42AE"));
-                moreMembersColor.setColor(Color.parseColor("#FF6DC1"));
-                dividerColor.setColor(Color.parseColor("#FF6DC1"));
-                chipColor = "#D42D8D";
-                break;
-            case 1:
                 wbItemBackground.setColor(Color.parseColor("#A274FF"));
                 moreMembersColor.setColor(Color.parseColor("#AE85FF"));
                 dividerColor.setColor(Color.parseColor("#AE85FF"));
                 chipColor = "#7344D4";
+                break;
+            case 1:
+                wbItemBackground.setColor(Color.parseColor("#FE42AE"));
+                moreMembersColor.setColor(Color.parseColor("#FF6DC1"));
+                dividerColor.setColor(Color.parseColor("#FF6DC1"));
+                chipColor = "#D42D8D";
                 break;
             case 2:
                 wbItemBackground.setColor(Color.parseColor("#3CD2C3"));
@@ -254,13 +254,18 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
     private void applyOrJoin(ViewHolder viewHolder, final Circle circle) {
 
+        circleJoinDialog.setContentView(R.layout.apply_popup_layout);
+        Button closeDialogButton = circleJoinDialog.findViewById(R.id.completedDialogeDoneButton);
+        TextView title = circleJoinDialog.findViewById(R.id.applyConfirmationTitle);
+        TextView description = circleJoinDialog.findViewById(R.id.applyConfirmationDescription);
+
         Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         boolean adminCircle = false;
         if (circle.getId().equals("adminCircle")) {
             SessionStorage.saveCircle((Activity) context, circle);
-            context.startActivity(new Intent((Activity) context, CircleWall.class));
+            context.startActivity(new Intent(context, CircleWall.class));
             adminCircle = true;
             ((Activity) context).finish();
         } else {
@@ -277,13 +282,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 usersDB.child("activeCircles").setValue((nowActive));
             }
             circleJoinDialog.dismiss();
+
         }
-
-
-        circleJoinDialog.setContentView(R.layout.apply_popup_layout);
-        Button closeDialogButton = circleJoinDialog.findViewById(R.id.completedDialogeDoneButton);
-        TextView title = circleJoinDialog.findViewById(R.id.applyConfirmationTitle);
-        TextView description = circleJoinDialog.findViewById(R.id.applyConfirmationDescription);
 
         if (circle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
@@ -292,18 +292,14 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
-        circleJoinDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //link_flag = false;
-            }
+        circleJoinDialog.setOnDismissListener(dialogInterface -> {
+            if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
+                SessionStorage.saveCircle((Activity) context, circle);
+            context.startActivity(new Intent(context, CircleWall.class));
         });
 
         closeDialogButton.setOnClickListener(view -> {
             circleJoinDialog.dismiss();
-            if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
-                SessionStorage.saveCircle((Activity) context, circle);
-                context.startActivity(new Intent(context, CircleWall.class));
         });
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -312,5 +308,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
     }
 
+    public void showCompletionDialog(){
+
+    }
 
 }

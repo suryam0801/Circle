@@ -38,9 +38,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Explore.ExploreFragment;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.SessionStorage;
 
 public class OtpActivity extends AppCompatActivity {
 
@@ -76,7 +79,6 @@ public class OtpActivity extends AppCompatActivity {
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
-//        database.setPersistenceEnabled(true); //persistence automatically handles offline behavior
         database = FirebaseDatabase.getInstance();
         usersDB = database.getReference("Users");
 
@@ -183,6 +185,7 @@ public class OtpActivity extends AppCompatActivity {
                                     if (dataSnapshot.exists()) {
                                         User user = dataSnapshot.getValue(User.class);
                                         String string = new Gson().toJson(user);
+                                        SessionStorage.saveUser(OtpActivity.this, user);
                                         storeUserFile(string, getApplicationContext());
                                     } else {
                                         senduserToReg();
@@ -233,7 +236,7 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the  user to HomePage
     public void sendUserToHome() {
-        Intent homeIntent = new Intent(OtpActivity.this, MainActivity.class);
+        Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(homeIntent);

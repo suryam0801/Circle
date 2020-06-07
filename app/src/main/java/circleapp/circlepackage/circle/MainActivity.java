@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,15 +34,22 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
     private int mainActivityFb = 0;
     private String userDistrict, userId;
+    private FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
-//        getSupportActionBar().hide();
+
+        database = FirebaseDatabase.getInstance();
+        try {
+            database.setPersistenceEnabled(true);
+        } catch (Exception e){
+            startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
+            finish();
+        }
 
         // Obtain the Firebase Analytics instance.
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
