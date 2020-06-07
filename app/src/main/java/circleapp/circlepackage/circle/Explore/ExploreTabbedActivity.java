@@ -56,6 +56,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private boolean link_flag = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

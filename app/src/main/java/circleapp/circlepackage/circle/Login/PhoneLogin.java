@@ -99,7 +99,6 @@ public class PhoneLogin extends AppCompatActivity {
         TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         String countryCode = tm.getSimCountryIso();
         String countryName = tm.getNetworkCountryIso();
-
         al = Arrays.asList(options);
 
         client.getLastLocation().addOnSuccessListener(location -> {
