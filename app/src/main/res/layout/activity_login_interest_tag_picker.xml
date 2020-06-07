@@ -124,25 +124,49 @@
 
 
         </LinearLayout>
-        <Button
-            android:id="@+id/registerButton"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/gradient_button"
-            android:drawableEnd="@drawable/right_forward_arrow"
-            android:fontFamily="@font/roboto_black"
-            android:gravity="start|center"
-            android:paddingLeft="19dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:paddingRight="19dp"
-            android:text="Finish Registration"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFFFF"
-            android:textSize="15dp" />
+            android:orientation="horizontal"
+            android:weightSum="100">
 
+            <Button
+                android:id="@+id/skip_login_tag_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:background="@drawable/blue_border_background"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:paddingLeft="19dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="10dp"
+                android:paddingRight="19dp"
+                android:text="Skip"
+                android:textAllCaps="false"
+                android:textColor="#6CACFF"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:background="@drawable/gradient_button"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:paddingLeft="19dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:paddingRight="19dp"
+                android:text="Finish"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFFFF"
+                android:textSize="15dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
     </ScrollView>

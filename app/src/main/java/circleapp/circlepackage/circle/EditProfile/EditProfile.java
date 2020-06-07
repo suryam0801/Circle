@@ -140,7 +140,7 @@ public class EditProfile extends AppCompatActivity {
                     List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
                     for (String interest : tempInterests) {
                         if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
-                            if(entry.getKey().trim().equals(user.getWard().trim()))
+                            if (entry.getKey().trim().equals(user.getWard().trim()))
                                 dbInterestTags.add(0, interest);
                             else
                                 dbInterestTags.add(interest);
@@ -162,10 +162,14 @@ public class EditProfile extends AppCompatActivity {
         workingCircles.setText(user.getActiveCircles() + "");
 
         selectedInterestTags = new ArrayList<>(user.getInterestTags().keySet());
+        if (selectedInterestTags.contains("null"))
+            selectedInterestTags.remove("null");
 
         //populate chip group with currently selectedTags
         for (String interest : selectedInterestTags)
             setInterestTag(interest, interestTagsEditDisplay);
+
+
         Random r = new Random();
         int count = r.nextInt((4 - 0) + 1);
         Glide.with(EditProfile.this)
@@ -191,11 +195,11 @@ public class EditProfile extends AppCompatActivity {
         });
 
         finalizeChanges.setOnClickListener(view -> {
-            if(downloadUri!=null)
+            if (downloadUri != null)
                 user.setProfileImageLink(downloadUri.toString());
 
             HashMap<String, Boolean> tempIntTags = new HashMap<>();
-            for(String interest : selectedInterestTags)
+            for (String interest : selectedInterestTags)
                 tempIntTags.put(interest, true);
             user.setInterestTags(tempIntTags);
 
@@ -224,13 +228,12 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    private void storeUserFile(String data,Context context) {
+    private void storeUserFile(String data, Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
@@ -248,17 +251,19 @@ public class EditProfile extends AppCompatActivity {
 
         for (String interest : dbInterestTags) {
             setInterestTag(interest, interestChipGroupPopup);
-            suggestInList.add("#"+interest);
+            suggestInList.add("#" + interest);
         }
-        Log.d(TAG,"Suggestion"+suggestInList.toString());
+        Log.d(TAG, "Suggestion" + suggestInList.toString());
         String[] arr = suggestInList.toArray(new String[0]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_dropdown_item_1line, arr);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, arr);
         interestTagEntry.setThreshold(1);
         interestTagEntry.setAdapter(adapter);
 
         interestTagDialog.setOnDismissListener(dialogInterface -> {
-            if(emptyDismiss == false) {
+            if (emptyDismiss == false) {
                 interestTagsEditDisplay.removeAllViews();
+                if (selectedInterestTags.contains("null"))
+                    selectedInterestTags.remove("null");
                 for (String interest : selectedInterestTags)
                     setInterestTag(interest, interestTagsEditDisplay);
             }
@@ -306,7 +311,7 @@ public class EditProfile extends AppCompatActivity {
                     } else {
                         Log.d(TAG, "DB INTEREST TAGS: " + dbInterestTags.toString());
                         Log.d(TAG, "DB SELECTED TAGS: " + selectedInterestTags.toString());
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag) + 1);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     }
                 }
@@ -364,7 +369,7 @@ public class EditProfile extends AppCompatActivity {
 
         });
 
-        if(selectedInterestTags.contains(name))
+        if (selectedInterestTags.contains(name))
             chipGroupLocation.addView(chip, 0);
         else
             chipGroupLocation.addView(chip);
@@ -476,7 +481,7 @@ public class EditProfile extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(EditProfile.this,ExploreTabbedActivity.class);
+        Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
         startActivity(intent);
     }
 }
