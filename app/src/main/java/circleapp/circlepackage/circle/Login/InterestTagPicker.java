@@ -64,6 +64,7 @@ import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.SessionStorage;
 
 public class InterestTagPicker extends AppCompatActivity {
 
@@ -475,32 +476,26 @@ public class InterestTagPicker extends AppCompatActivity {
 
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
+        SessionStorage.saveUser(InterestTagPicker.this, user);
         storeUserFile(string, getApplicationContext());
 
         //store user in realtime database. (testing possible options for fastest retrieval)
-        usersDB.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
+        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
 
-                db.collection("Users")
-                        .document(userId)
-                        .set(user)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                //if the user registered and profile updated successfully  the mainActivity will be opened
-                                startActivity(new Intent(InterestTagPicker.this, ExploreTabbedActivity.class));
-                                sendnotify();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                finish();
-            }
+            db.collection("Users")
+                    .document(userId)
+                    .set(user)
+                    .addOnSuccessListener(aVoid -> {
+                        startActivity(new Intent(InterestTagPicker.this, ExploreTabbedActivity.class));
+                        sendnotify();
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                        }
+                    });
+            finish();
         });
     }
 

@@ -117,7 +117,6 @@
                                 android:layout_marginBottom="5dp"
                                 android:text="poll question"
                                 android:textSize="14dp"
-
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -137,7 +136,7 @@
                             android:layout_height="25dp"
                             android:gravity="center_vertical"
                             android:visibility="visible"
-                            android:background="@drawable/ic_chevron_right_appblue_24dp">
+                            android:background="@drawable/ic_insert_chart_blue_24dp">
                         </Button>
 
                     </LinearLayout>

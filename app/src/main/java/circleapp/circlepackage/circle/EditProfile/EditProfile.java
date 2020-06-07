@@ -216,7 +216,7 @@ public class EditProfile extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             currentUser.signOut();
             currentUser = null;
-            storeUserFile("", getApplicationContext());
+            storeUserFile("nullEmpty", getApplicationContext());
             startActivity(new Intent(EditProfile.this, PhoneLogin.class));
             finish();
         });
@@ -231,7 +231,12 @@ public class EditProfile extends AppCompatActivity {
     private void storeUserFile(String data, Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
+
+            if(data.equals("nullEmpty"))
+                context.deleteFile("user.txt");
+            else
+                outputStreamWriter.write(data);
+
             outputStreamWriter.close();
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());

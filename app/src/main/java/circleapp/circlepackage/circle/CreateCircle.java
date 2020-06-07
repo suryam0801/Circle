@@ -61,11 +61,11 @@ public class CreateCircle extends AppCompatActivity {
     private User user;
 
     private FirebaseDatabase database;
-    private DatabaseReference tags, circleDB,userDB;
+    private DatabaseReference tags, circleDB, userDB;
     private FirebaseAuth currentUser;
 
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
-    private List<String>  dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
+    private List<String> dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
 
@@ -167,7 +167,7 @@ public class CreateCircle extends AppCompatActivity {
             Log.d(TAG, "ENTRY FOR LOC INT " + entry.toString());
             for (String interest : tempInterests) {
                 if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
-                    if(entry.getKey().trim().equals(user.getWard().trim()))
+                    if (entry.getKey().trim().equals(user.getWard().trim()))
                         dbInterestTags.add(0, interest);
                     else
                         dbInterestTags.add(interest);
@@ -189,8 +189,8 @@ public class CreateCircle extends AppCompatActivity {
             }
         }
         //set tags in ward order
-        for(String tag : dbInterestTags)
-            setInterestTag(tag,interestChipGroupPopup);
+        for (String tag : dbInterestTags)
+            setInterestTag(tag, interestChipGroupPopup);
 
         finalizeInterestTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,7 +240,7 @@ public class CreateCircle extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     } else {
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)-1);
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag) - 1);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     }
                 }
@@ -264,7 +264,7 @@ public class CreateCircle extends AppCompatActivity {
                         getResources().getDisplayMetrics()
                 ),
                 paddingDp, paddingDp, paddingDp);
-        if(!name.contains("#"))
+        if (!name.contains("#"))
             chip.setText("#" + name);
         else
             chip.setText(name);
@@ -283,11 +283,11 @@ public class CreateCircle extends AppCompatActivity {
                 if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
                     chip.setTextColor(Color.BLACK);
-                    selectedInterests.remove(chip.getText().toString().replace("#",""));
+                    selectedInterests.remove(chip.getText().toString().replace("#", ""));
                 } else {
                     chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
                     chip.setTextColor(Color.WHITE);
-                    selectedInterests.add(chip.getText().toString().replace("#",""));
+                    selectedInterests.add(chip.getText().toString().replace("#", ""));
                 }
 
                 Log.d(TAG, "INTEREST TAG LIST: " + selectedInterests.toString());
@@ -295,7 +295,7 @@ public class CreateCircle extends AppCompatActivity {
 
         });
 
-        if(selectedInterests.contains(name))
+        if (selectedInterests.contains(name))
             chipGroupLocation.addView(chip, 0);
         else
             chipGroupLocation.addView(chip);
@@ -308,7 +308,7 @@ public class CreateCircle extends AppCompatActivity {
 
         User user = SessionStorage.getUser(CreateCircle.this);
         circleDB = database.getReference("Circles");
-        currentUser=FirebaseAuth.getInstance();
+        currentUser = FirebaseAuth.getInstance();
 
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
@@ -320,14 +320,18 @@ public class CreateCircle extends AppCompatActivity {
 
         //convert selectedInterests into hashmap
         HashMap<String, Boolean> interestHashmap = new HashMap<>();
-        for(String interest : selectedInterests)
-            interestHashmap.put(interest, true);
+        if (selectedInterests.isEmpty()) {
+            interestHashmap.put("null", true);
+        } else {
+            for (String interest : selectedInterests)
+                interestHashmap.put(interest, true);
+        }
 
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
 
         //updating circles
-        Circle circle = new Circle (myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,
+        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,
                 interestHashmap, tempUserForMemberList, null, user.getDistrict(), user.getWard(), System.currentTimeMillis());
 
         circleDB.child(myCircleID).setValue(circle);
@@ -355,7 +359,7 @@ public class CreateCircle extends AppCompatActivity {
         finish();
     }
 
-    public void showPreviewDialog(){
+    public void showPreviewDialog() {
         previewCircleDialog = new Dialog(CreateCircle.this);
         previewCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
 
@@ -367,21 +371,21 @@ public class CreateCircle extends AppCompatActivity {
         tv_circleDesc = previewCircleDialog.findViewById(R.id.circle_desc);
         circleDisplayTags = previewCircleDialog.findViewById(R.id.circle_display_tags);
 
-        if(!circleNameEntry.getText().toString().isEmpty())
+        if (!circleNameEntry.getText().toString().isEmpty())
             tv_circleName.setText(circleNameEntry.getText().toString());
-        if(!circleDescriptionEntry.getText().toString().isEmpty())
+        if (!circleDescriptionEntry.getText().toString().isEmpty())
             tv_circleDesc.setText(circleDescriptionEntry.getText().toString());
 
         tv_creatorName.setText(user.getFirstName() + " " + user.getLastName());
 
-        if(!selectedInterests.isEmpty()){
-            for(String tag : selectedInterests)
+        if (!selectedInterests.isEmpty()) {
+            for (String tag : selectedInterests)
                 setInterestTag(tag, circleDisplayTags, "#D42D8D");
         }
 
-        int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
-        previewCircleDialog.getWindow().setLayout(width, height);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        previewCircleDialog.getWindow().setAttributes(lp);
         previewCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         previewCircleDialog.show();
     }
