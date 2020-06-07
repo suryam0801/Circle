@@ -46,10 +46,9 @@ public class ExploreFragment extends Fragment {
     private List<Circle> allCircles = new ArrayList<>();
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
-    private DatabaseReference circlesDB, usersDB;
+    private DatabaseReference circlesDB;
     private User user;
     private List<String> userTempinterestTagsList;
-    private Uri intentUri;
     RecyclerView exploreRecyclerView;
 
 
@@ -86,7 +85,6 @@ public class ExploreFragment extends Fragment {
         user = SessionStorage.getUser(getActivity());
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
-        usersDB = database.getReference().child("Users").child(currentUser.getCurrentUser().getUid());
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
 
         //retrieve interest tags from user
@@ -116,16 +114,6 @@ public class ExploreFragment extends Fragment {
                 allCircles.add(circle);
 
                 List<String> circleIteratorinterestTagsList = new ArrayList<>(circle.getInterestTags().keySet());
-
-                //recieve request on opening
-                if (intentUri != null) {
-                    List<String> params = intentUri.getPathSegments();
-                    String circleID = params.get(params.size() - 1);
-
-                    if (circle.getId().equals(circleID)) {
-                        //link_flag = true;
-                    }
-                }
 
                 //checking if circle already exists
                 boolean contains = false;
