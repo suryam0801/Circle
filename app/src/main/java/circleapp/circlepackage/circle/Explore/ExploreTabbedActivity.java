@@ -31,6 +31,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
