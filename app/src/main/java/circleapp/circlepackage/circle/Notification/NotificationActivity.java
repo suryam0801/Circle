@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,9 +29,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.SessionStorage;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -38,10 +43,11 @@ public class NotificationActivity extends AppCompatActivity {
     private List<Notification> thisWeekNotifs, previousNotifs;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private ImageButton back;
+    private Circle circle;
     private TextView prevnotify;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-    private DatabaseReference notifyDb;
+    private DatabaseReference notifyDb,circlesDB;
     private FirebaseAuth currentUser;
     private FirebaseAnalytics firebaseAnalytics;
 
@@ -56,8 +62,10 @@ public class NotificationActivity extends AppCompatActivity {
         back = findViewById(R.id.bck_notifications);
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
+        circle = new Circle();
         currentUser = FirebaseAuth.getInstance();
         notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
+        circlesDB = database.getReference("Circles");
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(NotificationActivity.this, "Viewing notifications", null);
 
@@ -113,6 +121,61 @@ public class NotificationActivity extends AppCompatActivity {
                     Utility.setListViewHeightBasedOnChildren(thisWeekListView);
                     Utility.setListViewHeightBasedOnChildren(previousListView);
 
+                    thisWeekListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                            circle=SessionStorage.getCircle(NotificationActivity.this);
+//                            Circle current = new Circlele();
+                            Notification curent = thisWeekNotifs.get(position);
+                            String circleid = curent.getCircleId();
+                            circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Circle circle = dataSnapshot.getValue(Circle.class);
+                                    SessionStorage.saveCircle(NotificationActivity.this,circle);
+                                    startActivity(new Intent(NotificationActivity.this, CircleWall.class));
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+                    });
+
+                    previousListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Notification curent = thisWeekNotifs.get(position);
+                            String circleid = curent.getCircleId();
+                            circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Circle circle = dataSnapshot.getValue(Circle.class);
+                                    String state = curent.getState();
+                                    if (state.equalsIgnoreCase("Accepted") || state.equalsIgnoreCase("Rejected")){
+                                    SessionStorage.saveCircle(NotificationActivity.this,circle);
+                                    startActivity(new Intent(NotificationActivity.this, CircleWall.class));
+                                    }
+                                    else if (state.equalsIgnoreCase("broadcast_added"))
+                                    {
+                                        SessionStorage.saveCircle(NotificationActivity.this,circle);
+                                        startActivity(new Intent(NotificationActivity.this, CircleWall.class));
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+                    });
 
                 }
 

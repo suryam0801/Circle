@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
@@ -37,9 +40,11 @@ public class ApplicantDisplayFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private  FirebaseAuth firebaseAuth;
 
     private FirebaseDatabase database;
     private DatabaseReference circlesPersonelDB;
+//    private FirebaseAuth firebaseAuth;
     private List<Subscriber> applicantsList;
 
     // TODO: Rename and change types of parameters
@@ -63,10 +68,15 @@ public class ApplicantDisplayFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static ApplicantDisplayFragment newInstance(String param1, String param2) {
         ApplicantDisplayFragment fragment = new ApplicantDisplayFragment();
+        Circle circle=new Circle();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+//        if (firebaseAuth.getCurrentUser().getUid().equalsIgnoreCase(circle.getCreatorID()))
+        {
+
+        }
         return fragment;
     }
 
@@ -86,61 +96,71 @@ public class ApplicantDisplayFragment extends Fragment {
         Circle circle = SessionStorage.getCircle(getActivity());
 
         database = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId());//circle.getId()
 
         RecyclerView recyclerView = view.findViewById(R.id.allApplicants_RV);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         applicantsList = new ArrayList<>(); //initialize membersList
-        final RecyclerView.Adapter adapter = new ApplicantListAdapter(getContext(), applicantsList, circle);
-        recyclerView.setAdapter(adapter);
 
+
+            final RecyclerView.Adapter adapter = new ApplicantListAdapter(getContext(), applicantsList, circle);
+        if (firebaseAuth.getCurrentUser().getUid().equalsIgnoreCase(circle.getCreatorID()))
+        {
+            recyclerView.setAdapter(adapter);
+        }
         circlesPersonelDB.child("applicants").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "CHILD ADDED");
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                applicantsList.add(subscriber);
-                adapter.notifyDataSetChanged();
-            }
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.d(TAG, "CHILD ADDED");
+                    Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
+                    applicantsList.add(subscriber);
+                    adapter.notifyDataSetChanged();
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d(TAG, "CHILD CHANGED");
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                int position = 0;
-                List<Subscriber> tempList = new ArrayList<>(applicantsList);
-                //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                for (Subscriber sub : tempList) {
-                    if (sub.getId().equals(subscriber.getId())) {
-                        applicantsList.set(position, subscriber);
-                        adapter.notifyDataSetChanged();
-                        break;
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.d(TAG, "CHILD CHANGED");
+                    Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
+                    int position = 0;
+
+                    List<Subscriber> tempList = new ArrayList<>(applicantsList);
+                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
+                    for (Subscriber sub : tempList) {
+                        if (sub.getId().equals(subscriber.getId())) {
+                            applicantsList.set(position, subscriber);
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "CHILD REMOVED");
+                    Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
+                    int position = 0;
+                    List<Subscriber> tempList = new ArrayList<>(applicantsList);
+                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
+                    for (Subscriber sub : tempList) {
+                        if (sub.getId().equals(subscriber.getId())) {
+                            applicantsList.remove(position);
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "CHILD REMOVED");
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                int position = 0;
-                List<Subscriber> tempList = new ArrayList<>(applicantsList);
-                //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                for (Subscriber sub : tempList) {
-                    if (sub.getId().equals(subscriber.getId())) {
-                        applicantsList.remove(position);
-                        adapter.notifyDataSetChanged();
-                        break;
-                    }
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 }
-            }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
 
         return view;
     }

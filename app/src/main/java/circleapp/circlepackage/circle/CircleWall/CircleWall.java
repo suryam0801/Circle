@@ -99,7 +99,7 @@ public class CircleWall extends AppCompatActivity {
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost;
     private Button clearBroadcastPopup;
-
+    String usersState;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
@@ -133,6 +133,15 @@ public class CircleWall extends AppCompatActivity {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
+//        if (currentUser.getCurrentUser().getUid() == circle.getCreatorID())
+//        {
+//            usersState = "creator";
+//        }
+//        else
+//            {
+//                usersState = "subscriber";
+//            }
+
         menuButton.setOnClickListener(view -> {
             showMenuPopup(view);
         });
@@ -165,7 +174,10 @@ public class CircleWall extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.viewMembers:
-                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
+//                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
+                        Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
+                        intent.putExtra("userState",usersState);
+                        startActivity(intent);
                         return true;
                     case R.id.exitCircle:
                         exitCircle();
