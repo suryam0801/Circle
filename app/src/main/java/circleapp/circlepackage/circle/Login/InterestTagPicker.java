@@ -54,6 +54,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
@@ -72,7 +73,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database;
     private DatabaseReference broadcastsDB, circlesDB, commentsDB;
-    private Button register;
+    private Button register, skip;
     private String fName, lName, userId, downloadUri, contact, ward, district;
     private List<String> locationTags = new ArrayList<>(), selectedInterestTags = new ArrayList<>();
     private List<String> dbInterestTags = new ArrayList<>();
@@ -101,6 +102,7 @@ public class InterestTagPicker extends AppCompatActivity {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(InterestTagPicker.this, "Select tags", null);
         register = findViewById(R.id.registerButton);
+        skip = findViewById(R.id.skip_login_tag_picker);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
         interestTagsEntry = findViewById(R.id.interest_tags_entry);
         interestTagAdd = findViewById(R.id.interest_tag_add_button);
@@ -178,58 +180,58 @@ public class InterestTagPicker extends AppCompatActivity {
             }
         });
 
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //The function to register the Users with their appropriate details
-                UserReg();
-                //bundle to send to fb
-                Bundle bundle = new Bundle();
-                bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, noOfTagsChosen);
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ItemId is number of tags user has picked");
-                firebaseAnalytics.logEvent("No_of_interest_tags", bundle);
+        register.setOnClickListener(view -> {
+            //The function to register the Users with their appropriate details
+            UserReg();
+            //bundle to send to fb
+            Bundle bundle = new Bundle();
+            bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, noOfTagsChosen);
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ItemId is number of tags user has picked");
+            firebaseAnalytics.logEvent("No_of_interest_tags", bundle);
 
-            }
+        });
+
+        skip.setOnClickListener(view -> {
+            if(!selectedInterestTags.isEmpty())
+                selectedInterestTags.clear();
+
+            selectedInterestTags.add("null");
+            UserReg();
         });
 
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
-        interestTagsEntry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    String interestTag = interestTagsEntry.getText().toString().replace("#", "");
-                    if (!interestTag.isEmpty()) {
-                        selectedInterestTags.add(interestTag);
-                        if (!dbInterestTags.contains(interestTag)) {
-                            dbInterestTags.add(interestTag);
-                            setTag(interestTag);
-                        } else {
-                            chipGroup.removeViewAt(dbInterestTags.indexOf(interestTag));
-                            setTag(interestTag);
-                        }
+        interestTagsEntry.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                String interestTag = interestTagsEntry.getText().toString().replace("#", "");
+                if (!interestTag.isEmpty()) {
+                    selectedInterestTags.add(interestTag);
+                    if (!dbInterestTags.contains(interestTag)) {
+                        dbInterestTags.add(interestTag);
+                        setTag(interestTag);
+                    } else {
+                        chipGroup.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setTag(interestTag);
                     }
-                    handled = true;
                 }
-                return handled;
+                handled = true;
             }
+            return handled;
         });
-        interestTagsEntry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "CLICKED!!!!!!!");
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
-                interestTagsEntry.setText("#");
-                interestTagsEntry.setSelection(interestTagsEntry.getText().length());
-            }
+        interestTagsEntry.setOnClickListener(view -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
+            interestTagsEntry.setText("#");
+            interestTagsEntry.setSelection(interestTagsEntry.getText().length());
         });
         interestTagsEntry.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
-                    interestTagsEntry.setShowSoftInputOnFocus(true);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        interestTagsEntry.setShowSoftInputOnFocus(true);
+                    }
                     interestTagsEntry.setText("#");
                     interestTagsEntry.setSelection(interestTagsEntry.getText().length());
                     break;
@@ -464,9 +466,11 @@ public class InterestTagPicker extends AppCompatActivity {
             user = new User(fName, lName, contact, "default", interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
         }
 
-        for (String i : selectedInterestTags) {
-            tags.child("interestTags").child(i).setValue(true);
-            tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
+        if(!selectedInterestTags.contains("null")){
+            for (String i : selectedInterestTags) {
+                tags.child("interestTags").child(i).setValue(true);
+                tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
+            }
         }
 
         //storing user as a json in file locally
