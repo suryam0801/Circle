@@ -11,10 +11,12 @@ import circleapp.circlepackage.circle.ObjectModels.Circle;
 public class PersonelTabAdapter extends FragmentPagerAdapter {
 
     private int numberOfTabs;
+    private String userState;
 
-    public PersonelTabAdapter(@NonNull FragmentManager fm, int behavior) {
+    public PersonelTabAdapter(@NonNull FragmentManager fm, int behavior,String userState) {
         super(fm);
         this.numberOfTabs = behavior;
+        this.userState = userState;
     }
 
     @NonNull

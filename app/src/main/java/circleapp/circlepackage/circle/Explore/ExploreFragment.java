@@ -44,8 +44,8 @@ public class ExploreFragment extends Fragment {
 
     private List<Circle> exploreCircleList = new ArrayList<>();
     private List<Circle> allCircles = new ArrayList<>();
-    private FirebaseDatabase database;
     private FirebaseAuth currentUser;
+    private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
     private User user;
     private List<String> userTempinterestTagsList;

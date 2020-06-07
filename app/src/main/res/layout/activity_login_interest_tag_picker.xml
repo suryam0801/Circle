@@ -83,6 +83,7 @@
                     android:hint="Eg: #sports #cse #eventmanagement"
                     android:textColor="@color/black"
                     android:layout_margin="20dp"
+                    android:tag="#"
                     android:textSize="14dp"
                     android:paddingRight="10dp"
                     android:inputType="text"
