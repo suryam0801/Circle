@@ -24,8 +24,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="www.circleneighborhoodapp.com"
-                    android:scheme="https" />
+                    android:host="https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle"
+                    android:scheme="https"/>
+                <data android:scheme="app" android:host="circleapp.circlepackage.circle" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -35,7 +36,9 @@
 
                 <data
                     android:host="www.circleneighborhoodapp.com"
-                    android:scheme="http" />
+                    android:scheme="http"/>
+
+                <data android:scheme="app" android:host="circleapp.circlepackage.circle" />
             </intent-filter>
         </activity>
         <activity android:name=".Login.EntryPage" />
