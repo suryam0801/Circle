@@ -42,7 +42,8 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="250dp"
                 android:text="New notification"
-                android:textSize="5dp" />
+                android:textSize="5dp"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"

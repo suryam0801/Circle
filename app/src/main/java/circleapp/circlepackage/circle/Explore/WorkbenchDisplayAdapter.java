@@ -97,6 +97,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             membersDisplay = view.findViewById(R.id.wb_members_count_button);
             tv_circleCreatedDateWB = view.findViewById(R.id.circle_created_date);
             unreadNotif = view.findViewById(R.id.unreadNotifButton);
+            //use compareTimeStampsUnread(String circleId, String userId) from workbenchfragment.class here
+            //unreadNotif.setVisibility(view.VISIBLE);
         }
     }
 }
