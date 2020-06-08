@@ -84,6 +84,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public void onBindViewHolder(final ViewHolder viewHolder, int i){
 
         final Broadcast broadcast = broadcastList.get(i);
+
         final Poll poll;
         RadioButton button;
 
@@ -138,31 +139,26 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.attachmentNameDisplay.setText("Click to download attachment");
         }
 
-        viewHolder.viewPollAnswers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SessionStorage.saveBroadcast((Activity) context, broadcast);
-                context.startActivity(new Intent(context, CreatorPollAnswersView.class));
-            }
+        viewHolder.viewPollAnswers.setOnClickListener(view -> {
+            SessionStorage.saveBroadcast((Activity) context, broadcast);
+            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
 
-        viewHolder.attachmentDownloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                storageReference = firebaseStorage.getInstance().getReference();
-                ref = storageReference.child("/ProjectWall");
-                DownloadManager downloadManager = (DownloadManager) context.
-                        getSystemService(Context.DOWNLOAD_SERVICE);
+        viewHolder.attachmentDownloadButton.setOnClickListener(v -> {
 
-                Uri uri = Uri.parse(broadcast.getAttachmentURI());
-                DownloadManager.Request request = new DownloadManager.Request(uri);
-                Log.d("Download File",uri.toString());
-                Log.d("Download File",request.toString());
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalFilesDir(context,DIRECTORY_DOWNLOADS,"image"+".jpg");
-                Toast.makeText(context, "Successfully Downloaded", Toast.LENGTH_SHORT).show();
-                downloadManager.enqueue(request);
-            }
+            storageReference = firebaseStorage.getInstance().getReference();
+            ref = storageReference.child("/ProjectWall");
+            DownloadManager downloadManager = (DownloadManager) context.
+                    getSystemService(Context.DOWNLOAD_SERVICE);
+
+            Uri uri = Uri.parse(broadcast.getAttachmentURI());
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+            Log.d("Download File",uri.toString());
+            Log.d("Download File",request.toString());
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalFilesDir(context,DIRECTORY_DOWNLOADS,"image"+".jpg");
+            Toast.makeText(context, "Successfully Downloaded", Toast.LENGTH_SHORT).show();
+            downloadManager.enqueue(request);
         });
 
         if (broadcast.isPollExists() == true ) {
