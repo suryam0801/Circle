@@ -86,6 +86,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB;
+        private Button unreadNotif;
         private LinearLayout container;
         private Button membersDisplay;
         public ViewHolder(View view) {
@@ -95,6 +96,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
             membersDisplay = view.findViewById(R.id.wb_members_count_button);
             tv_circleCreatedDateWB = view.findViewById(R.id.circle_created_date);
+            unreadNotif = view.findViewById(R.id.unreadNotifButton);
         }
     }
 }
