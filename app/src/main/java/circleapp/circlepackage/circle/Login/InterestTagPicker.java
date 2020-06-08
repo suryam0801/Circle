@@ -182,6 +182,8 @@ public class InterestTagPicker extends AppCompatActivity {
         });
 
         register.setOnClickListener(view -> {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
             UserReg();
             //bundle to send to fb
@@ -189,6 +191,7 @@ public class InterestTagPicker extends AppCompatActivity {
             bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, noOfTagsChosen);
             bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ItemId is number of tags user has picked");
             firebaseAnalytics.logEvent("No_of_interest_tags", bundle);
+
 
         });
 

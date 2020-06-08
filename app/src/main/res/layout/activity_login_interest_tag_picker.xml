@@ -86,7 +86,7 @@
                     android:tag="#"
                     android:textSize="14dp"
                     android:paddingRight="10dp"
-                    android:inputType="text"
+                    android:inputType="textPersonName"
                     android:digits="@string/digits"
                     android:imeOptions="actionDone"
                     android:maxLines="1"
