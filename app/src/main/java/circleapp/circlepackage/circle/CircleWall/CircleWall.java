@@ -46,12 +46,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -218,35 +220,39 @@ public class CircleWall extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.broadcastViewRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+//        ((LinearLayoutManager) layoutManager).setReverseLayout(true);
+//        ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
-        recyclerView.setAdapter(adapter);
 
         broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                recyclerView.setAdapter(adapter);
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                broadcastList.add(broadcast); //to store timestamp values descendingly
+                broadcastList.add(0, broadcast); //to store timestamp values descendingly
                 adapter.notifyDataSetChanged();
                 emptyDisplay.setVisibility(View.GONE);
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                recyclerView.setAdapter(adapter);
+
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 int position = 0;
-                List<Broadcast> tempBroadcastList = new ArrayList<>(broadcastList); //avoids concurrent modification error
-                for (Broadcast b : tempBroadcastList) {
-                    if (b.getId().equals(broadcast.getId())) {
+                List<Broadcast> tempList = new ArrayList<>(broadcastList);
+                for(Broadcast b : tempList) {
+                    if(b.getId().equals(broadcast.getId())) {
                         broadcastList.remove(position);
+                        adapter.notifyItemRemoved(position);
                         broadcastList.add(position, broadcast);
                         adapter.notifyDataSetChanged();
-                        break;
                     }
-                    ++position;
+                    position = position + 1;
                 }
             }
 
