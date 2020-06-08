@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.Button;
@@ -55,6 +56,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private boolean link_flag = false;
+    private String url;
 
 
     @Override
@@ -64,8 +66,15 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         intentUri = getIntent().getData();
         //recieve request on opening
         if (intentUri != null) {
-            List<String> params = intentUri.getPathSegments();
-            String circleID = params.get(params.size() - 1);
+            if (intentUri==null){
+                Log.d("INTENTURI",intentUri.toString());
+            }
+            url = getIntent().getData().toString();
+            url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
+            /*List<String> params = intentUri.getPathSegments();
+            String circleID = params.get(params.size() - 1);*/
+            String circleID = url;
+            Log.d("TAG", "URI:"+circleID);
             database = FirebaseDatabase.getInstance();
             circlesDB = database.getReference("Circles");
             circlesDB.keepSynced(true);
