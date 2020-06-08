@@ -165,7 +165,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             }
         });
 
-        if (broadcast.isPollExists() == true) {
+        if (broadcast.isPollExists() == true ) {
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
             viewHolder.pollQuestionDisplay.setText(poll.getQuestion());
