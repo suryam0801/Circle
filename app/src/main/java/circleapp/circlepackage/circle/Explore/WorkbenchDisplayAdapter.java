@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Explore;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -18,12 +19,15 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.SessionStorage;
 
 public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDisplayAdapter.ViewHolder> {
 
@@ -48,9 +52,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     public void onBindViewHolder(@NonNull WorkbenchDisplayAdapter.ViewHolder holder, int position) {
 
         Circle circle = MycircleList.get(position);
+        User user = SessionStorage.getUser((Activity) context);
 
         GradientDrawable wbItemBackground = new GradientDrawable();
         wbItemBackground.setShape(GradientDrawable.OVAL);
+
+        GradientDrawable notifBackground = new GradientDrawable();
+        notifBackground.setShape(GradientDrawable.OVAL);
 
         wbItemBackground.setColor(Color.parseColor("#E0F0FF"));
         wbItemBackground.setStroke(4, Color.parseColor("#158BF1"));
@@ -72,6 +80,16 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.membersDisplay.setText("+0");
         }
 
+        // comparator
+        if(user.getNotificationsAlert()!=null && user.getNotificationsAlert().containsKey(circle.getId())) {
+            HashMap<String, Long> timeStamps = user.getNotificationsAlert();
+            long currentUserTimestamp = timeStamps.get(circle.getId());
+            if(currentUserTimestamp < circle.getNotificationTimeStamp())
+                holder.newNotifAlert.setVisibility(View.VISIBLE);
+        } else {
+
+        }
+
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(circle.getTimestamp());
         String date = DateFormat.format("dd MMM, yyyy", cal).toString();
@@ -85,7 +103,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB;
+        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert;
         private LinearLayout container;
         private Button membersDisplay;
         public ViewHolder(View view) {
@@ -95,6 +113,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
             membersDisplay = view.findViewById(R.id.wb_members_count_button);
             tv_circleCreatedDateWB = view.findViewById(R.id.circle_created_date);
+            newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
         }
     }
 }

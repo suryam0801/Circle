@@ -279,7 +279,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle adminCircle = new Circle("adminCircle", "Welcome To Circle",
                 "Join this circle to learn more about how you can easy connect with your neighbors",
                 "automatic", "CreatorAdmin", "Admin", circleIntTags,
-                null, null, "test", null, System.currentTimeMillis());
+                null, null, "test", null, System.currentTimeMillis(), System.currentTimeMillis());
 
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
         pollOptions.put("I really like it!", 8);
@@ -306,7 +306,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle runningCircle = new Circle(runningCircleID, district + " Morning Runner's",
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
                 "automatic", "CreatorAdmin", "Vijay Ram", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis());
+                null, null, district, ward, System.currentTimeMillis(), System.currentTimeMillis());
         HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
         pollOptionsRunningCircle.put("Sure!", 8);
         pollOptionsRunningCircle.put("Thats too early :(", 4);
@@ -328,7 +328,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle cookingCircle = new Circle(cookingCircleID, district + " Recipe Sharing Circle",
                 "Hello Cooks, join our circle and get access to the best recipes in " + district + " and share your own dishes!",
                 "automatic", "CreatorAdmin", "Mekkala Nair", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis());
+                null, null, district, ward, System.currentTimeMillis(), System.currentTimeMillis());
         HashMap<String, Integer> pollOptionsCookingCircle = new HashMap<>(); //creating poll options
         pollOptionsCookingCircle.put("I loved them!", 8);
         pollOptionsCookingCircle.put("Could be a little more sweet", 4);
@@ -462,9 +462,9 @@ public class InterestTagPicker extends AppCompatActivity {
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
             //creaeting the user object
-            user = new User(fName, lName, contact, downloadUri, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
+            user = new User(fName, lName, contact, downloadUri, interestTagHashmap, userId, 0, 0, 0, token_id, ward, district, null);
         } else {
-            user = new User(fName, lName, contact, "default", interestTagHashmap, userId, 0, 0, 0, token_id, ward, district);
+            user = new User(fName, lName, contact, "default", interestTagHashmap, userId, 0, 0, 0, token_id, ward, district, null);
         }
 
         if(!selectedInterestTags.contains("null")){

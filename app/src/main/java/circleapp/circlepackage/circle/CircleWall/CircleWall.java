@@ -99,7 +99,7 @@ public class CircleWall extends AppCompatActivity {
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost;
     private Button clearBroadcastPopup;
-
+    String usersState;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
@@ -133,6 +133,15 @@ public class CircleWall extends AppCompatActivity {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
+//        if (currentUser.getCurrentUser().getUid() == circle.getCreatorID())
+//        {
+//            usersState = "creator";
+//        }
+//        else
+//            {
+//                usersState = "subscriber";
+//            }
+
         menuButton.setOnClickListener(view -> {
             showMenuPopup(view);
         });
@@ -165,7 +174,10 @@ public class CircleWall extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.viewMembers:
-                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
+//                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
+                        Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
+                        intent.putExtra("userState",usersState);
+                        startActivity(intent);
                         return true;
                     case R.id.exitCircle:
                         exitCircle();
@@ -371,12 +383,14 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
 
         } else if (downloadUri != null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
 
         } else if (downloadUri == null && pollExists == true) {
 
@@ -384,6 +398,7 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
 
         } else if (downloadUri != null && pollExists == true) {
 
@@ -391,6 +406,8 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+
         }
     }
 
@@ -510,4 +527,5 @@ public class CircleWall extends AppCompatActivity {
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
     }
+
 }
