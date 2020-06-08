@@ -117,7 +117,7 @@
                     android:nextFocusDown="@id/lname"
                     android:digits="@string/digits"
                     android:textColor="@color/black"
-                    android:inputType="textPersonName" />
+                        android:inputType="textPersonName" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

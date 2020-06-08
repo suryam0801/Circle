@@ -1,216 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".Login.PhoneLogin">'
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="182dp" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.8" />
-
-            <Button
-                android:id="@+id/generate_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="36dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/gradient_button"
-                android:fontFamily="@font/roboto_black"
-                android:text="Generate OTP"
-                android:textAllCaps="false"
-                android:textColor="@android:color/background_light"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/desc" />
-
-            <TextView
-                android:id="@+id/login_form_feedback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Working . . ."
-                android:textColor="@android:color/holo_red_light"
-                android:textIsSelectable="true"
-                android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/generate_btn" />
-
-            <EditText
-                android:id="@+id/phone_number_text"
-                android:layout_width="266dp"
-                android:layout_height="53dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="28dp"
-                android:background="@drawable/text_input_bg"
-                android:ems="10"
-                android:fontFamily="@font/roboto_light"
-                android:hint="Your Phone Number"
-                android:inputType="phone"
-                android:padding="16dp"
-                android:textColor="@color/color_blue"
-                android:textColorHint="@color/grey"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ccp" />
-
-            <TextView
-                android:id="@+id/login_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Enter Your Phone Number"
-                android:textColor="@color/color_blue"
-                android:textSize="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.485"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/beneathTitle" />
-
-            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
-                android:id="@+id/ccp"
-                android:layout_width="335dp"
-                android:layout_height="53dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/text_input_bg"
-                android:entries="@array/countries_array"
-                android:fontFamily="@font/roboto_light"
-                android:gravity="center"
-                android:padding="5dp"
-                android:textAlignment="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_desc" />
-
-            <EditText
-                android:id="@+id/country_code_text"
-                android:layout_width="65dp"
-                android:layout_height="53dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/text_input_bg"
-                android:clickable="false"
-                android:editable="false"
-                android:ems="10"
-                android:enabled="false"
-                android:fontFamily="@font/roboto_light"
-                android:inputType="number"
-                android:padding="16dp"
-                android:textColor="@color/color_blue"
-                android:textColorHint="@color/grey"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ccp" />
-
-            <TextView
-                android:id="@+id/desc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:layout_marginEnd="32dp"
-                android:fontFamily="@font/roboto_light"
-                android:text="A 6 digit OTP will be sent via sms to verify your number."
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/phone_number_text" />
-
-            <TextView
-                android:id="@+id/login_desc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:fontFamily="@font/roboto_light"
-                android:text="Please Select your Country "
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_title" />
 
             <TextView
                 android:id="@+id/Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="84dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginLeft="130dp"
                 android:fontFamily="@font/roboto_black"
                 android:text="Circle"
                 android:textColor="#2196F3"
-                android:textSize="50dp"
-                app:layout_constraintHorizontal_bias="0.455"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="50dp" />
 
             <TextView
                 android:id="@+id/beneathTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_black"
+                android:layout_marginLeft="100dp"
                 android:text="The Friendly Neighbourhood App"
                 android:textColor="#D1D1D1"
                 android:textSize="14dp"
-                app:layout_constraintHorizontal_bias="0.466"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Title" />
+                 />
 
-            <ProgressBar
-                android:id="@+id/login_progress_bar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="16dp"
-                android:theme="@style/progressbar"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/generate_btn"
-                app:layout_constraintEnd_toEndOf="@+id/generate_btn"
-                app:layout_constraintTop_toTopOf="@+id/generate_btn" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/login_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="100dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Enter Your Phone Number"
+                android:textColor="@color/color_blue"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/login_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="122dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="Please Select your Country "
+                android:textAlignment="center"
+                android:textColor="@color/black"
+
+                android:textSize="12dp"/>
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                android:id="@+id/ccp"
+                android:layout_width="335dp"
+                android:layout_height="53dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="22dp"
+                android:background="@drawable/text_input_bg"
+                android:entries="@array/countries_array"
+                android:fontFamily="@font/roboto_light"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textAlignment="center" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                >
+                <EditText
+                    android:id="@+id/phone_number_text"
+                    android:layout_width="266dp"
+                    android:layout_height="53dp"
+                    android:layout_marginLeft="120dp"
+                    android:background="@drawable/text_input_bg"
+                    android:ems="10"
+                    android:layout_marginTop="1dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:hint="Your Phone Number"
+                    android:inputType="phone"
+                    android:padding="16dp"
+                    android:textColor="@color/color_blue"
+                    android:textColorHint="@color/grey"
+                    android:textSize="16sp" />
+                <EditText
+                    android:id="@+id/country_code_text"
+                    android:layout_width="65dp"
+                    android:layout_height="53dp"
+                    android:layout_marginStart="28dp"
+                    android:background="@drawable/text_input_bg"
+                    android:clickable="false"
+                    android:editable="false"
+                    android:ems="10"
+                    android:layout_marginTop="1dp"
+                    android:enabled="false"
+                    android:fontFamily="@font/roboto_light"
+                    android:inputType="number"
+                    android:padding="16dp"
+                    android:textColor="@color/color_blue"
+                    android:textColorHint="@color/grey"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+            <TextView
+            android:id="@+id/desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="59dp"
+            android:fontFamily="@font/roboto_light"
+            android:text="A 6 digit OTP will be sent via sms to verify your number."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12dp"/>
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+
+                <Button
+                    android:id="@+id/generate_btn"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:width="200dp"
+                    android:background="@drawable/gradient_button"
+                    android:fontFamily="@font/roboto_black"
+                    android:text="Generate OTP"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="16sp" />
+
+                <ProgressBar
+                    android:id="@+id/login_progress_bar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_alignTop="@+id/generate_btn"
+                    android:layout_alignEnd="@+id/generate_btn"
+                    android:layout_alignRight="@+id/generate_btn"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="335dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="19dp"
+                    android:layout_marginRight="19dp"
+                    android:theme="@style/progressbar"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/login_form_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="100dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Working . . ."
+                android:textColor="@android:color/holo_red_light"
+                android:textIsSelectable="true"
+                android:visibility="invisible" />
+
+        </LinearLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
