@@ -92,6 +92,9 @@ dependencies {
 
     implementation 'com.github.clans:fab:1.6.4'
 
+    implementation 'com.google.firebase:firebase-dynamic-links:19.1.0'
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'

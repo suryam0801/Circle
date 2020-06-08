@@ -39,6 +39,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -46,6 +47,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -53,6 +57,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -69,6 +74,7 @@ import circleapp.circlepackage.circle.SessionStorage;
 
 public class CircleWall extends AppCompatActivity {
 
+    private static final String DEEP_LINK_URL = "https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle";
     private FirebaseDatabase database;
     private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB;
     private FirebaseAuth currentUser;
@@ -164,6 +170,41 @@ public class CircleWall extends AppCompatActivity {
         });
 
         loadCircleBroadcasts();
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                        }
+
+
+                        // Handle the deep link. For example, open the linked
+                        // content, or apply promotional credit to the user's
+                        // account.
+                        // ...
+
+                        // [START_EXCLUDE]
+                        // Display deep link in the UI
+                        if (deepLink != null) {
+                            Snackbar.make(findViewById(android.R.id.content),
+                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
+
+                        } else {
+                            Log.d(TAG, "getDynamicLink: no link found");
+                        }
+                        // [END_EXCLUDE]
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
     }
 
     public void showMenuPopup(View v) {
@@ -199,18 +240,43 @@ public class CircleWall extends AppCompatActivity {
 
     private void showShareCirclePopup() {
         try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            final Uri deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL),0);
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
             String shareMessage = "\nLet me recommend you this application\n\n";
             //https://play.google.com/store/apps/details?id=
             Log.d(TAG, circle.getId());
-            shareMessage = "www.circleneighborhoodapp.com/" + circle.getId();
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            shareMessage = "https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle/" + circle.getId();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, deepLink.toString());
             startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
 
         }
+    }
+    public Uri buildDeepLink(@NonNull Uri deepLink, int minVersion) {
+        String uriPrefix = "https://";
+
+        // Set dynamic link parameters:
+        //  * URI prefix (required)
+        //  * Android Parameters (required)
+        //  * Deep link
+        // [START build_dynamic_link]
+        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
+                .createDynamicLink()
+                .setDomainUriPrefix(uriPrefix)
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
+                        .setMinimumVersion(minVersion)
+                        .build())
+                .setLink(deepLink);
+
+        // Build the dynamic link
+        DynamicLink link = builder.buildDynamicLink();
+        // [END build_dynamic_link]
+
+        // Return the dynamic link as a URI
+        return link.getUri();
     }
 
     private void loadCircleBroadcasts() {
@@ -219,36 +285,39 @@ public class CircleWall extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.broadcastViewRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+//        ((LinearLayoutManager) layoutManager).setReverseLayout(true);
+//        ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
 
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
-        recyclerView.setAdapter(adapter);
 
         broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                recyclerView.setAdapter(adapter);
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 broadcastList.add(0, broadcast); //to store timestamp values descendingly
-                //Update users last read timestamp for this circle
-                user.setViewedTimeSTamps(circle.getId(), broadcast.getTimeStamp());
                 adapter.notifyDataSetChanged();
                 emptyDisplay.setVisibility(View.GONE);
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                recyclerView.setAdapter(adapter);
+
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 int position = 0;
-                List<Broadcast> tempBroadcastList = new ArrayList<>(broadcastList); //avoids concurrent modification error
-                for (Broadcast b : tempBroadcastList) {
-                    if (b.getId().equals(broadcast.getId())) {
+                List<Broadcast> tempList = new ArrayList<>(broadcastList);
+                for(Broadcast b : tempList) {
+                    if(b.getId().equals(broadcast.getId())) {
                         broadcastList.remove(position);
+                        adapter.notifyItemRemoved(position);
                         broadcastList.add(position, broadcast);
                         adapter.notifyDataSetChanged();
                     }
-                    ++position;
+                    position = position + 1;
                 }
             }
 
@@ -351,7 +420,6 @@ public class CircleWall extends AppCompatActivity {
         btnUploadBroadcast.setOnClickListener(view -> {
             if (!pollAnswerOptionsList.isEmpty())
                 pollExists = true;
-
             createBroadcast();
         });
 
@@ -373,26 +441,6 @@ public class CircleWall extends AppCompatActivity {
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
 
-        //To update latest broadcast timestamp for that circle, used for unread badge
-        DatabaseReference broadcastTimestamp = broadcastsDB.child(currentCircleId).child(broadcastId).child("timeStamp");
-        broadcastTimestamp.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String timeStamp = dataSnapshot.getValue(String.class);
-                assert timeStamp != null;
-                long ts = Long.parseLong(timeStamp);
-                if (circle.getLatestBroadcastTimeStamp()<ts){
-                    circle.setLatestBroadcastTimeStamp(ts); //To update latest broadcast timestamp for that circle, used for unread badge
-                    Log.d(TAG, "Circle.latestBroadcastTimestamp updated");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG,"db error");
-            }
-        });
-
         SendNotification.sendBCinfo(broadcastId, circle.getName(), circle.getId(), currentUserName, circle.getMembersList());
 
         HashMap<String, Integer> options = new HashMap<>();
@@ -406,26 +454,35 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
         } else if (downloadUri != null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
         } else if (downloadUri == null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
         } else if (downloadUri != null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
         }
     }
 
@@ -436,7 +493,6 @@ public class CircleWall extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_IMAGE_REQUEST);
     }
-
 
     //request permission from the user to access their internal storage
     @Override
@@ -546,4 +602,5 @@ public class CircleWall extends AppCompatActivity {
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
     }
+
 }
