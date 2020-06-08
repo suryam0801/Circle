@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -124,6 +125,18 @@ public class WorkbenchFragment extends Fragment {
                 new RecyclerItemClickListener(getContext(), wbrecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        if(user.getNotificationsAlert()!=null){
+                            HashMap<String, Long> notifHashMap = new HashMap<>(user.getNotificationsAlert());
+                            notifHashMap.put(workbenchCircleList.get(position).getId(), System.currentTimeMillis());
+                            user.setNotificationsAlert(notifHashMap);
+                            SessionStorage.saveUser(getActivity(), user);
+                        } else {
+                            HashMap<String, Long> notifHashMap = new HashMap<>();
+                            notifHashMap.put(workbenchCircleList.get(position).getId(), System.currentTimeMillis());
+                            user.setNotificationsAlert(notifHashMap);
+                            SessionStorage.saveUser(getActivity(), user);
+                        }
+
                         SessionStorage.saveCircle(getActivity(), workbenchCircleList.get(position));
                         startActivity(new Intent(getContext(), CircleWall.class));
                     }
