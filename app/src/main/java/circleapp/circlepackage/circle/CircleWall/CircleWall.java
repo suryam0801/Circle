@@ -229,7 +229,7 @@ public class CircleWall extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                broadcastList.add(0, broadcast); //to store timestamp values descendingly
+                broadcastList.add(broadcast); //to store timestamp values descendingly
                 adapter.notifyDataSetChanged();
                 emptyDisplay.setVisibility(View.GONE);
             }
@@ -244,6 +244,7 @@ public class CircleWall extends AppCompatActivity {
                         broadcastList.remove(position);
                         broadcastList.add(position, broadcast);
                         adapter.notifyDataSetChanged();
+                        break;
                     }
                     ++position;
                 }
@@ -348,7 +349,6 @@ public class CircleWall extends AppCompatActivity {
         btnUploadBroadcast.setOnClickListener(view -> {
             if (!pollAnswerOptionsList.isEmpty())
                 pollExists = true;
-
             createBroadcast();
         });
 
@@ -384,6 +384,8 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
 
         } else if (downloadUri != null && pollExists == false) {
 
@@ -391,6 +393,8 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
 
         } else if (downloadUri == null && pollExists == true) {
 
@@ -399,6 +403,8 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
 
         } else if (downloadUri != null && pollExists == true) {
 
@@ -407,6 +413,8 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            pollExists = false;
+            pollAnswerOptionsList.clear();
 
         }
     }
