@@ -383,12 +383,14 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
 
         } else if (downloadUri != null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
 
         } else if (downloadUri == null && pollExists == true) {
 
@@ -396,6 +398,7 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
 
         } else if (downloadUri != null && pollExists == true) {
 
@@ -403,6 +406,8 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
+            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+
         }
     }
 
@@ -522,4 +527,5 @@ public class CircleWall extends AppCompatActivity {
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
     }
+
 }
