@@ -46,6 +46,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -230,6 +231,8 @@ public class CircleWall extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 broadcastList.add(0, broadcast); //to store timestamp values descendingly
+                //Update users last read timestamp for this circle
+                user.setViewedTimeSTamps(circle.getId(), broadcast.getTimeStamp());
                 adapter.notifyDataSetChanged();
                 emptyDisplay.setVisibility(View.GONE);
             }
@@ -370,6 +373,26 @@ public class CircleWall extends AppCompatActivity {
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
 
+        //To update latest broadcast timestamp for that circle, used for unread badge
+        DatabaseReference broadcastTimestamp = broadcastsDB.child(currentCircleId).child(broadcastId).child("timeStamp");
+        broadcastTimestamp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String timeStamp = dataSnapshot.getValue(String.class);
+                assert timeStamp != null;
+                long ts = Long.parseLong(timeStamp);
+                if (circle.getLatestBroadcastTimeStamp()<ts){
+                    circle.setLatestBroadcastTimeStamp(ts); //To update latest broadcast timestamp for that circle, used for unread badge
+                    Log.d(TAG, "Circle.latestBroadcastTimestamp updated");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG,"db error");
+            }
+        });
+
         SendNotification.sendBCinfo(broadcastId, circle.getName(), circle.getId(), currentUserName, circle.getMembersList());
 
         HashMap<String, Integer> options = new HashMap<>();
@@ -413,6 +436,7 @@ public class CircleWall extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_IMAGE_REQUEST);
     }
+
 
     //request permission from the user to access their internal storage
     @Override

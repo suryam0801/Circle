@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -235,6 +236,45 @@ public class WorkbenchFragment extends Fragment {
             }
         });
 
+    }
+    //Compare user's last viewed timestamp and latest timestamp for a circle
+    public boolean  compareTimeStampsUnread(String circleId, String userId){
+        FirebaseDatabase ref = FirebaseDatabase.getInstance();
+        DatabaseReference circlesDB = database.getReference("Circles").child(circleId).child("latestBroadcastTimeStamp");
+        DatabaseReference usersDB = database.getReference("Users").child(userId).child("viewedTimeStamps");
+
+        final long[] userTimeStamp = {0};
+        final long[] circleTimeStamp = {0};
+        usersDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String timestamp = dataSnapshot.getValue(String.class);
+                userTimeStamp[0] = Long.parseLong(timestamp);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        circlesDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String timestamp = dataSnapshot.getValue(String.class);
+                circleTimeStamp[0] = Long.parseLong(timestamp);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        if (circleTimeStamp[0]>userTimeStamp[0]){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 }

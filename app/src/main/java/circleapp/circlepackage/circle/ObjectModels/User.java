@@ -15,6 +15,7 @@ public class User  {
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> interestTags;
     private int createdCircles, activeCircles, completedProjects;
+    private HashMap<String, Long> viewedTimeSTamps;
 
 
     public User(){
@@ -37,6 +38,7 @@ public class User  {
         this.token_id = token_id;
         this.ward = ward;
         this.district = district;
+        this.viewedTimeSTamps.put("", (long) 0);
     }
 
     public HashMap<String, Boolean> getInterestTags() {
@@ -45,6 +47,12 @@ public class User  {
 
     public void setInterestTags(HashMap<String, Boolean> interestTags) {
         this.interestTags = interestTags;
+    }
+    public void setViewedTimeSTamps(String circleName, long timeStamp){
+        this.viewedTimeSTamps.put(circleName,timeStamp);
+    }
+    public HashMap<String,Long> getViewedTimeSTamps(){
+        return this.viewedTimeSTamps;
     }
 
     public void setCreatedCircles(int createdCircles) {
@@ -149,6 +157,7 @@ public class User  {
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +
                 ", completedProjects=" + completedProjects +
+                ", viewedTimeSTamps=" + viewedTimeSTamps +
                 '}';
     }
 }
