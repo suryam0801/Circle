@@ -9,8 +9,24 @@
     android:paddingRight="10dp"
     android:orientation="vertical"
     android:paddingBottom="15dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Poll Results"
+        android:layout_marginLeft="150dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000000"
+        android:textSize="20dp">
+    </TextView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE"></View>
+
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
