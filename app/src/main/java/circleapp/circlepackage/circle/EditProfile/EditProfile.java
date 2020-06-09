@@ -314,9 +314,7 @@ public class EditProfile extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     } else {
-                        Log.d(TAG, "DB INTEREST TAGS: " + dbInterestTags.toString());
-                        Log.d(TAG, "DB SELECTED TAGS: " + selectedInterestTags.toString());
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag) + 1);
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     }
                 }

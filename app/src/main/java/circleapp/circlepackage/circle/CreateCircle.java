@@ -194,7 +194,7 @@ public class CreateCircle extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestTagsDisplay);
                     } else {
-                        interestTagsDisplay.removeViewAt(dbInterestTags.indexOf(interestTag) - 1);
+                        interestTagsDisplay.removeViewAt(dbInterestTags.indexOf(interestTag));
                         setInterestTag(interestTag, interestTagsDisplay);
                     }
                 }
@@ -228,22 +228,18 @@ public class CreateCircle extends AppCompatActivity {
             chip.setTextColor(Color.BLACK);
         }
 
-        chip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
-                    chip.setTextColor(Color.BLACK);
-                    selectedInterests.remove(chip.getText().toString().replace("#", ""));
-                } else {
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
-                    chip.setTextColor(Color.WHITE);
-                    selectedInterests.add(chip.getText().toString().replace("#", ""));
-                }
-
-                Log.d(TAG, "INTEREST TAG LIST: " + selectedInterests.toString());
+        chip.setOnClickListener(view -> {
+            if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
+                chip.setTextColor(Color.BLACK);
+                selectedInterests.remove(chip.getText().toString().replace("#", ""));
+            } else {
+                chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
+                chip.setTextColor(Color.WHITE);
+                selectedInterests.add(chip.getText().toString().replace("#", ""));
             }
 
+            Log.d(TAG, "INTEREST TAG LIST: " + selectedInterests.toString());
         });
 
         if (selectedInterests.contains(name))
