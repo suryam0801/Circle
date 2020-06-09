@@ -71,6 +71,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                 Log.d("INTENTURI",intentUri.toString());
             }
             url = getIntent().getData().toString();
+            String lines[] = url.split("\\r?\\n");
+            for (int i=0; i<lines.length;i++){
+                Log.d("URL", lines[i]);
+            }
             url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
             /*List<String> params = intentUri.getPathSegments();
             String circleID = params.get(params.size() - 1);*/
