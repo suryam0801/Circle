@@ -245,7 +245,7 @@ public class CircleWall extends AppCompatActivity {
 
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle:"+ circle.getName() +"\n\n";
+            String shareMessage = "\nCome join my circle: "+ circle.getName() +"\n\n";
             //https://play.google.com/store/apps/details?id=
             Log.d(TAG, circle.getId());
             shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ circle.getId();
