@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -109,6 +110,7 @@ public class CircleWall extends AppCompatActivity {
     String usersState;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +127,7 @@ public class CircleWall extends AppCompatActivity {
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
+
 
         circleBannerName = findViewById(R.id.circleBannerName);
         menuButton = findViewById(R.id.share_with_friend_button);
@@ -211,10 +214,20 @@ public class CircleWall extends AppCompatActivity {
                 });
     }
 
+
     public void showMenuPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.circle_wall_menu, popup.getMenu());
+        menu = popup.getMenu();
+        Log.d("Testing id", "False condition");
+        //Compare to see if user is creator to show delete circle
+        if((user.getUserId()).equals(circle.getCreatorID())){
+            Log.d("Testing id", "True condition");
+            //getMenuInflater().inflate(R.menu.circle_wall_menu, menu);
+            MenuItem deleteMenu = menu.findItem(R.id.deleteCircle);
+            deleteMenu.setVisible(true);
+        }
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -228,6 +241,9 @@ public class CircleWall extends AppCompatActivity {
                     case R.id.exitCircle:
                         exitCircle();
                         return true;
+                    case R.id.deleteCircle:
+                        deleteCircle();
+                        return true;
                     default:
                         return false;
                 }
@@ -236,9 +252,17 @@ public class CircleWall extends AppCompatActivity {
         popup.show();
     }
 
+    private void deleteCircle(){
+        circlesPersonelDB.child(circle.getId()).removeValue();
+        circlesDB.child(circle.getId()).removeValue();
+        startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
+
+    }
     private void exitCircle() {
-        circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
         circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
+        circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
+        circlesDB.child(circle.getId()).child("creatorID").setValue("null");
+        circlesDB.child(circle.getId()).child("creatorName").setValue("null");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 

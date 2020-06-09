@@ -61,6 +61,8 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private String url;
     private TabLayout tabLayout;
     private TabItem exploreTab, workbenchTab;
+    Intent shareIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,12 +272,14 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     private void showShareCirclePopup(Circle c) {
         try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent= new Intent(Intent.ACTION_SEND);
+
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nLet me recommend you this application\n\n";
+            String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
             //https://play.google.com/store/apps/details?id=
-            shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
+            Log.d("Share", shareMessage);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
