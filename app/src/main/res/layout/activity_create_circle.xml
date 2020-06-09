@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:fillViewport="true"
-    android:orientation="vertical"
     android:background="#FFFFFF"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".CreateCircle">
 
     <RelativeLayout
@@ -22,8 +22,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="#2196F3">
+                android:background="#2196F3"
+                android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -33,20 +34,20 @@
                         android:id="@+id/bck_create"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_marginTop="15dp"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
                         android:layout_marginBottom="12dp"
+                        android:background="@android:color/transparent"
                         android:scaleX=".8"
                         android:scaleY=".8"
-                        android:background="@android:color/transparent"
                         android:src="@drawable/ic_chevron_left_white_24dp"></ImageButton>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
                         android:fontFamily="@font/roboto_regular"
                         android:paddingLeft="20dp"
-                        android:layout_marginTop="20dp"
                         android:text="Create Your Circle"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp"></TextView>
@@ -61,54 +62,55 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Name"
                         android:layout_marginLeft="23dp"
-                        android:textSize="12dp"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Name"
                         android:textColor="#DEDADA"
-                        android:fontFamily="@font/roboto_regular"></TextView>
+                        android:textSize="12dp"></TextView>
+
                     <EditText
+                        android:id="@+id/create_circle_Name"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:hint="Enter circle name here"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:textColor="@color/white"
-                        android:textSize="16dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:textColorHint="@color/white"
                         android:backgroundTint="#50AAF8"
-                        android:id="@+id/create_circle_Name">
-                    </EditText>
+                        android:fontFamily="@font/roboto_regular"
+                        android:hint="Enter circle name here"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        android:textSize="16dp"></EditText>
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Description (100 words)"
-                        android:textSize="12dp"
                         android:layout_marginLeft="23dp"
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Description (100 words)"
                         android:textColor="#DEDADA"
-                        android:fontFamily="@font/roboto_regular"></TextView>
+                        android:textSize="12dp"></TextView>
+
                     <EditText
+                        android:id="@+id/create_circle_Description"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
-                        android:hint="Enter circle description here"
                         android:layout_marginLeft="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="#50AAF8"
+                        android:fontFamily="@font/roboto_regular"
+                        android:hint="Enter circle description here"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        android:textSize="16dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:backgroundTint="#50AAF8"
-                        android:layout_marginBottom="10dp"
-                        android:id="@+id/create_circle_Description">
-                    </EditText>
+                        android:textSize="16dp"></EditText>
 
 
                 </LinearLayout>
@@ -124,23 +126,22 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Acceptance Type"
                     android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginRight="20dp"
-                    android:textSize="12dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Circle Type"
                     android:textColor="#C3BDBD"
-                    android:fontFamily="@font/roboto_regular">
-                </TextView>
+                    android:textSize="12dp"></TextView>
 
                 <RadioGroup
                     android:id="@+id/acceptanceRadioGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp">
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal">
 
                     <RadioButton
                         android:id="@+id/acceptanceTypeReview"
@@ -151,19 +152,17 @@
                         android:fontFamily="@font/roboto_regular"
                         android:text="Review"
                         android:textColor="@color/black"
-                        android:theme="@style/MyRadioButtonTwo">
-                    </RadioButton>
+                        android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
                     <RadioButton
                         android:id="@+id/acceptanceTypeAutomatic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:theme="@style/MyRadioButtonTwo"
-                        android:textColor="@color/black"
+                        android:layout_weight="50"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Automatic"
-                        android:layout_weight="50">
-                    </RadioButton>
+                        android:textColor="@color/black"
+                        android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
                 </RadioGroup>
 
@@ -172,36 +171,55 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="15dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginBottom="5dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Interest Tags"
+                    android:text="Circle Tags"
                     android:textColor="#C3BDBD"
                     android:textSize="12dp"></TextView>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/create_circle_interest_tags_entry"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_margin="20dp"
+                        android:background="@drawable/edittext_light_gray_rounded_bg"
+                        android:fontFamily="@font/roboto_regular"
+                        android:hint="Eg: #sports #cse #eventmanagement"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="#828282"
+                        android:textSize="14dp">
+                        <requestFocus />
+                    </AutoCompleteTextView>
+
+                    <Button
+                        android:id="@+id/create_circle_interest_tag_add_button"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="30dp"
+                        android:background="@drawable/ic_add_black_24dp"></Button>
+                </RelativeLayout>
+
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/selected_interest_tags_display"
+                    android:id="@+id/create_circle_interest_tags_display"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
                 </com.google.android.material.chip.ChipGroup>
 
-                <TextView
-                    android:id="@+id/create_circle_addinteresttags"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:drawableEnd="@drawable/ic_chevron_right_appblue_24dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:gravity="center_vertical"
-                    android:textSize="12dp"
-                    android:text="Select tags"
-                    android:textColor="#5B86E5"></TextView>
             </LinearLayout>
         </LinearLayout>
 
@@ -213,34 +231,35 @@
             android:weightSum="100">
 
             <Button
-                android:layout_weight="50"
                 android:id="@+id/preview_circle"
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="20dp"
-                android:fontFamily="@font/roboto_regular"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="15dp"
-                android:textColor="@color/color_blue"
+                android:layout_weight="50"
                 android:background="@color/white"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Preview Circle"
                 android:textAllCaps="false"
-                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@color/color_blue"
                 android:textSize="15dp"></Button>
+
             <Button
                 android:id="@+id/create_circle_submit"
                 android:layout_width="match_parent"
-                android:layout_weight="50"
                 android:layout_height="50dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="15dp"
-                android:textColor="#35C80B"
+                android:layout_weight="50"
                 android:background="@drawable/green_border_button"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Create Circle"
                 android:textAllCaps="false"
+                android:textColor="#35C80B"
                 android:textSize="15dp"></Button>
 
         </LinearLayout>
