@@ -57,6 +57,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private boolean link_flag = false;
     private String url;
+    Intent shareIntent;
 
 
 
@@ -240,7 +241,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     private void showShareCirclePopup(Circle c) {
         try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent= new Intent(Intent.ACTION_SEND);
 
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
