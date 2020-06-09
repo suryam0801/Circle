@@ -211,6 +211,7 @@ public class CircleWall extends AppCompatActivity {
                 });
     }
 
+
     public void showMenuPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
