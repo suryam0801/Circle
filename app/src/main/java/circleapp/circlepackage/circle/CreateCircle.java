@@ -23,7 +23,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -52,12 +51,14 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView tv_selectInterestTags, interestTagSelectTitle;
+    private TextView interestTagSelectTitle;
     private Button btn_createCircle, btn_previewCircle;
     private ImageButton back;
     private RadioGroup acceptanceGroup;
     private RadioButton acceptanceButton;
     private ChipGroup interestTagsDisplay;
+    private Button interestTagAdd;
+    private AutoCompleteTextView interestTagEntry;
     private User user;
 
     private FirebaseDatabase database;
@@ -70,17 +71,14 @@ public class CreateCircle extends AppCompatActivity {
 
 
     private List<String> autoCompleteItemsList = new ArrayList<>();
-    private Dialog interestTagDialog, previewCircleDialog;
 
     private List<String> selectedInterests = new ArrayList<>();
-
-    //UI elements for location tag selector popup and interest tag selector popup
-    private AutoCompleteTextView interestTagEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN); //disables onscreen keyboard popup each time activity is launched
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
 
         user = SessionStorage.getUser(CreateCircle.this);
@@ -89,12 +87,13 @@ public class CreateCircle extends AppCompatActivity {
         circleNameEntry = findViewById(R.id.create_circle_Name);
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         acceptanceGroup = findViewById(R.id.acceptanceRadioGroup);
-        tv_selectInterestTags = findViewById(R.id.create_circle_addinteresttags);
         btn_createCircle = findViewById(R.id.create_circle_submit);
         back = findViewById(R.id.bck_create);
-        interestTagsDisplay = findViewById(R.id.selected_interest_tags_display);
+        interestTagsDisplay = findViewById(R.id.create_circle_interest_tags_display);
         interestTagSelectTitle = findViewById(R.id.create_circle_interest_tag_select_title);
         btn_previewCircle = findViewById(R.id.preview_circle);
+        interestTagEntry = findViewById(R.id.create_circle_interest_tags_entry);
+        interestTagAdd = findViewById(R.id.create_circle_interest_tag_add_button);
 
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
@@ -104,6 +103,7 @@ public class CreateCircle extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 locIntTags = (HashMap<String, Object>) snapshot.getValue();
+                displayInterestTagDialog();
             }
 
             @Override
@@ -127,40 +127,10 @@ public class CreateCircle extends AppCompatActivity {
             finish();
         });
 
-        tv_selectInterestTags.setOnClickListener(view -> {
-            //show dialogue for selecting interest tags
-            displayInterestTagDialog();
-        });
-
-        interestTagSelectTitle.setOnClickListener(view -> {
-            if (selectedInterests.isEmpty()) {
-                Toast.makeText(getApplicationContext(), "Select Location Tags First", Toast.LENGTH_LONG).show();
-            } else {
-                //show dialogue for selecting interest tags
-                dbInterestTags.clear();
-                interestTagsDisplay.removeAllViews();
-                displayInterestTagDialog();
-            }
-
-        });
-
-        btn_previewCircle.setOnClickListener(view -> showPreviewDialog());
-
-
     }
 
     public void displayInterestTagDialog() {
         User user = SessionStorage.getUser(CreateCircle.this);
-        interestTagDialog = new Dialog(CreateCircle.this);
-        interestTagDialog.setContentView(R.layout.activity_create_circle_interesttag_dialog); //set dialog view
-        interestTagDialog.setCanceledOnTouchOutside(false);
-        interestTagDialog.setCancelable(false);
-
-        //initialize elements in popup dialog
-        final Button finalizeInterestTag = interestTagDialog.findViewById(R.id.circle_finalize_interest_tags);
-        final ChipGroup interestChipGroupPopup = interestTagDialog.findViewById(R.id.circle_interest_tag_chip_group);
-        interestTagEntry = interestTagDialog.findViewById(R.id.circle_interest_tags_entry);
-        final Button interestTagAdd = interestTagDialog.findViewById(R.id.circle_interest_tag_add_button);
 
         for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
             List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
@@ -184,28 +154,13 @@ public class CreateCircle extends AppCompatActivity {
             for (String interest : selectedInterests) { //add selected interests as options even if they are not in the location-interest list
                 if (!dbInterestTags.contains(interest)) {
                     dbInterestTags.add(interest);
-                    setInterestTag(interest, interestChipGroupPopup);
+                    setInterestTag(interest, interestTagsDisplay);
                 }
             }
         }
         //set tags in ward order
         for (String tag : dbInterestTags)
-            setInterestTag(tag, interestChipGroupPopup);
-
-        finalizeInterestTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedInterests.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Select A Tag", Toast.LENGTH_LONG).show();
-                } else {
-                    interestTagDialog.dismiss();
-                    tv_selectInterestTags.setVisibility(View.GONE);
-                    interestTagSelectTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_edit_black_24dp, 0);
-                    for (String interest : selectedInterests)
-                        setInterestTag(interest, interestTagsDisplay);
-                }
-            }
-        });
+            setInterestTag(tag, interestTagsDisplay);
 
         interestTagEntry.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -214,9 +169,9 @@ public class CreateCircle extends AppCompatActivity {
                     case MotionEvent.ACTION_DOWN:
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.showSoftInput(interestTagEntry, InputMethodManager.SHOW_IMPLICIT);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                             interestTagEntry.setShowSoftInputOnFocus(true);
-                        }
+
                         interestTagEntry.setText("#");
                         interestTagEntry.setSelection(interestTagEntry.getText().length());
                         break;
@@ -238,17 +193,14 @@ public class CreateCircle extends AppCompatActivity {
                     selectedInterests.add(interestTag);
                     if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
-                        setInterestTag(interestTag, interestChipGroupPopup);
+                        setInterestTag(interestTag, interestTagsDisplay);
                     } else {
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag) - 1);
-                        setInterestTag(interestTag, interestChipGroupPopup);
+                        interestTagsDisplay.removeViewAt(dbInterestTags.indexOf(interestTag) - 1);
+                        setInterestTag(interestTag, interestTagsDisplay);
                     }
                 }
             }
         });
-
-        interestTagDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        interestTagDialog.show();
     }
 
     public void setInterestTag(final String name, ChipGroup chipGroupLocation) {
@@ -358,78 +310,4 @@ public class CreateCircle extends AppCompatActivity {
         startActivity(about_intent);
         finish();
     }
-
-    public void showPreviewDialog() {
-        previewCircleDialog = new Dialog(CreateCircle.this);
-        previewCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
-
-        TextView tv_circleName, tv_creatorName, tv_circleDesc;
-        ChipGroup circleDisplayTags;
-
-        tv_circleName = previewCircleDialog.findViewById(R.id.circle_name);
-        tv_creatorName = previewCircleDialog.findViewById(R.id.circle_creatorName);
-        tv_circleDesc = previewCircleDialog.findViewById(R.id.circle_desc);
-        circleDisplayTags = previewCircleDialog.findViewById(R.id.circle_display_tags);
-
-        if (!circleNameEntry.getText().toString().isEmpty())
-            tv_circleName.setText(circleNameEntry.getText().toString());
-        if (!circleDescriptionEntry.getText().toString().isEmpty())
-            tv_circleDesc.setText(circleDescriptionEntry.getText().toString());
-
-        tv_creatorName.setText(user.getFirstName() + " " + user.getLastName());
-
-        if (!selectedInterests.isEmpty()) {
-            for (String tag : selectedInterests)
-                setInterestTag(tag, circleDisplayTags, "#D42D8D");
-        }
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        previewCircleDialog.getWindow().setAttributes(lp);
-        previewCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        previewCircleDialog.show();
-    }
-
-    public void setInterestTag(final String name, ChipGroup chipGroupLocation, String chipColor) {
-        final Chip chip = new Chip(CreateCircle.this);
-        int paddingDp = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 10,
-                getResources().getDisplayMetrics()
-        );
-        chip.setRippleColor(ColorStateList.valueOf(Color.WHITE));
-        chip.setPadding(
-                (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 3,
-                        getResources().getDisplayMetrics()
-                ),
-                paddingDp, paddingDp, paddingDp);
-
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled}, // enabled
-                new int[]{-android.R.attr.state_enabled}, // disabled
-                new int[]{-android.R.attr.state_checked}, // unchecked
-                new int[]{android.R.attr.state_pressed}  // pressed
-        };
-
-        int[] colors = new int[]{
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor)
-        };
-
-        ColorStateList myList = new ColorStateList(states, colors);
-
-        chip.setChipBackgroundColor(myList);
-        chip.setChipCornerRadius(60);
-        chip.setChipMinHeight(100);
-        chip.setTextColor(Color.WHITE);
-        if (!name.contains("#"))
-            chip.setText("#" + name);
-        else
-            chip.setText(name);
-
-        chipGroupLocation.addView(chip);
-    }
-
 }
