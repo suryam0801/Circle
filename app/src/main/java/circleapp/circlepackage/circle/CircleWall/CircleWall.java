@@ -3,12 +3,9 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -21,8 +18,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -30,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,17 +42,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -93,7 +84,7 @@ public class CircleWall extends AppCompatActivity {
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
 
-    private ImageButton menuButton, back, shareCircle;
+    private ImageButton exitOrDeleteButton, back, viewPersonelButton;
     private User user;
 
     //create broadcast popup ui elements
@@ -102,7 +93,7 @@ public class CircleWall extends AppCompatActivity {
     private ImageView uploadCloudImageView;
     private TextView circleBannerName, descPlaceHolder;
     private Button btnAddPollOption, btnUploadBroadcast;
-    private Dialog createBroadcastPopup;
+    private Dialog createBroadcastPopup, confirmationDialog;
     private FirebaseAnalytics firebaseAnalytics;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost;
@@ -116,6 +107,7 @@ public class CircleWall extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
+        confirmationDialog = new Dialog(CircleWall.this);
 
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
@@ -130,35 +122,34 @@ public class CircleWall extends AppCompatActivity {
 
 
         circleBannerName = findViewById(R.id.circleBannerName);
-        menuButton = findViewById(R.id.share_with_friend_button);
+        exitOrDeleteButton = findViewById(R.id.share_with_friend_button);
         back = findViewById(R.id.bck_Circlewall);
-        shareCircle = findViewById(R.id.shareCircle);
+        viewPersonelButton = findViewById(R.id.shareCircle);
         emptyDisplay = findViewById(R.id.circle_wall_empty_display);
         emptyDisplay.setVisibility(View.VISIBLE);
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
         floatingActionMenu = findViewById(R.id.menu);
 
+        if(circle.getCreatorID().equals(user.getUserId()))
+            exitOrDeleteButton.setBackground(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp));
+
         circleBannerName.setText(circle.getName());
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
-//        if (currentUser.getCurrentUser().getUid() == circle.getCreatorID())
-//        {
-//            usersState = "creator";
-//        }
-//        else
-//            {
-//                usersState = "subscriber";
-//            }
-
-        menuButton.setOnClickListener(view -> {
-            showMenuPopup(view);
+        exitOrDeleteButton.setOnClickListener(view -> {
+            if(circle.getCreatorID().equals(user.getUserId()))
+                showDeleteDialog();
+            else
+                showExitDialog();
         });
 
-        shareCircle.setOnClickListener(view -> {
-            showShareCirclePopup();
+        viewPersonelButton.setOnClickListener(view -> {
+            Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
+            intent.putExtra("userState",usersState);
+            startActivity(intent);
         });
 
         back.setOnClickListener(view -> {
@@ -214,44 +205,6 @@ public class CircleWall extends AppCompatActivity {
                 });
     }
 
-
-    public void showMenuPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.circle_wall_menu, popup.getMenu());
-        menu = popup.getMenu();
-        Log.d("Testing id", "False condition");
-        //Compare to see if user is creator to show delete circle
-        if((user.getUserId()).equals(circle.getCreatorID())){
-            Log.d("Testing id", "True condition");
-            //getMenuInflater().inflate(R.menu.circle_wall_menu, menu);
-            MenuItem deleteMenu = menu.findItem(R.id.deleteCircle);
-            deleteMenu.setVisible(true);
-        }
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.viewMembers:
-//                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
-                        Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
-                        intent.putExtra("userState",usersState);
-                        startActivity(intent);
-                        return true;
-                    case R.id.exitCircle:
-                        exitCircle();
-                        return true;
-                    case R.id.deleteCircle:
-                        deleteCircle();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
-        popup.show();
-    }
-
     private void deleteCircle(){
         circlesPersonelDB.child(circle.getId()).removeValue();
         circlesDB.child(circle.getId()).removeValue();
@@ -264,48 +217,6 @@ public class CircleWall extends AppCompatActivity {
         circlesDB.child(circle.getId()).child("creatorID").setValue("null");
         circlesDB.child(circle.getId()).child("creatorName").setValue("null");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-    }
-
-    private void showShareCirclePopup() {
-        try {
-            final Uri deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL),0);
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: "+ circle.getName() +"\n\n";
-            //https://play.google.com/store/apps/details?id=
-            Log.d(TAG, circle.getId());
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ circle.getId();
-            Log.d("Share", shareMessage);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch (Exception error) {
-
-        }
-    }
-    public Uri buildDeepLink(@NonNull Uri deepLink, int minVersion) {
-        String uriPrefix = "https://";
-
-        // Set dynamic link parameters:
-        //  * URI prefix (required)
-        //  * Android Parameters (required)
-        //  * Deep link
-        // [START build_dynamic_link]
-        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
-                .createDynamicLink()
-                .setDomainUriPrefix(uriPrefix)
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-                        .setMinimumVersion(minVersion)
-                        .build())
-                .setLink(deepLink);
-
-        // Build the dynamic link
-        DynamicLink link = builder.buildDynamicLink();
-        // [END build_dynamic_link]
-
-        // Return the dynamic link as a URI
-        return link.getUri();
     }
 
     private void loadCircleBroadcasts() {
@@ -373,6 +284,44 @@ public class CircleWall extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void showExitDialog(){
+
+        confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
+        final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
+        final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
+
+        closeDialogButton.setOnClickListener(view -> {
+            exitCircle();
+            confirmationDialog.dismiss();
+        });
+
+        cancel.setOnClickListener(view -> {
+            confirmationDialog.dismiss();
+        });
+
+        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        confirmationDialog.show();
+    }
+
+    public void showDeleteDialog(){
+
+        confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
+        final Button closeDialogButton = confirmationDialog.findViewById(R.id.delete_circle_accept_button);
+        final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
+
+        closeDialogButton.setOnClickListener(view -> {
+            deleteCircle();
+            confirmationDialog.dismiss();
+        });
+
+        cancel.setOnClickListener(view -> {
+            confirmationDialog.dismiss();
+        });
+
+        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        confirmationDialog.show();
     }
 
     private void showCreateBroadcastDialog(String flag) {

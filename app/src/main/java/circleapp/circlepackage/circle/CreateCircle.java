@@ -51,13 +51,13 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView interestTagSelectTitle;
+    private TextView typePrompt, tagPrompt;
     private Button btn_createCircle, btn_previewCircle;
     private ImageButton back;
     private RadioGroup acceptanceGroup;
     private RadioButton acceptanceButton;
     private ChipGroup interestTagsDisplay;
-    private Button interestTagAdd;
+    private Button interestTagAdd, typeInfoButton, tagInfoButton;
     private AutoCompleteTextView interestTagEntry;
     private User user;
 
@@ -90,9 +90,13 @@ public class CreateCircle extends AppCompatActivity {
         btn_createCircle = findViewById(R.id.create_circle_submit);
         back = findViewById(R.id.bck_create);
         interestTagsDisplay = findViewById(R.id.create_circle_interest_tags_display);
-        interestTagSelectTitle = findViewById(R.id.create_circle_interest_tag_select_title);
         interestTagEntry = findViewById(R.id.create_circle_interest_tags_entry);
         interestTagAdd = findViewById(R.id.create_circle_interest_tag_add_button);
+        typeInfoButton = findViewById(R.id.circle_type_info_button);
+        tagInfoButton = findViewById(R.id.circle_tag_info_button);
+        typePrompt = findViewById(R.id.circle_type_tip_prompt);
+        tagPrompt = findViewById(R.id.circle_tag_tip_prompt);
+
 
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
@@ -125,6 +129,9 @@ public class CreateCircle extends AppCompatActivity {
             startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
             finish();
         });
+
+        typeInfoButton.setOnClickListener(view -> typePrompt.setVisibility(View.VISIBLE));
+        tagInfoButton.setOnClickListener(view -> tagPrompt.setVisibility(View.VISIBLE));
 
     }
 
