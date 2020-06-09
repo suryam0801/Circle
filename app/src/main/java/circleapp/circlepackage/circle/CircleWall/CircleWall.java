@@ -134,6 +134,7 @@ public class CircleWall extends AppCompatActivity {
         emptyDisplay.setVisibility(View.VISIBLE);
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
+        floatingActionMenu = findViewById(R.id.menu);
 
         circleBannerName.setText(circle.getName());
 
@@ -164,9 +165,12 @@ public class CircleWall extends AppCompatActivity {
 
         poll.setOnClickListener(view -> {
             showCreateBroadcastDialog("poll");
+            floatingActionMenu.close(true);
+
         });
         newPost.setOnClickListener(view -> {
             showCreateBroadcastDialog("message");
+            floatingActionMenu.close(true);
         });
 
         loadCircleBroadcasts();
