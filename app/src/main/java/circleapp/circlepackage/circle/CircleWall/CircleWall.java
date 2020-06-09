@@ -237,8 +237,9 @@ public class CircleWall extends AppCompatActivity {
     }
 
     private void exitCircle() {
-        circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
+        /*circlesPersonelDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();*/
         circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
+        circlesDB.child(circle.getId()).child("creatorID").setValue("null");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
