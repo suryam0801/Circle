@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wbContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginRight="10dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="10dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/wbContainer"
         android:background="#D8E9FF"
         android:orientation="horizontal">
 
         <View
             android:layout_width="7dp"
-            android:layout_height="120dp"
+            android:layout_height="match_parent"
+            android:id="@+id/wb_divider_line"
             android:background="@drawable/edit_project_button_background"></View>
 
         <LinearLayout
@@ -46,7 +48,7 @@
                         android:fontFamily="@font/roboto_condensed_bold"
                         android:text="Circle Name"
                         android:textColor="@color/black"
-                        android:textSize="14dp"></TextView>
+                        android:textSize="18dp"></TextView>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -58,16 +60,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_regular"
+                            android:fontFamily="@font/roboto_condensed"
                             android:text="Created by "
-                            android:textColor="@color/grey"
+                            android:textColor="@color/disabledBtnBg"
                             android:textSize="12dp" />
 
                         <TextView
                             android:id="@+id/wbcircle_creatorName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_regular"
+                            android:fontFamily="@font/roboto_condensed"
                             android:text="Creator Name"
                             android:textColor="@color/color_blue"
                             android:textSize="12dp" />
@@ -95,47 +97,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp">
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="33dp"
-                    android:background="@drawable/person_blonde_head"></de.hdodenhof.circleimageview.CircleImageView>
+                <LinearLayout
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="18dp"
-                    android:background="@drawable/person_job"></de.hdodenhof.circleimageview.CircleImageView>
+                    <LinearLayout
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="7dp"
+                        android:clickable="true"
+                        android:id="@+id/button_background_wb"
+                        android:background="@drawable/join_button_background_explore_card"
+                        android:gravity="center">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:background="@drawable/person_teacher"></de.hdodenhof.circleimageview.CircleImageView>
+                        <ImageButton
+                            android:id="@+id/wb_share_circle_button"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:foreground="@drawable/ic_share_white_24dp">
+                        </ImageButton>
 
-                <Button
-                    android:id="@+id/wb_members_count_button"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="60dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="75dp"
-                    android:background="@drawable/join_button_background_explore_card"
-                    android:fontFamily="@font/roboto_condensed"
-                    android:text="+5"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="14dp"></Button>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/wb_go_to_wall"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="90dp"
+                        android:layout_height="35dp"
+                        android:clickable="true"
+                        android:background="@drawable/join_button_background_explore_card"
+                        android:fontFamily="@font/roboto_condensed"
+                        android:text="Go to wall"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="14dp"></Button>
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/circle_created_date"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
                     android:fontFamily="@font/roboto_condensed"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:paddingLeft="7dp"
                     android:text="17 Feb, 2020"
                     android:textColor="@color/color_blue"
                     android:textSize="12dp" />

@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,8 +59,8 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private boolean link_flag = false;
     private String url;
-
-
+    private TabLayout tabLayout;
+    private TabItem exploreTab, workbenchTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         profPic = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
+        tabLayout = findViewById(R.id.main_tab_layout);
+        exploreTab = findViewById(R.id.main_explore_tab);
+        workbenchTab = findViewById(R.id.main_workbench_tab);
 
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
@@ -127,8 +132,33 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             finish();
         });
 
+        //setting the tab adapter
         ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(pagerAdapter);
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
     }
 
     private void showLinkPopup() {

@@ -254,7 +254,6 @@
                 android:layout_marginLeft="11dp"
                 android:layout_marginRight="11dp"
                 android:layout_marginTop="16dp"
-                android:weightSum="100"
                 android:orientation="horizontal">
 
                 <Button

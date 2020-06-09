@@ -282,7 +282,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 usersDB.child("activeCircles").setValue((nowActive));
             }
             circleJoinDialog.dismiss();
-
         }
 
         if (circle.getAcceptanceType().equalsIgnoreCase("review"))
@@ -303,8 +302,12 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         closeDialogButton.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, circle);
 
-            context.startActivity(new Intent(context, CircleWall.class));
-            circleJoinDialog.dismiss();
+            if(circle.getAcceptanceType().equalsIgnoreCase("review")){
+
+            } else {
+                context.startActivity(new Intent(context, CircleWall.class));
+                circleJoinDialog.dismiss();
+            }
         });
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

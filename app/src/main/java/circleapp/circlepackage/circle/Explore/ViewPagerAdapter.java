@@ -1,30 +1,40 @@
 package circleapp.circlepackage.circle.Explore;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    public ViewPagerAdapter(FragmentManager fm) {
+
+    private int numberOfTabs;
+
+    public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm);
+        this.numberOfTabs = behavior;
+    }
+
+    @NonNull
+    @Override
+    public Fragment getItem(int position) {
+        switch (position){
+            case 0:
+                return new WorkbenchFragment();
+            case 1:
+                return new ExploreFragment();
+            default:
+                return null;
+        }
     }
 
     @Override
-    public Fragment getItem(int position) {
-        switch (position)
-        {
-            case 0:
-                return new WorkbenchFragment(); //ChildFragment1 at position 0
-            case 1:
-                return new ExploreFragment(); //ChildFragment2 at position 1
-        }
-        return null; //does not happen
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 
     @Override
     public int getCount() {
-        return 2; //three fragments
+        return numberOfTabs;
     }
-
 }
