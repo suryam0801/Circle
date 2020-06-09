@@ -61,7 +61,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_condensed"
-                            android:text="Created by "
+                            android:text="By "
                             android:textColor="@color/disabledBtnBg"
                             android:textSize="12dp" />
 
@@ -92,7 +92,45 @@
 
             </LinearLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content">
 
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="27dp"
+                    android:background="@drawable/person_blonde_head">
+                </de.hdodenhof.circleimageview.CircleImageView>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/person_job">
+                </de.hdodenhof.circleimageview.CircleImageView>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/person_teacher">
+                </de.hdodenhof.circleimageview.CircleImageView>
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/wb_members_count_button"
+                    android:layout_width="40dp"
+                    android:layout_height="25dp"
+                    android:padding="0dp"
+                    android:layout_marginLeft="50dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="+358"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_blue"
+                    android:textSize="11dp"></Button>
+
+            </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,13 +139,13 @@
                 android:layout_marginTop="20dp">
 
                 <LinearLayout
-                    android:layout_width="140dp"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_alignParentEnd="true">
 
                     <LinearLayout
-                        android:layout_width="34dp"
+                        android:layout_width="80dp"
                         android:layout_height="34dp"
                         android:layout_alignParentEnd="true"
                         android:layout_marginRight="7dp"
@@ -120,10 +158,21 @@
                             android:id="@+id/wb_share_circle_button"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
+                            android:layout_marginLeft="7dp"
                             android:layout_gravity="center"
+                            android:layout_marginRight="5dp"
                             android:background="@android:color/transparent"
-                            android:foreground="@drawable/ic_share_white_24dp">
+                            android:foreground="@drawable/ic_person_add_black_24dp">
                         </ImageButton>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13dp"
+                            android:textColor="@color/white"
+                            android:layout_marginRight="7dp"
+                            android:text="Invite">
+                        </TextView>
 
 
                     </LinearLayout>
@@ -139,7 +188,7 @@
                         android:text="View Posts"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="14dp"></Button>
+                        android:textSize="13dp"></Button>
 
                 </LinearLayout>
 

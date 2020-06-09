@@ -25,6 +25,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="12dp"
+
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
 
@@ -35,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="40dp"
-                android:layout_marginRight="80dp"
+                android:layout_marginRight="100dp"
                 android:layout_alignStart="@+id/bck_Circlewall"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="21dp"

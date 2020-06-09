@@ -81,6 +81,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 holder.tv_MycircleName.setTextColor(Color.parseColor("#158BF1"));
                 holder.tv_circleCreatorName.setTextColor(Color.parseColor("#158BF1"));
                 holder.tv_circleCreatedDateWB.setTextColor(Color.parseColor("#158BF1"));
+                holder.membersCount.setTextColor(Color.parseColor("#158BF1"));
                 break;
             case 1:
                 wbLayoutBackground.setColor(Color.parseColor("#FFD1E9"));
@@ -90,6 +91,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 holder.tv_MycircleName.setTextColor(Color.parseColor("#FF38A2"));
                 holder.tv_circleCreatorName.setTextColor(Color.parseColor("#FF38A2"));
                 holder.tv_circleCreatedDateWB.setTextColor(Color.parseColor("#FF38A2"));
+                holder.membersCount.setTextColor(Color.parseColor("#FF38A2"));
                 break;
             case 2:
                 wbLayoutBackground.setColor(Color.parseColor("#FFDDBB"));
@@ -99,6 +101,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 holder.tv_MycircleName.setTextColor(Color.parseColor("#FF9C38"));
                 holder.tv_circleCreatorName.setTextColor(Color.parseColor("#FF9C38"));
                 holder.tv_circleCreatedDateWB.setTextColor(Color.parseColor("#FF9C38"));
+                holder.membersCount.setTextColor(Color.parseColor("#FF9C38"));
                 break;
         }
 
@@ -110,6 +113,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.circleWallNav.setBackground(wbButtonBackground);
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
+
+        if(circle.getMembersList().size() > 3)
+            holder.membersCount.setText( "+" + circle.getMembersList().size());
+        else
+            holder.membersCount.setText( "+" + 0);
 
         holder.shareCircles.setOnClickListener(view -> showShareCirclePopup(circle));
 
@@ -153,7 +161,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert;
+        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert, membersCount;
         private LinearLayout container, buttonContainer;
         private ImageButton shareCircles;
         private Button circleWallNav;
@@ -171,6 +179,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             circleWallNav = view.findViewById(R.id.wb_go_to_wall);
             divider = view.findViewById(R.id.wb_divider_line);
             buttonContainer = view.findViewById(R.id.button_background_wb);
+            membersCount = view.findViewById(R.id.wb_members_count_button);
         }
     }
 
