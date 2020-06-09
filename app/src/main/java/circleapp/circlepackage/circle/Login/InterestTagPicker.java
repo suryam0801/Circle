@@ -477,6 +477,13 @@ public class InterestTagPicker extends AppCompatActivity {
             }
         }
 
+        if(!dbInterestTags.contains("null")){
+            for (String i : dbInterestTags) {
+                tags.child("interestTags").child(i).setValue(true);
+                tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
+            }
+        }
+
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(InterestTagPicker.this, user);

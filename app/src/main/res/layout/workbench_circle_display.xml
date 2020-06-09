@@ -136,7 +136,7 @@
                         android:clickable="true"
                         android:background="@drawable/join_button_background_explore_card"
                         android:fontFamily="@font/roboto_condensed"
-                        android:text="Go to wall"
+                        android:text="View Posts"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="14dp"></Button>
