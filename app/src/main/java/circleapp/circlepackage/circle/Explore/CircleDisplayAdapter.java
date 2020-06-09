@@ -293,18 +293,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
-        circleJoinDialog.setOnDismissListener(dialogInterface -> {
-//            if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
-//            {
-                SessionStorage.saveCircle((Activity) context, circle);
-//            }
-            context.startActivity(new Intent(context, CircleWall.class));
-        });
-
         closeDialogButton.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, circle);
 
             if(circle.getAcceptanceType().equalsIgnoreCase("review")){
+                circleJoinDialog.dismiss();
 
             } else {
                 context.startActivity(new Intent(context, CircleWall.class));
