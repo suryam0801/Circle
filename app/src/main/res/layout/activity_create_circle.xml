@@ -130,7 +130,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="20dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Acceptance Type"
+                    android:text="Circle Type"
                     android:textColor="#C3BDBD"
                     android:textSize="12dp"></TextView>
 
@@ -175,7 +175,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="5dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Interest Tags"
+                    android:text="Circle Tags"
                     android:textColor="#C3BDBD"
                     android:textSize="12dp"></TextView>
 
@@ -198,7 +198,6 @@
                         android:textColor="@color/black"
                         android:textColorHint="#828282"
                         android:textSize="14dp">
-
                         <requestFocus />
                     </AutoCompleteTextView>
 
