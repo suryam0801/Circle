@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,6 +66,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     Bitmap bitmap=null;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    Vibrator v;
 
 
     //contructor to set latestCircleList and context for Adapter
@@ -72,6 +75,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.broadcastList = broadcastList;
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
+        v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -228,6 +232,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 layout.setBackground(new PercentDrawable(100, "#EFF6FF"));
                 RadioButton finalButton = button;
                 button.setOnClickListener(view -> {
+                    vibrate();
+                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
                     String option = finalButton.getText().toString();
                     HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
                     int currentSelectedVotes = poll.getOptions().get(option);
@@ -260,6 +266,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     @Override
     public int getItemCount() {
         return broadcastList.size();
+    }
+
+    public void vibrate(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(500);
+        }
     }
 
     //initializes the views
