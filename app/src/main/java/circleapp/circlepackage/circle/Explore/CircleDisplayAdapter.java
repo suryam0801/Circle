@@ -151,6 +151,13 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
         }
 
+        if(current.getMembersList() != null){
+            if(current.getMembersList().size() > 3)
+                viewHolder.membersCount.setText( "+" + current.getMembersList().size());
+            else
+                viewHolder.membersCount.setText( "+" + 0);
+
+        }
 
         viewHolder.join.setOnClickListener(view -> {
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
