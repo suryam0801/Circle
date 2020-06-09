@@ -91,7 +91,6 @@ public class CreateCircle extends AppCompatActivity {
         back = findViewById(R.id.bck_create);
         interestTagsDisplay = findViewById(R.id.create_circle_interest_tags_display);
         interestTagSelectTitle = findViewById(R.id.create_circle_interest_tag_select_title);
-        btn_previewCircle = findViewById(R.id.preview_circle);
         interestTagEntry = findViewById(R.id.create_circle_interest_tags_entry);
         interestTagAdd = findViewById(R.id.create_circle_interest_tag_add_button);
 
@@ -268,6 +267,11 @@ public class CreateCircle extends AppCompatActivity {
         String myCircleID = circleDB.push().getKey();
         String creatorUserID = currentUser.getCurrentUser().getUid();
         String acceptanceType = acceptanceButton.getText().toString();
+        if(acceptanceType.equals("Public"))
+            acceptanceType = "Automatic";
+        else if(acceptanceType.equals("Private"))
+            acceptanceType = "Review";
+
         String creatorName = currentUser.getCurrentUser().getDisplayName();
 
         //convert selectedInterests into hashmap

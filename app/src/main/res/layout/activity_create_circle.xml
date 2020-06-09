@@ -83,7 +83,7 @@
                         android:fontFamily="@font/roboto_regular"
                         android:hint="Enter circle name here"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/white"
+                        android:textColorHint="@color/color_blue"
                         android:textSize="16dp"></EditText>
 
 
@@ -109,7 +109,7 @@
                         android:fontFamily="@font/roboto_regular"
                         android:hint="Enter circle description here"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/white"
+                        android:textColorHint="@color/color_blue"
                         android:textSize="16dp"></EditText>
 
 
@@ -150,7 +150,7 @@
                         android:layout_weight="50"
                         android:checked="true"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Review"
+                        android:text="Private"
                         android:textColor="@color/black"
                         android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
@@ -160,7 +160,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="50"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Automatic"
+                        android:text="Public"
                         android:textColor="@color/black"
                         android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
@@ -231,28 +231,12 @@
             android:weightSum="100">
 
             <Button
-                android:id="@+id/preview_circle"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="15dp"
-                android:layout_weight="50"
-                android:background="@color/white"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Preview Circle"
-                android:textAllCaps="false"
-                android:textColor="@color/color_blue"
-                android:textSize="15dp"></Button>
-
-            <Button
                 android:id="@+id/create_circle_submit"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginBottom="15dp"
                 android:layout_weight="50"
                 android:background="@drawable/green_border_button"
