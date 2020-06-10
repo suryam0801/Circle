@@ -14,7 +14,7 @@ public class User  {
 
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> interestTags;
-    private HashMap<String, Long> notificationsAlert;
+    private HashMap<String, Integer> notificationsAlert;
     private int createdCircles, activeCircles, completedProjects;
 
 
@@ -25,7 +25,7 @@ public class User  {
     public User(String firstName, String lastName, String contact,
                 String profileImageLink, HashMap<String, Boolean> interestTags, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
-                String ward, String district, HashMap<String, Long> notificationsAlert) {
+                String ward, String district, HashMap<String, Integer> notificationsAlert) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contact = contact;
@@ -136,11 +136,11 @@ public class User  {
         this.ward = ward;
     }
 
-    public HashMap<String, Long> getNotificationsAlert() {
+    public HashMap<String, Integer> getNotificationsAlert() {
         return notificationsAlert;
     }
 
-    public void setNotificationsAlert(HashMap<String, Long> notificationsAlert) {
+    public void setNotificationsAlert(HashMap<String, Integer> notificationsAlert) {
         this.notificationsAlert = notificationsAlert;
     }
 

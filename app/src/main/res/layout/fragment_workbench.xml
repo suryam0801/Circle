@@ -6,7 +6,7 @@
     tools:context=".Explore.WorkbenchFragment">
 
     <LinearLayout
-         android:id="@+id/workbench_empty_display"
+        android:id="@+id/workbench_empty_display"
         android:layout_width="match_parent"
         android:visibility="gone"
         android:layout_height="match_parent"

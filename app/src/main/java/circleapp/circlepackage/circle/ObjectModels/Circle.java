@@ -6,7 +6,8 @@ import java.util.List;
 public class Circle {
     private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard;
     private HashMap<String, Boolean>  interestTags, membersList, applicantsList;
-    private long timestamp, notificationTimeStamp;
+    private long timestamp;
+    private int noOfBroadcasts;
 
     public Circle(){
 
@@ -15,7 +16,7 @@ public class Circle {
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
                   String creatorName, HashMap<String, Boolean> interestTags,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
-                  String circleDistrict, String circleWard, long timestamp, long notificationTimeStamp) {
+                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,7 +29,7 @@ public class Circle {
         this.circleDistrict = circleDistrict;
         this.circleWard = circleWard;
         this.timestamp = timestamp;
-        this.notificationTimeStamp = notificationTimeStamp;
+        this.noOfBroadcasts = noOfBroadcasts;
     }
 
     public String getId() {
@@ -127,12 +128,12 @@ public class Circle {
         this.timestamp = timestamp;
     }
 
-    public long getNotificationTimeStamp() {
-        return notificationTimeStamp;
+    public int getNoOfBroadcasts() {
+        return noOfBroadcasts;
     }
 
-    public void setNotificationTimeStamp(long notificationTimeStamp) {
-        this.notificationTimeStamp = notificationTimeStamp;
+    public void setNoOfBroadcasts(int noOfBroadcasts) {
+        this.noOfBroadcasts = noOfBroadcasts;
     }
 
     @Override
@@ -150,7 +151,7 @@ public class Circle {
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +
                 ", timestamp=" + timestamp +
-                ", notificationTimeStamp=" + notificationTimeStamp +
+                ", noOfBroadcasts=" + noOfBroadcasts +
                 '}';
     }
 }

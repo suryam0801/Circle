@@ -80,11 +80,12 @@
 
                 <TextView
                     android:id="@+id/newNotifAlertTV"
-                    android:layout_width="50dp"
+                    android:layout_width="80dp"
                     android:layout_height="35dp"
-                    android:drawableEnd="@drawable/ic_notifications_none_black_24dp"
+                    android:drawableStart="@drawable/ic_notifications_none_black_24dp"
                     android:fontFamily="@font/roboto_condensed_bold"
                     android:gravity="center"
+                    android:text="5 new"
                     android:paddingRight="10dp"
                     android:textColor="@color/black"
                     android:visibility="gone"></TextView>

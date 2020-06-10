@@ -127,12 +127,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 if(firstname.getText().equals("") || lastname.getText().equals("") || firstname.getText().toString().isEmpty()|| lastname.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                        requestLocationPermission();
-                        return;
-                    } else {
-                        getLocation();
-                    }
+                    getLocation();
                 }
             }
         });

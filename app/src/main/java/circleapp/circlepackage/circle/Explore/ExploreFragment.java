@@ -143,7 +143,7 @@ public class ExploreFragment extends Fragment {
                     if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
                         exploreCircleList.add(0, circle);
                         adminCircleExists = true;
-                    } else {
+                    } else if(circle.getCircleDistrict().equalsIgnoreCase(user.getDistrict())) {
                         if(similarTags == true && adminCircleExists == true)
                             exploreCircleList.add(1, circle);
                         else if (similarTags == true && adminCircleExists == false)

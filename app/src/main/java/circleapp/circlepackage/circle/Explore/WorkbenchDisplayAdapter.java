@@ -20,6 +20,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +42,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     private List<Circle> MycircleList;
     private Context context;
+    private FirebaseDatabase database;
+    private DatabaseReference userDB;
 
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
@@ -55,6 +63,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         Circle circle = MycircleList.get(position);
         User user = SessionStorage.getUser((Activity) context);
+
+        database = FirebaseDatabase.getInstance();
+        userDB = database.getReference("Users").child(user.getUserId());
+
 
         GradientDrawable wbLayoutBackground = new GradientDrawable();
         wbLayoutBackground.setShape(GradientDrawable.RECTANGLE);
@@ -114,46 +126,65 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
-        if(circle.getMembersList() != null && !circle.getCreatorID().equals(user.getUserId()))
-            holder.membersCount.setText( "+" + circle.getMembersList().size());
+        if (circle.getMembersList() != null && !circle.getCreatorID().equals(user.getUserId()))
+            holder.membersCount.setText("+" + circle.getMembersList().size());
         else {
 
         }
 
-
-        holder.shareCircles.setOnClickListener(view -> showShareCirclePopup(circle));
-
-        holder.circleWallNav.setOnClickListener(view -> {
-            if (user.getNotificationsAlert() != null) {
-                HashMap<String, Long> notifHashMap = new HashMap<>(user.getNotificationsAlert());
-                notifHashMap.put(circle.getId(), System.currentTimeMillis());
-                user.setNotificationsAlert(notifHashMap);
-                SessionStorage.saveUser((Activity) context, user);
+        //read for new notifs
+        if (user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(circle.getId())) {
+            Log.d("wekfjnwe", "efknwef " + user.getNotificationsAlert().toString());
+            int userRead = user.getNotificationsAlert().get(circle.getId());
+            if (circle.getNoOfBroadcasts() > userRead) {
+                Log.d("wekfjnwe", "efknwef " + (circle.getNoOfBroadcasts() - userRead));
+                holder.newNotifAlert.setText((circle.getNoOfBroadcasts() - userRead) + " new");
+                holder.newNotifAlert.setVisibility(View.VISIBLE);
             } else {
-                HashMap<String, Long> notifHashMap = new HashMap<>();
-                notifHashMap.put(circle.getId(), System.currentTimeMillis());
-                user.setNotificationsAlert(notifHashMap);
-                SessionStorage.saveUser((Activity) context, user);
+                holder.newNotifAlert.setVisibility(View.GONE);
             }
+        }
+
+        //update new notifs value
+        holder.circleWallNav.setOnClickListener(view -> {
+
+            if (user.getNotificationsAlert() != null) {
+                HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
+                tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
+                user.setNotificationsAlert(tempUserNotifStore);
+            } else {
+                HashMap<String, Integer> tempUserNotifStore = new HashMap<>();
+                tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
+                user.setNotificationsAlert(tempUserNotifStore);
+            }
+
+            userDB.child("notificationsAlert").child(circle.getId()).setValue(circle.getNoOfBroadcasts());
+            String userJsonString = new Gson().toJson(user);
+            storeUserFile(userJsonString, context.getApplicationContext());
 
             SessionStorage.saveCircle((Activity) context, circle);
             context.startActivity(new Intent(context, CircleWall.class));
+            ((Activity) context).finish();
         });
 
-        // comparator
-        if (user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(circle.getId())) {
-            HashMap<String, Long> timeStamps = user.getNotificationsAlert();
-            long currentUserTimestamp = timeStamps.get(circle.getId());
-            if (currentUserTimestamp < circle.getNotificationTimeStamp())
-                holder.newNotifAlert.setVisibility(View.VISIBLE);
-        } else {
+        holder.shareCircles.setOnClickListener(view -> showShareCirclePopup(circle));
 
-        }
 
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(circle.getTimestamp());
         String date = DateFormat.format("dd MMM, yyyy", cal).toString();
         holder.tv_circleCreatedDateWB.setText(date);
+    }
+
+    private void storeUserFile(String data, Context context) {
+        context.deleteFile("user.txt");
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
     @Override
@@ -189,8 +220,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
+            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             context.startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
