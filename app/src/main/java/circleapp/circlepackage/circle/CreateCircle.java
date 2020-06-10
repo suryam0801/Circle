@@ -173,11 +173,7 @@ public class CreateCircle extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(interestTagEntry, InputMethodManager.SHOW_IMPLICIT);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                            interestTagEntry.setShowSoftInputOnFocus(true);
-
+                        interestTagEntry.requestFocus();
                         interestTagEntry.setText("#");
                         interestTagEntry.setSelection(interestTagEntry.getText().length());
                         break;

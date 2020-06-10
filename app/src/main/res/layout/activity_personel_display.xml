@@ -12,15 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="19dp"
-        android:layout_marginLeft="22dp"
-        android:layout_marginRight="22dp"
         android:gravity="center">
 
         <ImageButton
             android:id="@+id/personel_bck_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
             android:scaleX=".8"
             android:scaleY=".8"
             android:background="@android:color/transparent"
@@ -43,7 +40,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="18.5dp"
         android:layout_marginBottom="18.5dp"
         android:background="#EEEEEE"></View>
 

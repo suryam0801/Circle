@@ -109,15 +109,17 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         holder.container.setBackground(wbLayoutBackground);
         holder.divider.setBackground(wbLineBackground);
-        holder.buttonContainer.setBackground(wbShareButtonBackground);
+        holder.shareCircles.setBackground(wbShareButtonBackground);
         holder.circleWallNav.setBackground(wbButtonBackground);
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
-        if(circle.getMembersList().size() > 3)
+        if(circle.getMembersList() != null && !circle.getCreatorID().equals(user.getUserId()))
             holder.membersCount.setText( "+" + circle.getMembersList().size());
-        else
-            holder.membersCount.setText( "+" + 0);
+        else {
+
+        }
+
 
         holder.shareCircles.setOnClickListener(view -> showShareCirclePopup(circle));
 
@@ -162,9 +164,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert, membersCount;
-        private LinearLayout container, buttonContainer;
-        private ImageButton shareCircles;
-        private Button circleWallNav;
+        private LinearLayout container;
+        private Button circleWallNav, shareCircles;
 
         private View divider;
 
@@ -178,7 +179,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
             circleWallNav = view.findViewById(R.id.wb_go_to_wall);
             divider = view.findViewById(R.id.wb_divider_line);
-            buttonContainer = view.findViewById(R.id.button_background_wb);
             membersCount = view.findViewById(R.id.wb_members_count_button);
         }
     }
@@ -190,9 +190,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
             String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
-            //https://play.google.com/store/apps/details?id=
             shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
-            Log.d("Share", shareMessage);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             context.startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
