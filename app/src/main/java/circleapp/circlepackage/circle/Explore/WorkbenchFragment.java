@@ -118,8 +118,6 @@ public class WorkbenchFragment extends Fragment {
         //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual circles in the recycler view
         final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
-        wbrecyclerView.setAdapter(wbadapter);
-
 
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
@@ -128,6 +126,7 @@ public class WorkbenchFragment extends Fragment {
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 allCircles.add(circle);
                 //checking if user is a member of the circle
@@ -157,6 +156,7 @@ public class WorkbenchFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 if (circle.getCircleDistrict().equals(user.getDistrict())) {

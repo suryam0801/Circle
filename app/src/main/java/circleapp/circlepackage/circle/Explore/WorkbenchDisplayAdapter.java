@@ -134,7 +134,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //read for new notifs
         if (user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(circle.getId())) {
-            Log.d("wekfjnwe", "efknwef " + user.getNotificationsAlert().toString());
             int userRead = user.getNotificationsAlert().get(circle.getId());
             if (circle.getNoOfBroadcasts() > userRead) {
                 Log.d("wekfjnwe", "efknwef " + (circle.getNoOfBroadcasts() - userRead));
