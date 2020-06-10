@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
@@ -63,6 +64,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private TextView circlesInDisplay;
     private TabItem exploreTab, workbenchTab;
     Intent shareIntent;
+    Boolean circleExists = false;
 
 
     @Override
@@ -95,10 +97,14 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Circle circle = snapshot.getValue(Circle.class);
                         if(circle.getId().equals(circleID)){
+                            circleExists = true;
                             popupCircle = circle;
                             if(getIntent().getData() != null)
                                 showLinkPopup();
                         }
+                    }
+                    if(circleExists==false){
+                        Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
