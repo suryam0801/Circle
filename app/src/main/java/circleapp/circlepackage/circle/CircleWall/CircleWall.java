@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -48,7 +49,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +73,7 @@ public class CircleWall extends AppCompatActivity {
 
     private static final String DEEP_LINK_URL = "https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle";
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB;
+    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB, usersDB;
     private FirebaseAuth currentUser;
 
     private String TAG = CircleWall.class.getSimpleName();
@@ -102,21 +106,21 @@ public class CircleWall extends AppCompatActivity {
     String usersState;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
-    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
         confirmationDialog = new Dialog(CircleWall.this);
+        user = SessionStorage.getUser(CircleWall.this);
 
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
         circlesPersonelDB = database.getReference("CirclePersonel");
         circlesDB = database.getReference("Circles");
+        usersDB = database.getReference("Users").child(user.getUserId());
         broadcastsDB.keepSynced(true);
         currentUser = FirebaseAuth.getInstance();
-        user = SessionStorage.getUser(CircleWall.this);
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -209,15 +213,38 @@ public class CircleWall extends AppCompatActivity {
     private void deleteCircle(){
         circlesPersonelDB.child(circle.getId()).removeValue();
         circlesDB.child(circle.getId()).removeValue();
+        //reducing created circle count
+        int currentCreatedCount = user.getCreatedCircles()-1;
+        user.setCreatedCircles(currentCreatedCount);
+        String userJsonString = new Gson().toJson(user);
+        storeUserFile(userJsonString, getApplicationContext());
+        usersDB.child("createdCircles").setValue(currentCreatedCount);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-
     }
+
     private void exitCircle() {
         circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
         circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
         circlesDB.child(circle.getId()).child("creatorID").setValue("null");
         circlesDB.child(circle.getId()).child("creatorName").setValue("null");
+        //reducing active circle count
+        int currentActiveCount = user.getActiveCircles()-1;
+        user.setActiveCircles(currentActiveCount);
+        String userJsonString = new Gson().toJson(user);
+        storeUserFile(userJsonString, getApplicationContext());
+        usersDB.child("activeCircles").setValue(currentActiveCount);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
+    }
+
+    private void storeUserFile(String data, Context context) {
+        context.deleteFile("user.txt");
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
     private void loadCircleBroadcasts() {
