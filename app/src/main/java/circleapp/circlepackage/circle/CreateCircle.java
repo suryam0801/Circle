@@ -36,7 +36,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +103,7 @@ public class CreateCircle extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
-        userDB = database.getReference("Users");
+        userDB = database.getReference("Users").child(user.getUserId());
 
         tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -287,7 +290,8 @@ public class CreateCircle extends AppCompatActivity {
 
         //updating circles
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,
-                interestHashmap, tempUserForMemberList, null, user.getDistrict(), user.getWard(), System.currentTimeMillis(), System.currentTimeMillis());
+                interestHashmap, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
+                System.currentTimeMillis(),0);
 
         circleDB.child(myCircleID).setValue(circle);
 
@@ -302,10 +306,29 @@ public class CreateCircle extends AppCompatActivity {
         createdProjects = createdProjects + 1;
         userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects);
 
+        int currentCreatedNo = user.getCreatedCircles() + 1;
+        user.setCreatedCircles(currentCreatedNo);
+        String userJsonString = new Gson().toJson(user);
+        storeUserFile(userJsonString, getApplicationContext());
+
+        userDB.child("createdCircles").setValue(currentCreatedNo);
+
         //navigate back to explore. new circle will be available in workbench
         startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
         finish();
     }
+
+    private void storeUserFile(String data, Context context) {
+        context.deleteFile("user.txt");
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
