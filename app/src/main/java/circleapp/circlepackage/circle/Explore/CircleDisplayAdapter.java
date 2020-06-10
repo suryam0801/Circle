@@ -28,7 +28,10 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -289,6 +292,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
                 int nowActive = user.getActiveCircles() + 1;
                 usersDB.child("activeCircles").setValue((nowActive));
+                String userJsonString = new Gson().toJson(user);
+                storeUserFile(userJsonString, context.getApplicationContext());
             }
             circleJoinDialog.dismiss();
         }
@@ -318,8 +323,15 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
     }
 
-    public void showCompletionDialog(){
-
+    private void storeUserFile(String data, Context context) {
+        context.deleteFile("user.txt");
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
 }
