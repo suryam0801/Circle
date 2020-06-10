@@ -150,7 +150,7 @@
                 android:layout_marginRight="10dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Anybody can join a public circle. You choose who joins your private circle."
-                android:textColor="#6CA6FF"
+                android:textColor="#806CA6FF"
                 android:textSize="12dp"
                 android:visibility="gone"></TextView>
 
@@ -219,7 +219,7 @@
                 android:layout_marginRight="10dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Your circle will be shown to people who follow the tags you select."
-                android:textColor="#6CA6FF"
+                android:textColor="#806CA6FF"
                 android:textSize="12dp"
                 android:visibility="gone"></TextView>
 
@@ -243,8 +243,6 @@
                     android:textColor="@color/black"
                     android:textColorHint="#828282"
                     android:textSize="14dp">
-
-                    <requestFocus />
                 </AutoCompleteTextView>
 
                 <Button

@@ -2,23 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
     android:layout_marginLeft="15dp"
+    android:layout_marginTop="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginBottom="10dp"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/wbContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/wbContainer"
         android:background="#D8E9FF"
         android:orientation="horizontal">
 
         <View
+            android:id="@+id/wb_divider_line"
             android:layout_width="7dp"
             android:layout_height="match_parent"
-            android:id="@+id/wb_divider_line"
             android:background="@drawable/edit_project_button_background"></View>
 
         <LinearLayout
@@ -81,114 +81,95 @@
                 <TextView
                     android:id="@+id/newNotifAlertTV"
                     android:layout_width="50dp"
-                    android:visibility="gone"
                     android:layout_height="35dp"
                     android:drawableEnd="@drawable/ic_notifications_none_black_24dp"
                     android:fontFamily="@font/roboto_condensed_bold"
                     android:gravity="center"
                     android:paddingRight="10dp"
-                    android:textColor="@color/black">
-                </TextView>
+                    android:textColor="@color/black"
+                    android:visibility="gone"></TextView>
 
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="27dp"
-                    android:background="@drawable/person_blonde_head">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/person_blonde_head"></de.hdodenhof.circleimageview.CircleImageView>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
-                    android:background="@drawable/person_job">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/person_job"></de.hdodenhof.circleimageview.CircleImageView>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/person_teacher">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/person_teacher"></de.hdodenhof.circleimageview.CircleImageView>
 
                 <Button
-                    style="?android:attr/borderlessButtonStyle"
                     android:id="@+id/wb_members_count_button"
+                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="40dp"
                     android:layout_height="25dp"
-                    android:padding="0dp"
                     android:layout_marginLeft="50dp"
                     android:fontFamily="@font/roboto_regular"
+                    android:padding="0dp"
                     android:text="+358"
                     android:textAllCaps="false"
                     android:textColor="@color/color_blue"
                     android:textSize="11dp"></Button>
 
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_alignParentEnd="true">
+                    android:layout_alignParentEnd="true"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
+                    <Button
+                        android:id="@+id/wb_share_circle_button"
                         android:layout_width="80dp"
                         android:layout_height="34dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginRight="7dp"
-                        android:clickable="true"
-                        android:id="@+id/button_background_wb"
                         android:background="@drawable/join_button_background_explore_card"
-                        android:gravity="center">
-
-                        <ImageButton
-                            android:id="@+id/wb_share_circle_button"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_marginLeft="7dp"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="5dp"
-                            android:background="@android:color/transparent"
-                            android:foreground="@drawable/ic_person_add_black_24dp">
-                        </ImageButton>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="13dp"
-                            android:textColor="@color/white"
-                            android:layout_marginRight="7dp"
-                            android:text="Invite">
-                        </TextView>
-
-
-                    </LinearLayout>
+                        android:drawableStart="@drawable/ic_person_add_black_24dp"
+                        android:fontFamily="@font/roboto_condensed"
+                        android:paddingLeft="13dp"
+                        android:paddingRight="10dp"
+                        android:text="Invite"
+                        android:layout_marginRight="6dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="13dp">
+                    </Button>
 
                     <Button
                         android:id="@+id/wb_go_to_wall"
                         style="?android:attr/borderlessButtonStyle"
                         android:layout_width="90dp"
                         android:layout_height="35dp"
-                        android:clickable="true"
                         android:background="@drawable/join_button_background_explore_card"
+                        android:clickable="true"
                         android:fontFamily="@font/roboto_condensed"
                         android:text="View Posts"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="13dp"></Button>
+                        android:textSize="13dp">
+                    </Button>
 
                 </LinearLayout>
 
