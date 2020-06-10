@@ -60,6 +60,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private boolean link_flag = false;
     private String url;
     private TabLayout tabLayout;
+    private TextView circlesInDisplay;
     private TabItem exploreTab, workbenchTab;
     Intent shareIntent;
 
@@ -112,10 +113,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.main_tab_layout);
         exploreTab = findViewById(R.id.main_explore_tab);
         workbenchTab = findViewById(R.id.main_workbench_tab);
-
+        circlesInDisplay = findViewById(R.id.explore_district_name_display);
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
+        circlesInDisplay.setText(user.getDistrict());
         Random r = new Random();
         int count = r.nextInt((4 - 0) + 1);
         Glide.with(ExploreTabbedActivity.this)
