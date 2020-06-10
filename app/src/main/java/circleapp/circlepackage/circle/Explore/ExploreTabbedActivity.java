@@ -102,10 +102,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                             if(getIntent().getData() != null)
                                 showLinkPopup();
                         }
-                        else{
-                            circleExists = false;
-                            Toast.makeText(getApplicationContext(),"The circle shared does not exist anymore", Toast.LENGTH_LONG).show();
-                        }
+                    }
+                    if(circleExists==false){
+                        Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
