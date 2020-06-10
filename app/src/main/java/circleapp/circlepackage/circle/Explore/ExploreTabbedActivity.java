@@ -103,6 +103,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                                 showLinkPopup();
                         }
                         else{
+                            circleExists = false;
                             Toast.makeText(getApplicationContext(),"The circle shared does not exist anymore", Toast.LENGTH_LONG).show();
                         }
                     }
