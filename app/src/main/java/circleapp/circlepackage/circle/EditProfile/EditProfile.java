@@ -94,11 +94,11 @@ public class EditProfile extends AppCompatActivity {
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
     private HashMap<String, Object> locIntTags = new HashMap<>();
-
+    private FirebaseAnalytics firebaseAnalytics;
+    private Boolean finalizeChange= false;
 
     //UI elements for location tag selector popup and interest tag selector popup
     private AutoCompleteTextView interestTagEntry;
-    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +178,12 @@ public class EditProfile extends AppCompatActivity {
                 .into(profileImageView);
 
         editIntTagBtn.setOnClickListener(view -> {
+            Bundle params1 = new Bundle();
+            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+            params1.putString("Edit_interest_tags_button", "Button clicked");
+            firebaseAnalytics.logEvent("EditProfileInterestTags", params1);
             displayInterestTagPopup();
+            finalizeChange = false;
         });
 
         editProfPic.setOnClickListener(view -> {
@@ -189,6 +194,11 @@ public class EditProfile extends AppCompatActivity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             } else {
+                Bundle params1 = new Bundle();
+                firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+                params1.putString("ProfilePicChanged", "Have storage permission");
+                firebaseAnalytics.logEvent("EditProfileImage", params1);
+                finalizeChange = false;
                 selectFile();
             }
 
@@ -208,12 +218,20 @@ public class EditProfile extends AppCompatActivity {
             String string = new Gson().toJson(user);
             storeUserFile(string, getApplicationContext());
             SessionStorage.saveUser(EditProfile.this, user);
+            finalizeChange = true;
+            Bundle params1 = new Bundle();
+            params1.putString("FinalizeChanges", "true");
+            firebaseAnalytics.logEvent("FinalizedChanges", params1);
 
             startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
             finish();
         });
 
         logout.setOnClickListener(view -> {
+            Bundle params1 = new Bundle();
+            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+            params1.putString("LogoutButtonClicked", "Button");
+            firebaseAnalytics.logEvent("UserLoggedOut", params1);
             currentUser.signOut();
             currentUser = null;
             storeUserFile("nullEmpty", getApplicationContext());
