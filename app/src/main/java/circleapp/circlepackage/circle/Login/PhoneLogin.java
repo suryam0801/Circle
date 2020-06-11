@@ -92,6 +92,7 @@ public class PhoneLogin extends AppCompatActivity {
         editor = pref.edit();
         client = LocationServices.getFusedLocationProviderClient(this);
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Bundle params1 = new Bundle();
         params1.putString("PhoneLoginEntry", "First time");
         firebaseAnalytics.logEvent("LocationAtEntryPage", params1);

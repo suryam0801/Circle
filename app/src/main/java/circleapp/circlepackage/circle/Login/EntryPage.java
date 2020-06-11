@@ -181,7 +181,6 @@ public class EntryPage extends AppCompatActivity {
             locationRequest.setInterval(4000);
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
             fusedLocationProviderClient.getLastLocation();
-            SystemClock.sleep(500);
             Bundle params1 = new Bundle();
             params1.putString("OntoPhoneLogin", "First time");
             firebaseAnalytics.logEvent("SuccessfulEntry", params1);

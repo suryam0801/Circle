@@ -302,7 +302,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             viewHolder.join.setText("Apply");
         else {
             title.setText("Successfully Joined!");
-            description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
+            description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
         closeDialogButton.setOnClickListener(view -> {
