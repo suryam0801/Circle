@@ -93,6 +93,10 @@ public class PhoneLogin extends AppCompatActivity {
         client = LocationServices.getFusedLocationProviderClient(this);
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle params1 = new Bundle();
+        params1.putString("PhoneLoginEntry", "First time");
+        firebaseAnalytics.logEvent("LocationAtEntryPage", params1);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
@@ -169,6 +173,9 @@ public class PhoneLogin extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Bundle params1 = new Bundle();
+                params1.putString("CountryCodeManualInput", "First time");
+                firebaseAnalytics.logEvent("foreignNumberUsed", params1);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -230,6 +237,9 @@ public class PhoneLogin extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
+                Bundle params1 = new Bundle();
+                params1.putString("PhoneNumberVerificationFailed", complete_phone_number);
+                firebaseAnalytics.logEvent("FailedPhoneNumberEvent", params1);
                 mLoginFeedbackText.setText("Verification Failed, please try again."+e.toString());
                 Log.d("EDITORVIEW", "error: " + e.toString());
                 mLoginFeedbackText.setVisibility(View.VISIBLE);
@@ -289,6 +299,14 @@ public class PhoneLogin extends AppCompatActivity {
 
     public void setResendingToken(PhoneAuthProvider.ForceResendingToken resendingToken) {
         this.resendingToken = resendingToken;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Bundle params1 = new Bundle();
+        params1.putString("ExitBeforeVerifyingNumber", "First time");
+        firebaseAnalytics.logEvent("EXitAtPhoneLogin", params1);
+        super.onBackPressed();
     }
 }
 

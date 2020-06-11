@@ -75,6 +75,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private FusedLocationProviderClient client;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private String ward, district;
+    int counter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,16 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     ActivityCompat.requestPermissions(GatherUserDetails.this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             STORAGE_PERMISSION_CODE);
+                    if(counter>1){
+                        Bundle params1 = new Bundle();
+                        params1.putString("StoragePermissionFail", "Trying again");
+                        firebaseAnalytics.logEvent("profilePictureChoose", params1);
+                    }
+                    counter++;
                 } else {
+                    Bundle params1 = new Bundle();
+                    params1.putString("StoragePermissionSuccess", "Choosing Picture");
+                    firebaseAnalytics.logEvent("profilePictureChoose", params1);
                     selectFile();
                 }
 
@@ -150,6 +160,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         fName = firstname.getText().toString();
         lName = lastname.getText().toString();
         contact = pref.getString("key_name5", null);
+        Bundle params1 = new Bundle();
+        params1.putString("Ward", ward.trim());
+        params1.putString("District", district.trim());
+        params1.putString("OntoInteresttagPicker","ButtonClicked");
+        firebaseAnalytics.logEvent("SuccessfulUserInfoGather", params1);
 
         Intent intent = new Intent(GatherUserDetails.this, InterestTagPicker.class);
         intent.putExtra("fName", fName);
@@ -319,6 +334,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     @Override
     public void onBackPressed() {
+        Bundle params1 = new Bundle();
+        params1.putString("BackPressedONUserDetails", "First time");
+        firebaseAnalytics.logEvent("ExitAtUserDetails", params1);
         super.onBackPressed();
         firebaseAuth.signOut();
 

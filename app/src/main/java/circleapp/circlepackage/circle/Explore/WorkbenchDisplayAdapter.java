@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -44,7 +46,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     private Context context;
     private FirebaseDatabase database;
     private DatabaseReference userDB;
-
+    FirebaseAnalytics firebaseAnalytics;
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
         this.MycircleList = mycircleList;
@@ -146,6 +148,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //update new notifs value
         holder.circleWallNav.setOnClickListener(view -> {
+            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+            Bundle params1 = new Bundle();
+            params1.putString("ViewPostsClicked", "Button");
+            firebaseAnalytics.logEvent("ViewPostsWorkbench", params1);
 
             if (user.getNotificationsAlert() != null) {
                 HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
@@ -166,7 +172,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             ((Activity) context).finish();
         });
 
-        holder.shareCircles.setOnClickListener(view -> showShareCirclePopup(circle));
+        holder.shareCircles.setOnClickListener(view -> {
+            showShareCirclePopup(circle);
+            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+            Bundle params1 = new Bundle();
+            params1.putString("ShareCircle", "button");
+            firebaseAnalytics.logEvent("SHareCircleWorkbench", params1);
+        });
 
 
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
@@ -216,7 +228,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     private void showShareCirclePopup(Circle c) {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
             String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";

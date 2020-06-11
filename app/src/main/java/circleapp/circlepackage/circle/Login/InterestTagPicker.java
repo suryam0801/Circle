@@ -187,12 +187,11 @@ public class InterestTagPicker extends AppCompatActivity {
             //The function to register the Users with their appropriate details
             UserReg();
             //bundle to send to fb
-            Bundle bundle = new Bundle();
-            bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, noOfTagsChosen);
-            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ItemId is number of tags user has picked");
-            firebaseAnalytics.logEvent("No_of_interest_tags", bundle);
-
-
+            Bundle params1 = new Bundle();
+            String tagCount = ""+noOfTagsChosen;
+            params1.putString(tagCount, "Interest tags");
+            params1.putString("Ward", ward);
+            firebaseAnalytics.logEvent("noOfInterestTagsChosenInWard", params1);
         });
 
         skip.setOnClickListener(view -> {
@@ -547,5 +546,13 @@ public class InterestTagPicker extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         chipGroup.removeAllViews();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Bundle params1 = new Bundle();
+        params1.putString("BackPressed", "new user");
+        firebaseAnalytics.logEvent("ExitRegistrationInterestTagPick", params1);
+        super.onBackPressed();
     }
 }

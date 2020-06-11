@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,9 +26,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -51,6 +54,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private Dialog circleJoinDialog;
     private FirebaseAuth currentUser;
     private User user;
+    FirebaseAnalytics firebaseAnalytics;
 
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
@@ -163,6 +167,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
 
         viewHolder.join.setOnClickListener(view -> {
+            Bundle params1 = new Bundle();
+            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+            params1.putString("JoinCircle", "button");
+            firebaseAnalytics.logEvent("ExploreJoinCircle", params1);
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
                 applyOrJoin(viewHolder, current);
             else if (current.getApplicantsList() == null)
@@ -170,6 +178,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         });
 
         viewHolder.share.setOnClickListener(view -> {
+            Bundle params1 = new Bundle();
+            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+            params1.putString("ShareCircle", "button");
+            firebaseAnalytics.logEvent("ShareFromExplore", params1);
             showShareCirclePopup(current);
         });
 
@@ -302,7 +314,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             viewHolder.join.setText("Apply");
         else {
             title.setText("Successfully Joined!");
-            description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
+            description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
         closeDialogButton.setOnClickListener(view -> {

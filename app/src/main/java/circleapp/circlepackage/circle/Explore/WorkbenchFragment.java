@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -63,6 +64,7 @@ public class WorkbenchFragment extends Fragment {
     private User user;
     private FloatingActionButton btnAddCircle;
     private LinearLayout emptyDisplay;
+    FirebaseAnalytics firebaseAnalytics;
 
     public WorkbenchFragment() {
         // Required empty public constructor
@@ -79,6 +81,7 @@ public class WorkbenchFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -91,7 +94,9 @@ public class WorkbenchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
-
+        Bundle params1 = new Bundle();
+        params1.putString("YourCircles", "TimespentOnWorkbench");
+        firebaseAnalytics.logEvent("ViewingWorkbench", params1);
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
@@ -103,6 +108,9 @@ public class WorkbenchFragment extends Fragment {
         setWorkbenchTabs(view);
 
         btnAddCircle.setOnClickListener(v -> {
+            Bundle params2 = new Bundle();
+            params2.putString("ClickedCreateCircle", "Button");
+            firebaseAnalytics.logEvent("CreateCircle", params2);
             startActivity(new Intent(getActivity(), CreateCircle.class));
         });
 
