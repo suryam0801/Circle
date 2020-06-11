@@ -248,8 +248,6 @@ public class CircleWall extends AppCompatActivity {
     private void exitCircle() {
         circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
         circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
-        circlesDB.child(circle.getId()).child("creatorID").setValue("null");
-        circlesDB.child(circle.getId()).child("creatorName").setValue("null");
         //reducing active circle count
         int currentActiveCount = user.getActiveCircles()-1;
         user.setActiveCircles(currentActiveCount);
