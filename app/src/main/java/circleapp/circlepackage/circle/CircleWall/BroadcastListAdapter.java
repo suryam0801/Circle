@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -26,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -55,6 +57,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private FirebaseStorage firebaseStorage;
     private StorageReference storageReference,ref;
     private int count = 0;
+    FirebaseAnalytics firebaseAnalytics;
     Bitmap bitmap=null;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
@@ -225,6 +228,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 RadioButton finalButton = button;
                 button.setOnClickListener(view -> {
                     vibrate();
+                    Bundle params1 = new Bundle();
+                    firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
+                    params1.putString("PollInteracted", "Radio button");
+                    firebaseAnalytics.logEvent("PollBroadcast", params1);
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
                     String option = finalButton.getText().toString();
                     HashMap<String, Integer> pollOptionsTemp = poll.getOptions();

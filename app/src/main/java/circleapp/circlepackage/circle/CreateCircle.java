@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -76,6 +77,8 @@ public class CreateCircle extends AppCompatActivity {
     private List<String> autoCompleteItemsList = new ArrayList<>();
 
     private List<String> selectedInterests = new ArrayList<>();
+    private int noOfInterestTags = 0;
+    FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,7 @@ public class CreateCircle extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
         user = SessionStorage.getUser(CreateCircle.this);
 
         //Initialize all UI elements in the CreateCircle activity
@@ -198,6 +202,7 @@ public class CreateCircle extends AppCompatActivity {
                     selectedInterests.add(interestTag);
                     if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
+                        noOfInterestTags++;
                         setInterestTag(interestTag, interestTagsDisplay);
                     } else {
                         interestTagsDisplay.removeViewAt(dbInterestTags.indexOf(interestTag));
@@ -262,7 +267,13 @@ public class CreateCircle extends AppCompatActivity {
         User user = SessionStorage.getUser(CreateCircle.this);
         circleDB = database.getReference("Circles");
         currentUser = FirebaseAuth.getInstance();
+        Bundle params1 = new Bundle();
+        params1.putString("CircleCreated", "true");
+        firebaseAnalytics.logEvent("CircleCreated", params1);
 
+        Bundle params2 = new Bundle();
+        params2.putString(noOfInterestTags+"","No of interest tags");
+        firebaseAnalytics.logEvent("InterestTagsPickedPerCircle", params2);
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
 
