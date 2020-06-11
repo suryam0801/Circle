@@ -94,7 +94,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             circlesDB = database.getReference("Circles");
             circlesDB.keepSynced(true);
 
-
             circlesDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -103,11 +102,19 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                         if(circle.getId().equals(circleID)){
                             circleExists = true;
                             popupCircle = circle;
-                            if(getIntent().getData() != null)
+                            if(getIntent().getData() != null){
+                                Bundle params1 = new Bundle();
+                                params1.putString("EntryThroughInvite", "Correct invite link");
+                                firebaseAnalytics.logEvent("AppliedInvitedCircle", params1);
                                 showLinkPopup();
+                            }
+
                         }
                     }
                     if(circleExists==false){
+                        Bundle params1 = new Bundle();
+                        params1.putString("EntryThroughInvite", "Wrong invite link");
+                        firebaseAnalytics.logEvent("ExpiredLinks", params1);
                         Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -137,11 +144,17 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
 
         notificationBell.setOnClickListener(v -> {
+            Bundle params1 = new Bundle();
+            params1.putString("OpenedNotifications", "From Workbench");
+            firebaseAnalytics.logEvent("FromExplore", params1);
             startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
             finish();
         });
 
         profPic.setOnClickListener(v -> {
+            Bundle params1 = new Bundle();
+            params1.putString("OpenedEditProfile", "Correct invite link");
+            firebaseAnalytics.logEvent("FromExplore", params1);
 
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
@@ -196,8 +209,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
 
-        if(popupCircle.getAcceptanceType().equalsIgnoreCase("review"))
+        if(popupCircle.getAcceptanceType().equalsIgnoreCase("review")){
             join.setText("Apply");
+        }
+
 
         for(String tag : popupCircle.getInterestTags().keySet())
             setPopupInterestTag(tag, circleDisplayTags, "#D42D8D");
