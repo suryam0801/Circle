@@ -28,6 +28,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,6 +66,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private TabItem exploreTab, workbenchTab;
     Intent shareIntent;
     Boolean circleExists = false;
+    FirebaseAnalytics firebaseAnalytics;
 
 
     @Override
@@ -72,6 +74,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         intentUri = getIntent().getData();
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         //recieve request on opening
         if (intentUri != null) {
             if (intentUri==null){
@@ -90,6 +93,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             database = FirebaseDatabase.getInstance();
             circlesDB = database.getReference("Circles");
             circlesDB.keepSynced(true);
+
 
             circlesDB.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -138,6 +142,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         profPic.setOnClickListener(v -> {
+
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });
