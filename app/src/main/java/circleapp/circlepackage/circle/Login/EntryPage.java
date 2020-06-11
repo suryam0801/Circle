@@ -66,6 +66,7 @@ public class EntryPage extends AppCompatActivity {
         setContentView(R.layout.activity_entry_page);
         displayLocationSettingsRequest(getApplicationContext());
         firebaseAnalytics = FirebaseAnalytics.getInstance(EntryPage.this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(EntryPage.this);
         //bundle to send to fb
         Bundle bundle = new Bundle();
         bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, 1);
@@ -94,11 +95,16 @@ public class EntryPage extends AppCompatActivity {
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //to avoid error
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("TAG","get Location Called!!!");
             return;
         }
 
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100,
                 1, mLocationListener);
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+            mLocationListener.onLocationChanged(location);
+            Log.d("TAG","Listener");
+        });
     }
 
     private void displayLocationSettingsRequest(Context context) {
@@ -174,6 +180,7 @@ public class EntryPage extends AppCompatActivity {
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
+            Log.d("TAG","Listener Called!!!!");
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(EntryPage.this);
             locationRequest = LocationRequest.create();
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
