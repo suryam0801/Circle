@@ -64,6 +64,7 @@ public class PhoneLogin extends AppCompatActivity {
     private FusedLocationProviderClient client;
     List<String> al = new ArrayList<String>();
     int pos;
+    int counter = 0;
 
     private FirebaseAnalytics firebaseAnalytics;
 
@@ -106,9 +107,10 @@ public class PhoneLogin extends AppCompatActivity {
         al = Arrays.asList(options);
 
         client.getLastLocation().addOnSuccessListener(location -> {
-            if(location != null){
+            if(location != null&&counter==0){
                 List<Address> addresses=null;
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                counter++;
                 try {
                     addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     System.out.println("add in string "+addresses.toArray().toString());
@@ -237,6 +239,9 @@ public class PhoneLogin extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
+                Bundle params1 = new Bundle();
+                params1.putString("PhoneNumberVerificationFailed", complete_phone_number);
+                firebaseAnalytics.logEvent("FailedPhoneNumberEvent", params1);
                 mLoginFeedbackText.setText("Verification Failed, please try again."+e.toString());
                 Log.d("EDITORVIEW", "error: " + e.toString());
                 mLoginFeedbackText.setVisibility(View.VISIBLE);
