@@ -92,6 +92,9 @@ public class PhoneLogin extends AppCompatActivity {
         editor = pref.edit();
         client = LocationServices.getFusedLocationProviderClient(this);
 
+        Bundle params1 = new Bundle();
+        params1.putString("PhoneLoginEntry", "First time");
+        firebaseAnalytics.logEvent("LocationAtEntryPage", params1);
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
@@ -169,6 +172,9 @@ public class PhoneLogin extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Bundle params1 = new Bundle();
+                params1.putString("CountryCodeManualInput", "First time");
+                firebaseAnalytics.logEvent("foreignNumberUsed", params1);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -289,6 +295,14 @@ public class PhoneLogin extends AppCompatActivity {
 
     public void setResendingToken(PhoneAuthProvider.ForceResendingToken resendingToken) {
         this.resendingToken = resendingToken;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Bundle params1 = new Bundle();
+        params1.putString("ExitBeforeVerifyingNumber", "First time");
+        firebaseAnalytics.logEvent("EXitAtPhoneLogin", params1);
+        super.onBackPressed();
     }
 }
 

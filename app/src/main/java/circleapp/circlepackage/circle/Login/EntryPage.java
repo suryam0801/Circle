@@ -71,6 +71,9 @@ public class EntryPage extends AppCompatActivity {
         bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, 1);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "In Entry page");
         firebaseAnalytics.logEvent("entrypage", bundle);
+        Bundle params = new Bundle();
+        params.putString("AppOpenedFirstTime", "First time");
+        firebaseAnalytics.logEvent("FirstStart", params);
         firebaseAnalytics.setCurrentScreen(EntryPage.this, "Start screen", null);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
         agreeContinue.setOnClickListener(view -> {
@@ -79,6 +82,9 @@ public class EntryPage extends AppCompatActivity {
                 return;
             } else {
                 getLocation();
+                Bundle params1 = new Bundle();
+                params1.putString("GotLocation", "First time");
+                firebaseAnalytics.logEvent("LocationAtEntryPage", params1);
             }
         });
     }
@@ -154,6 +160,9 @@ public class EntryPage extends AppCompatActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLocation();
             } else {
+                Bundle params1 = new Bundle();
+                params1.putString("LocationDenied", "First time");
+                firebaseAnalytics.logEvent("LocationAtEntryPage", params1);
                 Toast.makeText(EntryPage.this,
                         "Location is required to continue",
                         Toast.LENGTH_SHORT)
@@ -173,6 +182,9 @@ public class EntryPage extends AppCompatActivity {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
             fusedLocationProviderClient.getLastLocation();
             SystemClock.sleep(500);
+            Bundle params1 = new Bundle();
+            params1.putString("OntoPhoneLogin", "First time");
+            firebaseAnalytics.logEvent("SuccessfulEntry", params1);
             startActivity(new Intent(EntryPage.this, PhoneLogin.class));
             finish();
         }
@@ -192,4 +204,12 @@ public class EntryPage extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        Bundle params1 = new Bundle();
+        params1.putString("ExitedFromEntryPage", "First time");
+        firebaseAnalytics.logEvent("ByBackPress", params1);
+        super.onBackPressed();
+    }
 }
