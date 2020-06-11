@@ -278,28 +278,35 @@ public class InterestTagPicker extends AppCompatActivity {
         //admin circle
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
-        Circle adminCircle = new Circle("adminCircle", "Welcome To Circle",
-                "Join this circle to learn more about how you can easy connect with your neighbors",
-                "automatic", "CreatorAdmin", "Admin", circleIntTags,
+        Circle adminCircle = new Circle("adminCircle", "Meet the developers of Circle",
+                "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
+                "automatic", "CreatorAdmin", "The Circle Team", circleIntTags,
                 null, null, "test", null, System.currentTimeMillis(), 0);
 
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
-        pollOptions.put("I really like it!", 8);
-        pollOptions.put("Still exploring", 4);
-        pollOptions.put("Not really feeling it :(", 2);
-        Poll adminPoll = new Poll("How are you liking circle so far?", pollOptions, null);
-        Broadcast broadcast = new Broadcast("adminBroadcast", "Hello and welcome to your circle wall. You can create and share messages, " +
-                "attachments, and your custom polls to all your circle members. Say bye to the useless forward messages of whatsapp and " +
-                "focus on what truly matters", null, "Admin", "AdminId", true,
+        pollOptions.put("It's going to rain tomorrow", 0);
+        pollOptions.put("No way, its dry as a dog biscuit", 0);
+        Poll adminPoll = new Poll("Use polls like this to quickly get your friends’ opinion about something!", pollOptions, null);
+        Broadcast commentBroadcast = new Broadcast("commentBroadcast", "You can have a discussion about your posts down in the " +
+                "comments below. Click on view comments to see the secret message. :)", null, "Jacob",
+                "AdminId", false,
+                (System.currentTimeMillis()-1), null, "default");
+        Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,
                 System.currentTimeMillis(), adminPoll, "default");
+        Broadcast introBroadcast = new Broadcast("introBroadcast", "Welcome to Circle! Your friendly neighborhood app. Form circles " +
+                "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
+                "opinions - all on a single platform.", null, "Surya", "AdminId", false,
+                (System.currentTimeMillis()+1), null, "default");
 
-        Comment comment = new Comment("Admin", "This is where you can clarify any questions or share any " +
-                "information you might have about that particular broadcast",
+        Comment comment = new Comment("Srinithi", "The answer to life is not 42. It's the bonds you build " +
+                "around your circle.",
                 "adminCommentId", null, System.currentTimeMillis());
 
         circlesDB.child("adminCircle").setValue(adminCircle);
-        broadcastsDB.child("adminCircle").child("adminBroadcast").setValue(broadcast);
-        commentsDB.child("adminCircle").child("adminBroadcast").child("adminCommentId").setValue(comment);
+        broadcastsDB.child("adminCircle").child("introBroadcast").setValue(introBroadcast);
+        broadcastsDB.child("adminCircle").child("pollBroadcast").setValue(pollBroadcast);
+        broadcastsDB.child("adminCircle").child("commentBroadcast").setValue(commentBroadcast);
+        commentsDB.child("adminCircle").child("commentBroadcast").child("adminCommentId").setValue(comment);
 
         //running circle
         String runningCircleID = UUID.randomUUID().toString();

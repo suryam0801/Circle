@@ -9,6 +9,34 @@
     tools:context=".CircleWall.CircleWall">
 
     <LinearLayout
+        android:id="@+id/circle_wall_empty_display"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="167dp"
+            android:layout_height="160dp"
+            android:background="@drawable/empty_members_placeholder"></ImageView>
+
+        <TextView
+            android:layout_width="248dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:lineSpacingExtra="5dp"
+            android:paddingTop="43dp"
+            android:text="Welcome! There are currently no new posts here. Reach out to your new mates by clicking the '+' button"
+            android:textAlignment="center"
+            android:textColor="#828282"
+            android:textSize="12dp"></TextView>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/circle_wall_header"
@@ -70,47 +98,11 @@
             android:layout_height="1dp"
             android:background="#EEEEEE"></View>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/broadcastViewRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/circle_wall_header"
-            android:orientation="vertical">
-            <LinearLayout
-                android:id="@+id/circle_wall_empty_display"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="167dp"
-                    android:layout_height="160dp"
-                    android:background="@drawable/undraw_no_broadcasts"></ImageView>
-
-                <TextView
-                    android:layout_width="248dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_regular"
-                    android:lineSpacingExtra="5dp"
-                    android:paddingTop="43dp"
-                    android:text="There are currently no broadcasts in this Circle. Click on the circle below and be the first to broadcast a message"
-                    android:textAlignment="center"
-                    android:textColor="#828282"
-                    android:textSize="12dp">
-                </TextView>
-
-            </LinearLayout>
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/broadcastViewRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </androidx.recyclerview.widget.RecyclerView>
-
-
-        </LinearLayout>
+            android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 
