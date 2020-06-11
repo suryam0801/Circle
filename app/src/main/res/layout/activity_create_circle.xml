@@ -79,6 +79,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Enter circle name here"
                     android:textColor="@color/white"
+                    android:focusable="true"
                     android:textColorHint="@color/color_blue"
                     android:textSize="16dp"></EditText>
 
@@ -237,6 +238,9 @@
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Eg: #sports #cse #eventmanagement"
                     android:inputType="text"
+                    android:tag="#"
+                    android:digits="@string/digits"
+                    android:imeOptions="actionDone"
                     android:maxLines="1"
                     android:paddingLeft="16dp"
                     android:paddingRight="10dp"
