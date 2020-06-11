@@ -205,7 +205,7 @@ public class InterestTagPicker extends AppCompatActivity {
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
         interestTagsEntry.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))  {
                 String interestTag = interestTagsEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag);

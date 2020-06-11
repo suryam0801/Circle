@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -14,9 +15,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -48,6 +51,8 @@ import java.util.List;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
+
+import static com.android.volley.VolleyLog.setTag;
 
 public class CreateCircle extends AppCompatActivity {
 
@@ -122,10 +127,10 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         btn_createCircle.setOnClickListener(view -> {
-            String cName = circleNameEntry.getText().toString();
-            String cDescription = circleDescriptionEntry.getText().toString();
+            String cName = circleNameEntry.getText().toString().trim();
+            String cDescription = circleDescriptionEntry.getText().toString().trim();
 
-            if (!cName.isEmpty() || !cDescription.isEmpty() || !selectedInterests.isEmpty()) {
+            if (!cName.isEmpty() && !cDescription.isEmpty() && !selectedInterests.isEmpty()) {
                 createCirlce(cName, cDescription);
             } else {
                 Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
@@ -174,13 +179,34 @@ public class CreateCircle extends AppCompatActivity {
         //set tags in ward order
         for (String tag : dbInterestTags)
             setInterestTag(tag, interestTagsDisplay);
-
+        interestTagEntry.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))  {
+                String interestTag = interestTagEntry.getText().toString().replace("#", "");
+                if (!interestTag.isEmpty()) {
+                    selectedInterests.add(interestTag);
+                    if (!dbInterestTags.contains(interestTag)) {
+                        dbInterestTags.add(interestTag);
+                        setInterestTag(interestTag, interestTagsDisplay);
+                    } else {
+                        interestTagsDisplay.removeViewAt(dbInterestTags.indexOf(interestTag));
+                        setInterestTag(interestTag, interestTagsDisplay);
+                    }
+                }
+                handled = true;
+            }
+            return handled;
+        });
         interestTagEntry.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         interestTagEntry.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(interestTagEntry, InputMethodManager.SHOW_IMPLICIT);
+                        interestTagEntry.setShowSoftInputOnFocus(true);
                         interestTagEntry.setText("#");
                         interestTagEntry.setSelection(interestTagEntry.getText().length());
                         break;
@@ -346,5 +372,12 @@ public class CreateCircle extends AppCompatActivity {
         Intent about_intent = new Intent(this, ExploreTabbedActivity.class);
         startActivity(about_intent);
         finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        circleNameEntry.setFocusable(true);
+        interestTagEntry.clearFocus();
     }
 }

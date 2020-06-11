@@ -318,12 +318,12 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
 
         closeDialogButton.setOnClickListener(view -> {
-            SessionStorage.saveCircle((Activity) context, circle);
 
             if(circle.getAcceptanceType().equalsIgnoreCase("review")){
-                circleJoinDialog.dismiss();
+                circleJoinDialog.cancel();
 
             } else {
+                SessionStorage.saveCircle((Activity) context, circle);
                 context.startActivity(new Intent(context, CircleWall.class));
                 circleJoinDialog.dismiss();
             }
