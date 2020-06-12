@@ -291,7 +291,7 @@ public class EditProfile extends AppCompatActivity {
 
         finalizeInterestTag.setOnClickListener(view -> {
             emptyDismiss = false;
-            interestTagDialog.cancel();
+            interestTagDialog.dismiss();
             finalizeChanges.setVisibility(View.VISIBLE);
         });
 
