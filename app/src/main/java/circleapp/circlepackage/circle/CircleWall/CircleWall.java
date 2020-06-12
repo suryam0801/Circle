@@ -177,8 +177,6 @@ public class CircleWall extends AppCompatActivity {
         //reducing created circle count
         int currentCreatedCount = user.getCreatedCircles()-1;
         user.setCreatedCircles(currentCreatedCount);
-        String userJsonString = new Gson().toJson(user);
-        storeUserFile(userJsonString, getApplicationContext());
         usersDB.child("createdCircles").setValue(currentCreatedCount);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
@@ -189,21 +187,8 @@ public class CircleWall extends AppCompatActivity {
         //reducing active circle count
         int currentActiveCount = user.getActiveCircles()-1;
         user.setActiveCircles(currentActiveCount);
-        String userJsonString = new Gson().toJson(user);
-        storeUserFile(userJsonString, getApplicationContext());
         usersDB.child("activeCircles").setValue(currentActiveCount);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-    }
-
-    private void storeUserFile(String data, Context context) {
-        context.deleteFile("user.txt");
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
     }
 
     private void loadCircleBroadcasts() {
@@ -420,6 +405,7 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
             circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
@@ -429,6 +415,7 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
             circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
@@ -439,6 +426,7 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
             circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
@@ -449,6 +437,7 @@ public class CircleWall extends AppCompatActivity {
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
             int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
             circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
