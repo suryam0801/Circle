@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -46,12 +45,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     private Context context;
     private FirebaseDatabase database;
     private DatabaseReference userDB;
-    FirebaseAnalytics firebaseAnalytics;
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
         this.MycircleList = mycircleList;
         this.context = context;
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @NonNull
@@ -149,9 +146,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //update new notifs value
         holder.circleWallNav.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("ViewPostsClicked", "Button");
-            firebaseAnalytics.logEvent("ViewPostsWorkbench", params1);
 
             if (user.getNotificationsAlert() != null) {
                 HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
@@ -174,9 +168,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         holder.shareCircles.setOnClickListener(view -> {
             showShareCirclePopup(circle);
-            Bundle params1 = new Bundle();
-            params1.putString("ShareCircle", "button");
-            firebaseAnalytics.logEvent("SHareCircleWorkbench", params1);
         });
 
 

@@ -37,7 +37,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -85,7 +84,6 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseAnalytics firebaseAnalytics;
     private int noOfTagsChosen=0;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
@@ -100,8 +98,6 @@ public class InterestTagPicker extends AppCompatActivity {
 //        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(InterestTagPicker.this, "Select tags", null);
         register = findViewById(R.id.registerButton);
         skip = findViewById(R.id.skip_login_tag_picker);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
@@ -186,12 +182,6 @@ public class InterestTagPicker extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
             UserReg();
-            //bundle to send to fb
-            Bundle params1 = new Bundle();
-            String tagCount = ""+noOfTagsChosen;
-            params1.putString(tagCount, "Interest tags");
-            params1.putString("Ward", ward);
-            firebaseAnalytics.logEvent("noOfInterestTagsChosenInWard", params1);
         });
 
         skip.setOnClickListener(view -> {
@@ -553,13 +543,5 @@ public class InterestTagPicker extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         chipGroup.removeAllViews();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Bundle params1 = new Bundle();
-        params1.putString("BackPressed", "new user");
-        firebaseAnalytics.logEvent("ExitRegistrationInterestTagPick", params1);
-        super.onBackPressed();
     }
 }

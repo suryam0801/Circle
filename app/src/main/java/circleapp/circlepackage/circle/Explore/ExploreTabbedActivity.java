@@ -28,7 +28,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,15 +64,12 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private TabItem exploreTab, workbenchTab;
     Intent shareIntent;
     Boolean circleExists = false;
-    FirebaseAnalytics firebaseAnalytics;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         intentUri = getIntent().getData();
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         //recieve request on opening
         if (intentUri != null) {
             if (intentUri==null){
@@ -102,18 +98,12 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                             circleExists = true;
                             popupCircle = circle;
                             if(getIntent().getData() != null){
-                                Bundle params1 = new Bundle();
-                                params1.putString("EntryThroughInvite", "Correct invite link");
-                                firebaseAnalytics.logEvent("AppliedInvitedCircle", params1);
                                 showLinkPopup();
                             }
 
                         }
                     }
                     if(circleExists==false){
-                        Bundle params1 = new Bundle();
-                        params1.putString("EntryThroughInvite", "Wrong invite link");
-                        firebaseAnalytics.logEvent("ExpiredLinks", params1);
                         Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -141,17 +131,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
 
         notificationBell.setOnClickListener(v -> {
-            Bundle params1 = new Bundle();
-            params1.putString("OpenedNotifications", "From Workbench");
-            firebaseAnalytics.logEvent("FromExplore", params1);
             startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
             finish();
         });
 
         profPic.setOnClickListener(v -> {
-            Bundle params1 = new Bundle();
-            params1.putString("OpenedEditProfile", "Correct invite link");
-            firebaseAnalytics.logEvent("FromExplore", params1);
 
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();

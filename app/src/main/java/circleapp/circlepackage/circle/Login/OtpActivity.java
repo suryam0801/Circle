@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -60,7 +59,6 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-    private FirebaseAnalytics firebaseAnalytics;
 
     private User userldb;
     //    private AppDatabase lDb;
@@ -94,8 +92,6 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView = findViewById(R.id.resend_otp_counter);
         resendTextView.setClickable(false);
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(OtpActivity.this, "Entering otp", null);
 
         new CountDownTimer(30000, 1000) {
             @Override
@@ -236,9 +232,6 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the  user to HomePage
     public void sendUserToHome() {
-        Bundle params1 = new Bundle();
-        params1.putString("RecurringUserLoggedIn", "oldUser");
-        firebaseAnalytics.logEvent("OtpToExplore", params1);
         Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -248,28 +241,11 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the user to Registration Page
     private void senduserToReg() {
-        Bundle params1 = new Bundle();
-        params1.putString("newUser", "First time");
-        firebaseAnalytics.logEvent("onToGatherUserDetails", params1);
         Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         homeIntent.putExtra("phn", phn_number);
         startActivity(homeIntent);
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Bundle params1 = new Bundle();
-        params1.putString("OTPVerificationFailed", "First time");
-        if(mCurrentUser!=null){
-            firebaseAnalytics.logEvent("OldUser", params1);
-        }
-        else{
-            firebaseAnalytics.logEvent("NewUser", params1);
-
-        }
-        super.onBackPressed();
     }
 }
