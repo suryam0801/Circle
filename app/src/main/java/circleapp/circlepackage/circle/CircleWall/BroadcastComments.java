@@ -105,11 +105,11 @@ public class BroadcastComments extends AppCompatActivity {
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timestamp").limitToLast(13).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                emptyHolder.setVisibility(View.GONE);
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
                 commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
+                emptyHolder.setVisibility(View.GONE);
             }
 
             @Override
