@@ -36,7 +36,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -99,7 +98,6 @@ public class CircleWall extends AppCompatActivity {
     private TextView circleBannerName, descPlaceHolder;
     private Button btnAddPollOption, btnUploadBroadcast;
     private Dialog createBroadcastPopup, confirmationDialog;
-    private FirebaseAnalytics firebaseAnalytics;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost;
     private Button clearBroadcastPopup;
@@ -141,13 +139,8 @@ public class CircleWall extends AppCompatActivity {
 
         circleBannerName.setText(circle.getName());
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
         exitOrDeleteButton.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("Exit_Delete_Button", "Clicked");
-            firebaseAnalytics.logEvent("CircleWallExitDel", params1);
             if(circle.getCreatorID().equals(user.getUserId()))
                 showDeleteDialog();
             else
@@ -155,34 +148,22 @@ public class CircleWall extends AppCompatActivity {
         });
 
         viewPersonelButton.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("ViewMembersButton", "Clicked");
-            firebaseAnalytics.logEvent("ViewMembersCircleWall", params1);
             Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
             intent.putExtra("userState",usersState);
             startActivity(intent);
         });
 
         back.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("BackButton", "Clicked");
-            firebaseAnalytics.logEvent("CircleWallBackButton", params1);
             startActivity(new Intent(CircleWall.this, MainActivity.class));
             finish();
         });
 
         poll.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("CreateNewPoll", "Button Clicked");
-            firebaseAnalytics.logEvent("CircleWallPoll", params1);
             showCreateBroadcastDialog("poll");
             floatingActionMenu.close(true);
 
         });
         newPost.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("CreateMessage", "Button Clicked");
-            firebaseAnalytics.logEvent("CircleWallMessage", params1);
             showCreateBroadcastDialog("message");
             floatingActionMenu.close(true);
         });
@@ -234,9 +215,6 @@ public class CircleWall extends AppCompatActivity {
         String userJsonString = new Gson().toJson(user);
         storeUserFile(userJsonString, getApplicationContext());
         usersDB.child("createdCircles").setValue(currentCreatedCount);
-        Bundle params1 = new Bundle();
-        params1.putString("DeletedCircle", "Confirmed");
-        firebaseAnalytics.logEvent("CircleWallDeleteCircle", params1);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
@@ -249,9 +227,6 @@ public class CircleWall extends AppCompatActivity {
         String userJsonString = new Gson().toJson(user);
         storeUserFile(userJsonString, getApplicationContext());
         usersDB.child("activeCircles").setValue(currentActiveCount);
-        Bundle params1 = new Bundle();
-        params1.putString("CircleExit", "Confirmed");
-        firebaseAnalytics.logEvent("CircleWallExitCircle", params1);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 

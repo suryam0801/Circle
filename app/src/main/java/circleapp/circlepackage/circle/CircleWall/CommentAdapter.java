@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,13 +25,11 @@ public class CommentAdapter extends BaseAdapter {
     private int count = 0;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
-    FirebaseAnalytics firebaseAnalytics;
 
 
     public CommentAdapter(Context mContext, List<Comment> CommentList) {
         this.mContext = mContext;
         this.CommentList = CommentList;
-        firebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
     }
 
 
@@ -58,7 +55,6 @@ public class CommentAdapter extends BaseAdapter {
 
         Bundle params1 = new Bundle();
         params1.putString("newCommentsViewed", "noOfComments");
-        firebaseAnalytics.logEvent("EachCommentsViewed", params1);
 
         CircleImageView profPic = pview.findViewById(R.id.comment_profilePicture);
         TextView userName = pview.findViewById(R.id.comment_object_ownerName);

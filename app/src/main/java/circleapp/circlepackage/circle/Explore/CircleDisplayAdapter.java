@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,7 +53,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private Dialog circleJoinDialog;
     private FirebaseAuth currentUser;
     private User user;
-    FirebaseAnalytics firebaseAnalytics;
 
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
@@ -67,7 +65,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         currentUser = FirebaseAuth.getInstance();
         circlesDB = database.getReference("Circles");
         usersDB = database.getReference().child("Users").child(currentUser.getCurrentUser().getUid());
-        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @Override
@@ -168,9 +165,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
 
         viewHolder.join.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("JoinCircle", "button");
-            firebaseAnalytics.logEvent("ExploreJoinCircle", params1);
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
                 applyOrJoin(viewHolder, current);
             else if (current.getApplicantsList() == null)
@@ -178,9 +172,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         });
 
         viewHolder.share.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("ShareCircle", "button");
-            firebaseAnalytics.logEvent("ShareFromExplore", params1);
             showShareCirclePopup(current);
         });
 

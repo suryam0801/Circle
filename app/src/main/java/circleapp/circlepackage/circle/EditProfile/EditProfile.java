@@ -36,7 +36,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -94,7 +93,6 @@ public class EditProfile extends AppCompatActivity {
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
     private HashMap<String, Object> locIntTags = new HashMap<>();
-    private FirebaseAnalytics firebaseAnalytics;
     private Boolean finalizeChange= false;
 
     //UI elements for location tag selector popup and interest tag selector popup
@@ -127,8 +125,6 @@ public class EditProfile extends AppCompatActivity {
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(EditProfile.this, "Viewing profile", null);
 
         tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -178,9 +174,6 @@ public class EditProfile extends AppCompatActivity {
                 .into(profileImageView);
 
         editIntTagBtn.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("Edit_interest_tags_button", "Button clicked");
-            firebaseAnalytics.logEvent("EditProfileInterestTags", params1);
             displayInterestTagPopup();
             finalizeChange = false;
         });
@@ -193,9 +186,6 @@ public class EditProfile extends AppCompatActivity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             } else {
-                Bundle params1 = new Bundle();
-                params1.putString("ProfilePicChanged", "Have storage permission");
-                firebaseAnalytics.logEvent("EditProfileImage", params1);
                 finalizeChange = false;
                 selectFile();
             }
@@ -217,18 +207,12 @@ public class EditProfile extends AppCompatActivity {
             storeUserFile(string, getApplicationContext());
             SessionStorage.saveUser(EditProfile.this, user);
             finalizeChange = true;
-            Bundle params1 = new Bundle();
-            params1.putString("FinalizeChanges", "true");
-            firebaseAnalytics.logEvent("FinalizedChanges", params1);
 
             startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
             finish();
         });
 
         logout.setOnClickListener(view -> {
-            Bundle params1 = new Bundle();
-            params1.putString("LogoutButtonClicked", "Button");
-            firebaseAnalytics.logEvent("UserLoggedOut", params1);
             currentUser.signOut();
             currentUser = null;
             storeUserFile("nullEmpty", getApplicationContext());

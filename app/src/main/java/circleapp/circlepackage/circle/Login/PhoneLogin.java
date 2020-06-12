@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
@@ -65,7 +64,6 @@ public class PhoneLogin extends AppCompatActivity {
     List<String> al = new ArrayList<String>();
     int pos;
 
-    private FirebaseAnalytics firebaseAnalytics;
 
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
@@ -80,7 +78,6 @@ public class PhoneLogin extends AppCompatActivity {
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
-        FirebaseApp.initializeApp(PhoneLogin.this);
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
@@ -92,11 +89,6 @@ public class PhoneLogin extends AppCompatActivity {
         editor = pref.edit();
         client = LocationServices.getFusedLocationProviderClient(this);
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        Bundle params1 = new Bundle();
-        params1.putString("PhoneLoginEntry", "First time");
-        firebaseAnalytics.logEvent("LocationAtEntryPage", params1);
-        firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
@@ -172,9 +164,6 @@ public class PhoneLogin extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Bundle params1 = new Bundle();
-                params1.putString("CountryCodeManualInput", "First time");
-                firebaseAnalytics.logEvent("foreignNumberUsed", params1);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -215,7 +204,6 @@ public class PhoneLogin extends AppCompatActivity {
                     mLoginProgress.setVisibility(View.VISIBLE);
                     mGenerateBtn.setEnabled(false);
                     //Sending the OTP to the user mobile number
-                    FirebaseApp.initializeApp(PhoneLogin.this);
                     PhoneAuthProvider.getInstance().verifyPhoneNumber(
                             complete_phone_number,
                             60,
@@ -236,9 +224,6 @@ public class PhoneLogin extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
-                Bundle params1 = new Bundle();
-                params1.putString("PhoneNumberVerificationFailed", complete_phone_number);
-                firebaseAnalytics.logEvent("FailedPhoneNumberEvent", params1);
                 mLoginFeedbackText.setText("Verification Failed, please try again."+e.toString());
                 Log.d("EDITORVIEW", "error: " + e.toString());
                 mLoginFeedbackText.setVisibility(View.VISIBLE);
@@ -302,9 +287,6 @@ public class PhoneLogin extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Bundle params1 = new Bundle();
-        params1.putString("ExitBeforeVerifyingNumber", "First time");
-        firebaseAnalytics.logEvent("EXitAtPhoneLogin", params1);
         super.onBackPressed();
     }
 }

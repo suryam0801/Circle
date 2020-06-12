@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +32,6 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     private HashMap<Subscriber, String> list;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private int count = 0;
-    FirebaseAnalytics firebaseAnalytics;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
 
@@ -41,7 +39,6 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     public PollAnswerDisplayAdapter(Context mContext, HashMap<Subscriber, String> list) {
         this.mContext = mContext;
         this.list = list;
-        firebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
     }
 
     @NonNull
@@ -94,9 +91,6 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
             name = view.findViewById(R.id.poll_answer_view_member_name);
             profPic = view.findViewById(R.id.poll_answer_view_member_profile_picture);
             answer = view.findViewById(R.id.poll_answer_view_answer);
-            Bundle params1 = new Bundle();
-            params1.putString("PollAnswerDisplay", "ResponseList");
-            firebaseAnalytics.logEvent("PollResponse", params1);
         }
     }
 }

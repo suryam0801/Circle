@@ -17,7 +17,6 @@ import android.widget.ListView;
 import com.google.android.gms.common.internal.service.Common;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +54,6 @@ public class BroadcastComments extends AppCompatActivity {
     private ImageButton back;
     private Broadcast broadcast;
     private LinearLayout emptyHolder;
-    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +81,10 @@ public class BroadcastComments extends AppCompatActivity {
         circle = SessionStorage.getCircle(BroadcastComments.this);
 
         loadComments();
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(BroadcastComments.this, "Viewing comments", null);
 
         commentSend.setOnClickListener(view -> {
             if (!commentEditText.getText().toString().trim().equals(""))
                 makeCommentEntry();
-            Bundle params1 = new Bundle();
-            params1.putString("AddedMessage", "Message");
-            firebaseAnalytics.logEvent("MessageBroadcast", params1);
             commentEditText.setText("");
         });
 
