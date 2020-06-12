@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,7 +54,9 @@ public class ExploreFragment extends Fragment {
     private User user;
     private List<String> userTempinterestTagsList;
     RecyclerView exploreRecyclerView;
+    private LinearLayout emptyExploreDisplay;
     private boolean adminCircleExists = false;
+    private TextView locationDisplay;
 
 
     public ExploreFragment() {
@@ -90,7 +93,10 @@ public class ExploreFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
+        locationDisplay = view.findViewById(R.id.explore_district_name_display);
+        emptyExploreDisplay = view.findViewById(R.id.explore_empty_display);
 
+        locationDisplay.setText(user.getDistrict());
         //retrieve interest tags from user
         userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
@@ -140,7 +146,8 @@ public class ExploreFragment extends Fragment {
                 }
 
                 if (contains == false && existingMember == false && !circle.getCreatorID().equals(currentUser.getUid())) {
-                    if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
+                    Log.d("EXPLORE FRAGMENT", existingMember + " " + circle.getCreatorName().equals("The Circle Team"));
+                    if (circle.getCreatorName().equals("The Circle Team") && existingMember == false) { //add default admin entry tag
                         exploreCircleList.add(0, circle);
                         adminCircleExists = true;
                     } else if(circle.getCircleDistrict().equalsIgnoreCase(user.getDistrict())) {
@@ -152,6 +159,7 @@ public class ExploreFragment extends Fragment {
                             exploreCircleList.add(circle);
                     }
                     adapter.notifyDataSetChanged();
+                    emptyExploreDisplay.setVisibility(View.GONE);
                 }
             }
 
