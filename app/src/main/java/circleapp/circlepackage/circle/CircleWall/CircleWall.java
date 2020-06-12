@@ -146,7 +146,6 @@ public class CircleWall extends AppCompatActivity {
 
         exitOrDeleteButton.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("Exit_Delete_Button", "Clicked");
             firebaseAnalytics.logEvent("CircleWallExitDel", params1);
             if(circle.getCreatorID().equals(user.getUserId()))
@@ -157,7 +156,6 @@ public class CircleWall extends AppCompatActivity {
 
         viewPersonelButton.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("ViewMembersButton", "Clicked");
             firebaseAnalytics.logEvent("ViewMembersCircleWall", params1);
             Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
@@ -167,7 +165,6 @@ public class CircleWall extends AppCompatActivity {
 
         back.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("BackButton", "Clicked");
             firebaseAnalytics.logEvent("CircleWallBackButton", params1);
             startActivity(new Intent(CircleWall.this, MainActivity.class));
@@ -176,7 +173,6 @@ public class CircleWall extends AppCompatActivity {
 
         poll.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("CreateNewPoll", "Button Clicked");
             firebaseAnalytics.logEvent("CircleWallPoll", params1);
             showCreateBroadcastDialog("poll");
@@ -185,7 +181,6 @@ public class CircleWall extends AppCompatActivity {
         });
         newPost.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("CreateMessage", "Button Clicked");
             firebaseAnalytics.logEvent("CircleWallMessage", params1);
             showCreateBroadcastDialog("message");

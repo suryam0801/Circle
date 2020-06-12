@@ -51,6 +51,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
         this.MycircleList = mycircleList;
         this.context = context;
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @NonNull
@@ -148,7 +149,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //update new notifs value
         holder.circleWallNav.setOnClickListener(view -> {
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             Bundle params1 = new Bundle();
             params1.putString("ViewPostsClicked", "Button");
             firebaseAnalytics.logEvent("ViewPostsWorkbench", params1);
@@ -174,7 +174,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         holder.shareCircles.setOnClickListener(view -> {
             showShareCirclePopup(circle);
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             Bundle params1 = new Bundle();
             params1.putString("ShareCircle", "button");
             firebaseAnalytics.logEvent("SHareCircleWorkbench", params1);

@@ -179,7 +179,6 @@ public class EditProfile extends AppCompatActivity {
 
         editIntTagBtn.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("Edit_interest_tags_button", "Button clicked");
             firebaseAnalytics.logEvent("EditProfileInterestTags", params1);
             displayInterestTagPopup();
@@ -195,7 +194,6 @@ public class EditProfile extends AppCompatActivity {
                         STORAGE_PERMISSION_CODE);
             } else {
                 Bundle params1 = new Bundle();
-                firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
                 params1.putString("ProfilePicChanged", "Have storage permission");
                 firebaseAnalytics.logEvent("EditProfileImage", params1);
                 finalizeChange = false;
@@ -229,7 +227,6 @@ public class EditProfile extends AppCompatActivity {
 
         logout.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("LogoutButtonClicked", "Button");
             firebaseAnalytics.logEvent("UserLoggedOut", params1);
             currentUser.signOut();

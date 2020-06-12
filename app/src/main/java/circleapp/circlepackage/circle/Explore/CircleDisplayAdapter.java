@@ -67,6 +67,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         currentUser = FirebaseAuth.getInstance();
         circlesDB = database.getReference("Circles");
         usersDB = database.getReference().child("Users").child(currentUser.getCurrentUser().getUid());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @Override
@@ -168,7 +169,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         viewHolder.join.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("JoinCircle", "button");
             firebaseAnalytics.logEvent("ExploreJoinCircle", params1);
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
@@ -179,7 +179,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         viewHolder.share.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("ShareCircle", "button");
             firebaseAnalytics.logEvent("ShareFromExplore", params1);
             showShareCirclePopup(current);
