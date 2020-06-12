@@ -286,26 +286,20 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         boolean adminCircle = false;
-        if (circle.getId().equals("adminCircle")) {
-            SessionStorage.saveCircle((Activity) context, circle);
-            context.startActivity(new Intent(context, CircleWall.class));
-            adminCircle = true;
-            ((Activity) context).finish();
-        } else {
+        if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
+            database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
+            //adding userID to applicants list
+            circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+        } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
+            database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+            //adding userID to members list in circlesReference
+            circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+            int nowActive = user.getActiveCircles() + 1;
+            usersDB.child("activeCircles").setValue((nowActive));
+            String userJsonString = new Gson().toJson(user);
+            storeUserFile(userJsonString, context.getApplicationContext());
+        }
 
-            if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-                database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-                //adding userID to applicants list
-                circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-                database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-                //adding userID to members list in circlesReference
-                circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-                int nowActive = user.getActiveCircles() + 1;
-                usersDB.child("activeCircles").setValue((nowActive));
-                String userJsonString = new Gson().toJson(user);
-                storeUserFile(userJsonString, context.getApplicationContext());
-            }
             circleJoinDialog.cancel();
         }
 
