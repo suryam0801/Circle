@@ -91,6 +91,8 @@ public class WorkbenchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
+
+        Bundle params1 = new Bundle();
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data

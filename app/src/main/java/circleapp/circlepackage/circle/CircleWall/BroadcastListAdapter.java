@@ -228,6 +228,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     vibrate();
                     Bundle params1 = new Bundle();
                     params1.putString("PollInteracted", "Radio button");
+
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
                     String option = finalButton.getText().toString();
                     HashMap<String, Integer> pollOptionsTemp = poll.getOptions();

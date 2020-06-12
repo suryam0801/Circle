@@ -83,6 +83,7 @@ public class CreateCircle extends AppCompatActivity {
     private List<String> selectedInterests = new ArrayList<>();
     private int noOfInterestTags = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -225,7 +226,6 @@ public class CreateCircle extends AppCompatActivity {
                     selectedInterests.add(interestTag);
                     if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
-                        noOfInterestTags++;
                         setInterestTag(interestTag, interestTagsDisplay);
                     } else {
                         interestTagsDisplay.removeViewAt(dbInterestTags.indexOf(interestTag));

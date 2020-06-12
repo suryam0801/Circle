@@ -64,8 +64,6 @@ public class PhoneLogin extends AppCompatActivity {
     List<String> al = new ArrayList<String>();
     int pos;
 
-
-
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
 
@@ -285,9 +283,5 @@ public class PhoneLogin extends AppCompatActivity {
         this.resendingToken = resendingToken;
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }
 

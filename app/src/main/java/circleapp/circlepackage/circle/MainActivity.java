@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     private int mainActivityFb = 0;
-    private String userDistrict, userId;
     private FirebaseDatabase database;
 
     @Override
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
             finish();
         }
-
 
         //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds)
 
@@ -78,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
                 User user = new Gson().fromJson(ret, User.class);
                 SessionStorage.saveUser(MainActivity.this, user);
-                userDistrict = user.getDistrict();
-                userId = user.getUserId();
 
                 startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
                 finish();

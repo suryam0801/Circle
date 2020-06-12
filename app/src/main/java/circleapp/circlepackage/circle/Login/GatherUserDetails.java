@@ -73,7 +73,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private FusedLocationProviderClient client;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private String ward, district;
-    int counter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +85,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
+
         storageReference = FirebaseStorage.getInstance().getReference();
 
         client = LocationServices.getFusedLocationProviderClient(this);
@@ -109,9 +109,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     ActivityCompat.requestPermissions(GatherUserDetails.this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             STORAGE_PERMISSION_CODE);
-                    if(counter>1){
-                    }
-                    counter++;
+
                 } else {
                     selectFile();
                 }
