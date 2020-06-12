@@ -96,7 +96,6 @@ public class PhoneLogin extends AppCompatActivity {
         Bundle params1 = new Bundle();
         params1.putString("PhoneLoginEntry", "First time");
         firebaseAnalytics.logEvent("LocationAtEntryPage", params1);
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);

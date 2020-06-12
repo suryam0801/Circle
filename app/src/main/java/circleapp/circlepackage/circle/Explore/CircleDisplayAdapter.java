@@ -67,6 +67,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         currentUser = FirebaseAuth.getInstance();
         circlesDB = database.getReference("Circles");
         usersDB = database.getReference().child("Users").child(currentUser.getCurrentUser().getUid());
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @Override
@@ -168,7 +169,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         viewHolder.join.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
             params1.putString("JoinCircle", "button");
             firebaseAnalytics.logEvent("ExploreJoinCircle", params1);
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
@@ -179,7 +179,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         viewHolder.share.setOnClickListener(view -> {
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(context);
             params1.putString("ShareCircle", "button");
             firebaseAnalytics.logEvent("ShareFromExplore", params1);
             showShareCirclePopup(current);
@@ -287,7 +286,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         boolean adminCircle = false;
-
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
             //adding userID to applicants list
@@ -302,7 +300,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             storeUserFile(userJsonString, context.getApplicationContext());
         }
 
-        circleJoinDialog.dismiss();
+            circleJoinDialog.dismiss();
+
 
         if (circle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
@@ -314,7 +313,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         closeDialogButton.setOnClickListener(view -> {
 
             if(circle.getAcceptanceType().equalsIgnoreCase("review")){
-                circleJoinDialog.cancel();
+                circleJoinDialog.dismiss();
 
             } else {
                 SessionStorage.saveCircle((Activity) context, circle);

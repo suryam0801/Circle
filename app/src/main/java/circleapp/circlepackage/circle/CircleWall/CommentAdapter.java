@@ -32,6 +32,7 @@ public class CommentAdapter extends BaseAdapter {
     public CommentAdapter(Context mContext, List<Comment> CommentList) {
         this.mContext = mContext;
         this.CommentList = CommentList;
+        firebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
     }
 
 
@@ -56,7 +57,6 @@ public class CommentAdapter extends BaseAdapter {
         final View pview = View.inflate(mContext, R.layout.comment_display_card, null);
 
         Bundle params1 = new Bundle();
-        firebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         params1.putString("newCommentsViewed", "noOfComments");
         firebaseAnalytics.logEvent("EachCommentsViewed", params1);
 

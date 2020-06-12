@@ -41,6 +41,7 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     public PollAnswerDisplayAdapter(Context mContext, HashMap<Subscriber, String> list) {
         this.mContext = mContext;
         this.list = list;
+        firebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
     }
 
     @NonNull
@@ -94,7 +95,6 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
             profPic = view.findViewById(R.id.poll_answer_view_member_profile_picture);
             answer = view.findViewById(R.id.poll_answer_view_answer);
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("PollAnswerDisplay", "ResponseList");
             firebaseAnalytics.logEvent("PollResponse", params1);
         }

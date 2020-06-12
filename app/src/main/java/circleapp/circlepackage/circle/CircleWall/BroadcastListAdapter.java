@@ -71,6 +71,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     @Override
@@ -229,7 +230,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 button.setOnClickListener(view -> {
                     vibrate();
                     Bundle params1 = new Bundle();
-                    firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
                     params1.putString("PollInteracted", "Radio button");
                     firebaseAnalytics.logEvent("PollBroadcast", params1);
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();

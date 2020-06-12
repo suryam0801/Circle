@@ -81,7 +81,6 @@ public class WorkbenchFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -95,6 +94,7 @@ public class WorkbenchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
         Bundle params1 = new Bundle();
+        firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
         params1.putString("YourCircles", "TimespentOnWorkbench");
         firebaseAnalytics.logEvent("ViewingWorkbench", params1);
         database = FirebaseDatabase.getInstance();

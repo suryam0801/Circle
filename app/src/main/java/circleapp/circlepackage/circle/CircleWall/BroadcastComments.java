@@ -90,7 +90,6 @@ public class BroadcastComments extends AppCompatActivity {
             if (!commentEditText.getText().toString().trim().equals(""))
                 makeCommentEntry();
             Bundle params1 = new Bundle();
-            firebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());
             params1.putString("AddedMessage", "Message");
             firebaseAnalytics.logEvent("MessageBroadcast", params1);
             commentEditText.setText("");
