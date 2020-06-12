@@ -154,7 +154,7 @@ public class CircleWall extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
-            startActivity(new Intent(CircleWall.this, MainActivity.class));
+            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
             finish();
         });
 
@@ -169,42 +169,7 @@ public class CircleWall extends AppCompatActivity {
         });
 
         loadCircleBroadcasts();
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
-                            deepLink = pendingDynamicLinkData.getLink();
-                        }
-
-
-                        // Handle the deep link. For example, open the linked
-                        // content, or apply promotional credit to the user's
-                        // account.
-                        // ...
-
-                        // [START_EXCLUDE]
-                        // Display deep link in the UI
-                        if (deepLink != null) {
-                            Snackbar.make(findViewById(android.R.id.content),
-                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
-
-                        } else {
-                            Log.d(TAG, "getDynamicLink: no link found");
-                        }
-                        // [END_EXCLUDE]
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
-    }
+   }
 
     private void deleteCircle(){
         circlesPersonelDB.child(circle.getId()).removeValue();

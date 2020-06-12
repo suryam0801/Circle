@@ -54,6 +54,9 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private FirebaseAuth currentUser;
     private User user;
 
+    public CircleDisplayAdapter(){
+
+    }
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
         this.context = context;

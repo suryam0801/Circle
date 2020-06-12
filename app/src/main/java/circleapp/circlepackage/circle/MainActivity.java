@@ -1,9 +1,12 @@
 package circleapp.circlepackage.circle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +14,11 @@ import android.view.WindowManager;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,8 +37,8 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-    private int mainActivityFb = 0;
     private FirebaseDatabase database;
+    private DatabaseReference usersDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,67 +48,37 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFormat(PixelFormat.RGB_565);
 
         database = FirebaseDatabase.getInstance();
-        try {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
+        if (prefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
+            prefs.edit().putBoolean(MainActivity.class.getCanonicalName(),false).apply();
             database.setPersistenceEnabled(true);
-        } catch (Exception e){
-            startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
-            finish();
         }
 
-        //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds)
-
-        readFromFile(getApplicationContext());
-
-    }
-
-    private String readFromFile(Context context) {
-
-        String ret = "";
-
-        try {
-            InputStream inputStream = context.openFileInput("user.txt");
-
-            if ( inputStream != null || !inputStream.equals("") ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append("\n").append(receiveString);
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            usersDB = database.getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            usersDB.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        User user = dataSnapshot.getValue(User.class);
+                        SessionStorage.saveUser(MainActivity.this, user);
+                        startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
+                        finish();
+                    } else {
+                        startActivity(new Intent(MainActivity.this, EntryPage.class));
+                        finish();
+                    }
                 }
 
-                inputStream.close();
-                ret = stringBuilder.toString();
-
-                User user = new Gson().fromJson(ret, User.class);
-                SessionStorage.saveUser(MainActivity.this, user);
-
-                startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
-                finish();
-
-            } else {
-                startActivity(new Intent(MainActivity.this, EntryPage.class));
-                finish();
-            }
-        }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-            startActivity(new Intent(MainActivity.this, EntryPage.class));
-            finish();
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    startActivity(new Intent(MainActivity.this, EntryPage.class));
+                    finish();
+                }
+            });
+        } else {
             startActivity(new Intent(MainActivity.this, EntryPage.class));
             finish();
         }
-
-        return ret;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        readFromFile(getApplicationContext());
     }
 }

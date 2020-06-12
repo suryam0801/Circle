@@ -202,9 +202,6 @@ public class EditProfile extends AppCompatActivity {
             user.setInterestTags(tempIntTags);
 
             userDB.child(user.getUserId()).setValue(user);
-            //storing user as a json in file locally
-            String string = new Gson().toJson(user);
-            storeUserFile(string, getApplicationContext());
             SessionStorage.saveUser(EditProfile.this, user);
             finalizeChange = true;
 
@@ -215,7 +212,6 @@ public class EditProfile extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             currentUser.signOut();
             currentUser = null;
-            storeUserFile("nullEmpty", getApplicationContext());
             startActivity(new Intent(EditProfile.this, PhoneLogin.class));
             finish();
         });
@@ -226,22 +222,6 @@ public class EditProfile extends AppCompatActivity {
         });
 
     }
-
-    private void storeUserFile(String data, Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-
-            if(data.equals("nullEmpty"))
-                context.deleteFile("user.txt");
-            else
-                outputStreamWriter.write(data);
-
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
 
     private void displayInterestTagPopup() {
         interestTagDialog = new Dialog(EditProfile.this);

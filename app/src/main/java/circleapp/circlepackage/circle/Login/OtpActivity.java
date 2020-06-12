@@ -41,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
