@@ -230,7 +230,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         boolean finalAlreadyApplicant = alreadyApplicant;
         join.setOnClickListener(view -> {
             if(finalAlreadyMember == false && finalAlreadyApplicant == false){
-                linkCircleDialog.dismiss();
+                linkCircleDialog.cancel();
                 getIntent().setData(null);
                 applyOrJoin(popupCircle);
             } else {
@@ -332,7 +332,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         closeDialogButton.setOnClickListener(view -> {
-            circleJoinSuccessDialog.dismiss();
+            circleJoinSuccessDialog.cancel();
             if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
                 SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
             startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));

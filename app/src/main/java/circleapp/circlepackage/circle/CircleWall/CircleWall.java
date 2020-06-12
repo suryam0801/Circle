@@ -341,11 +341,11 @@ public class CircleWall extends AppCompatActivity {
 
         closeDialogButton.setOnClickListener(view -> {
             exitCircle();
-            confirmationDialog.dismiss();
+            confirmationDialog.cancel();
         });
 
         cancel.setOnClickListener(view -> {
-            confirmationDialog.dismiss();
+            confirmationDialog.cancel();
         });
 
         confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

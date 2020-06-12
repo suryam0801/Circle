@@ -306,7 +306,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 String userJsonString = new Gson().toJson(user);
                 storeUserFile(userJsonString, context.getApplicationContext());
             }
-            circleJoinDialog.dismiss();
+            circleJoinDialog.cancel();
         }
 
         if (circle.getAcceptanceType().equalsIgnoreCase("review"))
@@ -324,7 +324,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             } else {
                 SessionStorage.saveCircle((Activity) context, circle);
                 context.startActivity(new Intent(context, CircleWall.class));
-                circleJoinDialog.dismiss();
+                circleJoinDialog.cancel();
             }
         });
 
