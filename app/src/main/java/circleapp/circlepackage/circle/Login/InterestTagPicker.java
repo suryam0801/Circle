@@ -182,6 +182,7 @@ public class InterestTagPicker extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
             UserReg();
+
         });
 
         skip.setOnClickListener(view -> {
@@ -544,4 +545,5 @@ public class InterestTagPicker extends AppCompatActivity {
         super.onStart();
         chipGroup.removeAllViews();
     }
+
 }

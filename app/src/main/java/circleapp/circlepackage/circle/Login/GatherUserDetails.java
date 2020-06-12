@@ -84,6 +84,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 //        getSupportActionBar().hide();
 
         //Getting the instance and references
+        firebaseAuth = FirebaseAuth.getInstance();
+
         storageReference = FirebaseStorage.getInstance().getReference();
 
         client = LocationServices.getFusedLocationProviderClient(this);

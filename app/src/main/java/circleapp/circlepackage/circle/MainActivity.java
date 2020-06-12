@@ -47,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
             finish();
         }
+
+        //Sets the minimum engagement time required before starting a session. The default value is 10000 (10 seconds)
+
+        readFromFile(getApplicationContext());
+
     }
 
     private String readFromFile(Context context) {

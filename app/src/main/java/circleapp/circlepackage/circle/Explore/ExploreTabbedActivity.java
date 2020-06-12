@@ -65,6 +65,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     Intent shareIntent;
     Boolean circleExists = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

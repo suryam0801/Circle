@@ -139,6 +139,7 @@ public class CircleWall extends AppCompatActivity {
 
         circleBannerName.setText(circle.getName());
 
+
         exitOrDeleteButton.setOnClickListener(view -> {
             if(circle.getCreatorID().equals(user.getUserId()))
                 showDeleteDialog();

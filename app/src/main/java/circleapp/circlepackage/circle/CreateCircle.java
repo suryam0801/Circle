@@ -81,6 +81,8 @@ public class CreateCircle extends AppCompatActivity {
     private List<String> autoCompleteItemsList = new ArrayList<>();
 
     private List<String> selectedInterests = new ArrayList<>();
+    private int noOfInterestTags = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class CreateCircle extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN); //disables onscreen keyboard popup each time activity is launched
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
+
         user = SessionStorage.getUser(CreateCircle.this);
 
         //Initialize all UI elements in the CreateCircle activity

@@ -53,6 +53,9 @@ public class CommentAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup parent) {
         final View pview = View.inflate(mContext, R.layout.comment_display_card, null);
 
+        Bundle params1 = new Bundle();
+        params1.putString("newCommentsViewed", "noOfComments");
+
         CircleImageView profPic = pview.findViewById(R.id.comment_profilePicture);
         TextView userName = pview.findViewById(R.id.comment_object_ownerName);
         TextView comment = pview.findViewById(R.id.comment_object_comment);
