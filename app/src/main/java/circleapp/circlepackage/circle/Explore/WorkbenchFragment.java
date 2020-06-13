@@ -170,7 +170,6 @@ public class WorkbenchFragment extends Fragment {
                         ++position;
                     }
                 }
-
             }
 
             @Override
