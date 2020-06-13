@@ -82,7 +82,7 @@ public class CreateCircle extends AppCompatActivity {
     private List<String> autoCompleteItemsList = new ArrayList<>();
 
     private List<String> selectedInterests = new ArrayList<>();
-    private int noOfInterestTags = 0;
+    private int noOfInterestTags;
     AnalyticsLogEvents analyticsLogEvents;
 
 
@@ -95,6 +95,7 @@ public class CreateCircle extends AppCompatActivity {
 
         analyticsLogEvents = new AnalyticsLogEvents();
         user = SessionStorage.getUser(CreateCircle.this);
+        noOfInterestTags = 0;
 
         //Initialize all UI elements in the CreateCircle activity
         circleNameEntry = findViewById(R.id.create_circle_Name);

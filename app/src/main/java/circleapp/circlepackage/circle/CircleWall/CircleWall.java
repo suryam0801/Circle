@@ -48,7 +48,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -94,6 +96,7 @@ public class CircleWall extends AppCompatActivity {
     String usersState;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
+    AnalyticsLogEvents analyticsLogEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +112,7 @@ public class CircleWall extends AppCompatActivity {
         usersDB = database.getReference("Users").child(user.getUserId());
         broadcastsDB.keepSynced(true);
         currentUser = FirebaseAuth.getInstance();
+        analyticsLogEvents = new AnalyticsLogEvents();
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -154,6 +158,7 @@ public class CircleWall extends AppCompatActivity {
 
         });
         newPost.setOnClickListener(view -> {
+            analyticsLogEvents.logEvents(CircleWall.this, "add_message", "pressed_button","circle_wall");
             showCreateBroadcastDialog("message");
             floatingActionMenu.close(true);
         });
@@ -168,6 +173,7 @@ public class CircleWall extends AppCompatActivity {
         int currentCreatedCount = user.getCreatedCircles()-1;
         user.setCreatedCircles(currentCreatedCount);
         usersDB.child("createdCircles").setValue(currentCreatedCount);
+        analyticsLogEvents.logEvents(CircleWall.this, "circle_delete", "delete_button","circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
@@ -178,6 +184,7 @@ public class CircleWall extends AppCompatActivity {
         int currentActiveCount = user.getActiveCircles()-1;
         user.setActiveCircles(currentActiveCount);
         usersDB.child("activeCircles").setValue(currentActiveCount);
+        analyticsLogEvents.logEvents(CircleWall.this, "circle_exit", "exit_button","circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
@@ -329,6 +336,7 @@ public class CircleWall extends AppCompatActivity {
 
         btnAddPollOption.setOnClickListener(view -> {
             String option = setPollOptionET.getText().toString();
+            analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button","circle_wall");
             if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
                 LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
                 lparams.setMargins(0, 10, 20, 0);
