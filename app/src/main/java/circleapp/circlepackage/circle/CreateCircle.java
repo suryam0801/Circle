@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
@@ -81,7 +82,8 @@ public class CreateCircle extends AppCompatActivity {
     private List<String> autoCompleteItemsList = new ArrayList<>();
 
     private List<String> selectedInterests = new ArrayList<>();
-    private int noOfInterestTags = 0;
+    private int noOfInterestTags;
+    AnalyticsLogEvents analyticsLogEvents;
 
 
     @Override
@@ -91,7 +93,9 @@ public class CreateCircle extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
 
+        analyticsLogEvents = new AnalyticsLogEvents();
         user = SessionStorage.getUser(CreateCircle.this);
+        noOfInterestTags = 0;
 
         //Initialize all UI elements in the CreateCircle activity
         circleNameEntry = findViewById(R.id.create_circle_Name);
@@ -107,6 +111,7 @@ public class CreateCircle extends AppCompatActivity {
         typePrompt = findViewById(R.id.circle_type_tip_prompt);
         tagPrompt = findViewById(R.id.circle_tag_tip_prompt);
 
+        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle","on_button_click");
 
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
@@ -127,8 +132,8 @@ public class CreateCircle extends AppCompatActivity {
         btn_createCircle.setOnClickListener(view -> {
             String cName = circleNameEntry.getText().toString().trim();
             String cDescription = circleDescriptionEntry.getText().toString().trim();
-
             if (!cName.isEmpty() && !cDescription.isEmpty() && !selectedInterests.isEmpty()) {
+                analyticsLogEvents.logEvents(CreateCircle.this, "created_circle", "new_circle_created","on_button_click");
                 createCirlce(cName, cDescription);
             } else {
                 Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
@@ -310,8 +315,10 @@ public class CreateCircle extends AppCompatActivity {
         } else {
             for (String interest : selectedInterests)
                 interestHashmap.put(interest, true);
+            noOfInterestTags++;
         }
 
+        analyticsLogEvents.logEvents(CreateCircle.this, noOfInterestTags+"", "no_of_interesttags","create_circle");
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
 
@@ -341,6 +348,7 @@ public class CreateCircle extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent about_intent = new Intent(this, ExploreTabbedActivity.class);
+        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle_bounce","on_back_press");
         startActivity(about_intent);
         finish();
     }

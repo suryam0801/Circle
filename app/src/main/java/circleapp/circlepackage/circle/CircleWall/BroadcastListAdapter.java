@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -87,7 +88,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         if(broadcast.creatorID.equals(currentUser.getUid()))
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
-
         //calculating time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime =broadcast.getTimeStamp();

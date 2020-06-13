@@ -58,8 +58,10 @@ import java.util.Random;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
+import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -98,6 +100,7 @@ public class EditProfile extends AppCompatActivity {
 
     //UI elements for location tag selector popup and interest tag selector popup
     private AutoCompleteTextView interestTagEntry;
+    AnalyticsLogEvents analyticsLogEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +128,7 @@ public class EditProfile extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
+        analyticsLogEvents = new AnalyticsLogEvents();
 
 
         tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
@@ -180,6 +184,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         editProfPic.setOnClickListener(view -> {
+            analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic","edit_profile");
             if (ContextCompat.checkSelfPermission(EditProfile.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -211,6 +216,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         logout.setOnClickListener(view -> {
+            analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "","edit_profile");
             currentUser.signOut();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
@@ -292,6 +298,7 @@ public class EditProfile extends AppCompatActivity {
                     if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestChipGroupPopup);
+                        analyticsLogEvents.logEvents(EditProfile.this, "added_interesttag", "From_profile","edit_profile");
                     } else {
                         interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
                         setInterestTag(interestTag, interestChipGroupPopup);

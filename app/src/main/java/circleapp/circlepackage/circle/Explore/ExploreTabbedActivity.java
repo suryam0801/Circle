@@ -39,6 +39,7 @@ import java.util.Random;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Notification.NotificationActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -64,26 +65,24 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private TabItem exploreTab, workbenchTab;
     Intent shareIntent;
     Boolean circleExists = false;
+    AnalyticsLogEvents analyticsLogEvents;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
+        analyticsLogEvents = new AnalyticsLogEvents();
         intentUri = getIntent().getData();
         //recieve request on opening
         if (intentUri != null) {
-            if (intentUri==null){
-                Log.d("INTENTURI",intentUri.toString());
-            }
+            analyticsLogEvents.logEvents(ExploreTabbedActivity.this,"invite_link", "used_link","read_external_link");
             url = getIntent().getData().toString();
             String lines[] = url.split("\\r?\\n");
             for (int i=0; i<lines.length;i++){
                 Log.d("URL", lines[i]);
             }
             url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
-            /*List<String> params = intentUri.getPathSegments();
-            String circleID = params.get(params.size() - 1);*/
             String circleID = url;
             Log.d("TAG", "URI:"+circleID);
             database = FirebaseDatabase.getInstance();
@@ -105,6 +104,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                         }
                     }
                     if(circleExists==false){
+                        analyticsLogEvents.logEvents(ExploreTabbedActivity.this,"_expired_invite_link", "incorrect_link","read_external_link");
                         Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -224,7 +224,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             }
         });
 
-        share.setOnClickListener(view -> showShareCirclePopup(popupCircle));
+        share.setOnClickListener(view -> {
+            analyticsLogEvents.logEvents(ExploreTabbedActivity.this,"invite_workbench", "circle_invite_member","on_button_click");
+            showShareCirclePopup(popupCircle);
+        });
 
         linkCircleDialog.setOnDismissListener(dialogInterface -> {
             getIntent().setData(null);

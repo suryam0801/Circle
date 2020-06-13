@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -31,11 +32,16 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     private DatabaseReference circlesPersonelDB;
     private HashMap<Subscriber, String> list = new HashMap<>();
     private String TAG = CreatorPollAnswersView.class.getSimpleName();
+    AnalyticsLogEvents analyticsLogEvents;
+    private int responseCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creator_poll_answers_view);
+
+        analyticsLogEvents = new AnalyticsLogEvents();
+        responseCount = 0;
 
         Circle circle = SessionStorage.getCircle(CreatorPollAnswersView.this);
         Broadcast broadcast = SessionStorage.getBroadcast(CreatorPollAnswersView.this);
@@ -62,9 +68,11 @@ public class CreatorPollAnswersView extends AppCompatActivity {
                     for (Map.Entry<String, String> entry : userResponse.entrySet()) {
                         if(entry.getKey().equals(member.getId())){
                             list.put(member, entry.getValue());
+                            responseCount++;
                             adapter.notifyDataSetChanged();
                         }
                     }
+                    analyticsLogEvents.logEvents(CreatorPollAnswersView.this, "pollResponseCount", responseCount+"","circle_wall");
                 }
             }
 
