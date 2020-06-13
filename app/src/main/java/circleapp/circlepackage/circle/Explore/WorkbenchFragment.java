@@ -92,6 +92,7 @@ public class WorkbenchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
 
+        Bundle params1 = new Bundle();
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
@@ -118,34 +119,6 @@ public class WorkbenchFragment extends Fragment {
         //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual circles in the recycler view
         final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
-        wbrecyclerView.setAdapter(wbadapter);
-
-        wbrecyclerView.addOnItemTouchListener(
-                //RecyclerItemClickListener is a gestureDectector class which recognises the type of touch
-                new RecyclerItemClickListener(getContext(), wbrecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        if(user.getNotificationsAlert()!=null){
-                            HashMap<String, Long> notifHashMap = new HashMap<>(user.getNotificationsAlert());
-                            notifHashMap.put(workbenchCircleList.get(position).getId(), System.currentTimeMillis());
-                            user.setNotificationsAlert(notifHashMap);
-                            SessionStorage.saveUser(getActivity(), user);
-                        } else {
-                            HashMap<String, Long> notifHashMap = new HashMap<>();
-                            notifHashMap.put(workbenchCircleList.get(position).getId(), System.currentTimeMillis());
-                            user.setNotificationsAlert(notifHashMap);
-                            SessionStorage.saveUser(getActivity(), user);
-                        }
-
-                        SessionStorage.saveCircle(getActivity(), workbenchCircleList.get(position));
-                        startActivity(new Intent(getContext(), CircleWall.class));
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-                }));
 
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
@@ -154,6 +127,7 @@ public class WorkbenchFragment extends Fragment {
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 allCircles.add(circle);
                 //checking if user is a member of the circle
@@ -183,6 +157,7 @@ public class WorkbenchFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 if (circle.getCircleDistrict().equals(user.getDistrict())) {

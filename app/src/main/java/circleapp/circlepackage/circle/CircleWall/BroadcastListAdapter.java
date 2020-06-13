@@ -3,14 +3,15 @@ package circleapp.circlepackage.circle.CircleWall;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,22 +27,17 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.CreatorPollAnswersView;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -64,6 +59,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     Bitmap bitmap=null;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    Vibrator v;
 
 
     //contructor to set latestCircleList and context for Adapter
@@ -72,6 +68,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.broadcastList = broadcastList;
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
+        v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -228,6 +225,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 layout.setBackground(new PercentDrawable(100, "#EFF6FF"));
                 RadioButton finalButton = button;
                 button.setOnClickListener(view -> {
+                    vibrate();
+                    Bundle params1 = new Bundle();
+                    params1.putString("PollInteracted", "Radio button");
+
+                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
                     String option = finalButton.getText().toString();
                     HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
                     int currentSelectedVotes = poll.getOptions().get(option);
@@ -260,6 +262,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     @Override
     public int getItemCount() {
         return broadcastList.size();
+    }
+
+    public void vibrate(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(500);
+        }
     }
 
     //initializes the views

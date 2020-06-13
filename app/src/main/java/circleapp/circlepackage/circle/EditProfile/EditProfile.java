@@ -36,7 +36,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -94,11 +93,10 @@ public class EditProfile extends AppCompatActivity {
     //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
     private List<String> dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
     private HashMap<String, Object> locIntTags = new HashMap<>();
-
+    private Boolean finalizeChange= false;
 
     //UI elements for location tag selector popup and interest tag selector popup
     private AutoCompleteTextView interestTagEntry;
-    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +125,6 @@ public class EditProfile extends AppCompatActivity {
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(EditProfile.this, "Viewing profile", null);
 
         tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -179,6 +175,7 @@ public class EditProfile extends AppCompatActivity {
 
         editIntTagBtn.setOnClickListener(view -> {
             displayInterestTagPopup();
+            finalizeChange = false;
         });
 
         editProfPic.setOnClickListener(view -> {
@@ -189,6 +186,7 @@ public class EditProfile extends AppCompatActivity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             } else {
+                finalizeChange = false;
                 selectFile();
             }
 
@@ -204,10 +202,8 @@ public class EditProfile extends AppCompatActivity {
             user.setInterestTags(tempIntTags);
 
             userDB.child(user.getUserId()).setValue(user);
-            //storing user as a json in file locally
-            String string = new Gson().toJson(user);
-            storeUserFile(string, getApplicationContext());
             SessionStorage.saveUser(EditProfile.this, user);
+            finalizeChange = true;
 
             startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
             finish();
@@ -216,7 +212,6 @@ public class EditProfile extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             currentUser.signOut();
             currentUser = null;
-            storeUserFile("nullEmpty", getApplicationContext());
             startActivity(new Intent(EditProfile.this, PhoneLogin.class));
             finish();
         });
@@ -227,22 +222,6 @@ public class EditProfile extends AppCompatActivity {
         });
 
     }
-
-    private void storeUserFile(String data, Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-
-            if(data.equals("nullEmpty"))
-                context.deleteFile("user.txt");
-            else
-                outputStreamWriter.write(data);
-
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
 
     private void displayInterestTagPopup() {
         interestTagDialog = new Dialog(EditProfile.this);
@@ -314,9 +293,7 @@ public class EditProfile extends AppCompatActivity {
                         dbInterestTags.add(interestTag);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     } else {
-                        Log.d(TAG, "DB INTEREST TAGS: " + dbInterestTags.toString());
-                        Log.d(TAG, "DB SELECTED TAGS: " + selectedInterestTags.toString());
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag) + 1);
+                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
                         setInterestTag(interestTag, interestChipGroupPopup);
                     }
                 }

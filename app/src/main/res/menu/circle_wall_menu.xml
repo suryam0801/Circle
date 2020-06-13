@@ -14,5 +14,12 @@
         app:showAsAction="always">
 
     </item>
+    <item
+        android:id="@+id/deleteCircle"
+        android:title="Delete circle"
+        app:showAsAction="always"
+        android:visible="false">
+
+    </item>
 
 </menu>

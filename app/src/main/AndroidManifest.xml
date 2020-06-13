@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="circleapp.circlepackage.circle">
 
     <uses-sdk android:targetSdkVersion="29" />
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreatorPollAnswersView"></activity>
+        <activity android:name=".CircleWall.CreatorPollAnswersView"></activity>
         <activity android:name=".Explore.ExploreTabbedActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -24,8 +26,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle"
-                    android:scheme="https"/>
+                    android:host="worfo.app.link"
+                    android:scheme="https" />
                 <data android:scheme="app" android:host="circleapp.circlepackage.circle" />
             </intent-filter>
             <intent-filter>
@@ -35,8 +37,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="www.circleneighborhoodapp.com"
-                    android:scheme="http"/>
+                    android:host="worfo.app.link"
+                    android:scheme="http" />
 
                 <data android:scheme="app" android:host="circleapp.circlepackage.circle" />
             </intent-filter>
@@ -59,7 +61,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateCircle" />
-        <activity android:name=".Explore.CircleDisplayAdapter" />
+        <activity android:name=".Explore.CircleDisplayAdapter"
+            tools:ignore="Instantiatable" />
     </application>
 
 </manifest>

@@ -8,9 +8,9 @@
     tools:context=".Explore.ExploreTabbedActivity">
 
     <RelativeLayout
+        android:id="@+id/exploreHeaderBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/exploreHeaderBar"
         android:orientation="horizontal">
 
         <TextView
@@ -29,14 +29,14 @@
 
         <ImageButton
             android:id="@+id/main_activity_notifications_bell"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:tooltipText="Notification Page"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="60dp"
-            android:background="@drawable/ic_notifications_none_black_24dp">
-        </ImageButton>
+            android:background="@drawable/ic_notifications_none_black_24dp"
+            android:tooltipText="Notification Page"></ImageButton>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/explore_profilePicture"
@@ -44,12 +44,38 @@
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:tooltipText="User Details"
             android:layout_gravity="center"
             android:layout_marginRight="15dp"
-            android:background="@drawable/ic_account_circle_black_24dp" />
+            android:background="@drawable/ic_account_circle_black_24dp"
+            android:tooltipText="User Details" />
 
     </RelativeLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/main_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        app:tabIndicatorColor="#6CACFF"
+        app:tabIndicatorFullWidth="true"
+        app:tabSelectedTextColor="#6CACFF"
+        app:tabTextColor="#D1D1D1">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/main_workbench_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Circles"></com.google.android.material.tabs.TabItem>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/main_explore_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Explore"></com.google.android.material.tabs.TabItem>
+
+    </com.google.android.material.tabs.TabLayout>
+
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"

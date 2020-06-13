@@ -32,7 +32,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
@@ -67,7 +66,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     String fName, lName, contact;
     EditText firstname;
     EditText lastname;
-    private FirebaseAnalytics firebaseAnalytics;
     Button register;
 
 
@@ -87,8 +85,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(GatherUserDetails.this, "Enter names", null);
+
         storageReference = FirebaseStorage.getInstance().getReference();
 
         client = LocationServices.getFusedLocationProviderClient(this);
@@ -112,6 +109,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     ActivityCompat.requestPermissions(GatherUserDetails.this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             STORAGE_PERMISSION_CODE);
+
                 } else {
                     selectFile();
                 }
@@ -127,12 +125,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 if(firstname.getText().equals("") || lastname.getText().equals("") || firstname.getText().toString().isEmpty()|| lastname.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(ActivityCompat.checkSelfPermission(GatherUserDetails.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                        requestLocationPermission();
-                        return;
-                    } else {
-                        getLocation();
-                    }
+                    getLocation();
                 }
             }
         });

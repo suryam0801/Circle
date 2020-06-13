@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.mikepenz.fastadapter.listeners.OnClickListener;
@@ -65,9 +64,6 @@ public class PhoneLogin extends AppCompatActivity {
     List<String> al = new ArrayList<String>();
     int pos;
 
-    private FirebaseAnalytics firebaseAnalytics;
-
-
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
 
@@ -80,7 +76,6 @@ public class PhoneLogin extends AppCompatActivity {
         //To set the Fullscreen
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        getWindow().setFormat(PixelFormat.RGB_565);
-        FirebaseApp.initializeApp(PhoneLogin.this);
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
@@ -92,8 +87,6 @@ public class PhoneLogin extends AppCompatActivity {
         editor = pref.edit();
         client = LocationServices.getFusedLocationProviderClient(this);
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(PhoneLogin.this, "Enter phone number", null);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
@@ -209,7 +202,6 @@ public class PhoneLogin extends AppCompatActivity {
                     mLoginProgress.setVisibility(View.VISIBLE);
                     mGenerateBtn.setEnabled(false);
                     //Sending the OTP to the user mobile number
-                    FirebaseApp.initializeApp(PhoneLogin.this);
                     PhoneAuthProvider.getInstance().verifyPhoneNumber(
                             complete_phone_number,
                             60,
@@ -290,5 +282,6 @@ public class PhoneLogin extends AppCompatActivity {
     public void setResendingToken(PhoneAuthProvider.ForceResendingToken resendingToken) {
         this.resendingToken = resendingToken;
     }
+
 }
 

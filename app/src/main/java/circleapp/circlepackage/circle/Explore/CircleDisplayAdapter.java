@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,7 +29,11 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +54,9 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private FirebaseAuth currentUser;
     private User user;
 
+    public CircleDisplayAdapter(){
+
+    }
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
         this.context = context;
@@ -151,6 +159,13 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
         }
 
+        if(current.getMembersList() != null){
+            if(current.getMembersList().size() > 3)
+                viewHolder.membersCount.setText( "+" + current.getMembersList().size());
+            else
+                viewHolder.membersCount.setText( "+" + 0);
+
+        }
 
         viewHolder.join.setOnClickListener(view -> {
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
@@ -240,11 +255,13 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private void showShareCirclePopup(Circle c) {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nLet me recommend you this application\n\n";
+            String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
             //https://play.google.com/store/apps/details?id=
-            shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
+            Log.d("Share", shareMessage);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             context.startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
@@ -263,43 +280,40 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         boolean adminCircle = false;
-        if (circle.getId().equals("adminCircle")) {
-            SessionStorage.saveCircle((Activity) context, circle);
-            context.startActivity(new Intent(context, CircleWall.class));
-            adminCircle = true;
-            ((Activity) context).finish();
-        } else {
+        if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
+            database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
+            //adding userID to applicants list
+            circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+        } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
+            database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+            //adding userID to members list in circlesReference
+            circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+            int nowActive = user.getActiveCircles() + 1;
+            usersDB.child("activeCircles").setValue((nowActive));
+            String userJsonString = new Gson().toJson(user);
+            storeUserFile(userJsonString, context.getApplicationContext());
+        }
 
-            if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-                database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-                //adding userID to applicants list
-                circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-                database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-                //adding userID to members list in circlesReference
-                circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-                int nowActive = user.getActiveCircles() + 1;
-                usersDB.child("activeCircles").setValue((nowActive));
-            }
             circleJoinDialog.dismiss();
 
-        }
 
         if (circle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
         else {
             title.setText("Successfully Joined!");
-            description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
+            description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
-        circleJoinDialog.setOnDismissListener(dialogInterface -> {
-        });
-
         closeDialogButton.setOnClickListener(view -> {
-            SessionStorage.saveCircle((Activity) context, circle);
 
-            context.startActivity(new Intent(context, CircleWall.class));
-            circleJoinDialog.dismiss();
+            if(circle.getAcceptanceType().equalsIgnoreCase("review")){
+                circleJoinDialog.dismiss();
+
+            } else {
+                SessionStorage.saveCircle((Activity) context, circle);
+                context.startActivity(new Intent(context, CircleWall.class));
+                circleJoinDialog.dismiss();
+            }
         });
 
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -308,8 +322,15 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
     }
 
-    public void showCompletionDialog(){
-
+    private void storeUserFile(String data, Context context) {
+        context.deleteFile("user.txt");
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
     }
 
 }

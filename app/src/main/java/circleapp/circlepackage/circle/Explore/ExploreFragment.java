@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -47,11 +49,14 @@ public class ExploreFragment extends Fragment {
     private FirebaseAuth currentUser;
 
     private FirebaseDatabase database;
-    private DatabaseReference circlesDB, usersDB;
+    private DatabaseReference circlesDB;
 
     private User user;
     private List<String> userTempinterestTagsList;
     RecyclerView exploreRecyclerView;
+    private LinearLayout emptyExploreDisplay;
+    private boolean adminCircleExists = false;
+    private TextView locationDisplay;
 
 
     public ExploreFragment() {
@@ -88,7 +93,10 @@ public class ExploreFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
+        locationDisplay = view.findViewById(R.id.explore_district_name_display);
+        emptyExploreDisplay = view.findViewById(R.id.explore_empty_display);
 
+        locationDisplay.setText(user.getDistrict());
         //retrieve interest tags from user
         userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
@@ -105,13 +113,13 @@ public class ExploreFragment extends Fragment {
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
         final RecyclerView.Adapter adapter = new CircleDisplayAdapter(getContext(), exploreCircleList, user);
-        exploreRecyclerView.setAdapter(adapter);
 
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                exploreRecyclerView.setAdapter(adapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 allCircles.add(circle);
 
@@ -131,42 +139,33 @@ public class ExploreFragment extends Fragment {
                         existingMember = true;
                 }
 
-                if (contains == false && existingMember == false) {
-                    if (circle.getCreatorName().equals("Admin")) { //add default admin entry tag
+                boolean similarTags = false;
+                for(String tag : userTempinterestTagsList){
+                    if(circleIteratorinterestTagsList.contains(tag))
+                        similarTags = true;
+                }
+
+                if (contains == false && existingMember == false && !circle.getCreatorID().equals(currentUser.getUid())) {
+                    Log.d("EXPLORE FRAGMENT", existingMember + " " + circle.getCreatorName().equals("The Circle Team"));
+                    if (circle.getCreatorName().equals("The Circle Team") && existingMember == false) { //add default admin entry tag
                         exploreCircleList.add(0, circle);
-                        adapter.notifyDataSetChanged();
-                    } else if (circle.getCircleDistrict().equals(user.getDistrict())) {
-
-                        //add both cooking and running tags
-                        if (circle.getInterestTags().keySet().contains("sample")) {
+                        adminCircleExists = true;
+                    } else if(circle.getCircleDistrict().equalsIgnoreCase(user.getDistrict())) {
+                        if(similarTags == true && adminCircleExists == true)
+                            exploreCircleList.add(1, circle);
+                        else if (similarTags == true && adminCircleExists == false)
+                            exploreCircleList.add(0, circle);
+                        else
                             exploreCircleList.add(circle);
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        //add all relevant tags in that area
-                        if (!circle.getCreatorID().equals(currentUser.getUid()) && existingMember == false) {
-                            //filter for only circles associated with matching user location and interests
-                            for (String intIterator : userTempinterestTagsList) {
-                                if (circleIteratorinterestTagsList.contains(intIterator)) {
-                                    //check if circle already exists
-                                    boolean exists = false;
-                                    for (Circle c : exploreCircleList) {
-                                        if (circle.getId().equals(c.getId()))
-                                            exists = true;
-                                    }
-                                    if(exists == false){
-                                        exploreCircleList.add(circle);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-                        }
                     }
+                    adapter.notifyDataSetChanged();
+                    emptyExploreDisplay.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                exploreRecyclerView.setAdapter(adapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 if (circle.getCircleDistrict() != null && circle.getCircleDistrict().equals(user.getDistrict())) {
                     int position = 0;
@@ -174,7 +173,6 @@ public class ExploreFragment extends Fragment {
                     for (Circle c : tempCircleList) {
                         if (c.getId().equals(circle.getId())) {
                             if (circle.getMembersList() != null && circle.getMembersList().containsKey(user.getUserId())) {
-                                Log.d("wefkjwenfkjnwefe", "kjwnefkjwenfkjnwfkjn");
                                 exploreCircleList.remove(position);
                                 adapter.notifyItemRemoved(position);
                             } else {

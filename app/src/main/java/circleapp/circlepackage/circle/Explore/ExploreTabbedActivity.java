@@ -14,16 +14,20 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,6 +59,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private boolean link_flag = false;
+    private String url;
+    private TabLayout tabLayout;
+    private TabItem exploreTab, workbenchTab;
+    Intent shareIntent;
+    Boolean circleExists = false;
 
 
     @Override
@@ -64,8 +73,19 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         intentUri = getIntent().getData();
         //recieve request on opening
         if (intentUri != null) {
-            List<String> params = intentUri.getPathSegments();
-            String circleID = params.get(params.size() - 1);
+            if (intentUri==null){
+                Log.d("INTENTURI",intentUri.toString());
+            }
+            url = getIntent().getData().toString();
+            String lines[] = url.split("\\r?\\n");
+            for (int i=0; i<lines.length;i++){
+                Log.d("URL", lines[i]);
+            }
+            url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
+            /*List<String> params = intentUri.getPathSegments();
+            String circleID = params.get(params.size() - 1);*/
+            String circleID = url;
+            Log.d("TAG", "URI:"+circleID);
             database = FirebaseDatabase.getInstance();
             circlesDB = database.getReference("Circles");
             circlesDB.keepSynced(true);
@@ -76,10 +96,16 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Circle circle = snapshot.getValue(Circle.class);
                         if(circle.getId().equals(circleID)){
+                            circleExists = true;
                             popupCircle = circle;
-                            if(getIntent().getData() != null)
+                            if(getIntent().getData() != null){
                                 showLinkPopup();
+                            }
+
                         }
+                    }
+                    if(circleExists==false){
+                        Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override
@@ -91,7 +117,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         profPic = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
-
+        tabLayout = findViewById(R.id.main_tab_layout);
+        exploreTab = findViewById(R.id.main_explore_tab);
+        workbenchTab = findViewById(R.id.main_workbench_tab);
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
@@ -109,12 +137,38 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         profPic.setOnClickListener(v -> {
+
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });
 
+        //setting the tab adapter
         ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(pagerAdapter);
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
     }
 
     private void showLinkPopup() {
@@ -137,8 +191,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
 
-        if(popupCircle.getAcceptanceType().equalsIgnoreCase("review"))
+        if(popupCircle.getAcceptanceType().equalsIgnoreCase("review")){
             join.setText("Apply");
+        }
+
 
         for(String tag : popupCircle.getInterestTags().keySet())
             setPopupInterestTag(tag, circleDisplayTags, "#D42D8D");
@@ -159,7 +215,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         boolean finalAlreadyApplicant = alreadyApplicant;
         join.setOnClickListener(view -> {
             if(finalAlreadyMember == false && finalAlreadyApplicant == false){
-                linkCircleDialog.dismiss();
+                linkCircleDialog.cancel();
                 getIntent().setData(null);
                 applyOrJoin(popupCircle);
             } else {
@@ -226,12 +282,14 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     private void showShareCirclePopup(Circle c) {
         try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent= new Intent(Intent.ACTION_SEND);
+
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nLet me recommend you this application\n\n";
+            String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
             //https://play.google.com/store/apps/details?id=
-            shareMessage = "www.circleneighborhoodapp.com/" + c.getId();
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
+            Log.d("Share", shareMessage);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             startActivity(Intent.createChooser(shareIntent, "choose one"));
         } catch (Exception error) {
@@ -259,7 +317,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         closeDialogButton.setOnClickListener(view -> {
-            circleJoinSuccessDialog.dismiss();
+            circleJoinSuccessDialog.cancel();
             if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
                 SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
             startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));

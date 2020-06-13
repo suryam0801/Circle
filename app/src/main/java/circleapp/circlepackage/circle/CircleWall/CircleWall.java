@@ -3,12 +3,9 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -20,8 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -29,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,25 +33,17 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.dynamiclinks.DynamicLink;
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -76,7 +62,7 @@ public class CircleWall extends AppCompatActivity {
 
     private static final String DEEP_LINK_URL = "https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle";
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB;
+    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB, usersDB;
     private FirebaseAuth currentUser;
 
     private String TAG = CircleWall.class.getSimpleName();
@@ -92,7 +78,7 @@ public class CircleWall extends AppCompatActivity {
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false;
 
-    private ImageButton menuButton, back, shareCircle;
+    private ImageButton exitOrDeleteButton, back, viewPersonelButton;
     private User user;
 
     //create broadcast popup ui elements
@@ -101,8 +87,7 @@ public class CircleWall extends AppCompatActivity {
     private ImageView uploadCloudImageView;
     private TextView circleBannerName, descPlaceHolder;
     private Button btnAddPollOption, btnUploadBroadcast;
-    private Dialog createBroadcastPopup;
-    private FirebaseAnalytics firebaseAnalytics;
+    private Dialog createBroadcastPopup, confirmationDialog;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost;
     private Button clearBroadcastPopup;
@@ -114,47 +99,48 @@ public class CircleWall extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
+        confirmationDialog = new Dialog(CircleWall.this);
+        user = SessionStorage.getUser(CircleWall.this);
 
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
         circlesPersonelDB = database.getReference("CirclePersonel");
         circlesDB = database.getReference("Circles");
+        usersDB = database.getReference("Users").child(user.getUserId());
         broadcastsDB.keepSynced(true);
         currentUser = FirebaseAuth.getInstance();
-        user = SessionStorage.getUser(CircleWall.this);
 
         circle = SessionStorage.getCircle(CircleWall.this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
+
         circleBannerName = findViewById(R.id.circleBannerName);
-        menuButton = findViewById(R.id.share_with_friend_button);
+        exitOrDeleteButton = findViewById(R.id.share_with_friend_button);
         back = findViewById(R.id.bck_Circlewall);
-        shareCircle = findViewById(R.id.shareCircle);
+        viewPersonelButton = findViewById(R.id.shareCircle);
         emptyDisplay = findViewById(R.id.circle_wall_empty_display);
         emptyDisplay.setVisibility(View.VISIBLE);
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
+        floatingActionMenu = findViewById(R.id.menu);
+
+        if(circle.getCreatorID().equals(user.getUserId()))
+            exitOrDeleteButton.setBackground(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp));
 
         circleBannerName.setText(circle.getName());
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(CircleWall.this, "Inside circle wall scrolling", null);
 
-//        if (currentUser.getCurrentUser().getUid() == circle.getCreatorID())
-//        {
-//            usersState = "creator";
-//        }
-//        else
-//            {
-//                usersState = "subscriber";
-//            }
-
-        menuButton.setOnClickListener(view -> {
-            showMenuPopup(view);
+        exitOrDeleteButton.setOnClickListener(view -> {
+            if(circle.getCreatorID().equals(user.getUserId()))
+                showDeleteDialog();
+            else
+                showExitDialog();
         });
 
-        shareCircle.setOnClickListener(view -> {
-            showShareCirclePopup();
+        viewPersonelButton.setOnClickListener(view -> {
+            Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
+            intent.putExtra("userState",usersState);
+            startActivity(intent);
         });
 
         back.setOnClickListener(view -> {
@@ -164,119 +150,35 @@ public class CircleWall extends AppCompatActivity {
 
         poll.setOnClickListener(view -> {
             showCreateBroadcastDialog("poll");
+            floatingActionMenu.close(true);
+
         });
         newPost.setOnClickListener(view -> {
             showCreateBroadcastDialog("message");
+            floatingActionMenu.close(true);
         });
 
         loadCircleBroadcasts();
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
-                    @Override
-                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
-                        Uri deepLink = null;
-                        if (pendingDynamicLinkData != null) {
-                            deepLink = pendingDynamicLinkData.getLink();
-                        }
+   }
 
-
-                        // Handle the deep link. For example, open the linked
-                        // content, or apply promotional credit to the user's
-                        // account.
-                        // ...
-
-                        // [START_EXCLUDE]
-                        // Display deep link in the UI
-                        if (deepLink != null) {
-                            Snackbar.make(findViewById(android.R.id.content),
-                                    "Found deep link!", Snackbar.LENGTH_LONG).show();
-
-                        } else {
-                            Log.d(TAG, "getDynamicLink: no link found");
-                        }
-                        // [END_EXCLUDE]
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "getDynamicLink:onFailure", e);
-                    }
-                });
-    }
-
-    public void showMenuPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.circle_wall_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.viewMembers:
-//                        startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
-                        Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
-                        intent.putExtra("userState",usersState);
-                        startActivity(intent);
-                        return true;
-                    case R.id.exitCircle:
-                        exitCircle();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
-        popup.show();
-    }
-
-    private void exitCircle() {
-        circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
-        circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
+    private void deleteCircle(){
+        circlesPersonelDB.child(circle.getId()).removeValue();
+        circlesDB.child(circle.getId()).removeValue();
+        //reducing created circle count
+        int currentCreatedCount = user.getCreatedCircles()-1;
+        user.setCreatedCircles(currentCreatedCount);
+        usersDB.child("createdCircles").setValue(currentCreatedCount);
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
-    private void showShareCirclePopup() {
-        try {
-            final Uri deepLink = buildDeepLink(Uri.parse(DEEP_LINK_URL),0);
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nLet me recommend you this application\n\n";
-            //https://play.google.com/store/apps/details?id=
-            Log.d(TAG, circle.getId());
-            shareMessage = "https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle/" + circle.getId();
-            shareIntent.putExtra(Intent.EXTRA_TEXT, deepLink.toString());
-            startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch (Exception error) {
-
-        }
-    }
-    public Uri buildDeepLink(@NonNull Uri deepLink, int minVersion) {
-        String uriPrefix = "https://";
-
-        // Set dynamic link parameters:
-        //  * URI prefix (required)
-        //  * Android Parameters (required)
-        //  * Deep link
-        // [START build_dynamic_link]
-        DynamicLink.Builder builder = FirebaseDynamicLinks.getInstance()
-                .createDynamicLink()
-                .setDomainUriPrefix(uriPrefix)
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder()
-                        .setMinimumVersion(minVersion)
-                        .build())
-                .setLink(deepLink);
-
-        // Build the dynamic link
-        DynamicLink link = builder.buildDynamicLink();
-        // [END build_dynamic_link]
-
-        // Return the dynamic link as a URI
-        return link.getUri();
+    private void exitCircle() {
+        circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
+        circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
+        //reducing active circle count
+        int currentActiveCount = user.getActiveCircles()-1;
+        user.setActiveCircles(currentActiveCount);
+        usersDB.child("activeCircles").setValue(currentActiveCount);
+        startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
     }
 
     private void loadCircleBroadcasts() {
@@ -344,6 +246,44 @@ public class CircleWall extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void showExitDialog(){
+
+        confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
+        final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
+        final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
+
+        closeDialogButton.setOnClickListener(view -> {
+            exitCircle();
+            confirmationDialog.cancel();
+        });
+
+        cancel.setOnClickListener(view -> {
+            confirmationDialog.cancel();
+        });
+
+        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        confirmationDialog.show();
+    }
+
+    public void showDeleteDialog(){
+
+        confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
+        final Button closeDialogButton = confirmationDialog.findViewById(R.id.delete_circle_accept_button);
+        final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
+
+        closeDialogButton.setOnClickListener(view -> {
+            deleteCircle();
+            confirmationDialog.dismiss();
+        });
+
+        cancel.setOnClickListener(view -> {
+            confirmationDialog.dismiss();
+        });
+
+        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        confirmationDialog.show();
     }
 
     private void showCreateBroadcastDialog(String flag) {
@@ -454,7 +394,9 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
+            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         } else if (downloadUri != null && pollExists == false) {
@@ -462,7 +404,9 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
+            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         } else if (downloadUri == null && pollExists == true) {
@@ -471,7 +415,9 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
+            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         } else if (downloadUri != null && pollExists == true) {
@@ -480,7 +426,9 @@ public class CircleWall extends AppCompatActivity {
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
                     currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            circlesDB.child(circle.getId()).child("notificationTimeStamp").setValue(System.currentTimeMillis());
+            int newCount = circle.getNoOfBroadcasts() + 1;
+            circle.setNoOfBroadcasts(newCount);
+            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         }

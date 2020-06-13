@@ -105,6 +105,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             @Override
             public void onClick(View view) {
                 circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
+                circleDB.child(circle.getId()).child("applicantsList").child(selectedApplicant.getId()).removeValue();
                 circlesPersonelDB.child(circle.getId()).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
                 circleDB.child(circle.getId()).child("membersList").child(selectedApplicant.getId()).setValue(true);
                 state="Accepted";

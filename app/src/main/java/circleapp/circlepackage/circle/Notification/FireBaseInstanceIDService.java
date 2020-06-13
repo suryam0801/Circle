@@ -28,6 +28,8 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
 //        if we want to store in local
         String channelId = "fcm_default_channel";
 
+        Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: ");
+
         String messageTitle = remoteMessage.getNotification().getTitle();
 
         String messageBody = remoteMessage.getNotification().getBody();

@@ -6,9 +6,9 @@
     tools:context=".Explore.WorkbenchFragment">
 
     <LinearLayout
-         android:id="@+id/workbench_empty_display"
+        android:id="@+id/workbench_empty_display"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
@@ -24,10 +24,11 @@
             android:fontFamily="@font/roboto_regular"
             android:lineSpacingExtra="5dp"
             android:paddingTop="43dp"
-            android:text="Welcome to Circle! Looks like you have not joined any circles in your area. Swipe right to view all the circles in your area. Or press the button below to create your own circle."
+            android:text="You will be able to see your circles here, if you want to discover circles in your area swipe right onto Explore. To create your own circle, click the '+' button below"
             android:textAlignment="center"
-            android:textColor="@color/color_blue"
-            android:textSize="17dp"></TextView>
+            android:textColor="#828282"
+            android:textSize="12dp"></TextView>
+
 
     </LinearLayout>
 

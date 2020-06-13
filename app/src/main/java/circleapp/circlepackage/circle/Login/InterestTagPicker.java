@@ -37,7 +37,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -85,7 +84,6 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseAnalytics firebaseAnalytics;
     private int noOfTagsChosen=0;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
@@ -100,8 +98,6 @@ public class InterestTagPicker extends AppCompatActivity {
 //        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(InterestTagPicker.this, "Select tags", null);
         register = findViewById(R.id.registerButton);
         skip = findViewById(R.id.skip_login_tag_picker);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
@@ -186,12 +182,6 @@ public class InterestTagPicker extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
             UserReg();
-            //bundle to send to fb
-            Bundle bundle = new Bundle();
-            bundle.putInt(FirebaseAnalytics.Param.ITEM_ID, noOfTagsChosen);
-            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ItemId is number of tags user has picked");
-            firebaseAnalytics.logEvent("No_of_interest_tags", bundle);
-
 
         });
 
@@ -206,7 +196,7 @@ public class InterestTagPicker extends AppCompatActivity {
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
         interestTagsEntry.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))  {
                 String interestTag = interestTagsEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag);
@@ -279,28 +269,35 @@ public class InterestTagPicker extends AppCompatActivity {
         //admin circle
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
-        Circle adminCircle = new Circle("adminCircle", "Welcome To Circle",
-                "Join this circle to learn more about how you can easy connect with your neighbors",
-                "automatic", "CreatorAdmin", "Admin", circleIntTags,
-                null, null, "test", null, System.currentTimeMillis(), System.currentTimeMillis());
+        Circle adminCircle = new Circle("adminCircle", "Meet the developers of Circle",
+                "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
+                "automatic", "CreatorAdmin", "The Circle Team", circleIntTags,
+                null, null, "test", null, System.currentTimeMillis(), 0);
 
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
-        pollOptions.put("I really like it!", 8);
-        pollOptions.put("Still exploring", 4);
-        pollOptions.put("Not really feeling it :(", 2);
-        Poll adminPoll = new Poll("How are you liking circle so far?", pollOptions, null);
-        Broadcast broadcast = new Broadcast("adminBroadcast", "Hello and welcome to your circle wall. You can create and share messages, " +
-                "attachments, and your custom polls to all your circle members. Say bye to the useless forward messages of whatsapp and " +
-                "focus on what truly matters", null, "Admin", "AdminId", true,
+        pollOptions.put("It's going to rain tomorrow", 0);
+        pollOptions.put("No way, its dry as a dog biscuit", 0);
+        Poll adminPoll = new Poll("Use polls like this to quickly get your friends’ opinion about something!", pollOptions, null);
+        Broadcast commentBroadcast = new Broadcast("commentBroadcast", "You can have a discussion about your posts down in the " +
+                "comments below. Click on view comments to see the secret message. :)", null, "Jacob",
+                "AdminId", false,
+                (System.currentTimeMillis()-1), null, "default");
+        Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,
                 System.currentTimeMillis(), adminPoll, "default");
+        Broadcast introBroadcast = new Broadcast("introBroadcast", "Welcome to Circle! Your friendly neighborhood app. Form circles " +
+                "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
+                "opinions - all on a single platform.", null, "Surya", "AdminId", false,
+                (System.currentTimeMillis()+1), null, "default");
 
-        Comment comment = new Comment("Admin", "This is where you can clarify any questions or share any " +
-                "information you might have about that particular broadcast",
+        Comment comment = new Comment("Srinithi", "The answer to life is not 42. It's the bonds you build " +
+                "around your circle.",
                 "adminCommentId", null, System.currentTimeMillis());
 
         circlesDB.child("adminCircle").setValue(adminCircle);
-        broadcastsDB.child("adminCircle").child("adminBroadcast").setValue(broadcast);
-        commentsDB.child("adminCircle").child("adminBroadcast").child("adminCommentId").setValue(comment);
+        broadcastsDB.child("adminCircle").child("introBroadcast").setValue(introBroadcast);
+        broadcastsDB.child("adminCircle").child("pollBroadcast").setValue(pollBroadcast);
+        broadcastsDB.child("adminCircle").child("commentBroadcast").setValue(commentBroadcast);
+        commentsDB.child("adminCircle").child("commentBroadcast").child("adminCommentId").setValue(comment);
 
         //running circle
         String runningCircleID = UUID.randomUUID().toString();
@@ -309,7 +306,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle runningCircle = new Circle(runningCircleID, district + " Morning Runner's",
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
                 "automatic", "CreatorAdmin", "Vijay Ram", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis(), System.currentTimeMillis());
+                null, null, district, ward, System.currentTimeMillis(), 0);
         HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
         pollOptionsRunningCircle.put("Sure!", 8);
         pollOptionsRunningCircle.put("Thats too early :(", 4);
@@ -331,7 +328,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle cookingCircle = new Circle(cookingCircleID, district + " Recipe Sharing Circle",
                 "Hello Cooks, join our circle and get access to the best recipes in " + district + " and share your own dishes!",
                 "automatic", "CreatorAdmin", "Mekkala Nair", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis(), System.currentTimeMillis());
+                null, null, district, ward, System.currentTimeMillis(), 0);
         HashMap<String, Integer> pollOptionsCookingCircle = new HashMap<>(); //creating poll options
         pollOptionsCookingCircle.put("I loved them!", 8);
         pollOptionsCookingCircle.put("Could be a little more sweet", 4);
@@ -477,6 +474,13 @@ public class InterestTagPicker extends AppCompatActivity {
             }
         }
 
+        if(!dbInterestTags.contains("null")){
+            for (String i : dbInterestTags) {
+                tags.child("interestTags").child(i).setValue(true);
+                tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
+            }
+        }
+
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(InterestTagPicker.this, user);
@@ -541,4 +545,5 @@ public class InterestTagPicker extends AppCompatActivity {
         super.onStart();
         chipGroup.removeAllViews();
     }
+
 }

@@ -20,7 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -40,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -60,7 +60,6 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-    private FirebaseAnalytics firebaseAnalytics;
 
     private User userldb;
     //    private AppDatabase lDb;
@@ -94,8 +93,6 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView = findViewById(R.id.resend_otp_counter);
         resendTextView.setClickable(false);
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAnalytics.setCurrentScreen(OtpActivity.this, "Entering otp", null);
 
         new CountDownTimer(30000, 1000) {
             @Override
@@ -252,4 +249,5 @@ public class OtpActivity extends AppCompatActivity {
         startActivity(homeIntent);
         finish();
     }
+
 }
