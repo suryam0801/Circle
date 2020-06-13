@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -85,6 +86,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private int noOfTagsChosen=0;
+    GatherUserDetails gatherUserDetails;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -108,6 +110,7 @@ public class InterestTagPicker extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
+        gatherUserDetails = new GatherUserDetails();
 
         fName = getIntent().getStringExtra("fName");
         lName = getIntent().getStringExtra("lName");
@@ -117,7 +120,7 @@ public class InterestTagPicker extends AppCompatActivity {
         contact = getIntent().getStringExtra("contact");
         downloadUri = getIntent().getStringExtra("uri");
 
-        tags.child("locationInterestTags").child(district.trim()).addValueEventListener(new ValueEventListener() {
+        tags.child("locationInterestTags").child(district.trim()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
@@ -494,6 +497,7 @@ public class InterestTagPicker extends AppCompatActivity {
                     .set(user)
                     .addOnSuccessListener(aVoid -> {
                         startActivity(new Intent(InterestTagPicker.this, ExploreTabbedActivity.class));
+                        SendNotification.sendnotification("new_user","adminCircle","The Circle Team",firebaseAuth.getCurrentUser().getUid());
                         sendnotify();
                         finish();
                     })
