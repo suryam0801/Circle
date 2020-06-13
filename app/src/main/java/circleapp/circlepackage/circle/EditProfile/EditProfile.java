@@ -58,6 +58,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -211,8 +212,7 @@ public class EditProfile extends AppCompatActivity {
 
         logout.setOnClickListener(view -> {
             currentUser.signOut();
-            currentUser = null;
-            startActivity(new Intent(EditProfile.this, PhoneLogin.class));
+            startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
         });
 
