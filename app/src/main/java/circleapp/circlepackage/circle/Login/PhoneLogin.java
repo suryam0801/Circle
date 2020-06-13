@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.Login;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -70,15 +71,12 @@ public class PhoneLogin extends AppCompatActivity {
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
-
-        //To set the Fullscreen
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        getWindow().setFormat(PixelFormat.RGB_565);
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
@@ -95,17 +93,6 @@ public class PhoneLogin extends AppCompatActivity {
         district = getIntent().getStringExtra("district");
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
-        @SuppressLint("WrongConstant") SharedPreferences sh= getSharedPreferences("MySharedPref",MODE_APPEND);
-//
-//
-//        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-//        String countryCode = tm.getSimCountryIso();
-//        String countryName = tm.getNetworkCountryIso();
-//        int pos = sh.getInt("pos",0);
-//        String mCountryName = sh.getString("mCountryName","def");
-//        String mCountryDialCode = sh.getString("mCountryDialCode","def");
-//        Log.d(TAG,pos+"::"+mCountryDialCode+"::"+ward+"::"+district);
-
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         al = Arrays.asList(options);
         ccp.setSelection(pos);
