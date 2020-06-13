@@ -157,6 +157,7 @@ public class WorkbenchFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+/*
                 wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
@@ -191,8 +192,7 @@ public class WorkbenchFragment extends Fragment {
                     workbenchCircleList.add(circle);
                     wbadapter.notifyDataSetChanged();
                 }
-
-
+*/
             }
 
             @Override
