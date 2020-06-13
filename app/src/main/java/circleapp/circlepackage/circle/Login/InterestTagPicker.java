@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -84,7 +85,8 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private int noOfTagsChosen = 0;
+    AnalyticsLogEvents analyticsLogEvents;
+    private int noOfTagsChosen;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -98,6 +100,8 @@ public class InterestTagPicker extends AppCompatActivity {
 //        getWindow().setFormat(PixelFormat.RGB_565);
 //        getSupportActionBar().hide();
 
+        noOfTagsChosen = 0;
+        analyticsLogEvents = new AnalyticsLogEvents();
         register = findViewById(R.id.registerButton);
         skip = findViewById(R.id.skip_login_tag_picker);
         chipGroup = findViewById(R.id.interest_tag_chip_group);
@@ -186,9 +190,11 @@ public class InterestTagPicker extends AppCompatActivity {
         });
 
         skip.setOnClickListener(view -> {
-            if (!selectedInterestTags.isEmpty())
+            if (!selectedInterestTags.isEmpty()){
+                analyticsLogEvents.logEvents(InterestTagPicker.this,"skipped_tags","chosen_tags","interest_tag_picker");
                 selectedInterestTags.clear();
-
+            }
+            analyticsLogEvents.logEvents(InterestTagPicker.this,"skipped_tags_intenT","not_chosen_tags","interest_tag_picker");
             selectedInterestTags.add("null");
             UserReg();
         });
@@ -456,6 +462,7 @@ public class InterestTagPicker extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 noOfTagsChosen = selectedInterestTags.size();
                                 Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                                analyticsLogEvents.logEvents(InterestTagPicker.this,"no_of_tags_chosen",noOfTagsChosen+"","interest_tag_picker");
                                 //Adding the user to collection
                                 addUser();
                             } else {
