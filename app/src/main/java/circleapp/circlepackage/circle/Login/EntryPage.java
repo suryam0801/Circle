@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.widget.Button;
 
 
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
