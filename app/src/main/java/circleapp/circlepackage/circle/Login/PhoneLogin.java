@@ -1,5 +1,7 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +28,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
@@ -57,10 +58,12 @@ public class PhoneLogin extends AppCompatActivity {
     private String complete_phone_number = "";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+    public static final String PREF_NAME= "LOCATION";
     private Spinner ccp;
-    String[] options;
+    private String ward, district,mCountryDialCode,mCountryName;
 
     private FusedLocationProviderClient client;
+    String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
 
@@ -79,63 +82,34 @@ public class PhoneLogin extends AppCompatActivity {
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
+        mPhoneNumber.requestFocus();
         mGenerateBtn = findViewById(R.id.generate_btn);
         mLoginProgress = findViewById(R.id.login_progress_bar);
         mLoginFeedbackText = findViewById(R.id.login_form_feedback);
         ccp = findViewById(R.id.ccp);
+
+        pos=getIntent().getIntExtra("pos",1234);
+        mCountryName = getIntent().getStringExtra("countryName");
+        mCountryDialCode = getIntent().getStringExtra("dialCode");
+        ward = getIntent().getStringExtra("ward");
+        district = getIntent().getStringExtra("district");
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
-        client = LocationServices.getFusedLocationProviderClient(this);
-
+        @SuppressLint("WrongConstant") SharedPreferences sh= getSharedPreferences("MySharedPref",MODE_APPEND);
+//
+//
+//        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+//        String countryCode = tm.getSimCountryIso();
+//        String countryName = tm.getNetworkCountryIso();
+//        int pos = sh.getInt("pos",0);
+//        String mCountryName = sh.getString("mCountryName","def");
+//        String mCountryDialCode = sh.getString("mCountryDialCode","def");
+//        Log.d(TAG,pos+"::"+mCountryDialCode+"::"+ward+"::"+district);
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
-        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        String countryCode = tm.getSimCountryIso();
-        String countryName = tm.getNetworkCountryIso();
         al = Arrays.asList(options);
-
-        client.getLastLocation().addOnSuccessListener(location -> {
-            if(location != null){
-                List<Address> addresses=null;
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                try {
-                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    System.out.println("add in string "+addresses.toArray().toString());
-                    String countryname = addresses.get(0).getCountryName();
-                    String countrycode = addresses.get(0).getCountryCode();
-                    Log.d(TAG,"Location :: "+countryname+" :: "+countrycode);
-
-                    for (String cn : al)
-                    {
-                        pos = pos+1;
-                        if (cn.equals(countryname))
-                        {
-                            ccp.setSelection(pos-1);
-                            String code = getCountryCode(ccp.getSelectedItem().toString());
-                            String contryDialCode = null;
-                            String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
-                            for(int i=0; i<arrContryCode.length; i++){
-                                String[] arrDial = arrContryCode[i].split(",");
-                                if(arrDial[1].trim().equals(countrycode.trim())){
-                                    contryDialCode = arrDial[0];
-                                    mCountryCode.setText("+"+contryDialCode);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-
-
+        ccp.setSelection(pos);
+        mCountryCode.setText(mCountryDialCode);
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -156,26 +130,6 @@ public class PhoneLogin extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mCountryCode.setText("");
-            }
-        });
-        mCountryCode.setOnTouchListener(new View.OnTouchListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(mCountryCode, InputMethodManager.SHOW_IMPLICIT);
-                        mCountryCode.setShowSoftInputOnFocus(true);
-                        mCountryCode.setSelection(mCountryCode.getText().length());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        v.performClick();
-                        break;
-                    default:
-                        break;
-                }
-                return true;
             }
         });
 
@@ -241,7 +195,10 @@ public class PhoneLogin extends AppCompatActivity {
                                 otpIntent.putExtra("AuthCredentials", s);
                                 otpIntent.putExtra("phn_num", complete_phone_number);
                                 otpIntent.putExtra("resendToken", forceResendingToken);
+                                otpIntent.putExtra("ward",ward);
+                                otpIntent.putExtra("district",district);
                                 startActivity(otpIntent);
+                                Log.d(TAG,pos+"::"+mCountryDialCode+"::"+ward+"::"+district);
                                 finish();
                             }
                         },
