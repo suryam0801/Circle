@@ -30,5 +30,5 @@ public class EntryPage extends AppCompatActivity {
             }
         });
     }
-    
+
 }

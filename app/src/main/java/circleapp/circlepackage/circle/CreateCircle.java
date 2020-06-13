@@ -335,34 +335,15 @@ public class CreateCircle extends AppCompatActivity {
             tags.child("locationInterestTags").child(user.getDistrict().trim()).child(user.getWard().trim()).child(i).setValue(true);
         }
 
-        //updating user
-        int createdProjects = user.getCreatedCircles();
-        createdProjects = createdProjects + 1;
-        userDB.child(currentUser.getUid()).child("createdProjects").setValue(createdProjects);
-
         int currentCreatedNo = user.getCreatedCircles() + 1;
         user.setCreatedCircles(currentCreatedNo);
-        String userJsonString = new Gson().toJson(user);
-        storeUserFile(userJsonString, getApplicationContext());
-
+        SessionStorage.saveUser(CreateCircle.this, user);
         userDB.child("createdCircles").setValue(currentCreatedNo);
 
         //navigate back to explore. new circle will be available in workbench
         startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
         finish();
     }
-
-    private void storeUserFile(String data, Context context) {
-        context.deleteFile("user.txt");
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
 
     @Override
     public void onBackPressed() {

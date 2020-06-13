@@ -68,9 +68,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
-
         analyticsLogEvents = new AnalyticsLogEvents();
-
         GradientDrawable wbLayoutBackground = new GradientDrawable();
         wbLayoutBackground.setShape(GradientDrawable.RECTANGLE);
         wbLayoutBackground.setCornerRadius(20);
@@ -162,12 +160,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             }
 
             userDB.child("notificationsAlert").child(circle.getId()).setValue(circle.getNoOfBroadcasts());
-            String userJsonString = new Gson().toJson(user);
-            storeUserFile(userJsonString, context.getApplicationContext());
 
             analyticsLogEvents.logEvents(context,"organic_view", "view_posts_clicked","circle_wall");
 
             SessionStorage.saveCircle((Activity) context, circle);
+            SessionStorage.saveUser((Activity) context, user);
             context.startActivity(new Intent(context, CircleWall.class));
             ((Activity) context).finish();
         });
@@ -183,16 +180,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.tv_circleCreatedDateWB.setText(date);
     }
 
-    private void storeUserFile(String data, Context context) {
-        context.deleteFile("user.txt");
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
 
     @Override
     public int getItemCount() {

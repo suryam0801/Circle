@@ -62,7 +62,6 @@ import circleapp.circlepackage.circle.SessionStorage;
 
 public class CircleWall extends AppCompatActivity {
 
-    private static final String DEEP_LINK_URL = "https://play.google.com/store/apps/details?id=circleapp.circlepackage.circle";
     private FirebaseDatabase database;
     private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB, usersDB;
     private FirebaseAuth currentUser;
