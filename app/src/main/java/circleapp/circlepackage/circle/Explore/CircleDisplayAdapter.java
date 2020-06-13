@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -53,6 +54,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private Dialog circleJoinDialog;
     private FirebaseAuth currentUser;
     private User user;
+    AnalyticsLogEvents analyticsLogEvents;
 
     public CircleDisplayAdapter(){
 
@@ -64,6 +66,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         this.user = user;
         circleJoinDialog = new Dialog(context);
         database = FirebaseDatabase.getInstance();
+
+        analyticsLogEvents = new AnalyticsLogEvents();
 
         currentUser = FirebaseAuth.getInstance();
         circlesDB = database.getReference("Circles");
@@ -256,6 +260,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
+            analyticsLogEvents.logEvents(context,"invite_circle", "invite_explore","on_button_click");
+
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
             String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
@@ -282,11 +288,13 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         boolean adminCircle = false;
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
+            analyticsLogEvents.logEvents(context,"circle_apply", "apply_explore","on_button_click");
             //adding userID to applicants list
             circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
         } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             //adding userID to members list in circlesReference
+            analyticsLogEvents.logEvents(context,"circle_join", "open_circle","on_button_click");
             circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
             int nowActive = user.getActiveCircles() + 1;
             usersDB.child("activeCircles").setValue((nowActive));

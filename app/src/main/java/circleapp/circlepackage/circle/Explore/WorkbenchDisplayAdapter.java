@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -45,6 +46,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     private Context context;
     private FirebaseDatabase database;
     private DatabaseReference userDB;
+    AnalyticsLogEvents analyticsLogEvents;
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
         this.MycircleList = mycircleList;
@@ -67,6 +69,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
 
+        analyticsLogEvents = new AnalyticsLogEvents();
 
         GradientDrawable wbLayoutBackground = new GradientDrawable();
         wbLayoutBackground.setShape(GradientDrawable.RECTANGLE);
@@ -151,6 +154,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
                 tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
                 user.setNotificationsAlert(tempUserNotifStore);
+                analyticsLogEvents.logEvents(context,"unread_tag", "view_posts_clicked","circle_wall");
             } else {
                 HashMap<String, Integer> tempUserNotifStore = new HashMap<>();
                 tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
@@ -160,6 +164,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             userDB.child("notificationsAlert").child(circle.getId()).setValue(circle.getNoOfBroadcasts());
             String userJsonString = new Gson().toJson(user);
             storeUserFile(userJsonString, context.getApplicationContext());
+
+            analyticsLogEvents.logEvents(context,"organic_view", "view_posts_clicked","circle_wall");
 
             SessionStorage.saveCircle((Activity) context, circle);
             context.startActivity(new Intent(context, CircleWall.class));
