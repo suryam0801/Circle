@@ -47,13 +47,13 @@
         <activity android:name=".CircleWall.BroadcastComments" />
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
-        <activity android:name=".Login.InterestTagPicker" />
+        <activity android:name=".Login.InterestTagPicker" android:noHistory="true"/>
         <activity android:name=".Login.GatherUserDetails" />
-        <activity android:name=".Login.OtpActivity" />
-        <activity android:name=".Login.PhoneLogin" />
+        <activity android:name=".Login.OtpActivity" android:noHistory="true"/>
+        <activity android:name=".Login.PhoneLogin" android:noHistory="true"/>
         <activity android:name=".Notification.NotificationActivity" />
         <activity android:name=".CircleWall.CircleWall" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
