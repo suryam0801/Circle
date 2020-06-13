@@ -179,7 +179,7 @@ public class OtpActivity extends AppCompatActivity {
                             final FirebaseUser user = task.getResult().getUser();
                             final String uid = user.getUid();
                             //To check the users is already registered or not
-                            usersDB.child(uid).addValueEventListener(new ValueEventListener() {
+                            usersDB.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {

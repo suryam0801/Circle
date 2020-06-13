@@ -199,6 +199,4 @@ public class LocationHelper{
         final AlertDialog alert = builder.create();
         alert.show();
     }
-
-
 }
