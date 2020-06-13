@@ -1,9 +1,9 @@
 package circleapp.circlepackage.circle.Helpers;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
@@ -11,13 +11,15 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
+import circleapp.circlepackage.circle.R;
+
 public final class RuntimePermissionHelper {
 
     private static RuntimePermissionHelper runtimePermissionHelper;
     public static final int PERMISSION_REQUEST_CODE = 1;
     private Activity activity;
     public static final String PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-      private ArrayList<String> requiredPermissions;
+    private ArrayList<String> requiredPermissions;
     private ArrayList<String> ungrantedPermissions = new ArrayList<String>();
 
     public static final String PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -44,7 +46,7 @@ public final class RuntimePermissionHelper {
     public void requestPermissionsIfDenied(){
         ungrantedPermissions = getUnGrantedPermissionsList();
         if(canShowPermissionRationaleDialog()){
-            showMessageOKCancel(("Location is necessary to continue"),
+            showMessageOKCancel(activity.getResources().getString(R.string.permission_message),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -58,7 +60,7 @@ public final class RuntimePermissionHelper {
 
     public void requestPermissionsIfDenied(final String permission){
         if(canShowPermissionRationaleDialog(permission)){
-            showMessageOKCancel(("Location is necessary to continue"),
+            showMessageOKCancel(activity.getResources().getString(R.string.permission_message),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -108,7 +110,7 @@ public final class RuntimePermissionHelper {
         new AlertDialog.Builder(activity)
                 .setMessage(message)
                 .setPositiveButton("Ok", okListener)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 //                        Intent intent = new Intent(activity,ErrorActivity.class);
