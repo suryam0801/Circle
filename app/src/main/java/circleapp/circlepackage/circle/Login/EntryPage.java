@@ -23,8 +23,12 @@ public class EntryPage extends AppCompatActivity {
 
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
         agreeContinue.setOnClickListener(view -> {
-            runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
-            startActivity(new Intent(EntryPage.this, PhoneLogin.class));
+            if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
+                startActivity(new Intent(EntryPage.this, PhoneLogin.class));
+            } else {
+                runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
+            }
         });
     }
+    
 }
