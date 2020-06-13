@@ -112,10 +112,10 @@ public class InterestTagPicker extends AppCompatActivity {
         fName = getIntent().getStringExtra("fName");
         lName = getIntent().getStringExtra("lName");
 
-        downloadUri = getIntent().getStringExtra("uri");
-        contact = getIntent().getStringExtra("contact");
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
+        contact = getIntent().getStringExtra("contact");
+        downloadUri = getIntent().getStringExtra("uri");
 
         tags.child("locationInterestTags").child(district.trim()).addValueEventListener(new ValueEventListener() {
             @Override

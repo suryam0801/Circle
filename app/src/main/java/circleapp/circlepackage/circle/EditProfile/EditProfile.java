@@ -59,6 +59,7 @@ import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -217,8 +218,7 @@ public class EditProfile extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "","edit_profile");
             currentUser.signOut();
-            currentUser = null;
-            startActivity(new Intent(EditProfile.this, PhoneLogin.class));
+            startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
         });
 

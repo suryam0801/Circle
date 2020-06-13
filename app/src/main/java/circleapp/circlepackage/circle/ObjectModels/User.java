@@ -1,13 +1,6 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
-
 import java.util.HashMap;
-
-import io.realm.RealmObject;
 
 public class User  {
 

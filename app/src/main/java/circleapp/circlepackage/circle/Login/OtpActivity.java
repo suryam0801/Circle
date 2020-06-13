@@ -58,6 +58,7 @@ public class OtpActivity extends AppCompatActivity {
     private TextView mOtpFeedback;
     private TextView resendTextView;
     private int counter = 30;
+    private String ward, district;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
@@ -80,7 +81,8 @@ public class OtpActivity extends AppCompatActivity {
         mCurrentUser = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         usersDB = database.getReference("Users");
-
+        ward = getIntent().getStringExtra("ward");
+        district = getIntent().getStringExtra("district");
         //Getting AuthCredentials from the PhoneLogin page
         mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
         phn_number = getIntent().getStringExtra("phn_num");
@@ -89,6 +91,7 @@ public class OtpActivity extends AppCompatActivity {
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
+        mOtpText.requestFocus();
         mVerifyBtn = findViewById(R.id.verify_btn);
         resendTextView = findViewById(R.id.resend_otp_counter);
         resendTextView.setClickable(false);
@@ -176,7 +179,7 @@ public class OtpActivity extends AppCompatActivity {
                             final FirebaseUser user = task.getResult().getUser();
                             final String uid = user.getUid();
                             //To check the users is already registered or not
-                            usersDB.child(uid).addValueEventListener(new ValueEventListener() {
+                            usersDB.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
@@ -246,7 +249,10 @@ public class OtpActivity extends AppCompatActivity {
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         homeIntent.putExtra("phn", phn_number);
+        homeIntent.putExtra("ward",ward);
+        homeIntent.putExtra("district",district);
         startActivity(homeIntent);
+        Log.d("OtpActivity",ward+"::"+district);
         finish();
     }
 
