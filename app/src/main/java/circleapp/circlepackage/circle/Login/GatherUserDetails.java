@@ -27,7 +27,6 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -88,13 +87,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        client = LocationServices.getFusedLocationProviderClient(this);
-
         firstname = findViewById(R.id.fname);
         lastname = findViewById(R.id.lname);
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         profilePic = findViewById(R.id.profile_image);
+        ward = getIntent().getStringExtra("ward");
+        district = getIntent().getStringExtra("district");
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
 
@@ -125,77 +124,25 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 if(firstname.getText().equals("") || lastname.getText().equals("") || firstname.getText().toString().isEmpty()|| lastname.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    getLocation();
+                    fName = firstname.getText().toString();
+                    lName = lastname.getText().toString();
+                    contact = pref.getString("key_name5", null);
+
+                    Intent intent = new Intent(GatherUserDetails.this, InterestTagPicker.class);
+                    intent.putExtra("fName", fName);
+                    intent.putExtra("lName", lName);
+                    intent.putExtra("contact", contact);
+                    intent.putExtra("ward", ward.trim());
+                    intent.putExtra("district", district.trim());
+
+                    if(downloadUri != null)
+                        intent.putExtra("uri", downloadUri.toString());
+
+                    startActivity(intent);
+                    Log.d(TAG,ward+"::"+district);
                 }
             }
         });
-    }
-
-    public void getLocation(){
-        client.getLastLocation().addOnSuccessListener(location -> {
-            if(location != null){
-                try {
-                    getAddress(location);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                finalizeAndNextActivity();
-            }
-        });
-    }
-
-    public void finalizeAndNextActivity() {
-        fName = firstname.getText().toString();
-        lName = lastname.getText().toString();
-        contact = pref.getString("key_name5", null);
-
-        Intent intent = new Intent(GatherUserDetails.this, InterestTagPicker.class);
-        intent.putExtra("fName", fName);
-        intent.putExtra("lName", lName);
-        intent.putExtra("contact", contact);
-        intent.putExtra("ward", ward.trim());
-        intent.putExtra("district", district.trim());
-
-        if(downloadUri != null)
-            intent.putExtra("uri", downloadUri.toString());
-
-        startActivity(intent);
-    }
-
-    public void getAddress(Location location) throws IOException {
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-        //need to figure out different
-        if(addresses.get(0).getCountryName().toLowerCase().equals("united states")) {
-            district = addresses.get(0).getSubAdminArea();
-            ward = addresses.get(0).getLocality();
-        } else {
-            district = addresses.get(0).getSubAdminArea();
-            //logic to get ward from address line
-            Scanner scan = new Scanner(addresses.get(0).getAddressLine(0));
-            scan.useDelimiter(",");
-            List<String> parsing = new ArrayList<>();
-            while (scan.hasNext()) {
-                String w = String.valueOf(scan.next());
-                if(w.trim().equals(district.trim())) {
-                    ward = parsing.get(parsing.size()-1);
-                } else {
-                    parsing.add(w);
-                }
-            }
-        }
-    }
-
-    private void requestLocationPermission() {
-        Log.i(TAG, "Requesting permission");
-        ActivityCompat.requestPermissions(GatherUserDetails.this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_PERMISSIONS_REQUEST_CODE);
-        getLocation();
     }
 
     public void selectFile(){
@@ -230,17 +177,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             }
         }
 
-        if(requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation();
-            } else {
-                Toast.makeText(GatherUserDetails.this,
-                        "Location is required to continue",
-                        Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
     }
 
     //code for upload the image
