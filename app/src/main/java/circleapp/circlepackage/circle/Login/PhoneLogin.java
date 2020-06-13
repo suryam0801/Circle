@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -67,15 +68,12 @@ public class PhoneLogin extends AppCompatActivity {
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
-
-        //To set the Fullscreen
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        getWindow().setFormat(PixelFormat.RGB_565);
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
@@ -86,7 +84,6 @@ public class PhoneLogin extends AppCompatActivity {
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
         client = LocationServices.getFusedLocationProviderClient(this);
-
 
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);

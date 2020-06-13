@@ -92,7 +92,6 @@ public class WorkbenchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
 
-        Bundle params1 = new Bundle();
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
@@ -157,7 +156,6 @@ public class WorkbenchFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 if (circle.getCircleDistrict().equals(user.getDistrict())) {
@@ -166,33 +164,12 @@ public class WorkbenchFragment extends Fragment {
                     for (Circle c : tempCircleList) {
                         if (c.getId().equals(circle.getId())) {
                             workbenchCircleList.remove(position);
-                            workbenchCircleList.add(position, circle);
-                            wbadapter.notifyDataSetChanged();
+                            workbenchCircleList.add(0, circle);
+                            wbrecyclerView.setAdapter(wbadapter);
                         }
                         ++position;
                     }
                 }
-
-                boolean existingMember = false;
-                if (circle.getMembersList() != null) {
-                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
-                        existingMember = true;
-                }
-
-                //checking for duplicate
-                boolean duplicate = false;
-                for (Circle c : workbenchCircleList) {
-                    if (c.getId().equals(circle.getId())) {
-                        duplicate = true;
-                    }
-                }
-
-                if (existingMember == true && duplicate == false) {
-                    workbenchCircleList.add(circle);
-                    wbadapter.notifyDataSetChanged();
-                }
-
-
             }
 
             @Override
