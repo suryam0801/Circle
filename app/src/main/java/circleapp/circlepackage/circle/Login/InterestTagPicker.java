@@ -495,6 +495,7 @@ public class InterestTagPicker extends AppCompatActivity {
                     .addOnSuccessListener(aVoid -> {
                         startActivity(new Intent(InterestTagPicker.this, ExploreTabbedActivity.class));
                         sendnotify();
+                        finish();
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override

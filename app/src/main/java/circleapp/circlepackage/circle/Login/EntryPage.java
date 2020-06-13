@@ -1,10 +1,12 @@
 package circleapp.circlepackage.circle.Login;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Button;
@@ -36,5 +38,16 @@ public class EntryPage extends AppCompatActivity{
                 runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
             }
         });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        LocationHelper locationHelper = new LocationHelper(EntryPage.this);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            locationHelper.getLocation();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
