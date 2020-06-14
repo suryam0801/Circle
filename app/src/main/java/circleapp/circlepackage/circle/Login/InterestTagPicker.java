@@ -591,11 +591,11 @@ public class InterestTagPicker extends AppCompatActivity {
                         .setContentText("Welcome to the Circle " + firebaseAuth.getCurrentUser().getDisplayName() +
                                 " You can find the people with same Interest in your Locality");
 
+
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
-
         // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());

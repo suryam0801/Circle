@@ -8,6 +8,9 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -143,23 +146,44 @@ public class MainActivity extends AppCompatActivity {
         String state = notif.getState();
         String name = "";
         String description = "";
+        PendingIntent contentIntent = null;
 
         switch (state) {
             case "Accepted":
                 name = "Application Accepted";
                 description = "Accepted into " + notif.getCircleName();
+                Intent intent_accept = new Intent(this, ExploreTabbedActivity.class);
+                contentIntent = PendingIntent.getActivity(this, 0, intent_accept, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
             case "Rejected":
                 name = "Application Rejected";
                 description = "Denied from: " + notif.getCircleName();
+                Intent intent_reject = new Intent(this, ExploreTabbedActivity.class);
+                contentIntent = PendingIntent.getActivity(this, 0, intent_reject, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
             case "broadcast_added":
                 name = "New BroadCast Added";
                 description = "New broadcast in: " + notif.getCircleName();
+                Intent intent_broadcast = new Intent(this, ExploreTabbedActivity.class);
+                contentIntent = PendingIntent.getActivity(this, 0, intent_broadcast, PendingIntent.FLAG_UPDATE_CURRENT);
+                break;
+            case "new_applicant":
+                name = "New Applicant";
+                description = "New Applicant in: " + notif.getCircleName();
+                Intent intent_applicant = new Intent(this, ExploreTabbedActivity.class);
+                contentIntent = PendingIntent.getActivity(this, 0, intent_applicant, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
             default:
                 break;
         }
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, CHANNEL_1_ID);
+//                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setContentTitle(name)
+//                .setContentText(description)
+//                .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -167,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText(description)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(contentIntent)
                 .build();
         notificationManager.notify(1, notification);
     }

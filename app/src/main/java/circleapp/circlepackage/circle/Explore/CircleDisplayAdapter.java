@@ -40,6 +40,7 @@ import java.util.Locale;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -291,6 +292,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             analyticsLogEvents.logEvents(context,"circle_apply", "apply_explore","on_button_click");
             //adding userID to applicants list
             circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
+            SendNotification.sendnotification("new_applicant",circle.getId(),circle.getName(),circle.getCreatorID());
         } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             //adding userID to members list in circlesReference
@@ -305,8 +307,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             circleJoinDialog.dismiss();
 
 
-        if (circle.getAcceptanceType().equalsIgnoreCase("review"))
-            viewHolder.join.setText("Apply");
+        if (circle.getAcceptanceType().equalsIgnoreCase("review")){
+            viewHolder.join.setText("Apply");}
         else {
             title.setText("Successfully Joined!");
             description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");

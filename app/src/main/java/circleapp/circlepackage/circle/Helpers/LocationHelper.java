@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Helpers;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Login.EntryPage;
+import circleapp.circlepackage.circle.Login.InterestTagPicker;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.R;
 
@@ -43,6 +45,7 @@ public class LocationHelper{
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
+//    progressDialog = new abstract ProgressDialog(activity);
     public LocationHelper(Activity activity)  {
         this.activity = activity;
     }
@@ -51,6 +54,7 @@ public class LocationHelper{
     @SuppressLint("MissingPermission")
     public void getLocation()
     {
+
         //Criterias for location access
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
@@ -95,6 +99,7 @@ public class LocationHelper{
         //to check the location service is enabled or not
 //        locationManager.requestLocationUpdates("gps", 0, 0, locationListener);
         statusCheck();
+
     }
 
     //fun to get the address of the user
