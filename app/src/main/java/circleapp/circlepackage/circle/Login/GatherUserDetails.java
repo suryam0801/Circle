@@ -46,10 +46,13 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 
 public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
 
@@ -96,6 +99,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         profilePic = findViewById(R.id.profile_image);
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
+        RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
         analyticsLogEvents = new AnalyticsLogEvents();
@@ -104,16 +108,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         profilepicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                analyticsLogEvents.logEvents(GatherUserDetails.this,"dp_uploaded","upload_button","gather_user_details");
-                if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(GatherUserDetails.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            STORAGE_PERMISSION_CODE);
 
-                } else {
+                if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+
                     selectFile();
+                } else {
+                    runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                 }
 
             }
@@ -228,7 +228,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     public void onSuccess(Uri uri) {
                         progressDialog.dismiss();
                         //and displaying a success toast
-                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         downloadUri = uri;
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
