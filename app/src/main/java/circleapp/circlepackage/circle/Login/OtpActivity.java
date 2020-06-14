@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -63,6 +64,7 @@ public class OtpActivity extends AppCompatActivity {
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
     private User userldb;
+    AnalyticsLogEvents analyticsLogEvents;
     //    private AppDatabase lDb;
     String doc_id;
 
@@ -71,6 +73,7 @@ public class OtpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
+        analyticsLogEvents = new AnalyticsLogEvents();
         //To set the Fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
@@ -157,6 +160,7 @@ public class OtpActivity extends AppCompatActivity {
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
+                                analyticsLogEvents.logEvents(OtpActivity.this,"resent_otp","button_pressed","otp_activity");
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
                                 Toast.makeText(getApplicationContext(), "OTP Resent", Toast.LENGTH_SHORT).show();
                             }

@@ -45,6 +45,7 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -69,6 +70,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     EditText firstname;
     EditText lastname;
     Button register;
+    AnalyticsLogEvents analyticsLogEvents;
 
 
     //location services elements
@@ -100,6 +102,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
+        analyticsLogEvents = new AnalyticsLogEvents();
 
         //listener for button to add the profilepic
         profilepicButton.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +143,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
                     startActivity(intent);
                     Log.d(TAG,ward+"::"+district);
+                    analyticsLogEvents.logEvents(GatherUserDetails.this,ward.trim(),district.trim(),"gather_user_details");
                 }
             }
         });

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
@@ -22,10 +23,12 @@ public class EntryPage extends AppCompatActivity{
 
     private static final String TAG = EntryPage.class.getSimpleName();
     private Button agreeContinue;
+    AnalyticsLogEvents analyticsLogEvents;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_page);
+        analyticsLogEvents = new AnalyticsLogEvents();
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
@@ -34,6 +37,7 @@ public class EntryPage extends AppCompatActivity{
                 locationHelper.getLocation();
 
             } else {
+                analyticsLogEvents.logEvents(EntryPage.this, "location_permission", "location_off","app_open");
                 runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
             }
         });
