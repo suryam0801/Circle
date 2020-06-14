@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(this);
 
         database = FirebaseDatabase.getInstance();
-        notificationCountGetter();
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
         if (prefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            notificationCountGetter();
             usersDB = database.getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             usersDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendOnChannel1(circleapp.circlepackage.circle.ObjectModels.Notification notif) {
-        Log.d(TAG, "SENDING FIRST NOTIF!!!!");
         String state = notif.getState();
         String name = "";
         String description = "";
@@ -158,8 +157,9 @@ public class MainActivity extends AppCompatActivity {
                 name = "New BroadCast Added";
                 description = "New broadcast in: " + notif.getCircleName();
                 break;
+            default:
+                break;
         }
-
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
