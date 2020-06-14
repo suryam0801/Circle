@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.R;
 
 public class PhoneLogin extends AppCompatActivity {
@@ -67,6 +69,7 @@ public class PhoneLogin extends AppCompatActivity {
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
+    AnalyticsLogEvents analyticsLogEvents;
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
 
@@ -85,6 +88,7 @@ public class PhoneLogin extends AppCompatActivity {
         mLoginProgress = findViewById(R.id.login_progress_bar);
         mLoginFeedbackText = findViewById(R.id.login_form_feedback);
         ccp = findViewById(R.id.ccp);
+        analyticsLogEvents = new AnalyticsLogEvents();
 
         pos=getIntent().getIntExtra("pos",1234);
         mCountryName = getIntent().getStringExtra("countryName");
@@ -100,6 +104,7 @@ public class PhoneLogin extends AppCompatActivity {
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                analyticsLogEvents.logEvents(PhoneLogin.this,"select_county","location_different","phone_login");
                 String code = getCountryCode(ccp.getSelectedItem().toString());
                 String contryDialCode = null;
                 String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
@@ -163,6 +168,7 @@ public class PhoneLogin extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
+                analyticsLogEvents.logEvents(PhoneLogin.this,"phone_number","verification_failed","phone_login");
                 mLoginFeedbackText.setText("Verification Failed, please try again."+e.toString());
                 Log.d("EDITORVIEW", "error: " + e.toString());
                 mLoginFeedbackText.setVisibility(View.VISIBLE);
@@ -186,6 +192,7 @@ public class PhoneLogin extends AppCompatActivity {
                                 otpIntent.putExtra("district",district);
                                 startActivity(otpIntent);
                                 Log.d(TAG,pos+"::"+mCountryDialCode+"::"+ward+"::"+district);
+                                analyticsLogEvents.logEvents(PhoneLogin.this,"otp_sent","verification_success","phone_login");
                                 finish();
                             }
                         },
