@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, EntryPage.class));
                         finish();
                     }
-                }
+                } 
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-        
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(name)
