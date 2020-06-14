@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.R;
 
 public class PhoneLogin extends AppCompatActivity {
@@ -72,7 +73,7 @@ public class PhoneLogin extends AppCompatActivity {
     AnalyticsLogEvents analyticsLogEvents;
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
-
+    LocationHelper locationHelper;
 
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)

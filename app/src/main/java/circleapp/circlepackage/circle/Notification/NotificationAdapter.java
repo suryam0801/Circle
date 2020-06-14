@@ -93,11 +93,8 @@ public class NotificationAdapter extends BaseAdapter {
         SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join "  + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
         SpannableStringBuilder newBroadCast = new SpannableStringBuilder("New BroadCast has been added to " + notif.getCircleName()); //start index: 32
         SpannableStringBuilder newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
-        SpannableStringBuilder newMember = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
-        SpannableStringBuilder taskUpdate = new SpannableStringBuilder("A task has been updated in " + notif.getCircleName()); //start index: 28
-        SpannableStringBuilder resourceAdded = new SpannableStringBuilder("A resource has been added to " + notif.getCircleName() + ", check it out and give your opinion."); //start index: 29
-        SpannableStringBuilder addedToChatGroup = new SpannableStringBuilder("You have been added to a chat group in " + notif.getCircleName()); //start index: 39
-        SpannableStringBuilder memberRemoved = new SpannableStringBuilder("A member has been removed from " + notif.getCircleName()); //start index: 31
+        SpannableStringBuilder new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
+
 
         ForegroundColorSpan fcsSkyBlue = new ForegroundColorSpan(Color.parseColor("#6CACFF"));
 
@@ -127,45 +124,13 @@ public class NotificationAdapter extends BaseAdapter {
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
                 break;
-            case "new member added":
+            case "new_applicant":
                 gd.setColor(Color.parseColor("#D856FF"));
                 backgroundColor.setBackground(gd);
                 notificationTitle.setText("New Member Onboard");
                 //foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_person_add_black_24dp));
-                newMember.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                notificationDescription.setText(newMember);
-                break;
-            case "added to chatgroup":
-                gd.setColor(Color.parseColor("#36D1DC"));
-                backgroundColor.setBackground(gd);
-                notificationTitle.setText("Added to New Chatgroup");
-                addedToChatGroup.setSpan(fcsSkyBlue, 39, 39 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_chat_black_24dp));
-                notificationDescription.setText(addedToChatGroup);
-                break;
-            case "task added":
-                gd.setColor(Color.parseColor("#11F692"));
-                backgroundColor.setBackground(gd);
-                notificationTitle.setText("New Task");
-                foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_playlist_add_black_24dp));
-                taskUpdate.setSpan(fcsSkyBlue, 27, 27 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                notificationDescription.setText(taskUpdate);
-                break;
-            case "member removed":
-                gd.setColor(Color.parseColor("#FF6161"));
-                backgroundColor.setBackground(gd);
-                notificationTitle.setText("Member Removed");
-                foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_remove_circle_outline_black_24dp));
-                memberRemoved.setSpan(fcsSkyBlue, 31, 31 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                notificationDescription.setText(memberRemoved);
-                break;
-            case "resource added":
-                gd.setColor(Color.parseColor("#158BF1"));
-                backgroundColor.setBackground(gd);
-                notificationTitle.setText("New Resource");
-                resourceAdded.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_attach_file_black_24dp));
-                notificationDescription.setText(resourceAdded);
+                new_applicant.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                notificationDescription.setText(new_applicant);
                 break;
         }
 
