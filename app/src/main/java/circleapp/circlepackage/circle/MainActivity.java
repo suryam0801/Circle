@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendOnChannel1(circleapp.circlepackage.circle.ObjectModels.Notification notif) {
-        Log.d(TAG, "SENDING FIRST NOTIF!!!!");
         String state = notif.getState();
         String name = "";
         String description = "";
@@ -157,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
             case "broadcast_added":
                 name = "New BroadCast Added";
                 description = "New broadcast in: " + notif.getCircleName();
+                break;
+            default:
                 break;
         }
 
