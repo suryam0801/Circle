@@ -356,16 +356,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        /*int count = fragmentManager.getBackStackEntryCount();
-        for(int i = 0; i < count; ++i) {
-            fragmentManager.popBackStackImmediate();
-        }*/
-        //fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        //this will clear the back stack and displays no animation on the screen
-        //fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        //while(fragmentManager.getBackStackEntryCount() > 0) { fragmentManager.popBackStackImmediate(); }
-        //fragmentManager = getSupportFragmentManager();
-        //clearBackStack(fragmentManager);
         super.onBackPressed();
     }
 }
