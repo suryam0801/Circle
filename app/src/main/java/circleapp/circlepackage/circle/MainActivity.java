@@ -8,7 +8,9 @@ import androidx.core.app.NotificationManagerCompat;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -49,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(this);
 
         database = FirebaseDatabase.getInstance();
-        notificationCountGetter();
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
         if (prefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            notificationCountGetter();
             usersDB = database.getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             usersDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, EntryPage.class));
                         finish();
                     }
-                } 
+                }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -174,6 +176,14 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, CHANNEL_1_ID);
+//                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setContentTitle(name)
+//                .setContentText(description)
+//                .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
