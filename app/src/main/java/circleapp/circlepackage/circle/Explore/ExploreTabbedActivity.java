@@ -350,4 +350,8 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

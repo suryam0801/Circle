@@ -2,11 +2,13 @@ package circleapp.circlepackage.circle.Login;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.LocationListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -57,6 +59,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -85,6 +88,8 @@ public class InterestTagPicker extends AppCompatActivity {
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private int noOfTagsChosen = 0;
+    GatherUserDetails gatherUserDetails;
+    ProgressDialog progressDialog;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -109,6 +114,8 @@ public class InterestTagPicker extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
 
+        gatherUserDetails = new GatherUserDetails();
+
         fName = getIntent().getStringExtra("fName");
         lName = getIntent().getStringExtra("lName");
 
@@ -116,7 +123,8 @@ public class InterestTagPicker extends AppCompatActivity {
         district = getIntent().getStringExtra("district");
         contact = getIntent().getStringExtra("contact");
         downloadUri = getIntent().getStringExtra("uri");
-
+        progressDialog = new ProgressDialog(InterestTagPicker.this);
+        progressDialog.setTitle("Registering User....");
         tags.child("locationInterestTags").child(district.trim()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -181,7 +189,11 @@ public class InterestTagPicker extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
+            progressDialog.show();
             UserReg();
+            Log.d(TAG,"Button Clicked");
+
+//            gatherUserDetails.finishActivity(0);
 
         });
 
@@ -437,7 +449,7 @@ public class InterestTagPicker extends AppCompatActivity {
     }
 
     public void UserReg() {
-
+        Log.d(TAG,"User reg called");
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(fName) && !TextUtils.isEmpty(lName)) {
             //getting the current user id
@@ -455,9 +467,10 @@ public class InterestTagPicker extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 noOfTagsChosen = selectedInterestTags.size();
-                                Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                                 //Adding the user to collection
                                 addUser();
+                                Log.d(TAG,"User Registered success fully added");
+                                Toast.makeText(InterestTagPicker.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(InterestTagPicker.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                 //to signout the current firebase user
@@ -520,20 +533,29 @@ public class InterestTagPicker extends AppCompatActivity {
 
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
+            Log.d(TAG,"User data success fully added realtime db");
 
+            Log.d(TAG,"User data success fully added");
+            progressDialog.cancel();
+            Intent i = new Intent(InterestTagPicker.this, ExploreTabbedActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
+            startActivity(i);
+            Log.d(TAG,"Intent lines are executed...");
+            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
+            sendnotify();
+            gatherUserDetails.finishActivity(0);
+            finish();
             db.collection("Users")
                     .document(userId)
                     .set(user)
                     .addOnSuccessListener(aVoid -> {
-                        Intent i = new Intent(InterestTagPicker.this, ExploreTabbedActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-                        sendnotify();
-                        finish();
+//                        progressDialog.cancel();
+
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -570,5 +592,10 @@ public class InterestTagPicker extends AppCompatActivity {
         chipGroup.removeAllViews();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
 }
 

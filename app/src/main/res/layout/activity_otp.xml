@@ -8,15 +8,14 @@
     android:orientation="vertical"
     tools:context=".Login.OtpActivity">
 
-
-            <TextView
-                android:id="@+id/otp_title"
+    <TextView
+            android:id="@+id/otp_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Enter Verification Code"
-                android:textColor="@color/color_blue"
-                android:textSize="22sp" />
+    android:textColor="@color/color_blue"
+        android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/otp_desc"
