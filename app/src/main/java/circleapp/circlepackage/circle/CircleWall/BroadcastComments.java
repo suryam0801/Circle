@@ -41,6 +41,8 @@ import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
+import static android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
+
 public class BroadcastComments extends AppCompatActivity {
 
     private ListView commentsListView;
@@ -81,7 +83,7 @@ public class BroadcastComments extends AppCompatActivity {
         circle = SessionStorage.getCircle(BroadcastComments.this);
 
         loadComments();
-
+//        BroadcastComments.setSoftInputMode(SOFT_INPUT_ADJUST_PAN);
         commentSend.setOnClickListener(view -> {
             if (!commentEditText.getText().toString().trim().equals(""))
                 makeCommentEntry();

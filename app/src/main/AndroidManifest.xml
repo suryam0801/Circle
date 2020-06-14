@@ -7,8 +7,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
 
     <application
@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.EntryPage" />
-        <activity android:name=".CircleWall.BroadcastComments" />
+        <activity android:name=".CircleWall.BroadcastComments"/>
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity android:name=".Login.InterestTagPicker" android:noHistory="true"/>

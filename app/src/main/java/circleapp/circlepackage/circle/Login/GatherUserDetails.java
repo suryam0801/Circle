@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -101,8 +102,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         district = getIntent().getStringExtra("district");
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-
+        firstname.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        lastname.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         analyticsLogEvents = new AnalyticsLogEvents();
+
 
         //listener for button to add the profilepic
         profilepicButton.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +147,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     startActivity(intent);
                     Log.d(TAG,ward+"::"+district);
                     analyticsLogEvents.logEvents(GatherUserDetails.this,ward.trim(),district.trim(),"gather_user_details");
+
                 }
             }
         });
@@ -158,28 +162,18 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super
-                .onRequestPermissionsResult(requestCode,
-                        permissions,
-                        grantResults);
-        if (requestCode == STORAGE_PERMISSION_CODE) {
+    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(GatherUserDetails.this,
-                        "Storage Permission Granted",
-                        Toast.LENGTH_SHORT)
-                        .show();
                 selectFile();
-            } else {
+        } else {
                 Toast.makeText(GatherUserDetails.this,
                         "Storage Permission Denied",
                         Toast.LENGTH_SHORT)
                         .show();
             }
-        }
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
 
     }
 
