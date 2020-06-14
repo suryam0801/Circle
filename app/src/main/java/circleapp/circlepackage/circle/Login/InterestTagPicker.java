@@ -92,7 +92,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private int noOfTagsChosen = 0;
+    private int noOfTagsChosen;
     GatherUserDetails gatherUserDetails;
     ProgressDialog progressDialog;
 

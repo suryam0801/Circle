@@ -216,7 +216,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         logout.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "","edit_profile");
+            analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "logout","edit_profile");
             currentUser.signOut();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
