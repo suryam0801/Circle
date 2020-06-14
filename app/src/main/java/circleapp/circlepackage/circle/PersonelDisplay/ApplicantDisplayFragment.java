@@ -104,7 +104,7 @@ public class ApplicantDisplayFragment extends Fragment {
         applicantsList = new ArrayList<>(); //initialize membersList
 
 
-            final RecyclerView.Adapter adapter = new ApplicantListAdapter(getContext(), applicantsList, circle);
+        final RecyclerView.Adapter adapter = new ApplicantListAdapter(getContext(), applicantsList, circle);
         if (firebaseAuth.getCurrentUser().getUid().equalsIgnoreCase(circle.getCreatorID()))
         {
             recyclerView.setAdapter(adapter);
@@ -112,33 +112,20 @@ public class ApplicantDisplayFragment extends Fragment {
         circlesPersonelDB.child("applicants").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    recyclerView.setAdapter(adapter);
                     Log.d(TAG, "CHILD ADDED");
                     Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
                     applicantsList.add(subscriber);
                     adapter.notifyDataSetChanged();
-
                 }
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "CHILD CHANGED");
-                    Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                    int position = 0;
-
-                    List<Subscriber> tempList = new ArrayList<>(applicantsList);
-                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                    for (Subscriber sub : tempList) {
-                        if (sub.getId().equals(subscriber.getId())) {
-                            applicantsList.set(position, subscriber);
-                            adapter.notifyDataSetChanged();
-                            break;
-                        }
-                    }
-
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    recyclerView.setAdapter(adapter);
                     Log.d(TAG, "CHILD REMOVED");
                     Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
                     int position = 0;
@@ -147,9 +134,10 @@ public class ApplicantDisplayFragment extends Fragment {
                     for (Subscriber sub : tempList) {
                         if (sub.getId().equals(subscriber.getId())) {
                             applicantsList.remove(position);
-                            adapter.notifyDataSetChanged();
+                            adapter.notifyItemRemoved(position);
                             break;
                         }
+                        position = position+1;
                     }
                 }
 
