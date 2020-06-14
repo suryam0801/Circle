@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Explore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
@@ -47,6 +48,8 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
+import static android.text.TextUtils.replace;
+
 public class ExploreTabbedActivity extends AppCompatActivity {
 
 
@@ -66,6 +69,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     Intent shareIntent;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
+    FragmentManager fragmentManager;
 
 
     @Override
@@ -350,4 +354,18 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        /*int count = fragmentManager.getBackStackEntryCount();
+        for(int i = 0; i < count; ++i) {
+            fragmentManager.popBackStackImmediate();
+        }*/
+        //fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        //this will clear the back stack and displays no animation on the screen
+        //fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        //while(fragmentManager.getBackStackEntryCount() > 0) { fragmentManager.popBackStackImmediate(); }
+        //fragmentManager = getSupportFragmentManager();
+        //clearBackStack(fragmentManager);
+        super.onBackPressed();
+    }
 }

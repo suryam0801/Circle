@@ -285,7 +285,7 @@ public class InterestTagPicker extends AppCompatActivity {
         pollOptions.put("No way, its dry as a dog biscuit", 0);
         Poll adminPoll = new Poll("Use polls like this to quickly get your friends’ opinion about something!", pollOptions, null);
         Broadcast commentBroadcast = new Broadcast("commentBroadcast", "You can have a discussion about your posts down in the " +
-                "comments below. Click on view comments to see the secret message. :)", null, "Jacob",
+                "comments below. Click on Go to discussion to see the secret message. :)", null, "Jacob",
                 "AdminId", false,
                 (System.currentTimeMillis() - 1), null, "default");
         Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,

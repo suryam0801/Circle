@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="circleapp.circlepackage.circle">
 
+
     <uses-sdk android:targetSdkVersion="29" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".CircleWall.CreatorPollAnswersView"></activity>
-        <activity android:name=".Explore.ExploreTabbedActivity">
+        <activity android:name=".Explore.ExploreTabbedActivity" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
