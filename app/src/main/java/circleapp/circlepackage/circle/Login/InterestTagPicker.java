@@ -97,7 +97,6 @@ public class InterestTagPicker extends AppCompatActivity {
     ProgressDialog progressDialog;
 
     AnalyticsLogEvents analyticsLogEvents;
-    private int noOfTagsChosen;
 
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
