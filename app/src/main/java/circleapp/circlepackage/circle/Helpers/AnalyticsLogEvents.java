@@ -18,6 +18,9 @@ public class AnalyticsLogEvents {
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, type);
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        Bundle params = new Bundle();
+        params.putString(name,id);
+        firebaseAnalytics.logEvent(type, params);
 
 
     }
