@@ -132,7 +132,7 @@ public class CreateCircle extends AppCompatActivity {
         btn_createCircle.setOnClickListener(view -> {
             String cName = circleNameEntry.getText().toString().trim();
             String cDescription = circleDescriptionEntry.getText().toString().trim();
-            if (!cName.isEmpty() && !cDescription.isEmpty() && !selectedInterests.isEmpty()) {
+            if (!cName.isEmpty() && !cDescription.isEmpty()) {
                 analyticsLogEvents.logEvents(CreateCircle.this, "created_circle", "new_circle_created","on_button_click");
                 createCirlce(cName, cDescription);
             } else {

@@ -154,7 +154,7 @@
                   android:gravity="start|center"
                   android:paddingLeft="19dp"
                   android:paddingRight="19dp"
-                  android:text="Continue To Set Interest Tags"
+                  android:text="Continue To Set Circle Tags"
                   android:textAllCaps="false"
                   android:textColor="#FFFFFFFF"
                   android:textSize="15dp" />
