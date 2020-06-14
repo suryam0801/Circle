@@ -113,6 +113,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
                     selectFile();
                 } else {
+                    analyticsLogEvents.logEvents(GatherUserDetails.this, "Location_off","asked_permission", "gather_user_details");
                     runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                 }
 
