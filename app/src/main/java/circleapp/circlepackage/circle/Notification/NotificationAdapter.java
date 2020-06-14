@@ -123,7 +123,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationDescription.setText(newBroadCast);
                 break;
             case "new_user":
-                notificationTitle.setText("New BroadCast Added");
+                notificationTitle.setText("Welcome to CIRCLE");
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
                 break;
