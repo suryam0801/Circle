@@ -57,7 +57,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -85,8 +84,7 @@ public class InterestTagPicker extends AppCompatActivity {
     private Button interestTagAdd;
     private DatabaseReference tags, usersDB;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private int noOfTagsChosen=0;
-    GatherUserDetails gatherUserDetails;
+    private int noOfTagsChosen = 0;
 
     private HashMap<String, Object> locIntTags = new HashMap<>();
 
@@ -110,7 +108,6 @@ public class InterestTagPicker extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
-        gatherUserDetails = new GatherUserDetails();
 
         fName = getIntent().getStringExtra("fName");
         lName = getIntent().getStringExtra("lName");
@@ -120,10 +117,10 @@ public class InterestTagPicker extends AppCompatActivity {
         contact = getIntent().getStringExtra("contact");
         downloadUri = getIntent().getStringExtra("uri");
 
-        tags.child("locationInterestTags").child(district.trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+        tags.child("locationInterestTags").child(district.trim()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
                     locIntTags = (HashMap<String, Object>) snapshot.getValue();
 
                     Log.d(TAG, "LOC INT TAGS: " + locIntTags.keySet().toString());
@@ -136,7 +133,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
                         for (String interest : tempInterests) {
                             if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
-                                if(entry.getKey().trim().equals(ward.trim()))
+                                if (entry.getKey().trim().equals(ward.trim()))
                                     dbInterestTags.add(0, interest);
                                 else
                                     dbInterestTags.add(interest);
@@ -157,7 +154,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         }
                     }
                     //set tags in ward order
-                    for(String tag : dbInterestTags)
+                    for (String tag : dbInterestTags)
                         setTag(tag);
                 } else {
                     //if location does not exist... write create manual circles
@@ -169,7 +166,7 @@ public class InterestTagPicker extends AppCompatActivity {
                     dbInterestTags.add("music");
                     dbInterestTags.add("biking");
 
-                    for(String interest : dbInterestTags){
+                    for (String interest : dbInterestTags) {
                         setTag(interest);
                     }
                 }
@@ -181,7 +178,7 @@ public class InterestTagPicker extends AppCompatActivity {
         });
 
         register.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
             UserReg();
@@ -189,7 +186,7 @@ public class InterestTagPicker extends AppCompatActivity {
         });
 
         skip.setOnClickListener(view -> {
-            if(!selectedInterestTags.isEmpty())
+            if (!selectedInterestTags.isEmpty())
                 selectedInterestTags.clear();
 
             selectedInterestTags.add("null");
@@ -199,7 +196,7 @@ public class InterestTagPicker extends AppCompatActivity {
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
         interestTagsEntry.setOnEditorActionListener((v, actionId, event) -> {
             boolean handled = false;
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE))  {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                 String interestTag = interestTagsEntry.getText().toString().replace("#", "");
                 if (!interestTag.isEmpty()) {
                     selectedInterestTags.add(interestTag);
@@ -247,7 +244,7 @@ public class InterestTagPicker extends AppCompatActivity {
         interestTagAdd.setOnClickListener(view -> {
             String interestTag = interestTagsEntry.getText().toString().replace("#", "");
             if (!interestTag.isEmpty()) {
-                if(!selectedInterestTags.contains(interestTag)){
+                if (!selectedInterestTags.contains(interestTag)) {
                     selectedInterestTags.add(interestTag);
                     if (!dbInterestTags.contains(interestTag)) {
                         dbInterestTags.add(interestTag);
@@ -284,13 +281,13 @@ public class InterestTagPicker extends AppCompatActivity {
         Broadcast commentBroadcast = new Broadcast("commentBroadcast", "You can have a discussion about your posts down in the " +
                 "comments below. Click on view comments to see the secret message. :)", null, "Jacob",
                 "AdminId", false,
-                (System.currentTimeMillis()-1), null, "default");
+                (System.currentTimeMillis() - 1), null, "default");
         Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,
                 System.currentTimeMillis(), adminPoll, "default");
         Broadcast introBroadcast = new Broadcast("introBroadcast", "Welcome to Circle! Your friendly neighborhood app. Form circles " +
                 "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
                 "opinions - all on a single platform.", null, "Surya", "AdminId", false,
-                (System.currentTimeMillis()+1), null, "default");
+                (System.currentTimeMillis() + 1), null, "default");
 
         Comment comment = new Comment("Srinithi", "The answer to life is not 42. It's the bonds you build " +
                 "around your circle.",
@@ -305,48 +302,81 @@ public class InterestTagPicker extends AppCompatActivity {
         //running circle
         String runningCircleID = UUID.randomUUID().toString();
         String runningBroadcastID = UUID.randomUUID().toString();
+        String runningBroadcasPollID = UUID.randomUUID().toString();
         String runningCommentID = UUID.randomUUID().toString();
-        Circle runningCircle = new Circle(runningCircleID, district + " Morning Runner's",
+        Circle runningCircle = new Circle(runningCircleID, "Morning Runner's " + district,
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
                 "automatic", "CreatorAdmin", "Vijay Ram", circleIntTags,
                 null, null, district, ward, System.currentTimeMillis(), 0);
         HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
-        pollOptionsRunningCircle.put("Sure!", 8);
-        pollOptionsRunningCircle.put("Thats too early :(", 4);
+        pollOptionsRunningCircle.put("Sure!", 0);
+        pollOptionsRunningCircle.put("Thats too early :(", 0);
         Poll runningPoll = new Poll("Hey guys! Can we go running every friday early in the morning?", pollOptionsRunningCircle, null);
-        Broadcast runnersBroadcast = new Broadcast(runningBroadcastID, "Lets go running guys!", null, "Vijay Ram", "AdminId", true,
+        Broadcast runnersBroadcastMessage = new Broadcast(runningBroadcastID, "Hi all! This is a group to find mates to go on daily runs with. Runners of all levels welcome!", null, "Vijay Ram", "AdminId", false,
+                System.currentTimeMillis(), null, "default");
+        Broadcast runnersBroadcastPoll = new Broadcast(runningBroadcasPollID, null, null, "Vijay Ram", "AdminId", true,
                 System.currentTimeMillis(), runningPoll, "default");
         Comment runnerComment = new Comment("Madhu mitha", "Hey where do you guys go running?",
                 runningCommentID, null, System.currentTimeMillis());
         circlesDB.child(runningCircleID).setValue(runningCircle);
-        broadcastsDB.child(runningCircleID).child(runningBroadcastID).setValue(runnersBroadcast);
+        broadcastsDB.child(runningCircleID).child(runningBroadcastID).setValue(runnersBroadcastMessage);
+        broadcastsDB.child(runningCircleID).child(runningBroadcasPollID).setValue(runnersBroadcastPoll);
         commentsDB.child(runningCircleID).child(runningBroadcastID).child(runningCommentID).setValue(runnerComment);
 
-        //cooking circle
-        String cookingCircleID = UUID.randomUUID().toString();
-        String cookingBroadcastID = UUID.randomUUID().toString();
-        String cookingCommentID = UUID.randomUUID().toString();
-        String cookingCommentIDResponse = UUID.randomUUID().toString();
-        String uri = "https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProjectWall%2F-M8R_D4hy1GfNqW7EohE%2Fhealthy_cookies.jpg?alt=media&token=2a33036a-eaba-4017-9684-d7629f49847f";
-        Circle cookingCircle = new Circle(cookingCircleID, district + " Recipe Sharing Circle",
-                "Hello Cooks, join our circle and get access to the best recipes in " + district + " and share your own dishes!",
-                "automatic", "CreatorAdmin", "Mekkala Nair", circleIntTags,
+        //students circle
+        String studentsCircleID = UUID.randomUUID().toString();
+        String studentsBroadcastID = UUID.randomUUID().toString();
+        String studentsBroadcastPollID = UUID.randomUUID().toString();
+        String studentsCommentID = UUID.randomUUID().toString();
+        String studentsCommentIDResponse = UUID.randomUUID().toString();
+        Circle cookingCircle = new Circle(studentsCircleID, district + " Students Hangout!",
+                "Lets use this circle to unite all students in " + district + ". Voice your problems, questions, or anything you need support with. You will never walk alone!",
+                "automatic", "CreatorAdmin", "Malavika Kumar", circleIntTags,
                 null, null, district, ward, System.currentTimeMillis(), 0);
-        HashMap<String, Integer> pollOptionsCookingCircle = new HashMap<>(); //creating poll options
-        pollOptionsCookingCircle.put("I loved them!", 8);
-        pollOptionsCookingCircle.put("Could be a little more sweet", 4);
-        Poll cookingPoll = new Poll("How did you guys like the healthy cookies?", pollOptionsCookingCircle, null);
-        Broadcast cookingBroadcast = new Broadcast(cookingBroadcastID, "Hey guys! I have shared an attachment for my healthy cookie recipe :) " +
-                "Please take a look at let me know what you think", uri, "Mekkala Nair", "AdminId", true,
+        HashMap<String, Integer> pollOptionsStudentsCircle = new HashMap<>(); //creating poll options
+        pollOptionsStudentsCircle.put("no! it will get cancelled!", 0);
+        pollOptionsStudentsCircle.put("im preparing :(", 0);
+        pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
+        Poll cookingPoll = new Poll("Are you guys still preparing for exams?", pollOptionsStudentsCircle, null);
+        Broadcast studentBroadcast = new Broadcast(studentsBroadcastID, "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. You have the support of all the students from " + district + " here!", null, "Mekkala Nair", "AdminId", false,
+                System.currentTimeMillis(), null, "default");
+        Broadcast studentBroadcastPoll = new Broadcast(studentsBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
                 System.currentTimeMillis(), cookingPoll, "default");
-        Comment cookingComment = new Comment("Arijit Samuel", "Is it fine if i use normal milk instead of almond milk?",
-                cookingCommentID, null, (System.currentTimeMillis()-(1800*1000)));
-        Comment cookingCommentResponse = new Comment("Mekkala Nair", "Yeah that's not a problem!",
-                cookingCommentIDResponse, null, System.currentTimeMillis());
-        circlesDB.child(cookingCircleID).setValue(cookingCircle);
-        broadcastsDB.child(cookingCircleID).child(cookingBroadcastID).setValue(cookingBroadcast);
-        commentsDB.child(cookingCircleID).child(cookingBroadcastID).child(cookingCommentID).setValue(cookingComment);
-        commentsDB.child(cookingCircleID).child(cookingBroadcastID).child(cookingCommentIDResponse).setValue(cookingCommentResponse);
+        Comment studentComment = new Comment("Arijit Samuel", "Can i post promotions for my college events here?",
+                studentsCommentID, null, (System.currentTimeMillis() - (1800 * 1000)));
+        Comment studentCommentResponse = new Comment("Mekkala Nair", "Yeah that's not a problem!",
+                studentsCommentIDResponse, null, System.currentTimeMillis());
+        circlesDB.child(studentsCircleID).setValue(cookingCircle);
+        broadcastsDB.child(studentsCircleID).child(studentsBroadcastID).setValue(studentBroadcast);
+        broadcastsDB.child(studentsCircleID).child(studentsBroadcastPollID).setValue(studentBroadcastPoll);
+        commentsDB.child(studentsCircleID).child(studentsBroadcastID).child(studentsCommentID).setValue(studentComment);
+        commentsDB.child(studentsCircleID).child(studentsBroadcastID).child(studentsCommentIDResponse).setValue(studentCommentResponse);
+
+        //quarantine circle
+        String quarantineCircleID = UUID.randomUUID().toString();
+        String quarantineBroadcastID = UUID.randomUUID().toString();
+        String quarantineBroadcastPollID = UUID.randomUUID().toString();
+        String quarantineCommentID = UUID.randomUUID().toString();
+        Circle quarantineCircle = new Circle(quarantineCircleID,  "Quarantine Talks " + district,
+                "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
+                "automatic", "CreatorAdmin", "Surya Manivannan", circleIntTags,
+                null, null, district, ward, System.currentTimeMillis(), 0);
+        HashMap<String, Integer> pollOptionsQuarantineCircle = new HashMap<>(); //creating poll options
+        pollOptionsQuarantineCircle.put("1 month", 0);
+        pollOptionsQuarantineCircle.put("2 months", 0);
+        pollOptionsQuarantineCircle.put("3 months", 0);
+        pollOptionsQuarantineCircle.put("haven't even started", 0);
+        Poll quarantinePoll = new Poll("How long have you been in quarantine?", pollOptionsQuarantineCircle, null);
+        Broadcast quarantineBroadcast = new Broadcast(quarantineBroadcastID, "Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)", null, "Mekkala Nair", "AdminId", false,
+                (System.currentTimeMillis() - (1800 * 1000)), null, "default");
+        Broadcast quarantineBroadcastPoll = new Broadcast(quarantineBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
+                System.currentTimeMillis(), quarantinePoll, "default");
+        Comment quarantineComment = new Comment("Nithin M", "Where are you guys buying your essentials?",
+                quarantineCommentID, null, (System.currentTimeMillis()));
+        circlesDB.child(quarantineCircleID).setValue(quarantineCircle);
+        broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastID).setValue(quarantineBroadcast);
+        broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastPollID).setValue(quarantineBroadcastPoll);
+        commentsDB.child(quarantineCircleID).child(quarantineBroadcastID).child(quarantineCommentID).setValue(quarantineComment);
     }
 
     // Function to add a chip to chipgroup
@@ -396,7 +426,7 @@ public class InterestTagPicker extends AppCompatActivity {
 
         });
         //Add a chip to the Chipgroup
-        if(selectedInterestTags.contains(name))
+        if (selectedInterestTags.contains(name))
             chipGroup.addView(chip, 0);
         else
             chipGroup.addView(chip);
@@ -470,14 +500,14 @@ public class InterestTagPicker extends AppCompatActivity {
             user = new User(fName, lName, contact, "default", interestTagHashmap, userId, 0, 0, 0, token_id, ward, district, null);
         }
 
-        if(!selectedInterestTags.contains("null")){
+        if (!selectedInterestTags.contains("null")) {
             for (String i : selectedInterestTags) {
                 tags.child("interestTags").child(i).setValue(true);
                 tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
             }
         }
 
-        if(!dbInterestTags.contains("null")){
+        if (!dbInterestTags.contains("null")) {
             for (String i : dbInterestTags) {
                 tags.child("interestTags").child(i).setValue(true);
                 tags.child("locationInterestTags").child(district.trim()).child(ward.trim()).child(i).setValue(true);
@@ -487,7 +517,6 @@ public class InterestTagPicker extends AppCompatActivity {
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(InterestTagPicker.this, user);
-        storeUserFile(string, getApplicationContext());
 
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
@@ -496,8 +525,9 @@ public class InterestTagPicker extends AppCompatActivity {
                     .document(userId)
                     .set(user)
                     .addOnSuccessListener(aVoid -> {
-                        startActivity(new Intent(InterestTagPicker.this, ExploreTabbedActivity.class));
-                        SendNotification.sendnotification("new_user","adminCircle","The Circle Team",firebaseAuth.getCurrentUser().getUid());
+                        Intent i = new Intent(InterestTagPicker.this, ExploreTabbedActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
                         sendnotify();
                         finish();
                     })
@@ -521,7 +551,7 @@ public class InterestTagPicker extends AppCompatActivity {
                         .setSmallIcon(R.drawable.circle_logo)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
-                        .setContentText("Welcome to the Circle "+firebaseAuth.getCurrentUser().getDisplayName() +
+                        .setContentText("Welcome to the Circle " + firebaseAuth.getCurrentUser().getDisplayName() +
                                 " You can find the people with same Interest in your Locality");
 
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
@@ -534,17 +564,6 @@ public class InterestTagPicker extends AppCompatActivity {
         manager.notify(0, builder.build());
     }
 
-    private void storeUserFile(String data,Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -552,3 +571,4 @@ public class InterestTagPicker extends AppCompatActivity {
     }
 
 }
+
