@@ -80,15 +80,15 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         intentUri = getIntent().getData();
         //recieve request on opening
         if (intentUri != null) {
-            analyticsLogEvents.logEvents(ExploreTabbedActivity.this,"invite_link", "used_link","read_external_link");
+            analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_link", "used_link", "read_external_link");
             url = getIntent().getData().toString();
             String lines[] = url.split("\\r?\\n");
-            for (int i=0; i<lines.length;i++){
+            for (int i = 0; i < lines.length; i++) {
                 Log.d("URL", lines[i]);
             }
             url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
             String circleID = url;
-            Log.d("TAG", "URI:"+circleID);
+            Log.d("TAG", "URI:" + circleID);
             database = FirebaseDatabase.getInstance();
             circlesDB = database.getReference("Circles");
             circlesDB.keepSynced(true);
@@ -98,20 +98,21 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Circle circle = snapshot.getValue(Circle.class);
-                        if(circle.getId().equals(circleID)){
+                        if (circle.getId().equals(circleID)) {
                             circleExists = true;
                             popupCircle = circle;
-                            if(getIntent().getData() != null){
+                            if (getIntent().getData() != null) {
                                 showLinkPopup();
                             }
 
                         }
                     }
-                    if(circleExists==false){
-                        analyticsLogEvents.logEvents(ExploreTabbedActivity.this,"_expired_invite_link", "incorrect_link","read_external_link");
-                        Toast.makeText(ExploreTabbedActivity.this,"The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
+                    if (circleExists == false) {
+                        analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "_expired_invite_link", "incorrect_link", "read_external_link");
+                        Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -195,21 +196,21 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
 
-        if(popupCircle.getAcceptanceType().equalsIgnoreCase("review")){
+        if (popupCircle.getAcceptanceType().equalsIgnoreCase("review")) {
             join.setText("Apply");
         }
 
 
-        for(String tag : popupCircle.getInterestTags().keySet())
+        for (String tag : popupCircle.getInterestTags().keySet())
             setPopupInterestTag(tag, circleDisplayTags, "#D42D8D");
 
         boolean alreadyMember = false;
         boolean alreadyApplicant = false;
-        if(popupCircle.getMembersList() != null && popupCircle.getMembersList().containsKey(user.getUserId())){
+        if (popupCircle.getMembersList() != null && popupCircle.getMembersList().containsKey(user.getUserId())) {
             join.setText("Already Member");
             alreadyMember = true;
         }
-        if(popupCircle.getApplicantsList() != null && popupCircle.getApplicantsList().containsKey(user.getUserId())){
+        if (popupCircle.getApplicantsList() != null && popupCircle.getApplicantsList().containsKey(user.getUserId())) {
             join.setText("Already Applied");
             alreadyApplicant = true;
         }
@@ -218,18 +219,15 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         boolean finalAlreadyMember = alreadyMember;
         boolean finalAlreadyApplicant = alreadyApplicant;
         join.setOnClickListener(view -> {
-            if(finalAlreadyMember == false && finalAlreadyApplicant == false){
+            if (finalAlreadyMember == false && finalAlreadyApplicant == false) {
                 linkCircleDialog.cancel();
                 getIntent().setData(null);
                 applyOrJoin(popupCircle);
-            } else {
-                SessionStorage.saveCircle(ExploreTabbedActivity.this, popupCircle);
-                startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
             }
         });
 
         share.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(ExploreTabbedActivity.this,"invite_workbench", "circle_invite_member","on_button_click");
+            analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_workbench", "circle_invite_member", "on_button_click");
             showShareCirclePopup(popupCircle);
         });
 
@@ -289,13 +287,13 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     private void showShareCirclePopup(Circle c) {
         try {
-            shareIntent= new Intent(Intent.ACTION_SEND);
+            shareIntent = new Intent(Intent.ACTION_SEND);
 
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
+            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
             //https://play.google.com/store/apps/details?id=
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
             Log.d("Share", shareMessage);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             startActivity(Intent.createChooser(shareIntent, "choose one"));
@@ -311,23 +309,17 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         TextView title = circleJoinSuccessDialog.findViewById(R.id.applyConfirmationTitle);
         TextView description = circleJoinSuccessDialog.findViewById(R.id.applyConfirmationDescription);
 
-        if (circle.getAcceptanceType().equalsIgnoreCase("automatic")){
+        if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");
             description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Click 'Done' to be redirected to this circle's wall.");
         }
 
-        circleJoinSuccessDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //link_flag = false;
-            }
-        });
-
         closeDialogButton.setOnClickListener(view -> {
-            circleJoinSuccessDialog.cancel();
-            if(("automatic").equalsIgnoreCase(circle.getAcceptanceType()))
+            if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                 SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
-            startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
+                startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
+            }
+            circleJoinSuccessDialog.cancel();
         });
 
         circleJoinSuccessDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

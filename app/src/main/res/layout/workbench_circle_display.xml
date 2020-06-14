@@ -78,18 +78,36 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/newNotifAlertTV"
-                    android:layout_width="80dp"
-                    android:layout_height="35dp"
-                    android:drawableStart="@drawable/ic_notifications_none_black_24dp"
-                    android:fontFamily="@font/roboto_condensed_bold"
-                    android:gravity="center"
-                    android:text="5 new"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/black"
-                    android:visibility="gone"></TextView>
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/newNotifAlertTV"
+                        android:layout_width="80dp"
+                        android:layout_height="35dp"
+                        android:drawableStart="@drawable/ic_notifications_none_black_24dp"
+                        android:fontFamily="@font/roboto_condensed_bold"
+                        android:gravity="center"
+                        android:text="5 new"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/black"
+                        android:visibility="gone"></TextView>
 
+                    <TextView
+                        android:id="@+id/newApplicantsDisplay"
+                        android:layout_width="110dp"
+                        android:layout_height="25dp"
+                        android:drawableStart="@drawable/ic_person_black_24dp"
+                        android:fontFamily="@font/roboto_condensed_bold"
+                        android:gravity="center"
+                        android:text="1 request"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/black"
+                        android:visibility="visible"></TextView>
+
+                </LinearLayout>
             </LinearLayout>
 
             <RelativeLayout
@@ -137,11 +155,10 @@
                 android:layout_marginBottom="10dp">
 
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:orientation="horizontal">
-
                     <Button
                         android:id="@+id/wb_share_circle_button"
                         android:layout_width="80dp"
@@ -157,21 +174,6 @@
                         android:textColor="@color/white"
                         android:textSize="13dp">
                     </Button>
-
-                    <Button
-                        android:id="@+id/wb_go_to_wall"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="90dp"
-                        android:layout_height="35dp"
-                        android:background="@drawable/join_button_background_explore_card"
-                        android:clickable="true"
-                        android:fontFamily="@font/roboto_condensed"
-                        android:text="View Posts"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="13dp">
-                    </Button>
-
                 </LinearLayout>
 
                 <TextView

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -123,7 +124,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.container.setBackground(wbLayoutBackground);
         holder.divider.setBackground(wbLineBackground);
         holder.shareCircles.setBackground(wbShareButtonBackground);
-        holder.circleWallNav.setBackground(wbButtonBackground);
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
@@ -131,6 +131,15 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.membersCount.setText("+" + circle.getMembersList().size());
         else {
 
+        }
+
+        //setting new applicants
+        if(circle.getApplicantsList()!= null && circle.getCreatorID().equals(user.getUserId())){
+            holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
+            if(circle.getApplicantsList().size()>1)
+                holder.newApplicantsDisplay.setText(circle.getApplicantsList().size() + " requests");
+            else
+                holder.newApplicantsDisplay.setText(circle.getApplicantsList().size() + " request");
         }
 
         //read for new notifs
@@ -145,9 +154,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             }
         }
 
-        //update new notifs value
-        holder.circleWallNav.setOnClickListener(view -> {
-
+        holder.container.setOnClickListener(view -> {
             if (user.getNotificationsAlert() != null) {
                 HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
                 tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
@@ -169,10 +176,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             ((Activity) context).finish();
         });
 
+        //update new notifs value
         holder.shareCircles.setOnClickListener(view -> {
             showShareCirclePopup(circle);
         });
-
 
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(circle.getTimestamp());
@@ -188,21 +195,21 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert, membersCount;
+        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert, membersCount, newApplicantsDisplay;
         private LinearLayout container;
-        private Button circleWallNav, shareCircles;
+        private Button shareCircles;
 
         private View divider;
 
         public ViewHolder(View view) {
             super(view);
+            newApplicantsDisplay = view.findViewById(R.id.newApplicantsDisplay);
             container = view.findViewById(R.id.wbContainer);
             tv_MycircleName = view.findViewById(R.id.wbcircleName);
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
             shareCircles = view.findViewById(R.id.wb_share_circle_button);
             tv_circleCreatedDateWB = view.findViewById(R.id.circle_created_date);
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
-            circleWallNav = view.findViewById(R.id.wb_go_to_wall);
             divider = view.findViewById(R.id.wb_divider_line);
             membersCount = view.findViewById(R.id.wb_members_count_button);
         }

@@ -316,7 +316,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
             if(circle.getAcceptanceType().equalsIgnoreCase("review")){
                 circleJoinDialog.dismiss();
-
             } else {
                 SessionStorage.saveCircle((Activity) context, circle);
                 context.startActivity(new Intent(context, CircleWall.class));
