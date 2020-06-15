@@ -2,20 +2,16 @@ package circleapp.circlepackage.circle.Login;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 
-import com.google.firebase.crashlytics.CrashlyticsRegistrar;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.crashlytics.internal.common.CrashlyticsCore;
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 
@@ -32,6 +28,7 @@ public class EntryPage extends AppCompatActivity{
     private Button agreeContinue;
     AnalyticsLogEvents analyticsLogEvents;
     Trace myTrace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +40,7 @@ public class EntryPage extends AppCompatActivity{
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
         agreeContinue.setOnClickListener(view -> {
-            agreeContinue.setClickable(false);
+            agreeContinue.setEnabled(false);
             if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
                 locationHelper.getLocation();
                 myTrace.stop();
@@ -55,7 +52,6 @@ public class EntryPage extends AppCompatActivity{
         });
 
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
@@ -64,5 +60,12 @@ public class EntryPage extends AppCompatActivity{
             locationHelper.getLocation();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        agreeContinue.setEnabled(true);
+        Log.d(TAG,"Activity Resumed");
     }
 }

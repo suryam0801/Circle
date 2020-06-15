@@ -193,6 +193,7 @@ public class LocationHelper{
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         activity.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+//                        activity.setProgressBarVisibility(false);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
