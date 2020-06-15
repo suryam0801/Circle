@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,6 +10,7 @@
     tools:context=".CircleWall.BroadcastComments">
 
     <LinearLayout
+        android:layout_marginBottom="75dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -89,16 +90,19 @@
         android:id="@+id/comments_listView">
     </ListView>
 
+    </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp">
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true">
 
         <EditText
             android:id="@+id/comment_type_editText"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="fill_parent"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginBottom="25dp"
             android:paddingRight="45dp"
             android:paddingLeft="16dp"
             android:textSize="12dp"
@@ -119,6 +123,5 @@
             android:layout_marginRight="25dp">
         </Button>
     </RelativeLayout>
-    </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
