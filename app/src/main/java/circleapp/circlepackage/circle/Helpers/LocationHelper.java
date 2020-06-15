@@ -148,7 +148,7 @@ public class LocationHelper{
                             List<String> parsing = new ArrayList<>();
                             while (scan.hasNext()) {
                                 String w = String.valueOf(scan.next());
-                                if (w !=" " && district != " ")
+                                if ((!w.isEmpty() && !district.isEmpty()) &&(w !=null && district != null) )
                                 {
                                     if(w.trim().equals(district.trim())) {
                                         ward = parsing.get(parsing.size()-1);
