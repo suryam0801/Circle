@@ -127,11 +127,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
-        if (circle.getMembersList() != null && !circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getMembersList() != null)
             holder.membersCount.setText("+" + circle.getMembersList().size());
-        else {
+        else
+            holder.membersCount.setText("Circle is empty. Invite members!");
 
-        }
 
         //setting new applicants
         if(circle.getApplicantsList()!= null && circle.getCreatorID().equals(user.getUserId())){

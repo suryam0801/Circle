@@ -57,9 +57,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private User user;
     AnalyticsLogEvents analyticsLogEvents;
 
-    public CircleDisplayAdapter(){
+    public CircleDisplayAdapter() {
 
     }
+
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
         this.context = context;
@@ -144,33 +145,31 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.tv_createdDate.setText(date);
 
         //set the chips
-        if(current.getInterestTags().keySet().contains("sample")){
-            if(current.getName().contains("Runner")){
-                setInterestTag("running",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Running",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("earlymorningrunning",viewHolder.circleDisplayTags, chipColor);
-            } else if(current.getName().contains("Recipe")) {
-                setInterestTag("cooking",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Recipes",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("recipes",viewHolder.circleDisplayTags, chipColor);
+        if (current.getInterestTags().keySet().contains("sample")) {
+            if (current.getName().contains("Runner")) {
+                setInterestTag("running", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Running", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("earlymorningrunning", viewHolder.circleDisplayTags, chipColor);
+            } else if (current.getName().contains("Recipe")) {
+                setInterestTag("cooking", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Recipes", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("recipes", viewHolder.circleDisplayTags, chipColor);
             } else {
-                setInterestTag("Welcome",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("Introduction",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("Tutorial",viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("Tutorial",viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Welcome", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Introduction", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Tutorial", viewHolder.circleDisplayTags, chipColor);
+                setInterestTag("Tutorial", viewHolder.circleDisplayTags, chipColor);
             }
         } else {
             for (String name : current.getInterestTags().keySet())
                 setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
         }
 
-        if(current.getMembersList() != null){
-            if(current.getMembersList().size() > 3)
-                viewHolder.membersCount.setText( "+" + current.getMembersList().size());
-            else
-                viewHolder.membersCount.setText( "+" + 0);
+        if (current.getMembersList() != null)
+            viewHolder.membersCount.setText("+" + current.getMembersList().size());
+        else
+            viewHolder.membersCount.setText("Be the first to join");
 
-        }
 
         viewHolder.join.setOnClickListener(view -> {
             if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
@@ -261,13 +260,13 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
-            analyticsLogEvents.logEvents(context,"invite_circle", "invite_explore","on_button_click");
+            analyticsLogEvents.logEvents(context, "invite_circle", "invite_explore", "on_button_click");
 
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: "+ c.getName() +"\n\n";
+            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
             //https://play.google.com/store/apps/details?id=
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" +"?"+ c.getId();
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
             Log.d("Share", shareMessage);
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
             context.startActivity(Intent.createChooser(shareIntent, "choose one"));
@@ -289,14 +288,14 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         boolean adminCircle = false;
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-            analyticsLogEvents.logEvents(context,"circle_apply", "apply_explore","on_button_click");
+            analyticsLogEvents.logEvents(context, "circle_apply", "apply_explore", "on_button_click");
             //adding userID to applicants list
             circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            SendNotification.sendnotification("new_applicant",circle.getId(),circle.getName(),circle.getCreatorID());
+            SendNotification.sendnotification("new_applicant", circle.getId(), circle.getName(), circle.getCreatorID());
         } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             //adding userID to members list in circlesReference
-            analyticsLogEvents.logEvents(context,"circle_join", "open_circle","on_button_click");
+            analyticsLogEvents.logEvents(context, "circle_join", "open_circle", "on_button_click");
             circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
             int nowActive = user.getActiveCircles() + 1;
             usersDB.child("activeCircles").setValue((nowActive));
@@ -304,19 +303,19 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             storeUserFile(userJsonString, context.getApplicationContext());
         }
 
-            circleJoinDialog.dismiss();
+        circleJoinDialog.dismiss();
 
 
-        if (circle.getAcceptanceType().equalsIgnoreCase("review")){
-            viewHolder.join.setText("Apply");}
-        else {
+        if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
+            viewHolder.join.setText("Apply");
+        } else {
             title.setText("Successfully Joined!");
             description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
         closeDialogButton.setOnClickListener(view -> {
 
-            if(circle.getAcceptanceType().equalsIgnoreCase("review")){
+            if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
                 circleJoinDialog.dismiss();
             } else {
                 SessionStorage.saveCircle((Activity) context, circle);
