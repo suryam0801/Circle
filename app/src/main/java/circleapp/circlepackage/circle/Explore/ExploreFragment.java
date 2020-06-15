@@ -99,6 +99,7 @@ public class ExploreFragment extends Fragment {
 
         locationDisplay.setText(user.getDistrict());
         //retrieve interest tags from user
+
         userTempinterestTagsList = new ArrayList<>(user.getInterestTags().keySet());
 
         setCircleTabs(view);
