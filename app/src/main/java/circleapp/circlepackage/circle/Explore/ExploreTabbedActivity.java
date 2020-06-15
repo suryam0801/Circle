@@ -237,7 +237,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
         int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
-        linkCircleDialog.getWindow().setLayout(width, height);
+
+
+        linkCircleDialog.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, height);
         linkCircleDialog.getWindow().setGravity(Gravity.CENTER);
         linkCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         linkCircleDialog.show();

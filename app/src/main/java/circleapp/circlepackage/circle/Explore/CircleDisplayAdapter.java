@@ -57,9 +57,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private User user;
     AnalyticsLogEvents analyticsLogEvents;
 
-    public CircleDisplayAdapter() {
-
-    }
+    public CircleDisplayAdapter() {}
 
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
@@ -105,7 +103,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         moreMembersColor.setCornerRadius(130.0f);
 
         GradientDrawable dividerColor = new GradientDrawable();
-        dividerColor.setShape(GradientDrawable.LINE);
+        dividerColor.setShape(GradientDrawable.RECTANGLE);
 
         String chipColor = "";
 
@@ -133,7 +131,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         //set the details of each circle to its respective card.
         viewHolder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         viewHolder.tv_circleName.setText(current.getName());
-        viewHolder.tv_creatorName.setText(current.getCreatorName());
+        viewHolder.tv_creatorName.setText("By " + current.getCreatorName());
         viewHolder.tv_circleDesc.setText(current.getDescription());
         viewHolder.container.setBackground(wbItemBackground);
         viewHolder.membersCount.setBackground(moreMembersColor);
@@ -181,7 +179,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.share.setOnClickListener(view -> {
             showShareCirclePopup(current);
         });
-
     }
 
     @Override
@@ -320,6 +317,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             } else {
                 SessionStorage.saveCircle((Activity) context, circle);
                 context.startActivity(new Intent(context, CircleWall.class));
+                ((Activity) context).finish();
                 circleJoinDialog.dismiss();
             }
         });

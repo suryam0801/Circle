@@ -174,13 +174,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, CHANNEL_1_ID);
-//                .setSmallIcon(R.drawable.ic_launcher_foreground)
-//                .setContentTitle(name)
-//                .setContentText(description)
-//                .setPriority(NotificationCompat.PRIORITY_HIGH)
-//                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
