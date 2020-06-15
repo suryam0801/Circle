@@ -8,7 +8,7 @@ public class User  {
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> interestTags;
     private HashMap<String, Integer> notificationsAlert;
-    private HashMap<String, Long> newDiscussionAlert;
+    private HashMap<String, Long> newTimeStampsComments;
     private int createdCircles, activeCircles, completedProjects, noOfReadDiscussions;
 
 
@@ -34,7 +34,7 @@ public class User  {
         this.ward = ward;
         this.district = district;
         this.notificationsAlert = notificationsAlert;
-        this.newDiscussionAlert = newDiscussionAlert;
+        this.newTimeStampsComments = newDiscussionAlert;
         this.noOfReadDiscussions = noOfNewComments;
     }
 
@@ -141,12 +141,12 @@ public class User  {
         this.notificationsAlert = notificationsAlert;
     }
 
-    public HashMap<String, Long> getNewDiscussionAlert() {
-        return newDiscussionAlert;
+    public HashMap<String, Long> getNewTimeStampsComments() {
+        return newTimeStampsComments;
     }
 
-    public void setNewDiscussionAlert(HashMap<String, Long> newDiscussionAlert) {
-        this.newDiscussionAlert = newDiscussionAlert;
+    public void setNewTimeStampsComments(HashMap<String, Long> newTimeStampsComments) {
+        this.newTimeStampsComments = newTimeStampsComments;
     }
 
     public int getNoOfReadDiscussions() {
@@ -170,7 +170,7 @@ public class User  {
                 ", ward='" + ward + '\'' +
                 ", interestTags=" + interestTags +
                 ", notificationsAlert=" + notificationsAlert +
-                ", newDiscussionAlert=" + newDiscussionAlert +
+                ", newDiscussionAlert=" + newTimeStampsComments +
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +
                 ", completedProjects=" + completedProjects +

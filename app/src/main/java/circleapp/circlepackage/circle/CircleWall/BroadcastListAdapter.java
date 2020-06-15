@@ -28,11 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -41,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -125,33 +121,39 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         //setting new comments display
         viewHolder.no_of_comments.setText("(" + ((int) broadcast.getNumberOfComments()) + ")");
-        if (user.getNewDiscussionAlert() != null && user.getNewDiscussionAlert().containsKey(broadcast.getId())) {
-            if (user.getNewDiscussionAlert().get(broadcast.getId()) > broadcast.getLatestCommentTimestamp())
+        if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
+            if (user.getNewTimeStampsComments().get(broadcast.getId()) > broadcast.getLatestCommentTimestamp())
                 viewHolder.no_of_comments.setTextColor(Color.parseColor("#6CACFF"));
-        } else if (user.getNewDiscussionAlert() == null && broadcast.getNumberOfComments() > 0){
+        } else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0){
             viewHolder.no_of_comments.setTextColor(Color.parseColor("#6CACFF"));
         }
 
         viewHolder.viewComments.setOnClickListener(view -> {
-
-            if(user.getNewDiscussionAlert() != null && user.getNewDiscussionAlert().containsKey(broadcast.getId())) {
-                HashMap<String, Long> newTimeStampsComments = new HashMap<>(user.getNewDiscussionAlert());
+            if(user.getNewTimeStampsComments() != null) {
+                HashMap<String, Long> newTimeStampsComments = new HashMap<>(user.getNewTimeStampsComments());
+                Log.d("BROADCASTLISTADAPTER", newTimeStampsComments.toString());
                 newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
-                int newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
-                user.setNewDiscussionAlert(newTimeStampsComments);
+                int newReadValue = user.getNoOfReadDiscussions();
+                if(user.getNotificationsAlert().get(broadcast.getId()).equals(broadcast.getLatestCommentTimestamp()))
+                    newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
+                user.setNewTimeStampsComments(newTimeStampsComments);
                 user.setNoOfReadDiscussions(newReadValue);
                 SessionStorage.saveUser((Activity) context, user);
-            } else if (user.getNewDiscussionAlert() == null ){
+            } else if (user.getNewTimeStampsComments() == null ){
                 HashMap<String, Long> newTimeStampsComments = new HashMap<>();
                 newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
-                int newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
-                user.setNewDiscussionAlert(newTimeStampsComments);
+                int newReadValue = user.getNoOfReadDiscussions();
+                if(user.getNotificationsAlert().containsKey(broadcast.getId()) && user.getNotificationsAlert().get(broadcast.getId()).equals(broadcast.getLatestCommentTimestamp()))
+                     newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
+
+                user.setNewTimeStampsComments(newTimeStampsComments);
                 user.setNoOfReadDiscussions(newReadValue);
                 SessionStorage.saveUser((Activity) context, user);
             }
 
             SessionStorage.saveBroadcast((Activity) context, broadcast);
             context.startActivity(new Intent(context.getApplicationContext(), BroadcastComments.class));
+            ((Activity) context).finish();
         });
 
         //set the details of each circle to its respective card.
