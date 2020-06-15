@@ -30,7 +30,7 @@
             android:fontFamily="@font/roboto_regular"
             android:paddingRight="25dp"
             android:gravity="center"
-            android:text="Circle Personel"
+            android:text="Circle Members"
             android:textColor="@color/black"
             android:textSize="20dp">
         </TextView>
