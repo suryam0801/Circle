@@ -79,33 +79,43 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:weightSum="99">
                     <TextView
                         android:id="@+id/newNotifAlertTV"
-                        android:layout_width="80dp"
-                        android:layout_height="35dp"
-                        android:drawableStart="@drawable/ic_notifications_none_black_24dp"
+                        android:layout_width="33dp"
+                        android:layout_height="55dp"
+                        android:drawableTop="@drawable/copy"
                         android:fontFamily="@font/roboto_condensed_bold"
                         android:gravity="center"
-                        android:text="5 new"
-                        android:paddingRight="10dp"
+                        android:text="5"
+                        android:layout_marginRight="5dp"
                         android:textColor="@color/black"
                         android:visibility="gone"></TextView>
 
                     <TextView
                         android:id="@+id/newApplicantsDisplay"
-                        android:layout_width="110dp"
-                        android:layout_height="25dp"
-                        android:drawableStart="@drawable/ic_person_black_24dp"
+                        android:layout_width="33dp"
+                        android:layout_height="55dp"
+                        android:drawableTop="@drawable/ic_person_black_24dp"
                         android:fontFamily="@font/roboto_condensed_bold"
                         android:gravity="center"
-                        android:text="1 request"
-                        android:paddingRight="10dp"
+                        android:text="1"
                         android:textColor="@color/black"
-                        android:visibility="visible"></TextView>
+                        android:visibility="gone"></TextView>
+
+                    <TextView
+                        android:id="@+id/newDiscussionDisplay"
+                        android:layout_width="33dp"
+                        android:layout_height="55dp"
+                        android:drawableTop="@drawable/ic_baseline_chat_bubble_outline_24"
+                        android:fontFamily="@font/roboto_condensed_bold"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textColor="@color/black"
+                        android:visibility="gone"></TextView>
 
                 </LinearLayout>
             </LinearLayout>
