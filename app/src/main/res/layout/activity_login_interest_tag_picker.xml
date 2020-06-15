@@ -32,7 +32,7 @@
             android:fontFamily="@font/roboto_regular"
             android:paddingRight="25dp"
             android:gravity="center"
-            android:text="Set Interest Tags"
+            android:text="Set Your Tags"
             android:textColor="@color/black"
             android:textSize="20dp">
         </TextView>
@@ -69,7 +69,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Select or add your interest preferences to view content  from the selected tags."
+                android:text="These tags will help us connect you to circles more relevant to you."
                 android:textColor="@color/black"
                 android:textSize="14dp"></TextView>
 
@@ -112,14 +112,14 @@
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_height="match_parent">
+                android:layout_marginRight="20dp">
+
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/interest_tag_chip_group"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/interest_tag_chip_group">
-                </com.google.android.material.chip.ChipGroup>
+                    android:layout_height="match_parent"></com.google.android.material.chip.ChipGroup>
             </androidx.core.widget.NestedScrollView>
 
 

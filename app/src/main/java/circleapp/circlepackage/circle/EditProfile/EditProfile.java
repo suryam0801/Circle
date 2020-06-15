@@ -268,7 +268,6 @@ public class EditProfile extends AppCompatActivity {
         interestTagEntry.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                Log.d(TAG, "TOUCHEDDDD!!!!!");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -292,17 +291,23 @@ public class EditProfile extends AppCompatActivity {
         interestTagAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String interestTag = interestTagEntry.getText().toString().replace("#", "");
-                if (!interestTag.isEmpty()) {
-                    selectedInterestTags.add(interestTag);
-                    if (!dbInterestTags.contains(interestTag)) {
-                        dbInterestTags.add(interestTag);
-                        setInterestTag(interestTag, interestChipGroupPopup);
-                        analyticsLogEvents.logEvents(EditProfile.this, "added_interesttag", "From_profile","edit_profile");
+                String interestTag = interestTagEntry.getText().toString().replace("#", "") + " ";
+                if (!interestTag.isEmpty() && interestTag.contains(" ")) {
+                    if((interestTag.contains(".") || interestTag.contains("$") || interestTag.contains("#") || interestTag.contains("[") || interestTag.contains("]"))) {
+                        Toast.makeText(getApplicationContext(), "Cannot use special characters", Toast.LENGTH_SHORT).show();
                     } else {
-                        interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
-                        setInterestTag(interestTag, interestChipGroupPopup);
+                        selectedInterestTags.add(interestTag);
+                        if (!dbInterestTags.contains(interestTag)) {
+                            dbInterestTags.add(interestTag);
+                            setInterestTag(interestTag, interestChipGroupPopup);
+                            analyticsLogEvents.logEvents(EditProfile.this, "added_interesttag", "From_profile","edit_profile");
+                        } else {
+                            interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
+                            setInterestTag(interestTag, interestChipGroupPopup);
+                        }
                     }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Remove all spaces from your tag", Toast.LENGTH_SHORT).show();
                 }
 
                 interestTagEntry.setText("#");

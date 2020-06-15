@@ -34,7 +34,7 @@
             android:fontFamily="@font/roboto_regular"
             android:paddingRight="25dp"
             android:gravity="center"
-            android:text="Set Interest Tags"
+            android:text="Set Your Tags"
             android:textColor="@color/black"
             android:textSize="20dp">
         </TextView>

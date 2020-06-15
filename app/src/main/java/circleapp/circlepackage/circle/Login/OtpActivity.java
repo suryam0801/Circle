@@ -76,11 +76,6 @@ public class OtpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_otp);
         analyticsLogEvents = new AnalyticsLogEvents();
 
-        //To set the Fullscreen
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        getWindow().setFormat(PixelFormat.RGB_565);
-//        getSupportActionBar().hide();
-
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
