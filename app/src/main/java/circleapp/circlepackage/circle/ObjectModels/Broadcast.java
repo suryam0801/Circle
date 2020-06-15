@@ -1,13 +1,15 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class Broadcast {
-    public String id, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
-    public boolean pollExists;
-    public long timeStamp;
-    public Poll poll;
+    private String id, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
+    private boolean pollExists;
+    private long timeStamp, latestCommentTimestamp;
+    private int numberOfComments;
+    private Poll poll;
 
     public Broadcast(String id, String message, String attachmentURI, String creatorName,
-                     String creatorID, boolean pollExists, long timeStamp, Poll poll, String creatorPhotoURI) {
+                     String creatorID, boolean pollExists, long timeStamp, Poll poll, String creatorPhotoURI,
+                     long latestCommentTimestamp, int numberOfComments) {
         this.id = id;
         this.message = message;
         this.attachmentURI = attachmentURI;
@@ -17,6 +19,8 @@ public class Broadcast {
         this.creatorPhotoURI = creatorPhotoURI;
         this.timeStamp = timeStamp;
         this.poll = poll;
+        this.latestCommentTimestamp = latestCommentTimestamp;
+        this.numberOfComments = numberOfComments;
     }
 
     public Broadcast(){
@@ -95,6 +99,22 @@ public class Broadcast {
         this.creatorPhotoURI = creatorPhotoURI;
     }
 
+    public long getLatestCommentTimestamp() {
+        return latestCommentTimestamp;
+    }
+
+    public void setLatestCommentTimestamp(long latestCommentTimestamp) {
+        this.latestCommentTimestamp = latestCommentTimestamp;
+    }
+
+    public int getNumberOfComments() {
+        return numberOfComments;
+    }
+
+    public void setNumberOfComments(int numberOfComments) {
+        this.numberOfComments = numberOfComments;
+    }
+
     @Override
     public String toString() {
         return "Broadcast{" +
@@ -106,6 +126,8 @@ public class Broadcast {
                 ", creatorPhotoURI='" + creatorPhotoURI + '\'' +
                 ", pollExists=" + pollExists +
                 ", timeStamp=" + timeStamp +
+                ", latestCommentTimestamp=" + latestCommentTimestamp +
+                ", numberOfComments=" + numberOfComments +
                 ", poll=" + poll +
                 '}';
     }

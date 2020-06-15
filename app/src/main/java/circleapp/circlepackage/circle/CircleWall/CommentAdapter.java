@@ -74,12 +74,6 @@ public class CommentAdapter extends BaseAdapter {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
 
-/*
-        SpannableStringBuilder nameString = new SpannableStringBuilder(name + " " + cmnt);
-        ForegroundColorSpan fcsBlack = new ForegroundColorSpan(Color.BLACK);
-        nameString.setSpan(fcsBlack, 0, name.length() + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-*/
-
         userName.setText(name);
         comment.setText(cmnt);
 

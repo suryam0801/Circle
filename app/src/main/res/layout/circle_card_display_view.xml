@@ -123,12 +123,14 @@
                 <Button
                     style="?android:attr/borderlessButtonStyle"
                     android:id="@+id/members_count_button"
-                    android:layout_width="70dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginLeft="75dp"
                     android:background="@drawable/join_button_background_explore_card"
                     android:fontFamily="@font/roboto_condensed"
                     android:text="+358"
+                    android:paddingRight="15dp"
+                    android:paddingLeft="15dp"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="14dp"></Button>

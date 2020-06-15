@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,7 @@ public class WorkbenchFragment extends Fragment {
     private List<Circle> workbenchCircleList = new ArrayList<>();
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
-    private DatabaseReference circlesDB;
+    private DatabaseReference circlesDB, userDB;
     private List<Circle> allCircles = new ArrayList<>();
     private User user;
     private FloatingActionButton btnAddCircle;
@@ -94,6 +95,7 @@ public class WorkbenchFragment extends Fragment {
 
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
+        userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         circlesDB.keepSynced(true); //synchronizes and stores local copy of data
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
@@ -113,7 +115,7 @@ public class WorkbenchFragment extends Fragment {
         //initialize  workbench recylcerview
         RecyclerView wbrecyclerView = view.findViewById(R.id.wbRecyclerView);
         wbrecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getContext(),  RecyclerView.VERTICAL, false);
+        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         wbrecyclerView.setLayoutManager(wblayoutManager);
         //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual circles in the recycler view
@@ -151,6 +153,7 @@ public class WorkbenchFragment extends Fragment {
                     //notify the adapter each time a new item needs to be added to the recycler view
                     wbadapter.notifyDataSetChanged();
                     emptyDisplay.setVisibility(View.GONE);
+                    initializeNewCount(circle);
                 }
             }
 
@@ -200,6 +203,20 @@ public class WorkbenchFragment extends Fragment {
             }
         });
 
+    }
+
+    public void initializeNewCount(Circle c) {
+        if (user.getNotificationsAlert() != null && !user.getNotificationsAlert().containsKey(c.getId())) {
+            HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
+            newNotifs.put(c.getId(), 0);
+            user.setNotificationsAlert(newNotifs);
+            userDB.child("notificationsAlert").child(c.getId()).setValue(0);
+        } else if (user.getNotificationsAlert() == null) {
+            HashMap<String, Integer> newNotifs = new HashMap<>();
+            newNotifs.put(c.getId(), 0);
+            user.setNotificationsAlert(newNotifs);
+            userDB.child("notificationsAlert").child(c.getId()).setValue(0);
+        }
     }
 
 }

@@ -28,11 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -41,10 +38,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.PercentDrawable;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -58,13 +55,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Circle circle;
     private FirebaseAuth currentUser;
     private FirebaseStorage firebaseStorage;
-    private StorageReference storageReference,ref;
+    private StorageReference storageReference, ref;
     private int count = 0;
-    Bitmap bitmap=null;
+    Bitmap bitmap = null;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
-    Vibrator v;
-
+    private Vibrator v;
+    private User user;
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
@@ -82,30 +79,31 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, int i){
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
 
         final Broadcast broadcast = broadcastList.get(i);
+        user = SessionStorage.getUser((Activity) context);
 
         final Poll poll;
         RadioButton button;
 
-        if(broadcast.creatorID.equals(currentUser.getUid()))
+        if (broadcast.getCreatorID().equals(currentUser.getUid()))
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
         //calculating time elapsed
         long currentTime = System.currentTimeMillis();
-        long createdTime =broadcast.getTimeStamp();
+        long createdTime = broadcast.getTimeStamp();
         long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
         long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
 
         Glide.with(context)
-                .load(broadcast.creatorPhotoURI)
+                .load(broadcast.getCreatorPhotoURI())
                 .placeholder(ContextCompat.getDrawable(context, myImageList[count]))
                 .into(viewHolder.profPicDisplay);
 
         ++count;
-        if(count == 4) count = 0;
+        if (count == 4) count = 0;
 
         if (seconds < 60) {
             viewHolder.timeElapsedDisplay.setText(seconds + "s ago");
@@ -119,25 +117,52 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             else
                 viewHolder.timeElapsedDisplay.setText(days + "d ago");
         }
-        viewHolder.commentsDB.child(circle.getId()).child(broadcast.getId()).addValueEventListener(new ValueEventListener() {
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                long count = dataSnapshot.getChildrenCount();
-                Log.d("Count",""+count);
-                viewHolder.no_of_comments.setText("("+((int) (long) count)+")");
-            }
-            public void onCancelled(DatabaseError databaseError) { }
-        });
+
+        //setting new comments display
+        viewHolder.viewComments.setText("Go to discussion (" + ((int) broadcast.getNumberOfComments()) + ")");
+        if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
+            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(broadcast.getId())){
+            if(broadcast.getNumberOfComments()>0)
+                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        }else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
+            viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        }
 
         viewHolder.viewComments.setOnClickListener(view -> {
+            if (user.getNewTimeStampsComments() != null) {
+                HashMap<String, Long> newTimeStampsComments = new HashMap<>(user.getNewTimeStampsComments());
+                newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
+                int newReadValue = user.getNoOfReadDiscussions();
+
+                if(user.getNewTimeStampsComments().containsKey(broadcast.getId()) && (user.getNewTimeStampsComments().get(broadcast.getId()) == broadcast.getLatestCommentTimestamp()))
+                    newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
+                else if(!user.getNewTimeStampsComments().containsKey(broadcast.getId()))
+                    newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
+
+                user.setNewTimeStampsComments(newTimeStampsComments);
+                user.setNoOfReadDiscussions(newReadValue);
+                SessionStorage.saveUser((Activity) context, user);
+            } else if (user.getNewTimeStampsComments() == null) {
+                HashMap<String, Long> newTimeStampsComments = new HashMap<>();
+                newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
+                int newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
+
+                user.setNewTimeStampsComments(newTimeStampsComments);
+                user.setNoOfReadDiscussions(newReadValue);
+                SessionStorage.saveUser((Activity) context, user);
+            }
+
             SessionStorage.saveBroadcast((Activity) context, broadcast);
             context.startActivity(new Intent(context.getApplicationContext(), BroadcastComments.class));
+            ((Activity) context).finish();
         });
-
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
 
-        if(broadcast.message == null)
+        if (broadcast.getMessage() == null)
             viewHolder.broadcastMessageDisplay.setVisibility(View.GONE);
         else
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
@@ -161,15 +186,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
             Uri uri = Uri.parse(broadcast.getAttachmentURI());
             DownloadManager.Request request = new DownloadManager.Request(uri);
-            Log.d("Download File",uri.toString());
-            Log.d("Download File",request.toString());
+            Log.d("Download File", uri.toString());
+            Log.d("Download File", request.toString());
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-            request.setDestinationInExternalFilesDir(context,DIRECTORY_DOWNLOADS,"image"+".jpg");
+            request.setDestinationInExternalFilesDir(context, DIRECTORY_DOWNLOADS, "image" + ".jpg");
             Toast.makeText(context, "Successfully Downloaded", Toast.LENGTH_SHORT).show();
             downloadManager.enqueue(request);
         });
 
-        if (broadcast.isPollExists() == true ) {
+        if (broadcast.isPollExists() == true) {
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
             viewHolder.pollQuestionDisplay.setText(poll.getQuestion());
@@ -218,7 +243,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 button.setTextColor(Color.BLACK);
                 button.setText(entry.getKey());
 
-                if(viewHolder.currentUserPollOption!= null && viewHolder.currentUserPollOption.equals(button.getText()))
+                if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
                     button.setChecked(true);
 
                 LinearLayout layout = new LinearLayout(context);
@@ -231,7 +256,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 TextView tv = new TextView(context);
                 tv.setText(percentage + "%");
                 tv.setTextAppearance(context, R.style.poll_percentage_textview_style);
-                tv.setPadding(0,0,30,0);
+                tv.setPadding(0, 0, 30, 0);
                 layout.addView(tv);
                 layout.setBackground(new PercentDrawable(100, "#EFF6FF"));
                 RadioButton finalButton = button;
@@ -250,7 +275,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                         pollOptionsTemp.put(option, currentSelectedVotes);
                         viewHolder.setCurrentUserPollOption(option);
                     } else {
-                        if(!viewHolder.getCurrentUserPollOption().equals(option)){
+                        if (!viewHolder.getCurrentUserPollOption().equals(option)) {
                             int userPreviousVote = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //if user already saved an answer, this will regulate voting count
                             --userPreviousVote;
                             ++currentSelectedVotes;
@@ -275,32 +300,31 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         return broadcastList.size();
     }
 
-    public void vibrate(){
+    public void vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+            v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             //deprecated in API 26
-            v.vibrate(500);
+            v.vibrate(50);
         }
     }
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, attachmentNameDisplay,
-                pollQuestionDisplay, timeElapsedDisplay, viewComments, no_of_comments;
+                pollQuestionDisplay, timeElapsedDisplay, viewComments;
         private CircleImageView profPicDisplay;
         private LinearLayout attachmentDisplay, pollDisplay, pollOptionsDisplayGroup;
         private ImageButton attachmentDownloadButton;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
-        private DatabaseReference broadcastDB, commentsDB;
+        private DatabaseReference broadcastDB;
         private Button viewPollAnswers;
 
         public ViewHolder(View view) {
             super(view);
             database = FirebaseDatabase.getInstance();
             broadcastDB = database.getReference("Broadcasts");
-            commentsDB = database.getReference("BroadcastComments");
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.broadcastWall_Message);
             attachmentNameDisplay = view.findViewById(R.id.broadcastWall_fileName);
@@ -313,7 +337,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             attachmentDownloadButton = view.findViewById(R.id.attachment_download_btn);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
-            no_of_comments = view.findViewById(R.id.broadcastWall_object_viewComments_indicator);
         }
 
         public String getCurrentUserPollOption() {

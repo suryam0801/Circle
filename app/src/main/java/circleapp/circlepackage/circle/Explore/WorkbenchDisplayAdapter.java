@@ -127,27 +127,26 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
-        if (circle.getMembersList() != null && !circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getMembersList() != null)
             holder.membersCount.setText("+" + circle.getMembersList().size());
-        else {
+        else
+            holder.membersCount.setText("Circle is empty. Invite members!");
 
-        }
 
         //setting new applicants
         if(circle.getApplicantsList()!= null && circle.getCreatorID().equals(user.getUserId())){
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
             if(circle.getApplicantsList().size()>1)
-                holder.newApplicantsDisplay.setText(circle.getApplicantsList().size() + " requests");
-            else
-                holder.newApplicantsDisplay.setText(circle.getApplicantsList().size() + " request");
+                holder.newApplicantsDisplay.setText(circle.getApplicantsList().size());
         }
 
         //read for new notifs
         if (user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(circle.getId())) {
             int userRead = user.getNotificationsAlert().get(circle.getId());
+            Log.d("wekfjnwe", "efknwef " + (circle.getNoOfBroadcasts()));
+            Log.d("wekfjnwe", "efknwef " + (userRead));
             if (circle.getNoOfBroadcasts() > userRead) {
-                Log.d("wekfjnwe", "efknwef " + (circle.getNoOfBroadcasts() - userRead));
-                holder.newNotifAlert.setText((circle.getNoOfBroadcasts() - userRead) + " new");
+                holder.newNotifAlert.setText((circle.getNoOfBroadcasts() - userRead)+"");
                 holder.newNotifAlert.setVisibility(View.VISIBLE);
             } else {
                 holder.newNotifAlert.setVisibility(View.GONE);
@@ -176,6 +175,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             ((Activity) context).finish();
         });
 
+        if(user.getNoOfReadDiscussions() < circle.getNoOfNewDiscussions()){
+            holder.newDiscussionDisplay.setText((circle.getNoOfNewDiscussions() - user.getNoOfReadDiscussions()) + "");
+            holder.newDiscussionDisplay.setVisibility(View.VISIBLE);
+        }
+
         //update new notifs value
         holder.shareCircles.setOnClickListener(view -> {
             showShareCirclePopup(circle);
@@ -195,7 +199,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert, membersCount, newApplicantsDisplay;
+        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert,
+                membersCount, newApplicantsDisplay, newDiscussionDisplay;
         private LinearLayout container;
         private Button shareCircles;
 
@@ -212,6 +217,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
             divider = view.findViewById(R.id.wb_divider_line);
             membersCount = view.findViewById(R.id.wb_members_count_button);
+            newDiscussionDisplay = view.findViewById(R.id.newDiscussionDisplay);
         }
     }
 
