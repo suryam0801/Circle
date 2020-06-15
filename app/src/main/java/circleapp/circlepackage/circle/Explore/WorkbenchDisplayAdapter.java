@@ -132,7 +132,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         else
             holder.membersCount.setText("Circle is empty. Invite members!");
 
-
         //setting new applicants
         if(circle.getApplicantsList()!= null && circle.getCreatorID().equals(user.getUserId())){
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);

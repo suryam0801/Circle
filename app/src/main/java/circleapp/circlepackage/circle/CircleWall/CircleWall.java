@@ -144,6 +144,7 @@ public class CircleWall extends AppCompatActivity {
             Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
             intent.putExtra("userState",usersState);
             startActivity(intent);
+            finish();
         });
 
         back.setOnClickListener(view -> {
@@ -174,6 +175,7 @@ public class CircleWall extends AppCompatActivity {
         usersDB.child("createdCircles").setValue(currentCreatedCount);
         analyticsLogEvents.logEvents(CircleWall.this, "circle_delete", "delete_button","circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
+        finish();
     }
 
     private void exitCircle() {
@@ -185,6 +187,7 @@ public class CircleWall extends AppCompatActivity {
         usersDB.child("activeCircles").setValue(currentActiveCount);
         analyticsLogEvents.logEvents(CircleWall.this, "circle_exit", "exit_button","circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
+        finish();
     }
 
     private void loadCircleBroadcasts() {
@@ -548,5 +551,6 @@ public class CircleWall extends AppCompatActivity {
         super.onBackPressed();
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
+        finish();
     }
 }

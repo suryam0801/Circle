@@ -472,5 +472,6 @@ public class EditProfile extends AppCompatActivity {
         super.onBackPressed();
         Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
         startActivity(intent);
+        finish();
     }
 }

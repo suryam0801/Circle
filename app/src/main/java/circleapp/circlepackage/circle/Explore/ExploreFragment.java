@@ -147,7 +147,11 @@ public class ExploreFragment extends Fragment {
                         similarTags = true;
                 }
 
-                if (contains == false && existingMember == false && !circle.getCreatorID().equals(currentUser.getUid())) {
+                boolean nullTagCircle = false;
+                if(circle.getInterestTags().containsKey("null"))
+                    nullTagCircle = true;
+
+                if (nullTagCircle == false && contains == false && existingMember == false && !circle.getCreatorID().equals(currentUser.getUid())) {
                     Log.d("EXPLORE FRAGMENT", existingMember + " " + circle.getCreatorName().equals("The Circle Team"));
                     if (circle.getCreatorName().equals("The Circle Team") && existingMember == false) { //add default admin entry tag
                         exploreCircleList.add(0, circle);

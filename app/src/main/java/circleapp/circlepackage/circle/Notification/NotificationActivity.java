@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -46,7 +47,7 @@ public class NotificationActivity extends AppCompatActivity {
     private TextView prevnotify;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-    private DatabaseReference notifyDb,circlesDB;
+    private DatabaseReference notifyDb, circlesDB;
     private FirebaseAuth currentUser;
 
     @Override
@@ -77,124 +78,125 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void loadNotifications() {
-            notifyDb.orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Notification notification=dataSnapshot.getValue(Notification.class);
+        notifyDb.orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Notification notification = dataSnapshot.getValue(Notification.class);
 
-                    String currentTimeStamp = getCurrentTimeStamp();
-                    Scanner scan = new Scanner(currentTimeStamp);
-                    scan.useDelimiter("-");
-                    int currentDay = Integer.parseInt(scan.next());
-                    int currentMonth = Integer.parseInt(scan.next());
+                String currentTimeStamp = getCurrentTimeStamp();
+                Scanner scan = new Scanner(currentTimeStamp);
+                scan.useDelimiter("-");
+                int currentDay = Integer.parseInt(scan.next());
+                int currentMonth = Integer.parseInt(scan.next());
 
-                    String date = notification.getDate();
-                    scan = new Scanner(date);
-                    scan.useDelimiter("-");
-                    int notificationDay = Integer.parseInt(scan.next());
-                    int notificationMonth = Integer.parseInt(scan.next());
+                String date = notification.getDate();
+                scan = new Scanner(date);
+                scan.useDelimiter("-");
+                int notificationDay = Integer.parseInt(scan.next());
+                int notificationMonth = Integer.parseInt(scan.next());
 
-                    if(Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
-                        previousNotifs.add(notification);
-                    else
-                        thisWeekNotifs.add(notification);
+                if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
+                    previousNotifs.add(0, notification);
+                else
+                    thisWeekNotifs.add(0, notification);
 
-                    if (previousNotifs.size()==0)
-                    {
-                        prevnotify.setVisibility(View.INVISIBLE);
-                    }
-                    else
-                        {
-                            prevnotify.setVisibility(View.VISIBLE);
-                        }
+                if (previousNotifs.size() == 0) {
+                    prevnotify.setVisibility(View.INVISIBLE);
+                } else {
+                    prevnotify.setVisibility(View.VISIBLE);
+                }
 
-                    adapterThisWeek = new NotificationAdapter(getApplicationContext(), thisWeekNotifs);
-                    adapterPrevious = new NotificationAdapter(getApplicationContext(), previousNotifs);
+                adapterThisWeek = new NotificationAdapter(getApplicationContext(), thisWeekNotifs);
+                adapterPrevious = new NotificationAdapter(getApplicationContext(), previousNotifs);
 
-                    previousListView.setAdapter(adapterPrevious);
-                    thisWeekListView.setAdapter(adapterThisWeek);
+                previousListView.setAdapter(adapterPrevious);
+                thisWeekListView.setAdapter(adapterThisWeek);
 
-                    Utility.setListViewHeightBasedOnChildren(thisWeekListView);
-                    Utility.setListViewHeightBasedOnChildren(previousListView);
+                Utility.setListViewHeightBasedOnChildren(thisWeekListView);
+                Utility.setListViewHeightBasedOnChildren(previousListView);
 
-                    thisWeekListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                thisWeekListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                            circle=SessionStorage.getCircle(NotificationActivity.this);
 //                            Circle current = new Circlele();
-                            Notification curent = thisWeekNotifs.get(position);
-                            String circleid = curent.getCircleId();
-                            circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Circle circle = dataSnapshot.getValue(Circle.class);
-                                    SessionStorage.saveCircle(NotificationActivity.this,circle);
+                        Notification curent = thisWeekNotifs.get(position);
+                        String circleid = curent.getCircleId();
+                        circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Circle circle = dataSnapshot.getValue(Circle.class);
+                                if (circle.getMembersList().containsKey(currentUser.getUid())) {
+                                    SessionStorage.saveCircle(NotificationActivity.this, circle);
                                     startActivity(new Intent(NotificationActivity.this, CircleWall.class));
-
+                                    finish();
+                                } else {
+                                    Toast.makeText(NotificationActivity.this, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                            }
+                        });
 
-                        }
-                    });
+                    }
+                });
 
-                    previousListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Notification curent = thisWeekNotifs.get(position);
-                            String circleid = curent.getCircleId();
-                            circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Circle circle = dataSnapshot.getValue(Circle.class);
-                                    String state = curent.getState();
-                                    if (state.equalsIgnoreCase("Accepted") || state.equalsIgnoreCase("Rejected")){
-                                    SessionStorage.saveCircle(NotificationActivity.this,circle);
+                previousListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Notification curent = thisWeekNotifs.get(position);
+                        String circleid = curent.getCircleId();
+                        circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Circle circle = dataSnapshot.getValue(Circle.class);
+                                String state = curent.getState();
+                                if (state.equalsIgnoreCase("Accepted") || state.equalsIgnoreCase("Rejected")) {
+                                    SessionStorage.saveCircle(NotificationActivity.this, circle);
                                     startActivity(new Intent(NotificationActivity.this, CircleWall.class));
-                                    }
-                                    else if (state.equalsIgnoreCase("broadcast_added"))
-                                    {
-                                        SessionStorage.saveCircle(NotificationActivity.this,circle);
-                                        startActivity(new Intent(NotificationActivity.this, CircleWall.class));
-                                    }
-
+                                    finish();
+                                } else if (state.equalsIgnoreCase("broadcast_added")) {
+                                    SessionStorage.saveCircle(NotificationActivity.this, circle);
+                                    startActivity(new Intent(NotificationActivity.this, CircleWall.class));
+                                    finish();
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
 
-                                }
-                            });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
 
-                }
+                    }
+                });
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
-                }
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
 
-                }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
 
-                }
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
 
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -222,7 +224,7 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
-    public static String getCurrentTimeStamp(){
+    public static String getCurrentTimeStamp() {
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -239,7 +241,8 @@ public class NotificationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(NotificationActivity.this,ExploreTabbedActivity.class);
+        Intent intent = new Intent(NotificationActivity.this, ExploreTabbedActivity.class);
         startActivity(intent);
+        finish();
     }
 }

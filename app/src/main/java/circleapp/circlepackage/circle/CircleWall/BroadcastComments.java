@@ -150,4 +150,11 @@ public class BroadcastComments extends AppCompatActivity {
         SessionStorage.saveBroadcast(BroadcastComments.this, broadcast);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(BroadcastComments.this, CircleWall.class));
+        finish();
+    }
 }

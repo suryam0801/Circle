@@ -5,9 +5,12 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@drawable/popup_card_background"
     android:layout_margin="15dp"
+    android:scaleType="fitXY"
     android:orientation="vertical">
+    <!--
+    android:background="@drawable/popup_card_background"
+    -->
 
     <LinearLayout
         android:id="@+id/container"
@@ -84,7 +87,7 @@
                 android:maxLines="3"
                 android:text="Description"
                 android:textColor="@color/white"
-                android:textSize="14dp" />
+                android:textSize="15dp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/circle_display_tags"
