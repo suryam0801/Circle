@@ -549,9 +549,4 @@ public class CircleWall extends AppCompatActivity {
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
     }
-
-    public void initializeBroadcastCount(){
-
-    }
-
 }

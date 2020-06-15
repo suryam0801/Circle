@@ -63,7 +63,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Vibrator v;
     private User user;
 
-
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
         this.context = context;
@@ -71,7 +70,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        user = SessionStorage.getUser((Activity) context);
     }
 
     @Override
@@ -84,6 +82,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
 
         final Broadcast broadcast = broadcastList.get(i);
+        user = SessionStorage.getUser((Activity) context);
 
         final Poll poll;
         RadioButton button;
@@ -120,14 +119,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         }
 
         //setting new comments display
-        viewHolder.no_of_comments.setText("(" + ((int) broadcast.getNumberOfComments()) + ")");
+        viewHolder.viewComments.setText("Go to discussion (" + ((int) broadcast.getNumberOfComments()) + ")");
         if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
-            Log.d("BROADCASTLISTADAPTER", user.getNewTimeStampsComments().get(broadcast.getId()).toString());
-            Log.d("BROADCASTLISTADAPTER", String.valueOf(broadcast.getLatestCommentTimestamp()));
             if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-                viewHolder.no_of_comments.setTextColor(Color.parseColor("#6CACFF"));
-        } else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
-            viewHolder.no_of_comments.setTextColor(Color.parseColor("#6CACFF"));
+                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(broadcast.getId())){
+            if(broadcast.getNumberOfComments()>0)
+                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        }else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
+            viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
         }
 
         viewHolder.viewComments.setOnClickListener(view -> {
@@ -135,7 +135,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 HashMap<String, Long> newTimeStampsComments = new HashMap<>(user.getNewTimeStampsComments());
                 newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
                 int newReadValue = user.getNoOfReadDiscussions();
+
                 if(user.getNewTimeStampsComments().containsKey(broadcast.getId()) && (user.getNewTimeStampsComments().get(broadcast.getId()) == broadcast.getLatestCommentTimestamp()))
+                    newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
+                else if(!user.getNewTimeStampsComments().containsKey(broadcast.getId()))
                     newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
 
                 user.setNewTimeStampsComments(newTimeStampsComments);
@@ -309,21 +312,19 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, attachmentNameDisplay,
-                pollQuestionDisplay, timeElapsedDisplay, viewComments, no_of_comments;
+                pollQuestionDisplay, timeElapsedDisplay, viewComments;
         private CircleImageView profPicDisplay;
         private LinearLayout attachmentDisplay, pollDisplay, pollOptionsDisplayGroup;
         private ImageButton attachmentDownloadButton;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
-        private DatabaseReference broadcastDB, commentsDB, userDB;
+        private DatabaseReference broadcastDB;
         private Button viewPollAnswers;
 
         public ViewHolder(View view) {
             super(view);
             database = FirebaseDatabase.getInstance();
             broadcastDB = database.getReference("Broadcasts");
-            commentsDB = database.getReference("BroadcastComments").child(circle.getId());
-            commentsDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.broadcastWall_Message);
             attachmentNameDisplay = view.findViewById(R.id.broadcastWall_fileName);
@@ -336,7 +337,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             attachmentDownloadButton = view.findViewById(R.id.attachment_download_btn);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
-            no_of_comments = view.findViewById(R.id.broadcastWall_object_viewComments_indicator);
         }
 
         public String getCurrentUserPollOption() {
