@@ -399,46 +399,38 @@ public class CircleWall extends AppCompatActivity {
         if (downloadUri == null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
-                    currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
+                    currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            int newCount = circle.getNoOfBroadcasts() + 1;
-            circle.setNoOfBroadcasts(newCount);
-            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         } else if (downloadUri != null && pollExists == false) {
 
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
-                    currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink());
+                    currentUserName, currentUserId, false, System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            int newCount = circle.getNoOfBroadcasts() + 1;
-            circle.setNoOfBroadcasts(newCount);
-            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         } else if (downloadUri == null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, null,
-                    currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
+                    currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            int newCount = circle.getNoOfBroadcasts() + 1;
-            circle.setNoOfBroadcasts(newCount);
-            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         } else if (downloadUri != null && pollExists == true) {
 
             Poll poll = new Poll(pollQuestion, options, null);
             Broadcast broadcast = new Broadcast(broadcastId, message, downloadUri,
-                    currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink());
+                    currentUserName, currentUserId, true, System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
             broadcastsDB.child(currentCircleId).child(broadcastId).setValue(broadcast);
-            int newCount = circle.getNoOfBroadcasts() + 1;
-            circle.setNoOfBroadcasts(newCount);
-            circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
             pollExists = false;
             pollAnswerOptionsList.clear();
         }
+
+        int newCount = circle.getNoOfBroadcasts() + 1;
+        circle.setNoOfBroadcasts(newCount);
+        circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
     }
 
     //start the intent for picking an image
@@ -556,6 +548,10 @@ public class CircleWall extends AppCompatActivity {
         super.onBackPressed();
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
+    }
+
+    public void initializeBroadcastCount(){
+
     }
 
 }

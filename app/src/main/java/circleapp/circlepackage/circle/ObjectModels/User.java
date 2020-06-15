@@ -8,7 +8,8 @@ public class User  {
     private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> interestTags;
     private HashMap<String, Integer> notificationsAlert;
-    private int createdCircles, activeCircles, completedProjects;
+    private HashMap<String, Long> newDiscussionAlert;
+    private int createdCircles, activeCircles, completedProjects, noOfReadDiscussions;
 
 
     public User(){
@@ -18,7 +19,8 @@ public class User  {
     public User(String firstName, String lastName, String contact,
                 String profileImageLink, HashMap<String, Boolean> interestTags, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
-                String ward, String district, HashMap<String, Integer> notificationsAlert) {
+                String ward, String district, HashMap<String, Integer> notificationsAlert,
+                HashMap<String, Long> newDiscussionAlert, int noOfNewComments) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.contact = contact;
@@ -32,6 +34,8 @@ public class User  {
         this.ward = ward;
         this.district = district;
         this.notificationsAlert = notificationsAlert;
+        this.newDiscussionAlert = newDiscussionAlert;
+        this.noOfReadDiscussions = noOfNewComments;
     }
 
     public HashMap<String, Boolean> getInterestTags() {
@@ -137,6 +141,22 @@ public class User  {
         this.notificationsAlert = notificationsAlert;
     }
 
+    public HashMap<String, Long> getNewDiscussionAlert() {
+        return newDiscussionAlert;
+    }
+
+    public void setNewDiscussionAlert(HashMap<String, Long> newDiscussionAlert) {
+        this.newDiscussionAlert = newDiscussionAlert;
+    }
+
+    public int getNoOfReadDiscussions() {
+        return noOfReadDiscussions;
+    }
+
+    public void setNoOfReadDiscussions(int noOfReadDiscussions) {
+        this.noOfReadDiscussions = noOfReadDiscussions;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -150,9 +170,11 @@ public class User  {
                 ", ward='" + ward + '\'' +
                 ", interestTags=" + interestTags +
                 ", notificationsAlert=" + notificationsAlert +
+                ", newDiscussionAlert=" + newDiscussionAlert +
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +
                 ", completedProjects=" + completedProjects +
+                ", noOfNewComments=" + noOfReadDiscussions +
                 '}';
     }
 }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import com.google.android.gms.common.internal.service.Common;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +40,7 @@ import java.util.Map;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
@@ -52,9 +55,10 @@ public class BroadcastComments extends AppCompatActivity {
     private Button commentSend;
     private Circle circle;
     private FirebaseDatabase database;
-    private DatabaseReference broadcastCommentsDB;
+    private DatabaseReference broadcastCommentsDB, circlesDB, broadcastDB, userDB;
     private ImageButton back;
     private Broadcast broadcast;
+    private User user;
     private LinearLayout emptyHolder;
 
     @Override
@@ -62,10 +66,19 @@ public class BroadcastComments extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast_comments);
 
+        circle = SessionStorage.getCircle(BroadcastComments.this);
+        broadcast = SessionStorage.getBroadcast(BroadcastComments.this);
+        user = SessionStorage.getUser(BroadcastComments.this);
+
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
+        circlesDB = database.getReference("Circles").child(circle.getId());
+        broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(broadcast.getId());
+        userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        broadcast = SessionStorage.getBroadcast(BroadcastComments.this);
+
+        userDB.child("newTimeStampsComments").setValue(user.getNewDiscussionAlert());
+        userDB.child("noOfReadDiscussions").setValue(user.getNoOfReadDiscussions());
 
         commentsListView = findViewById(R.id.comments_listView);
         commentEditText = findViewById(R.id.comment_type_editText);
@@ -79,8 +92,6 @@ public class BroadcastComments extends AppCompatActivity {
         commentsListView.setAdapter(commentAdapter);
 
         commentEditText.clearFocus();
-
-        circle = SessionStorage.getCircle(BroadcastComments.this);
 
         loadComments();
 //        BroadcastComments.setSoftInputMode(SOFT_INPUT_ADJUST_PAN);
@@ -140,5 +151,18 @@ public class BroadcastComments extends AppCompatActivity {
                 SessionStorage.getUser(BroadcastComments.this).getLastName().trim());
 
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
+
+        int noOfNewDiscussions = circle.getNoOfNewDiscussions() + 1;
+        int noOfNewBroadcasts = broadcast.getNumberOfComments() + 1;
+        circlesDB.child("noOfNewDiscussions").setValue(noOfNewDiscussions);
+        broadcastDB.child("latestCommentTimestamp").setValue(System.currentTimeMillis());
+        broadcastDB.child("noOfBroadcasts").setValue(noOfNewBroadcasts);
+
+        circle.setNoOfNewDiscussions(noOfNewDiscussions);
+        SessionStorage.saveCircle(BroadcastComments.this, circle);
+        broadcast.setLatestCommentTimestamp(System.currentTimeMillis());
+        broadcast.setNumberOfComments(noOfNewBroadcasts);
+        SessionStorage.saveBroadcast(BroadcastComments.this, broadcast);
+
     }
 }

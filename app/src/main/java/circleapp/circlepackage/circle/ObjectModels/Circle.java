@@ -7,7 +7,7 @@ public class Circle {
     private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard;
     private HashMap<String, Boolean>  interestTags, membersList, applicantsList;
     private long timestamp;
-    private int noOfBroadcasts;
+    private int noOfBroadcasts, noOfNewDiscussions;
 
     public Circle(){
 
@@ -16,7 +16,7 @@ public class Circle {
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
                   String creatorName, HashMap<String, Boolean> interestTags,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
-                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts) {
+                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, int noOfNewDiscussions) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,6 +30,7 @@ public class Circle {
         this.circleWard = circleWard;
         this.timestamp = timestamp;
         this.noOfBroadcasts = noOfBroadcasts;
+        this.noOfNewDiscussions = noOfNewDiscussions;
     }
 
     public String getId() {
@@ -136,6 +137,14 @@ public class Circle {
         this.noOfBroadcasts = noOfBroadcasts;
     }
 
+    public int getNoOfNewDiscussions() {
+        return noOfNewDiscussions;
+    }
+
+    public void setNoOfNewDiscussions(int noOfNewDiscussions) {
+        this.noOfNewDiscussions = noOfNewDiscussions;
+    }
+
     @Override
     public String toString() {
         return "Circle{" +
@@ -152,6 +161,7 @@ public class Circle {
                 ", applicantsList=" + applicantsList +
                 ", timestamp=" + timestamp +
                 ", noOfBroadcasts=" + noOfBroadcasts +
+                ", noOfNewDiscussions=" + noOfNewDiscussions +
                 '}';
     }
 }
