@@ -116,7 +116,7 @@ public class LocationHelper{
         }
     }
 
-    private void getCountry(List<Address> addresses) {
+    private void getCountry(List<Address> addresses){
         options = activity.getResources().getStringArray(R.array.countries_array);
         al = Arrays.asList(options);
         mCountryName = addresses.get(0).getCountryName();
@@ -148,11 +148,18 @@ public class LocationHelper{
                             List<String> parsing = new ArrayList<>();
                             while (scan.hasNext()) {
                                 String w = String.valueOf(scan.next());
-                                if(w.trim().equals(district.trim())) {
-                                    ward = parsing.get(parsing.size()-1);
-                                } else {
-                                    parsing.add(w);
+                                if (w !=" " && district != " ")
+                                {
+                                    if(w.trim().equals(district.trim())) {
+                                        ward = parsing.get(parsing.size()-1);
+                                    } else {
+                                        parsing.add(w);
+                                    }
                                 }
+                                else
+                                    {
+                                        getLocation();
+                                    }
                             }
                         }
                         setSessionLocation(mCountryName,pos,district,ward,mCountryDialCode);
