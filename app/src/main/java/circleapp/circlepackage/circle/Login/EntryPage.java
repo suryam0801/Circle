@@ -12,6 +12,13 @@ import android.os.Bundle;
 import android.widget.Button;
 
 
+import com.google.firebase.crashlytics.CrashlyticsRegistrar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.crashlytics.internal.common.CrashlyticsCore;
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
+
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
@@ -24,17 +31,22 @@ public class EntryPage extends AppCompatActivity{
     private static final String TAG = EntryPage.class.getSimpleName();
     private Button agreeContinue;
     AnalyticsLogEvents analyticsLogEvents;
+    Trace myTrace;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        myTrace = FirebasePerformance.getInstance().newTrace("test_trace");
+        myTrace.start();
         setContentView(R.layout.activity_entry_page);
         analyticsLogEvents = new AnalyticsLogEvents();
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
         agreeContinue.setOnClickListener(view -> {
+            agreeContinue.setClickable(false);
             if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
                 locationHelper.getLocation();
+                myTrace.stop();
 
             } else {
                 analyticsLogEvents.logEvents(EntryPage.this, "location_permission", "location_off","app_open");

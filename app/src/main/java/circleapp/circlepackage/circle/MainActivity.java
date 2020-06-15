@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                analyticsLogEvents.logCrash("Notification_error","Main_activity");
             }
         });
     }
@@ -194,5 +195,6 @@ public class MainActivity extends AppCompatActivity {
                 .setContentIntent(contentIntent)
                 .build();
         notificationManager.notify(1, notification);
+        analyticsLogEvents.logEvents(MainActivity.this, "notification_sent", "success", "main_activity");
     }
 }

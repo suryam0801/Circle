@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public class AnalyticsLogEvents {
     private static FirebaseAnalytics firebaseAnalytics;
+    private static FirebaseCrashlytics firebaseCrashlytics;
     public AnalyticsLogEvents()  {
     }
     public void logEvents(Context context,String id, String name, String type){
@@ -26,5 +28,8 @@ public class AnalyticsLogEvents {
     }
     public void setCurrentScreen(Activity context, String screenName, String screenClass){
         firebaseAnalytics.setCurrentScreen(context, screenName, screenClass);
+    }
+    public void logCrash(String key, String value){
+        firebaseCrashlytics.getInstance().setCustomKey(key,value);
     }
 }

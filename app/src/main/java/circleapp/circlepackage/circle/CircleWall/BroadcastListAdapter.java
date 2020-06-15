@@ -28,8 +28,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -116,6 +119,14 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             else
                 viewHolder.timeElapsedDisplay.setText(days + "d ago");
         }
+        viewHolder.commentsDB.child(circle.getId()).child(broadcast.getId()).addValueEventListener(new ValueEventListener() {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long count = dataSnapshot.getChildrenCount();
+                Log.d("Count",""+count);
+                viewHolder.no_of_comments.setText("("+((int) (long) count)+")");
+            }
+            public void onCancelled(DatabaseError databaseError) { }
+        });
 
         viewHolder.viewComments.setOnClickListener(view -> {
             SessionStorage.saveBroadcast((Activity) context, broadcast);
@@ -276,19 +287,20 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, attachmentNameDisplay,
-                pollQuestionDisplay, timeElapsedDisplay, viewComments;
+                pollQuestionDisplay, timeElapsedDisplay, viewComments, no_of_comments;
         private CircleImageView profPicDisplay;
         private LinearLayout attachmentDisplay, pollDisplay, pollOptionsDisplayGroup;
         private ImageButton attachmentDownloadButton;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
-        private DatabaseReference broadcastDB;
+        private DatabaseReference broadcastDB, commentsDB;
         private Button viewPollAnswers;
 
         public ViewHolder(View view) {
             super(view);
             database = FirebaseDatabase.getInstance();
             broadcastDB = database.getReference("Broadcasts");
+            commentsDB = database.getReference("BroadcastComments");
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.broadcastWall_Message);
             attachmentNameDisplay = view.findViewById(R.id.broadcastWall_fileName);
@@ -301,6 +313,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             attachmentDownloadButton = view.findViewById(R.id.attachment_download_btn);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
+            no_of_comments = view.findViewById(R.id.broadcastWall_object_viewComments_indicator);
         }
 
         public String getCurrentUserPollOption() {

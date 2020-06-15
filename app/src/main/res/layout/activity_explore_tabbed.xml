@@ -66,7 +66,7 @@
             android:id="@+id/main_workbench_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your Circles"></com.google.android.material.tabs.TabItem>
+            android:text="My Circles"></com.google.android.material.tabs.TabItem>
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/main_explore_tab"
