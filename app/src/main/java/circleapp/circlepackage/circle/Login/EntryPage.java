@@ -12,6 +12,11 @@ import android.os.Bundle;
 import android.widget.Button;
 
 
+import com.google.firebase.crashlytics.CrashlyticsRegistrar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.crashlytics.internal.common.CrashlyticsCore;
+import com.google.firebase.crashlytics.internal.model.CrashlyticsReport;
+
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;

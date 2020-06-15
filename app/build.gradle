@@ -2,14 +2,14 @@ import com.google.gms.googleservices.GoogleServicesPlugin
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'
+
+
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
-
-    dataBinding {
-        enabled true
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -81,7 +81,10 @@ dependencies {
 
     implementation 'com.github.clans:fab:1.6.4'
 
+    //firebase quality functions
     implementation 'com.google.firebase:firebase-analytics:17.4.3'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
+    implementation 'com.google.firebase:firebase-perf:19.0.7'
 
     // lib for SMS verification (Phone Auth)
     implementation 'com.google.android.gms:play-services-auth:17.0.0'

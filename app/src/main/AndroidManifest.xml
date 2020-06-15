@@ -3,9 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="circleapp.circlepackage.circle">
 
-
-    <uses-sdk android:targetSdkVersion="29" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,6 +18,9 @@
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
         <activity android:name=".CircleWall.CreatorPollAnswersView"></activity>
         <activity android:name=".Explore.ExploreTabbedActivity" android:noHistory="true">
             <intent-filter>
