@@ -106,11 +106,6 @@ public class InterestTagPicker extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_interest_tag_picker);
 
-        //To set the Fullscreen
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        getWindow().setFormat(PixelFormat.RGB_565);
-//        getSupportActionBar().hide();
-
         noOfTagsChosen = 0;
         analyticsLogEvents = new AnalyticsLogEvents();
         register = findViewById(R.id.registerButton);
@@ -296,7 +291,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle adminCircle = new Circle("adminCircle", "Meet the developers of Circle",
                 "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
                 "automatic", "CreatorAdmin", "The Circle Team", circleIntTags,
-                null, null, "test", null, System.currentTimeMillis(), 2, 1);
+                null, null, "test", null, System.currentTimeMillis(), 2, 0);
 
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
         pollOptions.put("It's going to rain tomorrow", 0);
@@ -306,7 +301,7 @@ public class InterestTagPicker extends AppCompatActivity {
                 "comments below. Click on Go to discussion to see the secret message. :)", null, "Jacob",
                 "AdminId", false, (System.currentTimeMillis() - 1), null, "default", 0, 0);
         Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,
-                System.currentTimeMillis(), adminPoll, "default", 0, 1);
+                System.currentTimeMillis(), adminPoll, "default", 0, 0);
         Broadcast introBroadcast = new Broadcast("introBroadcast", "Welcome to Circle! Your friendly neighborhood app. Form circles " +
                 "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
                 "opinions - all on a single platform.", null, "Surya", "AdminId", false,
@@ -330,13 +325,13 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle runningCircle = new Circle(runningCircleID, "Morning Runner's " + district,
                 "Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle",
                 "automatic", "CreatorAdmin", "Vijay Ram", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis(), 2, 1);
+                null, null, district, ward, System.currentTimeMillis(), 2, 0);
         HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
         pollOptionsRunningCircle.put("Sure!", 0);
         pollOptionsRunningCircle.put("Thats too early :(", 0);
         Poll runningPoll = new Poll("Hey guys! Can we go running every friday early in the morning?", pollOptionsRunningCircle, null);
         Broadcast runnersBroadcastMessage = new Broadcast(runningBroadcastID, "Hi all! This is a group to find mates to go on daily runs with. Runners of all levels welcome!", null, "Vijay Ram", "AdminId", false,
-                System.currentTimeMillis(), null, "default", 0, 1);
+                System.currentTimeMillis(), null, "default", 0, 0);
         Broadcast runnersBroadcastPoll = new Broadcast(runningBroadcasPollID, null, null, "Vijay Ram", "AdminId", true,
                 System.currentTimeMillis(), runningPoll, "default", 0, 0);
         Comment runnerComment = new Comment("Madhu mitha", "Hey where do you guys go running?",
@@ -355,14 +350,14 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle cookingCircle = new Circle(studentsCircleID, district + " Students Hangout!",
                 "Lets use this circle to unite all students in " + district + ". Voice your problems, questions, or anything you need support with. You will never walk alone!",
                 "automatic", "CreatorAdmin", "Malavika Kumar", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis(), 2, 2);
+                null, null, district, ward, System.currentTimeMillis(), 2, 0);
         HashMap<String, Integer> pollOptionsStudentsCircle = new HashMap<>(); //creating poll options
         pollOptionsStudentsCircle.put("no! it will get cancelled!", 0);
         pollOptionsStudentsCircle.put("im preparing :(", 0);
         pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
         Poll cookingPoll = new Poll("Are you guys still preparing for exams?", pollOptionsStudentsCircle, null);
         Broadcast studentBroadcast = new Broadcast(studentsBroadcastID, "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. You have the support of all the students from " + district + " here!", null, "Mekkala Nair", "AdminId", false,
-                System.currentTimeMillis(), null, "default", 0, 2);
+                System.currentTimeMillis(), null, "default", 0, 0);
         Broadcast studentBroadcastPoll = new Broadcast(studentsBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
                 System.currentTimeMillis(), cookingPoll, "default", 0, 0);
         Comment studentComment = new Comment("Arijit Samuel", "Can i post promotions for my college events here?",
@@ -383,7 +378,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Circle quarantineCircle = new Circle(quarantineCircleID,  "Quarantine Talks " + district,
                 "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
                 "automatic", "CreatorAdmin", "Surya Manivannan", circleIntTags,
-                null, null, district, ward, System.currentTimeMillis(), 2, 1);
+                null, null, district, ward, System.currentTimeMillis(), 2, 0);
         HashMap<String, Integer> pollOptionsQuarantineCircle = new HashMap<>(); //creating poll options
         pollOptionsQuarantineCircle.put("1 month", 0);
         pollOptionsQuarantineCircle.put("2 months", 0);
@@ -393,7 +388,7 @@ public class InterestTagPicker extends AppCompatActivity {
         Broadcast quarantineBroadcast = new Broadcast(quarantineBroadcastID, "Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)", null, "Mekkala Nair", "AdminId", false,
                 (System.currentTimeMillis() - (1800 * 1000)), null, "default", 0, 0);
         Broadcast quarantineBroadcastPoll = new Broadcast(quarantineBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
-                System.currentTimeMillis(), quarantinePoll, "default", 0, 1);
+                System.currentTimeMillis(), quarantinePoll, "default", 0, 0);
         Comment quarantineComment = new Comment("Nithin M", "Where are you guys buying your essentials?",
                 quarantineCommentID, null, (System.currentTimeMillis()));
         circlesDB.child(quarantineCircleID).setValue(quarantineCircle);

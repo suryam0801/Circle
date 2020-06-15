@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,7 +186,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         ChipGroup circleDisplayTags;
         Button join;
         ImageButton share;
+        LinearLayout container;
 
+        container = linkCircleDialog.findViewById(R.id.container);
         tv_circleName = linkCircleDialog.findViewById(R.id.circle_name);
         tv_creatorName = linkCircleDialog.findViewById(R.id.circle_creatorName);
         tv_circleDesc = linkCircleDialog.findViewById(R.id.circle_desc);
@@ -192,6 +196,12 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         join = linkCircleDialog.findViewById(R.id.circle_card_join);
         share = linkCircleDialog.findViewById(R.id.circle_card_share);
 
+        GradientDrawable wbItemBackground = new GradientDrawable();
+        wbItemBackground.setShape(GradientDrawable.RECTANGLE);
+        wbItemBackground.setCornerRadius(30.0f);
+        wbItemBackground.setColor(Color.parseColor("#FE42AE"));
+
+        container.setBackground(wbItemBackground);
         tv_circleName.setText(popupCircle.getName());
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());

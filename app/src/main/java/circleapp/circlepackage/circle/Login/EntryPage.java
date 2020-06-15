@@ -6,14 +6,11 @@ import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Trace;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
-
-import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.Trace;
 
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
@@ -32,8 +29,6 @@ public class EntryPage extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        myTrace = FirebasePerformance.getInstance().newTrace("test_trace");
-        myTrace.start();
         setContentView(R.layout.activity_entry_page);
         analyticsLogEvents = new AnalyticsLogEvents();
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
@@ -43,7 +38,6 @@ public class EntryPage extends AppCompatActivity{
             agreeContinue.setEnabled(false);
             if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
                 locationHelper.getLocation();
-                myTrace.stop();
 
             } else {
                 analyticsLogEvents.logEvents(EntryPage.this, "location_permission", "location_off","app_open");

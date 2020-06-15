@@ -337,33 +337,38 @@ public class CircleWall extends AppCompatActivity {
         }
 
         btnAddPollOption.setOnClickListener(view -> {
-            String option = setPollOptionET.getText().toString();
+            String option = setPollOptionET.getText().toString() + " ";
             analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button","circle_wall");
-            if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
-                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
-                lparams.setMargins(0, 10, 20, 0);
-                final TextView tv = new TextView(CircleWall.this);
-                tv.setLayoutParams(lparams);
-                tv.setText(option);
-                tv.setTextColor(Color.WHITE);
-                tv.setGravity(Gravity.CENTER_VERTICAL);
-                tv.setBackground(getResources().getDrawable(R.drawable.poll_creation_item_option_background));
-                tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_white_24dp, 0);
-                tv.setPaddingRelative(40, 10, 40, 10);
-                tv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        pollOptionsDisplay.removeView(tv);
-                        pollAnswerOptionsList.remove(tv.getText());
-                        Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
-                    }
-                });
-                pollAnswerOptionsList.add(option);
-                Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
-                pollOptionsDisplay.addView(tv);
-                setPollOptionET.setText("");
+
+            if((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]"))) {
+                Toast.makeText(getApplicationContext(), "Cannot use special characters", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getApplicationContext(), "Fill out all poll fields", Toast.LENGTH_SHORT).show();
+                if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
+                    LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
+                    lparams.setMargins(0, 10, 20, 0);
+                    final TextView tv = new TextView(CircleWall.this);
+                    tv.setLayoutParams(lparams);
+                    tv.setText(option);
+                    tv.setTextColor(Color.WHITE);
+                    tv.setGravity(Gravity.CENTER_VERTICAL);
+                    tv.setBackground(getResources().getDrawable(R.drawable.poll_creation_item_option_background));
+                    tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_white_24dp, 0);
+                    tv.setPaddingRelative(40, 10, 40, 10);
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            pollOptionsDisplay.removeView(tv);
+                            pollAnswerOptionsList.remove(tv.getText());
+                            Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
+                        }
+                    });
+                    pollAnswerOptionsList.add(option);
+                    Log.d("CIRCLE WALL, ", pollAnswerOptionsList.toString());
+                    pollOptionsDisplay.addView(tv);
+                    setPollOptionET.setText("");
+                } else {
+                    Toast.makeText(getApplicationContext(), "Fill out all poll fields", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
