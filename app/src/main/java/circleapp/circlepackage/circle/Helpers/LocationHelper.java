@@ -44,6 +44,7 @@ public class LocationHelper{
     private String ward, district,mCountryDialCode,mCountryCode,mCountryName;
     String[] options;
     List<String> al = new ArrayList<String>();
+    AnalyticsLogEvents analyticsLogEvents = new AnalyticsLogEvents();
     int pos;
 //    progressDialog = new abstract ProgressDialog(activity);
     public LocationHelper(Activity activity)  {
@@ -73,6 +74,7 @@ public class LocationHelper{
             @Override
             public void onLocationChanged(Location location) {
                 //update the current location
+                analyticsLogEvents.logEvents(activity,"OnLocationChanges", "OnLocationCalled","LocationHelper");
                 getAddress(location);
                 locationManager.removeUpdates(this);
 //                locationManager.removeUpdates(this);
@@ -148,7 +150,8 @@ public class LocationHelper{
                             List<String> parsing = new ArrayList<>();
                             while (scan.hasNext()) {
                                 String w = String.valueOf(scan.next());
-                                if ((!w.isEmpty() && !district.isEmpty()) &&(w !=null && district != null) )
+                                analyticsLogEvents.logEvents(activity,w.trim(), w.trim(),"Ward");
+                                if ((!w.isEmpty() || !district.isEmpty()) ||(w !=null || district != null) )
                                 {
                                     if(w.trim().equals(district.trim())) {
                                         ward = parsing.get(parsing.size()-1);
@@ -158,6 +161,7 @@ public class LocationHelper{
                                 }
                                 else
                                     {
+                                        analyticsLogEvents.logEvents(activity,w.trim(), district.trim(),"getLocationCalled");
                                         getLocation();
                                     }
                             }
@@ -176,8 +180,12 @@ public class LocationHelper{
         intent.putExtra("pos", position);
         intent.putExtra("countryName",countryname);
         intent.putExtra("dialCode",mCountryDialCode);
-        intent.putExtra("ward", ward.trim());
+        if(ward == null)
+            intent.putExtra("ward", "default");
+        else
+            intent.putExtra("ward", ward.trim());
         intent.putExtra("district", district.trim());
+
         activity.startActivity(intent);
         activity.finish();
         Log.d(TAG,district+"::pos="+position+"::"+ward+"::"+mCountryDialCode);
@@ -186,7 +194,7 @@ public class LocationHelper{
     public void statusCheck() {
         final LocationManager manager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             buildAlertMessageNoGps();
 
         }
