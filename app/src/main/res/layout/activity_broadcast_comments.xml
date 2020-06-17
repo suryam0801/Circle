@@ -109,6 +109,8 @@
             android:textColor="@color/black"
             android:textColorHint="#D1D1D1"
             android:hint="Type your comment..."
+            android:paddingBottom="8dp"
+            android:imeOptions="actionSend|flagNoEnterAction"
             android:background="@drawable/blue_border_background">
         </EditText>
 
@@ -120,7 +122,8 @@
             android:layout_alignParentEnd="true"
             style="?android:attr/borderlessButtonStyle"
             android:layout_marginTop="12dp"
-            android:layout_marginRight="25dp">
+            android:layout_marginRight="25dp"
+            android:paddingBottom="10dp">
         </Button>
     </RelativeLayout>
 
