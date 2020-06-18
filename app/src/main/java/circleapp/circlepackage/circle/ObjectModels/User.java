@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class User  {
 
 
-    private String firstName, lastName, contact, profileImageLink, userId, token_id, district, ward;
+    private String Name, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> interestTags;
     private HashMap<String, Integer> notificationsAlert;
     private HashMap<String, Long> newTimeStampsComments;
@@ -16,13 +16,12 @@ public class User  {
 
     }
 
-    public User(String firstName, String lastName, String contact,
+    public User(String Name, String contact,
                 String profileImageLink, HashMap<String, Boolean> interestTags, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
                 HashMap<String, Long> newDiscussionAlert, int noOfNewComments) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
         this.interestTags = interestTags;
@@ -85,20 +84,12 @@ public class User  {
     public void setProfileImageLink(String profileImageLink) {
         this.profileImageLink = profileImageLink;
     }
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return Name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
     public String getContact() {
@@ -160,8 +151,7 @@ public class User  {
     @Override
     public String toString() {
         return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                "Name='" + Name + '\'' +
                 ", contact='" + contact + '\'' +
                 ", profileImageLink='" + profileImageLink + '\'' +
                 ", userId='" + userId + '\'' +
