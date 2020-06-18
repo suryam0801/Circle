@@ -6,10 +6,32 @@
     android:orientation="vertical"
     tools:context=".CreateCircle.CreateCircleCategoryPicker">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/roboto_bold"
+        android:gravity="center"
+        android:text="Create your own circle"
+        android:textColor="@color/black"
+        android:textSize="25dp"></TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:text="Create a circle to connect with those around you or share this circle to only your friends"
+        android:textColor="@color/grey"
+        android:textSize="12dp"></TextView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/category_picker_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

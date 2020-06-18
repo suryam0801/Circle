@@ -28,6 +28,7 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
         setContentView(R.layout.activity_create_circle_category_picker);
 
         categoryList.add("Health & Fitness");
+        categoryList.add("Events");
         categoryList.add("Students & Clubs");
         categoryList.add("Apartments & Communities");
         categoryList.add("Sports");

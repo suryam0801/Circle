@@ -110,7 +110,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
         }
-        
+
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
         circlesPersonelDB = database.getReference("CirclePersonel");
