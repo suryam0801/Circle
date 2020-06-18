@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle;
+package circleapp.circlepackage.circle.Helpers;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

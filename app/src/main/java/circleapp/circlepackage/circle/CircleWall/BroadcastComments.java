@@ -30,7 +30,7 @@ import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class BroadcastComments extends AppCompatActivity {
 

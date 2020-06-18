@@ -35,7 +35,7 @@ import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class NotificationActivity extends AppCompatActivity {
 

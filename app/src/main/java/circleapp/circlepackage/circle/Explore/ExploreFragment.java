@@ -1,6 +1,5 @@
 package circleapp.circlepackage.circle.Explore;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,13 +23,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 /**
  * A simple {@link Fragment} subclass.

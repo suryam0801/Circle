@@ -47,10 +47,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,11 +57,9 @@ import java.util.UUID;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Login.EntryPage;
-import circleapp.circlepackage.circle.Login.PhoneLogin;
-import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {

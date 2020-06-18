@@ -60,7 +60,7 @@ import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,33 +12,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDisplayAdapter.ViewHolder> {
 

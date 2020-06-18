@@ -1,44 +1,29 @@
 package circleapp.circlepackage.circle.PersonelDisplay;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Notification.SendNotification;
-import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdapter.ViewHolder> {

@@ -4,22 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
-import circleapp.circlepackage.circle.CircleWall.BroadcastComments;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
 
 public class PersonelDisplay extends AppCompatActivity {
     private TabLayout tabLayout;

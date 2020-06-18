@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle;
+package circleapp.circlepackage.circle.Helpers;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
