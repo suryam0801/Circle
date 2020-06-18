@@ -42,9 +42,9 @@ import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
-import circleapp.circlepackage.circle.PercentDrawable;
+import circleapp.circlepackage.circle.Helpers.PercentDrawable;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;

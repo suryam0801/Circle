@@ -21,17 +21,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +50,6 @@ public class WorkbenchFragment extends Fragment {
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
     private DatabaseReference circlesDB, userDB;
-    private List<Circle> allCircles = new ArrayList<>();
     private User user;
     private FloatingActionButton btnAddCircle;
     private LinearLayout emptyDisplay;
@@ -119,27 +119,11 @@ public class WorkbenchFragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 wbrecyclerView.setAdapter(wbadapter);
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                allCircles.add(circle);
-                //checking if user is a member of the circle
-                boolean existingMember = false;
-                if (circle.getMembersList() != null) {
-                    if (circle.getMembersList().keySet().contains(currentUser.getUid()))
-                        existingMember = true;
-                }
 
-                //checking for duplicate
-                boolean duplicate = false;
-                for (Circle c : workbenchCircleList) {
-                    if (c.getId().equals(circle.getId())) {
-                        duplicate = true;
-                    }
-                }
+                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
 
-                //setting the adapter initially
-                //filter for only circles associated with creator id
-                if ((circle.getCreatorID().equals(currentUser.getUid()) || existingMember == true) && duplicate == false) {
+                if (circle.getCreatorID().equals(currentUser.getUid()) || isMember) {
                     workbenchCircleList.add(circle);
-                    //notify the adapter each time a new item needs to be added to the recycler view
                     wbadapter.notifyDataSetChanged();
                     emptyDisplay.setVisibility(View.GONE);
                     initializeNewCount(circle);
@@ -149,36 +133,22 @@ public class WorkbenchFragment extends Fragment {
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
+                int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+                boolean containsCircle = HelperMethods.listContainsCircle(workbenchCircleList, circle);
 
-                if (circle.getCircleDistrict().equals(user.getDistrict())) {
-                    int position = 0;
-                    List<Circle> tempCircleList = new ArrayList<>(workbenchCircleList);
-                    for (Circle c : tempCircleList) {
-                        if (c.getId().equals(circle.getId())) {
-                            workbenchCircleList.remove(position);
-                            workbenchCircleList.add(0, circle);
-                            wbadapter.notifyItemChanged(position);
-                        }
-                        ++position;
-                    }
+                if (containsCircle) {
+                    workbenchCircleList.remove(position);
+                    workbenchCircleList.add(0, circle);
+                    wbadapter.notifyItemChanged(position);
                 }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-                if (circle.getCircleDistrict().equals(user.getDistrict())) {
-                    int position = 0;
-                    for (Circle c : workbenchCircleList) {
-                        if (c.getId().equals(circle.getId())) {
-                            workbenchCircleList.remove(position);
-                            wbadapter.notifyDataSetChanged();
-                            break;
-                        }
-                        ++position;
-                    }
-                }
-
+                int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+                workbenchCircleList.remove(position);
+                wbadapter.notifyItemChanged(position);
             }
 
             @Override
