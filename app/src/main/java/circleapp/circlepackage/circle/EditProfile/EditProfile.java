@@ -157,7 +157,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
-        userName.setText(user.getFirstName() + " " + user.getLastName());
+        userName.setText(user.getName());
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
