@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:layout_margin="15dp"
+    android:background="@drawable/poll_background_file"
+    android:id="@+id/category_picker_item_cointainer"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/cateogry_picker_foreground"
+        android:scaleY=".7"
+        android:scaleX=".7"
+        android:background="@drawable/gradient_button"
+        android:layout_gravity="center"></androidx.appcompat.widget.AppCompatImageView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Title"
+        android:textSize="14dp"
+        android:textColor="@color/black"
+        android:gravity="center_vertical"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="5dp"
+        android:paddingLeft="7dp"
+        android:layout_marginRight="45dp"
+        android:id="@+id/category_picker_category_name"
+        />
+</LinearLayout>

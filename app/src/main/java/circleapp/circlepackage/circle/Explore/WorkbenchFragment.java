@@ -5,20 +5,15 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -30,19 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.CreateCircle;
-import circleapp.circlepackage.circle.EditProfile.EditProfile;
-import circleapp.circlepackage.circle.Notification.NotificationActivity;
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
+import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.RecyclerItemClickListener;
 import circleapp.circlepackage.circle.SessionStorage;
-
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -105,7 +94,7 @@ public class WorkbenchFragment extends Fragment {
         setWorkbenchTabs(view);
 
         btnAddCircle.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), CreateCircle.class));
+            startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
         });
 
         return view;
@@ -168,7 +157,7 @@ public class WorkbenchFragment extends Fragment {
                         if (c.getId().equals(circle.getId())) {
                             workbenchCircleList.remove(position);
                             workbenchCircleList.add(0, circle);
-                            wbrecyclerView.setAdapter(wbadapter);
+                            wbadapter.notifyItemChanged(position);
                         }
                         ++position;
                     }

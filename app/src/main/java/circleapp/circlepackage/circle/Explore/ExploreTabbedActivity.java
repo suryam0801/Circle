@@ -144,7 +144,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         profPic.setOnClickListener(v -> {
-
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });
