@@ -44,8 +44,9 @@ public class EntryPage extends AppCompatActivity{
             if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
                 Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
                 LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (!location.equals(null)){
+                @SuppressLint("MissingPermission")
+                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null){
                     analyticsLogEvents.logEvents(EntryPage.this, "get_last_location", "lastLocationExists","Entry_page");
                     locationHelper.getAddress(location);
                 }

@@ -6,8 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".App"
@@ -15,14 +14,22 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".CreateCircle.CreateCircleCategoryPicker"
+            android:label="@string/title_activity_create_circle_category_picker"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
-        <activity android:name=".CircleWall.CreatorPollAnswersView"></activity>
-        <activity android:name=".Explore.ExploreTabbedActivity" android:noHistory="true">
+
+        <activity android:name=".CircleWall.CreatorPollAnswersView" />
+        <activity
+            android:name=".Explore.ExploreTabbedActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -32,7 +39,9 @@
                 <data
                     android:host="worfo.app.link"
                     android:scheme="https" />
-                <data android:scheme="app" android:host="circleapp.circlepackage.circle" />
+                <data
+                    android:host="circleapp.circlepackage.circle"
+                    android:scheme="app" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -43,29 +52,39 @@
                 <data
                     android:host="worfo.app.link"
                     android:scheme="http" />
-
-                <data android:scheme="app" android:host="circleapp.circlepackage.circle" />
+                <data
+                    android:host="circleapp.circlepackage.circle"
+                    android:scheme="app" />
             </intent-filter>
         </activity>
         <activity android:name=".Login.EntryPage" />
         <activity android:name=".CircleWall.BroadcastComments" android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
-        <activity android:name=".Login.InterestTagPicker" android:noHistory="true"/>
+        <activity
+            android:name=".Login.InterestTagPicker"
+            android:noHistory="true" />
         <activity android:name=".Login.GatherUserDetails" />
-        <activity android:name=".Login.OtpActivity" android:noHistory="true"/>
-        <activity android:name=".Login.PhoneLogin" android:noHistory="true"/>
+        <activity
+            android:name=".Login.OtpActivity"
+            android:noHistory="true" />
+        <activity
+            android:name=".Login.PhoneLogin"
+            android:noHistory="true" />
         <activity android:name=".Notification.NotificationActivity" />
         <activity android:name=".CircleWall.CircleWall" />
-        <activity android:name=".MainActivity" android:noHistory="true">
+        <activity
+            android:name=".MainActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateCircle" />
-        <activity android:name=".Explore.CircleDisplayAdapter"
+        <activity android:name=".CreateCircle.CreateCircle" />
+        <activity
+            android:name=".Explore.CircleDisplayAdapter"
             tools:ignore="Instantiatable" />
     </application>
 
