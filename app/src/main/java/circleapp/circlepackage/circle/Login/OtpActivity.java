@@ -127,6 +127,7 @@ public class OtpActivity extends AppCompatActivity {
             String otp = mOtpText.getText().toString();
 
             if (otp.isEmpty()) {
+                analyticsLogEvents.logEvents(OtpActivity.this,"empty_otp","otp_text_empty","otp_activity");
                 mOtpFeedback.setVisibility(View.VISIBLE);
                 mOtpFeedback.setText("Please fill in the form and try again.");
 
@@ -185,11 +186,13 @@ public class OtpActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
+                                        analyticsLogEvents.logEvents(OtpActivity.this,"otp_success","existing_user","otp_activity");
                                         User user = dataSnapshot.getValue(User.class);
                                         String string = new Gson().toJson(user);
                                         SessionStorage.saveUser(OtpActivity.this, user);
                                         storeUserFile(string, getApplicationContext());
                                     } else {
+                                        analyticsLogEvents.logEvents(OtpActivity.this,"otp_success_new_user","new_user","otp_activity");
                                         senduserToReg();
                                     }
                                 }
@@ -202,6 +205,7 @@ public class OtpActivity extends AppCompatActivity {
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
+                                analyticsLogEvents.logEvents(OtpActivity.this,"invalid_otp","wrong_otp","otp_activity");
                                 mOtpFeedback.setVisibility(View.VISIBLE);
                                 mOtpFeedback.setText("There was an error verifying OTP");
                             }

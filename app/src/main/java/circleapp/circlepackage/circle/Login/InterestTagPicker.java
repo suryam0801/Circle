@@ -195,6 +195,7 @@ public class InterestTagPicker extends AppCompatActivity {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             //The function to register the Users with their appropriate details
             progressDialog.show();
+            analyticsLogEvents.logEvents(InterestTagPicker.this,"registration_success","user_registered","interest_tag_picker");
             UserReg();
             Log.d(TAG,"Button Clicked");
 
@@ -214,6 +215,7 @@ public class InterestTagPicker extends AppCompatActivity {
 
         //Touch listener to autoenter the # as prefix when user try to enter the new interest tag
         interestTagsEntry.setOnEditorActionListener((v, actionId, event) -> {
+            analyticsLogEvents.logEvents(InterestTagPicker.this,"own_interest_tag","clicked_edit_text","interest_tag_picker");
             boolean handled = false;
             if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                 String interestTag = interestTagsEntry.getText().toString().replace("#", "");
@@ -232,6 +234,7 @@ public class InterestTagPicker extends AppCompatActivity {
             return handled;
         });
         interestTagsEntry.setOnClickListener(view -> {
+            analyticsLogEvents.logEvents(InterestTagPicker.this,"own_interest_tag","clicked_edit_text","interest_tag_picker");
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(interestTagsEntry, InputMethodManager.SHOW_IMPLICIT);
             interestTagsEntry.setText("#");
@@ -277,10 +280,14 @@ public class InterestTagPicker extends AppCompatActivity {
                     interestTagsEntry.setSelection(interestTagsEntry.getText().length());
                 }
             }
+            else{
+                analyticsLogEvents.logEvents(InterestTagPicker.this,"edit_text_empty","no_text_added","interest_tag_picker");
+            }
         });
     }
 
     private void createInitialCirlces() {
+        analyticsLogEvents.logEvents(InterestTagPicker.this,"default_circles_added","new_location","interest_tag_picker");
         broadcastsDB = database.getReference("Broadcasts");
         circlesDB = database.getReference("Circles");
         commentsDB = database.getReference("BroadcastComments");

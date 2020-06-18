@@ -71,7 +71,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     Intent shareIntent;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
-    FragmentManager fragmentManager;
 
 
     @Override
@@ -80,46 +79,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_explore_tabbed);
         analyticsLogEvents = new AnalyticsLogEvents();
         intentUri = getIntent().getData();
-        //recieve request on opening
+        //recieve ur request on opening
         if (intentUri != null) {
             analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_link", "used_link", "read_external_link");
             url = getIntent().getData().toString();
-            String lines[] = url.split("\\r?\\n");
-            for (int i = 0; i < lines.length; i++) {
-                Log.d("URL", lines[i]);
-            }
-            url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
-            String circleID = url;
-            Log.d("TAG", "URI:" + circleID);
-            database = FirebaseDatabase.getInstance();
-            circlesDB = database.getReference("Circles");
-            circlesDB.keepSynced(true);
-
-            circlesDB.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Circle circle = snapshot.getValue(Circle.class);
-                        if (circle.getId().equals(circleID)) {
-                            circleExists = true;
-                            popupCircle = circle;
-                            if (getIntent().getData() != null) {
-                                showLinkPopup();
-                            }
-
-                        }
-                    }
-                    if (circleExists == false) {
-                        analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "_expired_invite_link", "incorrect_link", "read_external_link");
-                        Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            processUrl(url);
         }
 
         profPic = findViewById(R.id.explore_profilePicture);
@@ -356,6 +320,44 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             circleJoinSuccessDialog.show();
         }
 
+    }
+    public void processUrl(String url){
+        String lines[] = url.split("\\r?\\n");
+        for (int i = 0; i < lines.length; i++) {
+            Log.d("URL", lines[i]);
+        }
+        url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
+        String circleID = url;
+        Log.d("TAG", "URI:" + circleID);
+        database = FirebaseDatabase.getInstance();
+        circlesDB = database.getReference("Circles");
+        circlesDB.keepSynced(true);
+
+        circlesDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Circle circle = snapshot.getValue(Circle.class);
+                    if (circle.getId().equals(circleID)) {
+                        circleExists = true;
+                        popupCircle = circle;
+                        if (getIntent().getData() != null) {
+                            showLinkPopup();
+                        }
+
+                    }
+                }
+                if (circleExists == false) {
+                    analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "_expired_invite_link", "incorrect_link", "read_external_link");
+                    Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
