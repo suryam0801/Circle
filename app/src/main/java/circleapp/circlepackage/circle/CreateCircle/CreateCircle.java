@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -162,7 +163,9 @@ public class CreateCircle extends AppCompatActivity {
         userDB.child("createdCircles").setValue(currentCreatedNo);
 
         //navigate back to explore. new circle will be available in workbench
-        startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
+        Intent intent = new Intent(CreateCircle.this, CircleWall.class);
+        intent.putExtra("fromCircleWall", true);
+        startActivity(intent);
         finish();
     }
 

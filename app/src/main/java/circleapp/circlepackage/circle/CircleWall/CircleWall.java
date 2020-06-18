@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -48,7 +51,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Notification.SendNotification;
@@ -60,7 +62,7 @@ import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
-public class CircleWall extends AppCompatActivity {
+public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 
     private FirebaseDatabase database;
     private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB, usersDB;
@@ -104,6 +106,11 @@ public class CircleWall extends AppCompatActivity {
         confirmationDialog = new Dialog(CircleWall.this);
         user = SessionStorage.getUser(CircleWall.this);
 
+        if(getIntent().getBooleanExtra("fromCircleWall", false) == true){
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
+        }
+        
         database = FirebaseDatabase.getInstance();
         broadcastsDB = database.getReference("Broadcasts");
         circlesPersonelDB = database.getReference("CirclePersonel");
@@ -557,5 +564,35 @@ public class CircleWall extends AppCompatActivity {
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onButtonClicked(String text) {
+        switch (text){
+            case "shareLink":
+                showShareCirclePopup(circle);
+                break;
+            case "copyLink":
+                String shareMessage = "\nCome join my circle: " + circle.getName() + "\n\n";
+                shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + circle.getId();
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Clip Copied", shareMessage);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showShareCirclePopup(Circle c) {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
+            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            startActivity(Intent.createChooser(shareIntent, "choose one"));
+        } catch (Exception error) {
+
+        }
     }
 }
