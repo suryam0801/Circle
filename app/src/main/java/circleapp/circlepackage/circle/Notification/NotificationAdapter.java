@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
 
@@ -31,6 +32,7 @@ public class NotificationAdapter extends BaseAdapter {
     private TextView notificationTitle, notificationDescription, timeElapsedTextView;
     private LinearLayout backgroundColor;
     private AppCompatImageView foregroundIcon;
+    AnalyticsLogEvents analyticsLogEvents;
 
     public NotificationAdapter(Context mContext, List<Notification> NotificationList){
         this.mContext = mContext;
@@ -57,6 +59,7 @@ public class NotificationAdapter extends BaseAdapter {
         View v = View.inflate(mContext, R.layout.notification_object, null);
 
         Notification notif = NotificationList.get(position);
+        analyticsLogEvents = new AnalyticsLogEvents();
 
         notificationTitle = v.findViewById(R.id.notification_object_title);
         notificationDescription = v.findViewById(R.id.notification_object_description);
@@ -105,6 +108,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Application Accepted");
                 acceptText.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(acceptText);
+                analyticsLogEvents.logEvents(mContext, "accepted_notification","accepted_to_circle","notification");
                 break;
             case "Rejected":
                 gd.setColor(Color.parseColor("#FF6161"));
@@ -113,11 +117,13 @@ public class NotificationAdapter extends BaseAdapter {
                 foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_cancel_black_24dp));
                 rejectText.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(rejectText);
+                analyticsLogEvents.logEvents(mContext, "rejected_notification","rejectedto_circle","notification");
                 break;
             case "broadcast_added":
                 notificationTitle.setText("New BroadCast Added");
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
+                analyticsLogEvents.logEvents(mContext, "broadcast_added","broadcast_added_new","notification");
                 break;
             case "new_user":
                 notificationTitle.setText("Welcome to CIRCLE");
@@ -131,6 +137,7 @@ public class NotificationAdapter extends BaseAdapter {
                 //foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_person_add_black_24dp));
                 new_applicant.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(new_applicant);
+                analyticsLogEvents.logEvents(mContext, "new_applicant","new_applicant_to_circle","notification");
                 break;
         }
 

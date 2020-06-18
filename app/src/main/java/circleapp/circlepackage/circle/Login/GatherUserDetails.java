@@ -131,6 +131,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 if(firstname.getText().equals("") || lastname.getText().equals("") || firstname.getText().toString().isEmpty()|| lastname.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
+                    analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success","gather_user_details");
                     fName = firstname.getText().toString();
                     lName = lastname.getText().toString();
                     contact = pref.getString("key_name5", null);
@@ -142,9 +143,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     intent.putExtra("ward", ward.trim());
                     intent.putExtra("district", district.trim());
 
-                    if(downloadUri != null)
+                    if(downloadUri != null){
+                        analyticsLogEvents.logEvents(GatherUserDetails.this, "added_dp", "profile_pic_success","gather_user_details");
                         intent.putExtra("uri", downloadUri.toString());
-
+                    }
                     startActivity(intent);
                     Log.d(TAG,ward+"::"+district);
                     analyticsLogEvents.logEvents(GatherUserDetails.this,ward.trim(),district.trim(),"gather_user_details");
@@ -168,6 +170,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 selectFile();
+                analyticsLogEvents.logEvents(GatherUserDetails.this,"storage_granted","permission_granted","gather_user_details");
         } else {
                 Toast.makeText(GatherUserDetails.this,
                         "Storage Permission Denied",
@@ -240,6 +243,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
+                                analyticsLogEvents.logEvents(GatherUserDetails.this,"pic_upload_fail","device_error","gather_user_details");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();

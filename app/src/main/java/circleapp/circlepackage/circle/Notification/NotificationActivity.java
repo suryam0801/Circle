@@ -31,6 +31,7 @@ import java.util.Scanner;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
@@ -49,12 +50,13 @@ public class NotificationActivity extends AppCompatActivity {
 
     private DatabaseReference notifyDb, circlesDB;
     private FirebaseAuth currentUser;
+    AnalyticsLogEvents analyticsLogEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
-
+        analyticsLogEvents= new AnalyticsLogEvents();
         thisWeekListView = findViewById(R.id.thisweek_notifications_display);
         previousListView = findViewById(R.id.all_time_notifications_display);
         prevnotify = findViewById(R.id.prevnotifytext);
@@ -127,10 +129,12 @@ public class NotificationActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Circle circle = dataSnapshot.getValue(Circle.class);
                                 if (circle.getMembersList().containsKey(currentUser.getUid())) {
+                                    analyticsLogEvents.logEvents(NotificationActivity.this, "notification_clicked_wall","to_circle_wall","notification");
                                     SessionStorage.saveCircle(NotificationActivity.this, circle);
                                     startActivity(new Intent(NotificationActivity.this, CircleWall.class));
                                     finish();
                                 } else {
+                                    analyticsLogEvents.logEvents(NotificationActivity.this, "notification_clicked_invalid_user","not_part_of_circle","notification");
                                     Toast.makeText(NotificationActivity.this, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                                 }
                             }

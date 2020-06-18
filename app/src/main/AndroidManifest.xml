@@ -58,9 +58,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.EntryPage" />
-        <activity
-            android:name=".CircleWall.BroadcastComments"
-            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".CircleWall.BroadcastComments" android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity
