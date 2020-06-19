@@ -138,7 +138,7 @@ public class WorkbenchFragment extends Fragment {
 
                 if (containsCircle) {
                     workbenchCircleList.remove(position);
-                    workbenchCircleList.add(0, circle);
+                    workbenchCircleList.add(position, circle);
                     wbadapter.notifyItemChanged(position);
                 }
             }
