@@ -25,8 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -40,12 +38,14 @@ import java.util.Random;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Notification.NotificationActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
+
 
 public class ExploreTabbedActivity extends AppCompatActivity {
 
@@ -58,11 +58,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private DatabaseReference circlesDB, usersDB;
     private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
-    private boolean link_flag = false;
     private String url;
     private TabLayout tabLayout;
     private TabItem exploreTab, workbenchTab;
-    Intent shareIntent;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     int propic;
@@ -110,11 +108,14 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         profPic.setOnClickListener(v -> {
-
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });
 
+        setViewPageAdapter();
+    }
+
+    private void setViewPageAdapter() {
         //setting the tab adapter
         ViewPager viewPager = findViewById(R.id.view_pager);
 
@@ -141,7 +142,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
     }
 
     private void showLinkPopup() {
@@ -149,7 +149,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         linkCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
 
         TextView tv_circleName, tv_creatorName, tv_circleDesc;
-        ChipGroup circleDisplayTags;
         Button join;
         ImageButton share;
         LinearLayout container;
@@ -158,13 +157,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tv_circleName = linkCircleDialog.findViewById(R.id.circle_name);
         tv_creatorName = linkCircleDialog.findViewById(R.id.circle_creatorName);
         tv_circleDesc = linkCircleDialog.findViewById(R.id.circle_desc);
-        circleDisplayTags = linkCircleDialog.findViewById(R.id.circle_display_tags);
         join = linkCircleDialog.findViewById(R.id.circle_card_join);
         share = linkCircleDialog.findViewById(R.id.circle_card_share);
 
-        GradientDrawable wbItemBackground = new GradientDrawable();
-        wbItemBackground.setShape(GradientDrawable.RECTANGLE);
-        wbItemBackground.setCornerRadius(30.0f);
+        GradientDrawable wbItemBackground = HelperMethods.gradientRectangleDrawableSetter(30);
         wbItemBackground.setColor(Color.parseColor("#FE42AE"));
 
         container.setBackground(wbItemBackground);
@@ -172,121 +168,46 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
 
-        if (popupCircle.getAcceptanceType().equalsIgnoreCase("review")) {
+        if (popupCircle.getAcceptanceType().equalsIgnoreCase("review"))
             join.setText("Apply");
-        }
 
+        final boolean alreadyMember = HelperMethods.isMemberOfCircle(popupCircle, user.getUserId());
+        final boolean alreadyApplicant = HelperMethods.ifUserApplied(popupCircle, user.getUserId());
 
-        for (String tag : popupCircle.getInterestTags().keySet())
-            setPopupInterestTag(tag, circleDisplayTags, "#D42D8D");
-
-        boolean alreadyMember = false;
-        boolean alreadyApplicant = false;
-        if (popupCircle.getMembersList() != null && popupCircle.getMembersList().containsKey(user.getUserId())) {
-            join.setText("Already Member");
-            alreadyMember = true;
-        }
-        if (popupCircle.getApplicantsList() != null && popupCircle.getApplicantsList().containsKey(user.getUserId())) {
-            join.setText("Already Applied");
-            alreadyApplicant = true;
-        }
-
-
-        boolean finalAlreadyMember = alreadyMember;
-        boolean finalAlreadyApplicant = alreadyApplicant;
         join.setOnClickListener(view -> {
-            if (finalAlreadyMember == false && finalAlreadyApplicant == false) {
-                linkCircleDialog.cancel();
-                getIntent().setData(null);
+            if (!alreadyMember && !alreadyApplicant) {
+                linkCircleDialog.dismiss();
                 applyOrJoin(popupCircle);
             }
         });
 
         share.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_workbench", "circle_invite_member", "on_button_click");
-            showShareCirclePopup(popupCircle);
+            HelperMethods.showShareCirclePopup(popupCircle, ExploreTabbedActivity.this);
         });
 
+        //clearing intent data so popup doesnt show each time
         linkCircleDialog.setOnDismissListener(dialogInterface -> {
             getIntent().setData(null);
         });
 
-        int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
-        int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
 
-
-        linkCircleDialog.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, height);
+        linkCircleDialog.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.popup_height)); //width,height
         linkCircleDialog.getWindow().setGravity(Gravity.CENTER);
         linkCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         linkCircleDialog.show();
     }
 
-    public void setPopupInterestTag(final String name, ChipGroup chipGroupLocation, String chipColor) {
-        final Chip chip = new Chip(ExploreTabbedActivity.this);
-        int paddingDp = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 10,
-                getResources().getDisplayMetrics()
-        );
-        chip.setRippleColor(ColorStateList.valueOf(Color.WHITE));
-        chip.setPadding(
-                (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 3,
-                        getResources().getDisplayMetrics()
-                ),
-                paddingDp, paddingDp, paddingDp);
-
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled}, // enabled
-                new int[]{-android.R.attr.state_enabled}, // disabled
-                new int[]{-android.R.attr.state_checked}, // unchecked
-                new int[]{android.R.attr.state_pressed}  // pressed
-        };
-
-        int[] colors = new int[]{
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor)
-        };
-
-        ColorStateList myList = new ColorStateList(states, colors);
-
-        chip.setChipBackgroundColor(myList);
-        chip.setChipCornerRadius(60);
-        chip.setChipMinHeight(100);
-        chip.setTextColor(Color.WHITE);
-        if (!name.contains("#"))
-            chip.setText("#" + name);
-        else
-            chip.setText(name);
-
-        chipGroupLocation.addView(chip);
-    }
-
-    private void showShareCirclePopup(Circle c) {
-        try {
-            shareIntent = new Intent(Intent.ACTION_SEND);
-
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
-            //https://play.google.com/store/apps/details?id=
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
-            Log.d("Share", shareMessage);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch (Exception error) {
-
-        }
-    }
-
     private void applyOrJoin(final Circle circle) {
         circleJoinSuccessDialog = new Dialog(ExploreTabbedActivity.this);
         circleJoinSuccessDialog.setContentView(R.layout.apply_popup_layout);
+        circleJoinSuccessDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         Button closeDialogButton = circleJoinSuccessDialog.findViewById(R.id.completedDialogeDoneButton);
         TextView title = circleJoinSuccessDialog.findViewById(R.id.applyConfirmationTitle);
         TextView description = circleJoinSuccessDialog.findViewById(R.id.applyConfirmationDescription);
 
+        //case for review is preset in XML
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");
             description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Click 'Done' to be redirected to this circle's wall.");
@@ -296,11 +217,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                 SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
                 startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
+                finish();
             }
             circleJoinSuccessDialog.cancel();
         });
 
-        circleJoinSuccessDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         usersDB = database.getReference().child("Users").child(user.getUserId());
 
@@ -323,19 +244,15 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         }
 
     }
+
     public void processUrl(String url){
-        String lines[] = url.split("\\r?\\n");
-        for (int i = 0; i < lines.length; i++) {
-            Log.d("URL", lines[i]);
-        }
-        url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
-        String circleID = url;
-        Log.d("TAG", "URI:" + circleID);
+        String circleID = HelperMethods.getCircleIdFromShareURL(url);
+
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true);
 
-        circlesDB.addValueEventListener(new ValueEventListener() {
+        circlesDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -362,8 +279,4 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }

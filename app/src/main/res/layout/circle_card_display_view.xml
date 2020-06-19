@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
     android:layout_margin="15dp"
-    android:scaleType="fitXY"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:scaleType="fitXY">
     <!--
     android:background="@drawable/popup_card_background"
     -->
@@ -16,25 +16,25 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="450dp"
-        android:weightSum="100"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="100">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:paddingRight="10dp"
             android:layout_marginTop="20dp"
-            android:layout_weight="99"
             android:layout_marginRight="10dp"
-            android:orientation="vertical">
+            android:layout_weight="99"
+            android:orientation="vertical"
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/circle_name"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
                 android:layout_marginRight="10dp"
-                android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_condensed_bold"
                 android:gravity="center_vertical"
                 android:text="Name"
@@ -44,8 +44,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
                 android:paddingLeft="19dp">
 
@@ -83,71 +83,69 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/roboto_condensed"
                 android:lineSpacingExtra="3dp"
-                android:scrollbars="vertical"
                 android:maxLines="3"
+                android:scrollbars="vertical"
                 android:text="Description"
                 android:textColor="@color/white"
                 android:textSize="15dp" />
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/circle_display_tags"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"></com.google.android.material.chip.ChipGroup>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+                <RelativeLayout
+                    android:id="@+id/three_memers_prof_pic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_height="wrap_content">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_marginLeft="33dp"
+                        android:background="@drawable/person_blonde_head"></de.hdodenhof.circleimageview.CircleImageView>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="33dp"
-                    android:background="@drawable/avatar1">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_marginLeft="18dp"
+                        android:background="@drawable/person_job"></de.hdodenhof.circleimageview.CircleImageView>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="18dp"
-                    android:background="@drawable/avatar3">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@drawable/person_teacher"></de.hdodenhof.circleimageview.CircleImageView>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:background="@drawable/avatar2">
-                </de.hdodenhof.circleimageview.CircleImageView>
+                </RelativeLayout>
 
                 <Button
-                    style="?android:attr/borderlessButtonStyle"
                     android:id="@+id/members_count_button"
+                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:layout_marginLeft="75dp"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/join_button_background_explore_card"
                     android:fontFamily="@font/roboto_condensed"
-                    android:text="+358"
-                    android:paddingRight="15dp"
                     android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:text="+358"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="14dp"></Button>
 
-            </RelativeLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="22dp"
             android:layout_marginRight="22dp"
-            android:layout_alignParentBottom="true"
             android:layout_marginBottom="15dp"
             android:orientation="horizontal">
 
@@ -168,8 +166,8 @@
                 android:layout_height="34dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="7dp"
-                android:clickable="true"
                 android:background="@drawable/join_circle_background_outline"
+                android:clickable="true"
                 android:gravity="center">
 
                 <ImageButton
@@ -178,8 +176,7 @@
                     android:layout_height="18dp"
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
-                    android:foreground="@drawable/ic_share_white_24dp">
-                </ImageButton>
+                    android:foreground="@drawable/ic_share_white_24dp"></ImageButton>
 
 
             </LinearLayout>

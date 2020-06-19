@@ -38,13 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
-import circleapp.circlepackage.circle.PercentDrawable;
+import circleapp.circlepackage.circle.Helpers.PercentDrawable;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
@@ -54,12 +55,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Context context;
     private Circle circle;
     private FirebaseAuth currentUser;
-    private FirebaseStorage firebaseStorage;
-    private StorageReference storageReference, ref;
     private int count = 0;
-    Bitmap bitmap = null;
-    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-            R.drawable.avatar2, R.drawable.avatar5};
+    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
+            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+
     private Vibrator v;
     private User user;
 
@@ -89,13 +88,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         if (broadcast.getCreatorID().equals(currentUser.getUid()))
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
-        //calculating time elapsed
+
+        //calculating and setting time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime = broadcast.getTimeStamp();
-        long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
-        long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
+        String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
+        viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
         Glide.with(context)
                 .load(broadcast.getCreatorPhotoURI())
@@ -105,28 +103,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         ++count;
         if (count == 4) count = 0;
 
-        if (seconds < 60) {
-            viewHolder.timeElapsedDisplay.setText(seconds + "s ago");
-        } else if (minutes >= 1 && minutes < 60) {
-            viewHolder.timeElapsedDisplay.setText(minutes + "m ago");
-        } else if (hours >= 1 && hours < 24) {
-            viewHolder.timeElapsedDisplay.setText(hours + "h ago");
-        } else if (days >= 1 && days < 365) {
-            if (days >= 7)
-                viewHolder.timeElapsedDisplay.setText((days / 7) + "w ago");
-            else
-                viewHolder.timeElapsedDisplay.setText(days + "d ago");
-        }
-
         //setting new comments display
         viewHolder.viewComments.setText("Go to discussion (" + ((int) broadcast.getNumberOfComments()) + ")");
         if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
             if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
                 viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
-        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(broadcast.getId())){
-            if(broadcast.getNumberOfComments()>0)
+        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
+            if (broadcast.getNumberOfComments() > 0)
                 viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
-        }else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
+        } else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
             viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
         }
 
@@ -136,9 +121,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
                 int newReadValue = user.getNoOfReadDiscussions();
 
-                if(user.getNewTimeStampsComments().containsKey(broadcast.getId()) && (user.getNewTimeStampsComments().get(broadcast.getId()) == broadcast.getLatestCommentTimestamp()))
+                if (user.getNewTimeStampsComments().containsKey(broadcast.getId()) && (user.getNewTimeStampsComments().get(broadcast.getId()) == broadcast.getLatestCommentTimestamp()))
                     newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
-                else if(!user.getNewTimeStampsComments().containsKey(broadcast.getId()))
+                else if (!user.getNewTimeStampsComments().containsKey(broadcast.getId()))
                     newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
 
                 user.setNewTimeStampsComments(newTimeStampsComments);
@@ -179,8 +164,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.attachmentDownloadButton.setOnClickListener(v -> {
 
-            storageReference = firebaseStorage.getInstance().getReference();
-            ref = storageReference.child("/ProjectWall");
             DownloadManager downloadManager = (DownloadManager) context.
                     getSystemService(Context.DOWNLOAD_SERVICE);
 
@@ -232,9 +215,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                                 , Color.parseColor("#6CACFF") //enabled
                         }
                 );
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     button.setButtonTintList(colorStateList);
-                }
+
+
                 int percentage = 0;
                 if (totalValue != 0) {
                     percentage = (int) (((double) entry.getValue() / totalValue) * 100);

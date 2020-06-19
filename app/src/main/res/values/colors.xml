@@ -22,4 +22,20 @@
     <color name="white_transparent">#99FFFFFF</color>
     <color name="lightGray">#F2F2F2</color>
 
+    <!--workbench adapter color codes-->
+    <color name="lightBlue">#D8E9FF</color>
+    <color name="darkBlue">#158BF1</color>
+    <color name="lightPink">#FFD1E9</color>
+    <color name="darkPink">#FF38A2</color>
+    <color name="lightOrange">#FFDDBB</color>
+    <color name="darkOrange">#FF9C38</color>
+
+    <!--explore adapter color codes-->
+    <color name="solidPurple">#A274FF</color>
+    <color name="transparentPurple">#AE85FF</color>
+    <color name="solidPink">#FE42AE</color>
+    <color name="transparentPink">#FF6DC1</color>
+    <color name="solidTurquoise">#3CD2C3</color>
+    <color name="transparentTurqoise">#5FDFD2</color>
+
 </resources>

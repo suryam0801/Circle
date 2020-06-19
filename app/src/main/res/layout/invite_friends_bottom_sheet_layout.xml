@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet_popup_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/invitation"
+        android:scaleX=".8"
+        android:scaleY=".8"></ImageView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:gravity="center"
+        android:text="Invite a friend to your circle"
+        android:textColor="@color/black"
+        android:textSize="25dp"></TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="40dp"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:text="Welcome to your circle! Share this link with friends and they will be able to join"
+        android:textColor="@color/grey"
+        android:textSize="12dp"></TextView>
+
+
+    <TextView
+        android:id="@+id/bottom_dialog_copy_link"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/green_border_button"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:text="Invite a friend to your circle"
+        android:textColor="@color/black"
+        android:textSize="15dp"></TextView>
+
+    <Button
+        android:id="@+id/bottom_dialog_share_link"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/gradient_button_background"
+        android:text="Share Link"
+        android:textAllCaps="false"
+        android:textColor="@color/white">
+    </Button>
+
+</LinearLayout>

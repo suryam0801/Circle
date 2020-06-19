@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".CreateCircle">
+    tools:context=".CreateCircle.CreateCircle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -186,109 +186,25 @@
                     android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
             </RadioGroup>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/create_circle_interest_tag_select_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="10dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Circle Tags"
-                    android:textColor="#C3BDBD"
-                    android:textSize="12dp"></TextView>
-
-                <Button
-                    android:id="@+id/circle_tag_info_button"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:background="@drawable/ic_info_outline_black_24dp"></Button>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/circle_tag_tip_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="The circle tags will help interested people discover your circle easily."
-                android:textColor="#806CA6FF"
-                android:textSize="12dp"
-                android:visibility="gone"></TextView>
-
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <AutoCompleteTextView
-                    android:id="@+id/create_circle_interest_tags_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_margin="20dp"
-                    android:background="@drawable/edittext_light_gray_rounded_bg"
-                    android:fontFamily="@font/roboto_regular"
-                    android:hint="Eg: #sports #cse #eventmanagement"
-                    android:inputType="text"
-                    android:tag="#"
-                    android:digits="@string/digits"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="10dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="#828282"
-                    android:textSize="14dp">
-                </AutoCompleteTextView>
-
-                <Button
-                    android:id="@+id/create_circle_interest_tag_add_button"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="30dp"
-                    android:background="@drawable/ic_add_black_24dp"></Button>
-            </RelativeLayout>
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="150dp">
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/create_circle_interest_tags_display"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"></com.google.android.material.chip.ChipGroup>
-            </ScrollView>
-
         </LinearLayout>
 
-        <Button
-            android:id="@+id/create_circle_submit"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="15dp"
-            android:layout_weight="50"
-            android:background="@drawable/green_border_button"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Create Circle"
-            android:textAllCaps="false"
-            android:textColor="#35C80B"
-            android:textFontWeight="10"
-            android:textSize="15dp"></Button>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/create_circle_submit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="15dp"
+        android:layout_weight="50"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/green_border_button"
+        android:fontFamily="@font/roboto_regular"
+        android:text="Create Circle"
+        android:textAllCaps="false"
+        android:textColor="#35C80B"
+        android:textFontWeight="10"
+        android:textSize="15dp"></Button>
 
-</ScrollView>
+</RelativeLayout>

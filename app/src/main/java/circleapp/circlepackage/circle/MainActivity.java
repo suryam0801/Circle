@@ -26,12 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.get_started_first_page;
 import circleapp.circlepackage.circle.Login.get_started_second_page;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
-import static circleapp.circlepackage.circle.App.CHANNEL_1_ID;
+import static circleapp.circlepackage.circle.Helpers.InAppNotificationHelper.CHANNEL_1_ID;
 
 public class MainActivity extends AppCompatActivity {
 
