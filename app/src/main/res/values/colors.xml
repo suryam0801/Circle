@@ -30,4 +30,12 @@
     <color name="lightOrange">#FFDDBB</color>
     <color name="darkOrange">#FF9C38</color>
 
+    <!--explore adapter color codes-->
+    <color name="solidPurple">#A274FF</color>
+    <color name="transparentPurple">#AE85FF</color>
+    <color name="solidPink">#FE42AE</color>
+    <color name="transparentPink">#FF6DC1</color>
+    <color name="solidTurquoise">#3CD2C3</color>
+    <color name="transparentTurqoise">#5FDFD2</color>
+
 </resources>

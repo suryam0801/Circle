@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.text.format.DateFormat;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -68,6 +71,14 @@ public class HelperMethods {
         return numOfApplicants;
     }
 
+    public static boolean ifUserApplied(Circle c, String userId){
+        boolean isApplicant = false;
+        if(c.getApplicantsList() != null && c.getApplicantsList().keySet().contains(userId))
+            isApplicant = true;
+
+        return isApplicant;
+    }
+
     public static int newNotifications(Circle c, User user){
         int newNotifs = 0;
         if(user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(c.getId())){
@@ -78,6 +89,15 @@ public class HelperMethods {
 
         }
         return newNotifs;
+    }
+
+    public static String getCircleIdFromShareURL (String url){
+        String lines[] = url.split("\\r?\\n");
+        for (int i = 0; i < lines.length; i++) {
+            Log.d("URL", lines[i]);
+        }
+        url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
+        return url;
     }
 
     public static String convertIntoDateFormat(String dateDormat, long timestamp){
