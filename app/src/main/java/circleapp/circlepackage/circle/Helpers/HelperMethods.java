@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -103,6 +104,30 @@ public class HelperMethods {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(timestamp);
         return DateFormat.format("", cal).toString();
+    }
+
+    public static String getTimeElapsed (long currentTime, long createdTime){
+        String timeElapsedReturnString = "";
+
+        long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
+        long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
+
+        if (seconds < 60) {
+           timeElapsedReturnString = seconds + "s ago";
+        } else if (minutes >= 1 && minutes < 60) {
+            timeElapsedReturnString = minutes + "m ago";
+        } else if (hours >= 1 && hours < 24) {
+            timeElapsedReturnString = hours + "h ago";
+        } else if (days >= 1 && days < 365) {
+            if (days >= 7)
+                timeElapsedReturnString = (days / 7) + "w ago";
+            else
+                timeElapsedReturnString = days + "d ago";
+        }
+
+        return timeElapsedReturnString;
     }
 
     public static GradientDrawable gradientRectangleDrawableSetter(int radius){
