@@ -65,6 +65,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     Intent shareIntent;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
+    int propic;
 
 
     @Override
@@ -88,14 +89,30 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
-        int propic = Integer.parseInt(user.getProfileImageLink());
-        myImageList = propic;
+        if (user.getProfileImageLink().matches("^[a-zA-Z]*$"))
+        {
+            Glide.with(ExploreTabbedActivity.this)
+                    .load(user.getProfileImageLink())
+                    .into(profPic);
+        }
+        else
+            {
+                propic = Integer.parseInt(user.getProfileImageLink());
+                myImageList = propic;
+                Glide.with(ExploreTabbedActivity.this)
+                        .load(propic)
+                        .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
+                        .into(profPic);
+            }
         Random r = new Random();
         int count = r.nextInt((4 - 0) + 1);
-        Glide.with(ExploreTabbedActivity.this)
-                .load(propic)
-                .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
-                .into(profPic);
+
+        if (propic != 0)
+        {
+        }
+        else
+            {
+            }
 
 
         notificationBell.setOnClickListener(v -> {

@@ -22,7 +22,7 @@
         android:text="Quickly get opinions from friends and make decisions then and there."
         android:textSize="17dp"/>
     <Button
-        android:id="@+id/startButton"
+        android:id="@+id/startEntryButton"
         android:layout_width="match_parent"
         android:layout_marginRight="145dp"
         android:layout_marginLeft="145dp"

@@ -63,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -105,7 +106,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7;
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg;
     AnalyticsLogEvents analyticsLogEvents;
-    String avatar = null;
+    String avatar;
 
 
     //location services elements
@@ -134,6 +135,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
         progressDialog.setTitle("Registering User....");
+        avatar = "";
         avatar1 = findViewById(R.id.avatar1);
         avatar2 = findViewById(R.id.avatar2);
         avatar3 = findViewById(R.id.avatar3);
@@ -169,12 +171,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
+                downloadUri =null;
                     avatar1.setPressed(true);
                 int visibility = avatar1_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
                     avatar1_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar1.setPressed(false);
                 }
                 else
@@ -200,13 +203,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                     avatar = String.valueOf(R.drawable.avatar2);
+                downloadUri =null;
                     avatar2.setPressed(true);
                 int visibility = avatar1_bg.getVisibility();
                 int visibility2  = avatar2_bg.getVisibility();
                 if(visibility2 == View.VISIBLE  )
                 {
                     avatar2_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar2.setPressed(false);
                 }
                 else
@@ -233,12 +237,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
+                downloadUri =null;
                 avatar3.setPressed(true);
                 int visibility = avatar3_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
                     avatar3_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar3.setPressed(false);
                 }
                 else
@@ -264,12 +269,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
+                downloadUri =null;
                 avatar4.setPressed(true);
                 int visibility = avatar4_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
                     avatar4_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar4.setPressed(false);
                 }
                 else
@@ -295,12 +301,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
+                downloadUri =null;
                 avatar5.setPressed(true);
                 int visibility = avatar5_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
                     avatar5_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar5.setPressed(false);
                 }
                 else
@@ -326,12 +333,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
+                downloadUri =null;
                 avatar6.setPressed(true);
                 int visibility = avatar6_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
                     avatar6_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar6.setPressed(false);
                 }
                 else
@@ -358,11 +366,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
                 avatar7.setPressed(true);
+                downloadUri =null;
                 int visibility = avatar7_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
                     avatar7_bg.setVisibility(View.GONE);
-                    avatar = null;
+                    avatar = "";
                     avatar7.setPressed(false);
                 }
                 else
@@ -403,22 +412,31 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(name.getText().equals("") || name.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
-                } else {
-                    analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success","gather_user_details");
-                    Name = name.getText().toString();
-                    contact = pref.getString("key_name5", null);
+                if ( avatar != "" || downloadUri != null){
 
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                    //The function to register the Users with their appropriate details
-                    progressDialog.show();
-                    analyticsLogEvents.logEvents(GatherUserDetails.this,"registration_success","user_registered","gather_user_details");
-                    UserReg();
-                    analyticsLogEvents.logEvents(GatherUserDetails.this,ward.trim(),district.trim(),"gather_user_details");
+                    if(name.getText().equals("") || name.getText().toString().isEmpty()){
 
+                        Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success","gather_user_details");
+                        Name = name.getText().toString();
+                        contact = pref.getString("key_name5", null);
+
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        //The function to register the Users with their appropriate details
+                        progressDialog.show();
+                        analyticsLogEvents.logEvents(GatherUserDetails.this,"registration_success","user_registered","gather_user_details");
+                        UserReg();
+                        analyticsLogEvents.logEvents(GatherUserDetails.this,ward.trim(),district.trim(),"gather_user_details");
+
+                    }
                 }
+                else
+                    {
+                        Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
+                    }
             }
         });
     }
@@ -445,7 +463,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         .show();
             }
         super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-
     }
 
     //code for upload the image
@@ -591,16 +608,20 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored
-        if (downloadUri != null && avatar.equals(null)) {
+        if (downloadUri != null && avatar.equals("")) {
             //creaeting the user object
+            Log.d(TAG,"DownloadURI ::"+downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             user = new User(Name, contact, downloadUri.toString(),interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
-        } else if (!avatar.equals(null)){
+        } else if (!avatar.equals("")){
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             Log.d(TAG,"Avatar :: "+avatar);
             user = new User(Name, contact, avatar, interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+        }
+        else {
+            Toast.makeText(GatherUserDetails.this,"Select a Profile to Continue",Toast.LENGTH_SHORT).show();
         }
 
         //storing user as a json in file locally
@@ -613,9 +634,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
             Log.d(TAG,"User data success fully added");
             progressDialog.cancel();
-//            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
-//            startActivity(i);
+            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
+            startActivity(i);
             Log.d(TAG,"Intent lines are executed...");
             SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
             sendnotify();
