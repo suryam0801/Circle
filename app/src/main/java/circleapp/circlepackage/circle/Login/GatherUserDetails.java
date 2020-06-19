@@ -68,6 +68,7 @@ import java.util.logging.Logger;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -75,7 +76,6 @@ import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -107,7 +107,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg;
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
-
 
     //location services elements
     private FusedLocationProviderClient client;
@@ -638,21 +637,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
             sendnotify();
             finish();
-//            db.collection("Users")
-//                    .document(userId)
-//                    .set(user)
-//                    .addOnSuccessListener(aVoid -> {
-////                        progressDialog.cancel();
-//
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//            finish();
         });
     }
 
@@ -795,6 +779,4 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastPollID).setValue(quarantineBroadcastPoll);
         commentsDB.child(quarantineCircleID).child(quarantineBroadcastID).child(quarantineCommentID).setValue(quarantineComment);
     }
-
 }
-

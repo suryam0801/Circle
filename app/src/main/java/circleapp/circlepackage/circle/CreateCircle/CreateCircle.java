@@ -138,6 +138,7 @@ public class CreateCircle extends AppCompatActivity {
         int currentCreatedNo = user.getCreatedCircles() + 1;
         user.setCreatedCircles(currentCreatedNo);
         SessionStorage.saveUser(CreateCircle.this, user);
+        SessionStorage.saveCircle(CreateCircle.this, circle);
         userDB.child("createdCircles").setValue(currentCreatedNo);
 
         //navigate back to explore. new circle will be available in workbench

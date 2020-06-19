@@ -162,8 +162,10 @@ public class ExploreFragment extends Fragment {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                exploreCircleList.remove(position);
-                adapter.notifyItemRemoved(position);
+                if(!exploreCircleList.isEmpty()){
+                    exploreCircleList.remove(position);
+                    adapter.notifyItemRemoved(position);
+                }
             }
 
             @Override

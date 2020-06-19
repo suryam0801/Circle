@@ -52,7 +52,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     private ImageView profPic, notificationBell;
     private User user;
-    int myImageList ;
+    int myImageList;
     private Uri intentUri;
     private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
@@ -64,7 +64,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     int propic;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,21 +86,18 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
-        if (user.getProfileImageLink().length()>10)
-        {
+        if (user.getProfileImageLink().length() > 10) {
             Glide.with(ExploreTabbedActivity.this)
                     .load(user.getProfileImageLink())
                     .into(profPic);
+        } else {
+            propic = Integer.parseInt(user.getProfileImageLink());
+            myImageList = propic;
+            Glide.with(ExploreTabbedActivity.this)
+                    .load(propic)
+                    .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
+                    .into(profPic);
         }
-        else
-            {
-                propic = Integer.parseInt(user.getProfileImageLink());
-                myImageList = propic;
-                Glide.with(ExploreTabbedActivity.this)
-                        .load(propic)
-                        .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
-                        .into(profPic);
-            }
         notificationBell.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
             finish();
@@ -245,7 +241,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
     }
 
-    public void processUrl(String url){
+    public void processUrl(String url) {
         String circleID = HelperMethods.getCircleIdFromShareURL(url);
 
         database = FirebaseDatabase.getInstance();

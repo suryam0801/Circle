@@ -65,36 +65,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfile extends AppCompatActivity {
 
     private CircleImageView profileImageView;
-    private TextView userName, userNumber, createdCircles, workingCircles, editIntTagBtn;
+    private TextView userName, userNumber, createdCircles, workingCircles;
     private Button editProfPic, finalizeChanges, logout;
     private ImageButton back;
-    private ChipGroup interestTagsEditDisplay;
     private Uri filePath;
     private StorageReference storageReference;
     private Uri downloadUri;
-    private Dialog interestTagDialog;
-    private List<String> selectedInterestTags;
-    private List<String> suggestInList = new ArrayList<>();
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
     User user;
     int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
             R.drawable.avatar2, R.drawable.avatar5};
-    boolean emptyDismiss = true;
-
 
     private FirebaseDatabase database;
     private DatabaseReference tags, userDB;
     private FirebaseAuth currentUser;
 
-    //locationTags and location-interestTags retrieved from database. interest tags will be display according to selected location tags
-    private List<String> dbInterestTags = new ArrayList<>(); //interestTags will be added by parsing through HashMap LocIntTags
-    private HashMap<String, Object> locIntTags = new HashMap<>();
     private Boolean finalizeChange= false;
 
     //UI elements for location tag selector popup and interest tag selector popup
-    private AutoCompleteTextView interestTagEntry;
     AnalyticsLogEvents analyticsLogEvents;
 
     @Override
@@ -115,8 +105,6 @@ public class EditProfile extends AppCompatActivity {
         finalizeChanges = findViewById(R.id.profile_finalize_changes);
         logout = findViewById(R.id.profile_logout);
         back = findViewById(R.id.bck_view_edit_profile);
-        interestTagsEditDisplay = findViewById(R.id.viewProfile_interestTags);
-        editIntTagBtn = findViewById(R.id.interestTagEditButton);
         currentUser = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -125,45 +113,10 @@ public class EditProfile extends AppCompatActivity {
         userDB = database.getReference("Users");
         analyticsLogEvents = new AnalyticsLogEvents();
 
-
-        tags.child("locationInterestTags").child(user.getDistrict()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                locIntTags = (HashMap<String, Object>) snapshot.getValue();
-
-                //load tags
-                for (HashMap.Entry<String, Object> entry : locIntTags.entrySet()) {
-                    List<String> tempInterests = new ArrayList<>(((HashMap<String, Boolean>) entry.getValue()).keySet());
-                    for (String interest : tempInterests) {
-                        if (!dbInterestTags.contains(interest)) { //avoid duplicate interests
-                            if (entry.getKey().trim().equals(user.getWard().trim()))
-                                dbInterestTags.add(0, interest);
-                            else
-                                dbInterestTags.add(interest);
-                        }
-                    }
-                }
-                selectedInterestTags = new ArrayList<>(user.getInterestTags().keySet());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-
         userName.setText(user.getName());
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
-
-        selectedInterestTags = new ArrayList<>(user.getInterestTags().keySet());
-        if (selectedInterestTags.contains("null"))
-            selectedInterestTags.remove("null");
-
-        //populate chip group with currently selectedTags
-        for (String interest : selectedInterestTags)
-            setInterestTag(interest, interestTagsEditDisplay);
 
 
         Random r = new Random();
@@ -172,11 +125,6 @@ public class EditProfile extends AppCompatActivity {
                 .load(user.getProfileImageLink())
                 .placeholder(ContextCompat.getDrawable(EditProfile.this, myImageList[count]))
                 .into(profileImageView);
-
-        editIntTagBtn.setOnClickListener(view -> {
-            displayInterestTagPopup();
-            finalizeChange = false;
-        });
 
         editProfPic.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic","edit_profile");
@@ -197,11 +145,6 @@ public class EditProfile extends AppCompatActivity {
             if (downloadUri != null)
                 user.setProfileImageLink(downloadUri.toString());
 
-            HashMap<String, Boolean> tempIntTags = new HashMap<>();
-            for (String interest : selectedInterestTags)
-                tempIntTags.put(interest, true);
-            user.setInterestTags(tempIntTags);
-
             userDB.child(user.getUserId()).setValue(user);
             SessionStorage.saveUser(EditProfile.this, user);
             finalizeChange = true;
@@ -221,147 +164,6 @@ public class EditProfile extends AppCompatActivity {
             startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
             finish();
         });
-
-    }
-
-    private void displayInterestTagPopup() {
-        interestTagDialog = new Dialog(EditProfile.this);
-        interestTagDialog.setContentView(R.layout.activity_create_circle_interesttag_dialog); //set dialog view
-
-        //initialize elements in popup dialog
-        final Button finalizeInterestTag = interestTagDialog.findViewById(R.id.circle_finalize_interest_tags);
-        final ChipGroup interestChipGroupPopup = interestTagDialog.findViewById(R.id.circle_interest_tag_chip_group);
-        interestTagEntry = interestTagDialog.findViewById(R.id.circle_interest_tags_entry);
-        final Button interestTagAdd = interestTagDialog.findViewById(R.id.circle_interest_tag_add_button);
-
-        for (String interest : dbInterestTags) {
-            setInterestTag(interest, interestChipGroupPopup);
-            suggestInList.add("#" + interest);
-        }
-        Log.d(TAG, "Suggestion" + suggestInList.toString());
-        String[] arr = suggestInList.toArray(new String[0]);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, arr);
-        interestTagEntry.setThreshold(1);
-        interestTagEntry.setAdapter(adapter);
-
-        interestTagDialog.setOnDismissListener(dialogInterface -> {
-            if (emptyDismiss == false) {
-                interestTagsEditDisplay.removeAllViews();
-                if (selectedInterestTags.contains("null"))
-                    selectedInterestTags.remove("null");
-                for (String interest : selectedInterestTags)
-                    setInterestTag(interest, interestTagsEditDisplay);
-            }
-        });
-
-        finalizeInterestTag.setOnClickListener(view -> {
-            emptyDismiss = false;
-            interestTagDialog.dismiss();
-            finalizeChanges.setVisibility(View.VISIBLE);
-        });
-
-        interestTagEntry.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(interestTagEntry, InputMethodManager.SHOW_IMPLICIT);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            interestTagEntry.setShowSoftInputOnFocus(true);
-                        }
-                        interestTagEntry.setText("#");
-                        interestTagEntry.setSelection(interestTagEntry.getText().length());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        v.performClick();
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
-
-        interestTagAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String interestTag = interestTagEntry.getText().toString().replace("#", "") + " ";
-                if (!interestTag.isEmpty() && interestTag.contains(" ")) {
-                    if((interestTag.contains(".") || interestTag.contains("$") || interestTag.contains("#") || interestTag.contains("[") || interestTag.contains("]"))) {
-                        Toast.makeText(getApplicationContext(), "Cannot use special characters", Toast.LENGTH_SHORT).show();
-                    } else {
-                        selectedInterestTags.add(interestTag);
-                        if (!dbInterestTags.contains(interestTag)) {
-                            dbInterestTags.add(interestTag);
-                            setInterestTag(interestTag, interestChipGroupPopup);
-                            analyticsLogEvents.logEvents(EditProfile.this, "added_interesttag", "From_profile","edit_profile");
-                        } else {
-                            interestChipGroupPopup.removeViewAt(dbInterestTags.indexOf(interestTag)+1);
-                            setInterestTag(interestTag, interestChipGroupPopup);
-                        }
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Remove all spaces from your tag", Toast.LENGTH_SHORT).show();
-                }
-
-                interestTagEntry.setText("#");
-                interestTagEntry.setSelection(interestTagEntry.getText().length());
-            }
-        });
-
-
-        interestTagDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        interestTagDialog.show();
-    }
-
-    public void setInterestTag(final String name, ChipGroup chipGroupLocation) {
-        final Chip chip = new Chip(this);
-        int paddingDp = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 10,
-                getResources().getDisplayMetrics()
-        );
-        chip.setRippleColor(ColorStateList.valueOf(Color.WHITE));
-        chip.setPadding(
-                (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 3,
-                        getResources().getDisplayMetrics()
-                ),
-                paddingDp, paddingDp, paddingDp);
-        if (!name.contains("#"))
-            chip.setText("#" + name);
-        else
-            chip.setText(name);
-
-        if (selectedInterestTags.contains(name)) {
-            chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
-            chip.setTextColor(Color.WHITE);
-        } else {
-            chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
-            chip.setTextColor(Color.BLACK);
-        }
-
-        chip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (chip.getChipBackgroundColor().getDefaultColor() == -9655041) {
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.chip_unselected_gray)));
-                    chip.setTextColor(Color.BLACK);
-                    selectedInterestTags.remove(chip.getText().toString().replace("#", ""));
-                } else {
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.color_blue)));
-                    chip.setTextColor(Color.WHITE);
-                    selectedInterestTags.add(chip.getText().toString().replace("#", ""));
-                }
-                Log.d(TAG, "INTEREST TAG LIST: " + selectedInterestTags.toString());
-            }
-
-        });
-
-        if (selectedInterestTags.contains(name))
-            chipGroupLocation.addView(chip, 0);
-        else
-            chipGroupLocation.addView(chip);
 
     }
 
