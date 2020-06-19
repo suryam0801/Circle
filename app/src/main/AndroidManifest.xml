@@ -61,9 +61,6 @@
         <activity android:name=".CircleWall.BroadcastComments" android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
-        <activity
-            android:name=".Login.InterestTagPicker"
-            android:noHistory="true" />
         <activity android:name=".Login.GatherUserDetails" />
         <activity
             android:name=".Login.OtpActivity"
