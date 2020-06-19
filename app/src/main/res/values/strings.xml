@@ -5,6 +5,7 @@
     <string name="permission_message">Location permission is needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
-
+    <string name="button_label_on">\u2713 on</string>
+    <string name="button_label_off">off</string>
     <string name="search">Search&#8230;</string>
 </resources>

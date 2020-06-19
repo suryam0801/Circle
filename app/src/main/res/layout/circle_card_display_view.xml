@@ -107,20 +107,20 @@
                     android:layout_width="34dp"
                     android:layout_height="34dp"
                     android:layout_marginLeft="33dp"
-                    android:background="@drawable/person_blonde_head">
+                    android:background="@drawable/avatar1">
                 </de.hdodenhof.circleimageview.CircleImageView>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
                     android:layout_marginLeft="18dp"
-                    android:background="@drawable/person_job">
+                    android:background="@drawable/avatar3">
                 </de.hdodenhof.circleimageview.CircleImageView>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:background="@drawable/person_teacher">
+                    android:background="@drawable/avatar2">
                 </de.hdodenhof.circleimageview.CircleImageView>
 
                 <Button

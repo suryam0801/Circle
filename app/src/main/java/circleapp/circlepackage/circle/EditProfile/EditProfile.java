@@ -47,10 +47,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +57,6 @@ import java.util.UUID;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Login.EntryPage;
-import circleapp.circlepackage.circle.Login.PhoneLogin;
-import circleapp.circlepackage.circle.MainActivity;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
@@ -84,8 +79,8 @@ public class EditProfile extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
     User user;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+            R.drawable.avatar2, R.drawable.avatar5};
     boolean emptyDismiss = true;
 
 

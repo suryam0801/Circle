@@ -3,16 +3,14 @@ package circleapp.circlepackage.circle.Explore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +35,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
 import java.util.Random;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -50,15 +47,12 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.SessionStorage;
 
-import static android.text.TextUtils.replace;
-
 public class ExploreTabbedActivity extends AppCompatActivity {
 
 
     private ImageView profPic, notificationBell;
     private User user;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int myImageList ;
     private Uri intentUri;
     private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
@@ -94,11 +88,13 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
+        int propic = Integer.parseInt(user.getProfileImageLink());
+        myImageList = propic;
         Random r = new Random();
         int count = r.nextInt((4 - 0) + 1);
         Glide.with(ExploreTabbedActivity.this)
-                .load(user.getProfileImageLink())
-                .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList[count]))
+                .load(propic)
+                .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
                 .into(profPic);
 
 
@@ -302,7 +298,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         usersDB = database.getReference().child("Users").child(user.getUserId());
 
-        Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
+        Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {

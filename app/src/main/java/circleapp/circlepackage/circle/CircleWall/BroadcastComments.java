@@ -132,8 +132,7 @@ public class BroadcastComments extends AppCompatActivity {
         map.put("comment", commentEditText.getText().toString().trim());
         map.put("commentorId", SessionStorage.getUser(BroadcastComments.this).getUserId());
         map.put("commentorPicURL", SessionStorage.getUser(BroadcastComments.this).getProfileImageLink());
-        map.put("commentorName", SessionStorage.getUser(BroadcastComments.this).getFirstName().trim() + " " +
-                SessionStorage.getUser(BroadcastComments.this).getLastName().trim());
+        map.put("commentorName", SessionStorage.getUser(BroadcastComments.this).getName().trim());
 
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
 

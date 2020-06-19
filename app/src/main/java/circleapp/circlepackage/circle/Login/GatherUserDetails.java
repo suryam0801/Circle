@@ -26,6 +26,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -97,9 +100,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     SharedPreferences pref;
     String Name, contact, userId;
     EditText name;
-    Button register, avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7;
+    TextView resetprofpic;
+    Button  register;
+    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7;
+    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg;
     AnalyticsLogEvents analyticsLogEvents;
-    String avatar;
+    String avatar = null;
 
 
     //location services elements
@@ -124,10 +130,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
+        resetprofpic = findViewById(R.id.resetTV);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
         progressDialog.setTitle("Registering User....");
-        avatar = "avatar1";
         avatar1 = findViewById(R.id.avatar1);
         avatar2 = findViewById(R.id.avatar2);
         avatar3 = findViewById(R.id.avatar3);
@@ -135,6 +141,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatar5 = findViewById(R.id.avatar5);
         avatar6 = findViewById(R.id.avatar6);
         avatar7 = findViewById(R.id.avatar7);
+        avatar1_bg = findViewById(R.id.avatar1_State);
+        avatar2_bg = findViewById(R.id.avatar2_State);
+        avatar3_bg = findViewById(R.id.avatar3_State);
+        avatar4_bg = findViewById(R.id.avatar4_State);
+        avatar5_bg = findViewById(R.id.avatar5_State);
+        avatar6_bg = findViewById(R.id.avatar6_State);
+        avatar7_bg = findViewById(R.id.avatar7_State);
         profilePic = findViewById(R.id.profile_image);
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
@@ -143,62 +156,231 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         analyticsLogEvents = new AnalyticsLogEvents();
 
+        resetprofpic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
 
         //listener for button to add the profilepic
         avatar1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = "avatar1";
-                avatar1.setPressed(true);
+                avatar = String.valueOf(R.drawable.avatar1);
+                    avatar1.setPressed(true);
+                int visibility = avatar1_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar1.setPressed(false);
+                }
+                else
+                {
+                    avatar1_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar2.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar6.setPressed(false);
+                    avatar7.setPressed(false);
+                }
             }
         });
         avatar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                    avatar = "avatar2";
+                    avatar = String.valueOf(R.drawable.avatar2);
                     avatar2.setPressed(true);
+                int visibility = avatar1_bg.getVisibility();
+                int visibility2  = avatar2_bg.getVisibility();
+                if(visibility2 == View.VISIBLE  )
+                {
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar2.setPressed(false);
+                }
+                else
+                {
+                    avatar2_bg.setVisibility(View.VISIBLE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar1.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar6.setPressed(false);
+                    avatar7.setPressed(false);
+
+                }
             }
         });
         avatar3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = "avatar3";
+                avatar = String.valueOf(R.drawable.avatar3);
                 avatar3.setPressed(true);
+                int visibility = avatar3_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar3.setPressed(false);
+                }
+                else
+                {
+                    avatar3_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar2.setPressed(false);
+                    avatar1.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar6.setPressed(false);
+                    avatar7.setPressed(false);
+                }
             }
         });
         avatar4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = "avatar4";
+                avatar = String.valueOf(R.drawable.avatar4);
                 avatar4.setPressed(true);
+                int visibility = avatar4_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar4.setPressed(false);
+                }
+                else
+                {
+                    avatar4_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar2.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar1.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar6.setPressed(false);
+                    avatar7.setPressed(false);
+                }
             }
         });
         avatar5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = "avatar5";
+                avatar = String.valueOf(R.drawable.avatar5);
                 avatar5.setPressed(true);
+                int visibility = avatar5_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar5.setPressed(false);
+                }
+                else
+                {
+                    avatar5_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar2.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar1.setPressed(false);
+                    avatar6.setPressed(false);
+                    avatar7.setPressed(false);
+                }
             }
         });
         avatar6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = "avatar6";
+                avatar = String.valueOf(R.drawable.avatar6);
                 avatar6.setPressed(true);
+                int visibility = avatar6_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar6.setPressed(false);
+                }
+                else
+                {
+                    avatar6_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar2.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar1.setPressed(false);
+                    avatar7.setPressed(false);
+                }
             }
         });
         avatar7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = "avatar7";
+                avatar = String.valueOf(R.drawable.avatar7);
                 avatar7.setPressed(true);
+                int visibility = avatar7_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar = null;
+                    avatar7.setPressed(false);
+                }
+                else
+                {
+                    avatar7_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar1.setPressed(false);
+                    avatar2.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar6.setPressed(false);
+                }
             }
         });
         //listener for button to add the profilepic
@@ -221,8 +403,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                avatar = "";
-
                 if(name.getText().equals("") || name.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
@@ -411,11 +591,16 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored
-        if (downloadUri != null&&avatar.equals("")) {
+        if (downloadUri != null && avatar.equals(null)) {
             //creaeting the user object
-            user = new User(Name, contact, downloadUri.toString(),null, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
-        } else if(!avatar.equals("")){
-            user = new User(Name, contact, avatar, null, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+            HashMap<String, Boolean> interestTag = new HashMap<>();
+            interestTag.put("null",true);
+            user = new User(Name, contact, downloadUri.toString(),interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+        } else if (!avatar.equals(null)){
+            HashMap<String, Boolean> interestTag = new HashMap<>();
+            interestTag.put("null",true);
+            Log.d(TAG,"Avatar :: "+avatar);
+            user = new User(Name, contact, avatar, interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         }
 
         //storing user as a json in file locally
@@ -428,28 +613,28 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
             Log.d(TAG,"User data success fully added");
             progressDialog.cancel();
-            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
-            startActivity(i);
+//            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
+//            startActivity(i);
             Log.d(TAG,"Intent lines are executed...");
             SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
             sendnotify();
             finish();
-            db.collection("Users")
-                    .document(userId)
-                    .set(user)
-                    .addOnSuccessListener(aVoid -> {
-//                        progressDialog.cancel();
-
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-                        }
-                    });
-            finish();
+//            db.collection("Users")
+//                    .document(userId)
+//                    .set(user)
+//                    .addOnSuccessListener(aVoid -> {
+////                        progressDialog.cancel();
+//
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            progressDialog.dismiss();
+//                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+//            finish();
         });
     }
 
