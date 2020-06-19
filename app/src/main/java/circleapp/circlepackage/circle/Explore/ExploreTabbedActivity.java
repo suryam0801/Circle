@@ -60,7 +60,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private DatabaseReference circlesDB, usersDB;
     private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
-    private boolean link_flag = false;
     private String url;
     private TabLayout tabLayout;
     private TabItem exploreTab, workbenchTab;
@@ -107,6 +106,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             finish();
         });
 
+        setViewPageAdapter();
+    }
+
+    private void setViewPageAdapter() {
         //setting the tab adapter
         ViewPager viewPager = findViewById(R.id.view_pager);
 
@@ -133,7 +136,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
     }
 
     private void showLinkPopup() {
@@ -236,6 +238,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         }
 
     }
+
     public void processUrl(String url){
         String circleID = HelperMethods.getCircleIdFromShareURL(url);
 
