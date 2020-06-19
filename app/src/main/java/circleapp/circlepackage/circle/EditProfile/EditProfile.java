@@ -79,8 +79,8 @@ public class EditProfile extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
     String TAG = EditProfile.class.getSimpleName();
     User user;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+            R.drawable.avatar2, R.drawable.avatar5};
     boolean emptyDismiss = true;
 
 
@@ -152,7 +152,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
-        userName.setText(user.getFirstName() + " " + user.getLastName());
+        userName.setText(user.getName());
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");

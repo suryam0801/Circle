@@ -9,7 +9,6 @@
     android:paddingRight="14dp"
     android:orientation="vertical"
     tools:context=".Login.GatherUserDetails">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,6 +28,7 @@
                 android:layout_gravity="center"
                 android:text="Circle"
                 android:layout_marginTop="30dp"
+                android:layout_marginBottom="40dp"
                 android:textColor="#2196F3"
                 android:textSize="50dp"
                 />
@@ -39,97 +39,233 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/roboto_black"
-                android:text="The Friendly Neighbourhood App"
-                android:textColor="#D1D1D1"
+                android:text="Choose your Profile picture"
+                android:textColor="#2196F3"
                 android:textSize="14dp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_width="324dp"
+                android:layout_height="201dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="35dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Profile picture"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginLeft="3dp"
-                    android:textColor="#B3B1B1"
-                    android:textSize="11dp">
-                </TextView>
 
-                <RelativeLayout
-                    android:id="@+id/imagePreview"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
-
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_marginTop="15dp"
-                        android:id="@+id/profile_image"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp">
+                    <RelativeLayout
                         android:layout_width="75dp"
                         android:layout_height="75dp"
-                        android:background="@drawable/ic_account_circle_black_24dp"
-                        app:civ_border_width="2dp"
-                        app:civ_border_color="#FF000000"/>
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/profilePicSetterImage"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginTop="45dp"
-                        android:background="@drawable/edit_project_button_background"
-                        android:foreground="@drawable/edit_drawable"
-                        android:foregroundGravity="center"/>
+                        <ImageButton
+                        android:id="@+id/avatar1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/avatar1"/>
+                        <ImageView
+                            android:id="@+id/avatar1_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
+                        <ImageButton
+                        android:id="@+id/avatar2"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                            android:background="@drawable/avatar2">
+                        </ImageButton>
+                        <ImageView
+                            android:id="@+id/avatar2_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
 
-                </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/avatar3"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/avatar3" />
+                        <ImageView
+                            android:id="@+id/avatar3_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/avatar4"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/avatar4" />
+                        <ImageView
+                            android:id="@+id/avatar4_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp">
+
+                    <RelativeLayout
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/avatar5"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/avatar5" />
+                        <ImageView
+                            android:id="@+id/avatar5_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/avatar6"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/avatar6" />
+                        <ImageView
+                            android:id="@+id/avatar6_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="4dp"
+                        android:orientation="vertical">
+                    <ImageButton
+                        android:id="@+id/avatar7"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/avatar7" />
+                        <ImageView
+                            android:id="@+id/avatar7_State"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="50dp"
+                            android:visibility="gone"
+                            android:foreground="@drawable/tick_background"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/imagePreview"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profile_image"
+                            android:layout_width="75dp"
+                            android:layout_height="75dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/ic_account_circle_black_24dp"
+                            app:civ_border_color="#FF000000"
+                            app:civ_border_width="2dp" />
+
+                        <Button
+                            android:id="@+id/profilePicSetterImage"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="50dp"
+                            android:layout_marginTop="45dp"
+                            android:background="@drawable/edit_project_button_background"
+                            android:foreground="@drawable/edit_drawable"
+                            android:foregroundGravity="center" />
+                    </RelativeLayout>
+
+                </LinearLayout>
             </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/resetTV"
+                android:layout_marginStart="30dp"
+                android:textColor="#2196F3"
+                android:textSize="14dp"
+                android:layout_marginTop="15dp"
+                android:visibility="gone"
+                android:text="Reset Profile Pic">
+            </TextView>
 
           <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="80dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="First Name"
+                    android:text="Enter your username"
                     android:fontFamily="@font/roboto_regular"
                     android:layout_marginLeft="3dp"
                     android:textColor="#B3B1B1"
                     android:layout_marginTop="20dp"
-                    android:textSize="11dp">
+                    android:layout_marginBottom="10dp"
+                    android:textSize="14dp">
                 </TextView>
                 <EditText
-                    android:id="@+id/fname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#ACA9A9"
-                    android:textColorHint="#ACA9A9"
-                    android:imeOptions="actionDone"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="13dp"
-                    android:ems="10"
-                    android:nextFocusDown="@id/lname"
-                    android:digits="@string/digits"
-                    android:textColor="@color/black"
-                        android:inputType="textPersonName" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Last Name"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginLeft="3dp"
-                    android:textColor="#B3B1B1"
-                    android:layout_marginTop="20dp"
-                    android:textSize="11dp">
-                </TextView>
-                <EditText
-                    android:id="@+id/lname"
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#ACA9A9"
@@ -147,17 +283,19 @@
                   android:id="@+id/registerButton"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="40dp"
+                  android:layout_marginTop="50dp"
                   android:background="@drawable/gradient_button"
-                  android:drawableEnd="@drawable/right_forward_arrow"
                   android:fontFamily="@font/roboto_black"
                   android:gravity="start|center"
                   android:paddingLeft="19dp"
                   android:paddingRight="19dp"
-                  android:text="Continue To Set Circle Tags"
+                  android:text="Finish Registration"
                   android:textAllCaps="false"
                   android:textColor="#FFFFFFFF"
-                  android:textSize="15dp" />
+                  android:layout_marginStart="15dp"
+                  android:layout_marginEnd="15dp"
+                  android:textAlignment="center"
+                  android:textSize="18dp" />
             </LinearLayout>
 
         </LinearLayout>

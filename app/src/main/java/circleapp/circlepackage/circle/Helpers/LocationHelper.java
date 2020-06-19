@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.Helpers;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +28,6 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Login.EntryPage;
-import circleapp.circlepackage.circle.Login.InterestTagPicker;
 import circleapp.circlepackage.circle.Login.PhoneLogin;
 import circleapp.circlepackage.circle.R;
 

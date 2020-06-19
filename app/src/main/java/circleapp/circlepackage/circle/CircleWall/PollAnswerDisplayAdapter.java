@@ -1,8 +1,6 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
-import circleapp.circlepackage.circle.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -32,8 +25,8 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     private HashMap<Subscriber, String> list;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+            R.drawable.avatar2, R.drawable.avatar5};
 
 
     public PollAnswerDisplayAdapter(Context mContext, HashMap<Subscriber, String> list) {

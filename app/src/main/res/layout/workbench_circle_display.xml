@@ -129,18 +129,18 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="27dp"
-                    android:background="@drawable/person_blonde_head"></de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/avatar1"></de.hdodenhof.circleimageview.CircleImageView>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="15dp"
-                    android:background="@drawable/person_job"></de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/avatar3"></de.hdodenhof.circleimageview.CircleImageView>
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/person_teacher"></de.hdodenhof.circleimageview.CircleImageView>
+                    android:background="@drawable/avatar2"></de.hdodenhof.circleimageview.CircleImageView>
 
                 <Button
                     android:id="@+id/wb_members_count_button"

@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle.PersonelDisplay;
 
 import android.content.Context;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
+
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -29,8 +27,8 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     private List<Subscriber> memberList;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+            R.drawable.avatar2, R.drawable.avatar5};
 
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList) {

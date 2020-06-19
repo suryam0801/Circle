@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Login.EntryPage;
+import circleapp.circlepackage.circle.Login.get_started_first_page;
+import circleapp.circlepackage.circle.Login.get_started_second_page;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
 import static circleapp.circlepackage.circle.Helpers.InAppNotificationHelper.CHANNEL_1_ID;
@@ -77,13 +80,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    startActivity(new Intent(MainActivity.this, EntryPage.class));
+                    startActivity(new Intent(MainActivity.this, get_started_first_page.class));
+//                    startActivity(new Intent(MainActivity.this, EntryPage.class));
                     finish();
                 }
             });
         } else {
             analyticsLogEvents.logEvents(MainActivity.this, "null_user", "new_user","app_open");
-            startActivity(new Intent(MainActivity.this, EntryPage.class));
+            startActivity(new Intent(MainActivity.this, get_started_first_page.class));
             finish();
         }
     }

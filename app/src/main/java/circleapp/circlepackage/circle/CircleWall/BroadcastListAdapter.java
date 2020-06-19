@@ -58,6 +58,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private int count = 0;
     int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
             R.drawable.person_teacher, R.drawable.person_woman_dancing};
+
     private Vibrator v;
     private User user;
 

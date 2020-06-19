@@ -94,7 +94,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
-
                 <RelativeLayout
                     android:id="@+id/three_memers_prof_pic"
                     android:layout_width="wrap_content"

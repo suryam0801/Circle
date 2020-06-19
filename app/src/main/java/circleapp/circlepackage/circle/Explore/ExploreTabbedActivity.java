@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,13 +46,13 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
+
 public class ExploreTabbedActivity extends AppCompatActivity {
 
 
     private ImageView profPic, notificationBell;
     private User user;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int myImageList ;
     private Uri intentUri;
     private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
@@ -62,6 +63,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private TabItem exploreTab, workbenchTab;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
+    int propic;
 
 
     @Override
@@ -85,14 +87,21 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
-        Random r = new Random();
-        int count = r.nextInt((4 - 0) + 1);
-        Glide.with(ExploreTabbedActivity.this)
-                .load(user.getProfileImageLink())
-                .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList[count]))
-                .into(profPic);
-
-
+        if (user.getProfileImageLink().length()>10)
+        {
+            Glide.with(ExploreTabbedActivity.this)
+                    .load(user.getProfileImageLink())
+                    .into(profPic);
+        }
+        else
+            {
+                propic = Integer.parseInt(user.getProfileImageLink());
+                myImageList = propic;
+                Glide.with(ExploreTabbedActivity.this)
+                        .load(propic)
+                        .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
+                        .into(profPic);
+            }
         notificationBell.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
             finish();
@@ -216,7 +225,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         usersDB = database.getReference().child("Users").child(user.getUserId());
 
-        Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
+        Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
