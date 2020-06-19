@@ -89,7 +89,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
-        if (user.getProfileImageLink().matches("^[a-zA-Z]*$"))
+        if (user.getProfileImageLink().length()>10)
         {
             Glide.with(ExploreTabbedActivity.this)
                     .load(user.getProfileImageLink())
@@ -104,17 +104,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                         .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
                         .into(profPic);
             }
-        Random r = new Random();
-        int count = r.nextInt((4 - 0) + 1);
-
-        if (propic != 0)
-        {
-        }
-        else
-            {
-            }
-
-
         notificationBell.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
             finish();

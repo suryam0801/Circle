@@ -608,22 +608,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored
-        if (downloadUri != null && avatar.equals("")) {
+        if (downloadUri != null) {
             //creaeting the user object
             Log.d(TAG,"DownloadURI ::"+downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             user = new User(Name, contact, downloadUri.toString(),interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
-        } else if (!avatar.equals("")){
+        } else
+            {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             Log.d(TAG,"Avatar :: "+avatar);
             user = new User(Name, contact, avatar, interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         }
-        else {
-            Toast.makeText(GatherUserDetails.this,"Select a Profile to Continue",Toast.LENGTH_SHORT).show();
-        }
-
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(GatherUserDetails.this, user);
