@@ -1,18 +1,20 @@
 package circleapp.circlepackage.circle.Helpers;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
@@ -22,6 +24,17 @@ public class HelperMethods {
         int position = 0;
         for(Circle c : circleList){
             if(c.getId().equals(circle.getId()))
+                return position;
+
+            position++;
+        }
+        return position;
+    }
+
+    public static int returnIndexOfBroadcast(List<Broadcast> broadcastList, Broadcast broadcast){
+        int position = 0;
+        for(Broadcast b : broadcastList){
+            if(broadcast.getId().equals(b.getId()))
                 return position;
 
             position++;
@@ -47,20 +60,6 @@ public class HelperMethods {
                 containsCircle = true;
         }
         return containsCircle;
-    }
-
-    public static void showShareCirclePopup(Circle c, Activity activity) {
-        try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            activity.startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch (Exception error) {
-
-        }
     }
 
     public static int numberOfApplicants(Circle c, User user){
@@ -112,4 +111,28 @@ public class HelperMethods {
         gradientDrawable.setCornerRadius(radius);
         return gradientDrawable;
     }
+
+    public static void showShareCirclePopup(Circle c, Activity activity) {
+        try {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
+            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
+            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+            activity.startActivity(Intent.createChooser(shareIntent, "choose one"));
+        } catch (Exception error) {
+
+        }
+    }
+
+    public static void copyLinkToClipBoard (Circle circle, Activity activity){
+        String shareMessage = "\nCome join my circle: " + circle.getName() + "\n\n";
+        shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + circle.getId();
+        ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Clip Copied", shareMessage);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
+    }
+
 }
