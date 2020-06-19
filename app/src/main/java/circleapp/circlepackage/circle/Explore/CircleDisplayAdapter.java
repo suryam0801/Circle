@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
+import com.google.rpc.Help;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -37,6 +39,7 @@ import java.util.Locale;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Notification.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -50,7 +53,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
     private Dialog circleJoinDialog;
-    private FirebaseAuth currentUser;
     private User user;
     AnalyticsLogEvents analyticsLogEvents;
 
@@ -64,11 +66,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         circleJoinDialog = new Dialog(context);
         database = FirebaseDatabase.getInstance();
 
-        analyticsLogEvents = new AnalyticsLogEvents();
-
-        currentUser = FirebaseAuth.getInstance();
+        user = SessionStorage.getUser((Activity) context);
         circlesDB = database.getReference("Circles");
-        usersDB = database.getReference().child("Users").child(currentUser.getCurrentUser().getUid());
+        usersDB = database.getReference().child("Users").child(user.getUserId());
+
+        analyticsLogEvents = new AnalyticsLogEvents();
     }
 
     @Override
@@ -80,101 +82,72 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     @Override
     public void onBindViewHolder(CircleDisplayAdapter.ViewHolder viewHolder, int i) {
 
-        Circle current = circleList.get(i);
+        Circle currentCircle = circleList.get(i);
+
 
         //check if circle acceptance is review
-        if (current.getAcceptanceType().equalsIgnoreCase("review"))
+        if (currentCircle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
 
-        if (current.getApplicantsList() != null && current.getApplicantsList().keySet().contains(currentUser.getUid())) {
+        boolean isApplicant = HelperMethods.ifUserApplied(currentCircle, user.getUserId());
+        if (isApplicant) {
             viewHolder.join.setText("Pending Request");
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
         }
 
-        GradientDrawable wbItemBackground = new GradientDrawable();
-        wbItemBackground.setShape(GradientDrawable.RECTANGLE);
-        wbItemBackground.setCornerRadius(30.0f);
+        GradientDrawable wbItemBackground = HelperMethods.gradientRectangleDrawableSetter(30);
 
-        GradientDrawable moreMembersColor = new GradientDrawable();
-        moreMembersColor.setShape(GradientDrawable.RECTANGLE);
-        moreMembersColor.setCornerRadius(130.0f);
+        GradientDrawable moreMembersColor = HelperMethods.gradientRectangleDrawableSetter(130);
 
-        GradientDrawable dividerColor = new GradientDrawable();
-        dividerColor.setShape(GradientDrawable.RECTANGLE);
-
-        String chipColor = "";
+        GradientDrawable dividerColor = HelperMethods.gradientRectangleDrawableSetter(1);
 
         switch (i % 3) {
             case 0:
-                wbItemBackground.setColor(Color.parseColor("#A274FF"));
-                moreMembersColor.setColor(Color.parseColor("#AE85FF"));
-                dividerColor.setColor(Color.parseColor("#AE85FF"));
-                chipColor = "#7344D4";
+                wbItemBackground.setColor(context.getResources().getColor(R.color.solidPurple));
+                moreMembersColor.setColor(context.getResources().getColor(R.color.transparentPurple));
+                dividerColor.setColor(context.getResources().getColor(R.color.transparentPurple));
                 break;
             case 1:
-                wbItemBackground.setColor(Color.parseColor("#FE42AE"));
-                moreMembersColor.setColor(Color.parseColor("#FF6DC1"));
-                dividerColor.setColor(Color.parseColor("#FF6DC1"));
-                chipColor = "#D42D8D";
+                wbItemBackground.setColor(context.getResources().getColor(R.color.solidPink));
+                moreMembersColor.setColor(context.getResources().getColor(R.color.transparentPink));
+                dividerColor.setColor(context.getResources().getColor(R.color.transparentPink));
                 break;
             case 2:
-                wbItemBackground.setColor(Color.parseColor("#3CD2C3"));
-                moreMembersColor.setColor(Color.parseColor("#5FDFD2"));
-                dividerColor.setColor(Color.parseColor("#5FDFD2"));
-                chipColor = "#13A697";
+                wbItemBackground.setColor(context.getResources().getColor(R.color.solidTurquoise));
+                moreMembersColor.setColor(context.getResources().getColor(R.color.transparentTurqoise));
+                dividerColor.setColor(context.getResources().getColor(R.color.transparentTurqoise));
                 break;
         }
 
         //set the details of each circle to its respective card.
         viewHolder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
-        viewHolder.tv_circleName.setText(current.getName());
-        viewHolder.tv_creatorName.setText("By " + current.getCreatorName());
-        viewHolder.tv_circleDesc.setText(current.getDescription());
+        viewHolder.tv_circleName.setText(currentCircle.getName());
+        viewHolder.tv_creatorName.setText("By " + currentCircle.getCreatorName());
+        viewHolder.tv_circleDesc.setText(currentCircle.getDescription());
         viewHolder.container.setBackground(wbItemBackground);
         viewHolder.membersCount.setBackground(moreMembersColor);
         viewHolder.divider.setBackground(dividerColor);
 
-        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(current.getTimestamp());
-        String date = DateFormat.format("dd MMM, yyyy", cal).toString();
+        String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
 
-        //set the chips
-        if (current.getInterestTags().keySet().contains("sample")) {
-            if (current.getName().contains("Runner")) {
-                setInterestTag("running", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Running", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("earlymorningrunning", viewHolder.circleDisplayTags, chipColor);
-            } else if (current.getName().contains("Recipe")) {
-                setInterestTag("cooking", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag(current.getCircleDistrict().replaceAll(" ", "") + "Recipes", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("recipes", viewHolder.circleDisplayTags, chipColor);
-            } else {
-                setInterestTag("Welcome", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("Introduction", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("Tutorial", viewHolder.circleDisplayTags, chipColor);
-                setInterestTag("Tutorial", viewHolder.circleDisplayTags, chipColor);
-            }
-        } else {
-            for (String name : current.getInterestTags().keySet())
-                setInterestTag(name, viewHolder.circleDisplayTags, chipColor);
+        if (currentCircle.getMembersList() != null)
+            viewHolder.membersCount.setText("+" + currentCircle.getMembersList().size());
+        else {
+            viewHolder.threeMemberPicContainer.setVisibility(View.GONE);
+            viewHolder.membersCount.setText("Be the first to join");
         }
 
-        if (current.getMembersList() != null)
-            viewHolder.membersCount.setText("+" + current.getMembersList().size());
-        else
-            viewHolder.membersCount.setText("Be the first to join");
-
-
+        //onclick for join and share
         viewHolder.join.setOnClickListener(view -> {
-            if (current.getApplicantsList() != null && !current.getApplicantsList().keySet().contains(currentUser.getUid()))
-                applyOrJoin(viewHolder, current);
-            else if (current.getApplicantsList() == null)
-                applyOrJoin(viewHolder, current);
+            if (!isApplicant)
+                applyOrJoin(viewHolder, currentCircle);
+            else if (currentCircle.getApplicantsList() == null)
+                applyOrJoin(viewHolder, currentCircle);
         });
 
         viewHolder.share.setOnClickListener(view -> {
-            showShareCirclePopup(current);
+            HelperMethods.showShareCirclePopup(currentCircle, (Activity) context);
         });
     }
 
@@ -187,7 +160,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate;
         private LinearLayout container;
-        private ChipGroup circleDisplayTags;
+        private RelativeLayout threeMemberPicContainer;
         private ImageButton share;
         private Button join, membersCount;
         private View divider;
@@ -195,11 +168,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         public ViewHolder(View view) {
             super(view);
             container = view.findViewById(R.id.container);
+            threeMemberPicContainer = view.findViewById(R.id.three_memers_prof_pic);
             tv_createdDate = view.findViewById(R.id.circle_created_date);
             tv_circleName = view.findViewById(R.id.circle_name);
             tv_creatorName = view.findViewById(R.id.circle_creatorName);
             tv_circleDesc = view.findViewById(R.id.circle_desc);
-            circleDisplayTags = view.findViewById(R.id.circle_display_tags);
             share = view.findViewById(R.id.circle_card_share);
             join = view.findViewById(R.id.circle_card_join);
             membersCount = view.findViewById(R.id.members_count_button);
@@ -207,71 +180,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
     }
 
-    public void setInterestTag(final String name, ChipGroup chipGroupLocation, String chipColor) {
-        final Chip chip = new Chip(context);
-        int paddingDp = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 10,
-                context.getResources().getDisplayMetrics()
-        );
-        chip.setRippleColor(ColorStateList.valueOf(Color.WHITE));
-        chip.setPadding(
-                (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 3,
-                        context.getResources().getDisplayMetrics()
-                ),
-                paddingDp, paddingDp, paddingDp);
-
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_enabled}, // enabled
-                new int[]{-android.R.attr.state_enabled}, // disabled
-                new int[]{-android.R.attr.state_checked}, // unchecked
-                new int[]{android.R.attr.state_pressed}  // pressed
-        };
-
-        int[] colors = new int[]{
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor),
-                Color.parseColor(chipColor)
-        };
-
-        ColorStateList myList = new ColorStateList(states, colors);
-
-        chip.setChipBackgroundColor(myList);
-        chip.setChipCornerRadius(60);
-        chip.setChipMinHeight(100);
-        chip.setTextColor(Color.WHITE);
-        if (!name.contains("#"))
-            chip.setText("#" + name);
-        else
-            chip.setText(name);
-
-
-        chipGroupLocation.addView(chip);
-    }
-
-    private void showShareCirclePopup(Circle c) {
-        try {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-
-            analyticsLogEvents.logEvents(context, "invite_circle", "invite_explore", "on_button_click");
-
-            shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
-            String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
-            //https://play.google.com/store/apps/details?id=
-            shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
-            Log.d("Share", shareMessage);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            context.startActivity(Intent.createChooser(shareIntent, "choose one"));
-        } catch (Exception error) {
-
-        }
-    }
-
     private void applyOrJoin(ViewHolder viewHolder, final Circle circle) {
 
         circleJoinDialog.setContentView(R.layout.apply_popup_layout);
+        circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         Button closeDialogButton = circleJoinDialog.findViewById(R.id.completedDialogeDoneButton);
         TextView title = circleJoinDialog.findViewById(R.id.applyConfirmationTitle);
         TextView description = circleJoinDialog.findViewById(R.id.applyConfirmationDescription);
@@ -279,7 +192,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Subscriber subscriber = new Subscriber(user.getUserId(), user.getFirstName() + " " + user.getLastName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-        boolean adminCircle = false;
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
             analyticsLogEvents.logEvents(context, "circle_apply", "apply_explore", "on_button_click");
@@ -293,22 +205,15 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
             int nowActive = user.getActiveCircles() + 1;
             usersDB.child("activeCircles").setValue((nowActive));
-            String userJsonString = new Gson().toJson(user);
-            storeUserFile(userJsonString, context.getApplicationContext());
         }
 
-        circleJoinDialog.dismiss();
 
-
-        if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
-            viewHolder.join.setText("Apply");
-        } else {
+        if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");
             description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");
         }
 
         closeDialogButton.setOnClickListener(view -> {
-
             if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
                 circleJoinDialog.dismiss();
             } else {
@@ -319,21 +224,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             }
         });
 
-        circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        if (adminCircle == false) {
-            circleJoinDialog.show();
-        }
-    }
+        circleJoinDialog.show();
 
-    private void storeUserFile(String data, Context context) {
-        context.deleteFile("user.txt");
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
     }
 
 }
