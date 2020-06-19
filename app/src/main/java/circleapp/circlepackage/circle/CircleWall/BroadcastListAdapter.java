@@ -56,8 +56,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Circle circle;
     private FirebaseAuth currentUser;
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.person_blonde_head, R.drawable.person_job, R.drawable.person_singing,
-            R.drawable.person_teacher, R.drawable.person_woman_dancing};
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3,
+            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6, R.drawable.avatar6};
 
     private Vibrator v;
     private User user;
