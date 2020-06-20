@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -122,6 +123,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
+    RelativeLayout setProfile;
     int photo;
 
     //location services elements
@@ -162,6 +164,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatar6_bg = findViewById(R.id.avatar6_State);
         avatar7_bg = findViewById(R.id.avatar7_State);
         profilePic = findViewById(R.id.profile_image);
+        setProfile = findViewById(R.id.imagePreview);
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
@@ -404,8 +407,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             }
         });
         //listener for button to add the profilepic
-        profilepicButton.setOnClickListener(v -> {
-            selectImage();
+        setProfile.setOnClickListener(v -> {
+                selectImage();
         });
 
         // Listener for Register button
@@ -465,15 +468,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 if (options[item].equals("Take Photo"))
                 {
                     photo = 1;
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)){
+                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                        runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
+                    }
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)&&runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
                         takePhoto();
                     }
                     else{
-                        runtimePermissionHelper.requestPermissionsIfDenied(CAMERA);
+                        runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
                     }
                 }
                 else if (options[item].equals("Choose from Gallery"))
                 {
+                    photo = 0;
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
@@ -513,10 +520,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 if(photo==0){
                     selectFile();
                 }
+                else if(photo==1){
+                    if(runtimePermissionHelper.isPermissionAvailable(CAMERA))
+                        takePhoto();
+                }
                 analyticsLogEvents.logEvents(GatherUserDetails.this,"storage_granted","permission_granted","gather_user_details");
         } else {
                 Toast.makeText(GatherUserDetails.this,
-                        "Storage Permission Denied",
+                        "Permission Denied",
                         Toast.LENGTH_SHORT)
                         .show();
             }
