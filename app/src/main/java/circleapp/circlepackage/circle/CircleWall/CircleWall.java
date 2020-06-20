@@ -383,6 +383,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
         circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
+        SessionStorage.saveCircle(CircleWall.this, circle);
 
         //updating broadcast in broadcast db
         broadcastsDB.child(circle.getId()).child(broadcastId).setValue(broadcast);
