@@ -7,15 +7,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -33,8 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Random;
-
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -50,9 +44,8 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 public class ExploreTabbedActivity extends AppCompatActivity {
 
 
-    private ImageView profPic, notificationBell;
+    private ImageView profPicHolder, notificationBell;
     private User user;
-    int myImageList;
     private Uri intentUri;
     private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
@@ -63,7 +56,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private TabItem exploreTab, workbenchTab;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
-    int propic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +70,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             processUrl(url);
         }
 
-        profPic = findViewById(R.id.explore_profilePicture);
+        profPicHolder = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
         tabLayout = findViewById(R.id.main_tab_layout);
         exploreTab = findViewById(R.id.main_explore_tab);
@@ -86,24 +78,23 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
-        if (user.getProfileImageLink().length() > 10) {
+        if (user.getProfileImageLink().length() > 10) { //checking if its uploaded image
             Glide.with(ExploreTabbedActivity.this)
                     .load(user.getProfileImageLink())
-                    .into(profPic);
-        } else {
-            propic = Integer.parseInt(user.getProfileImageLink());
-            myImageList = propic;
+                    .into(profPicHolder);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(user.getProfileImageLink());
             Glide.with(ExploreTabbedActivity.this)
-                    .load(propic)
-                    .placeholder(ContextCompat.getDrawable(ExploreTabbedActivity.this, myImageList))
-                    .into(profPic);
+                    .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
+                    .into(profPicHolder);
         }
+
         notificationBell.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
             finish();
         });
 
-        profPic.setOnClickListener(v -> {
+        profPicHolder.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });

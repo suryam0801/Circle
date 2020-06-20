@@ -36,8 +36,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -55,7 +57,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Context context;
     private Circle circle;
     private FirebaseAuth currentUser;
-    private int count = 0;
     int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3,
             R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6, R.drawable.avatar6};
 
@@ -95,13 +96,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        Glide.with(context)
-                .load(broadcast.getCreatorPhotoURI())
-                .placeholder(ContextCompat.getDrawable(context, myImageList[count]))
-                .into(viewHolder.profPicDisplay);
 
-        ++count;
-        if (count == 4) count = 0;
+        if (user.getProfileImageLink().length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) context)
+                    .load(user.getProfileImageLink())
+                    .into(viewHolder.profPicDisplay);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(user.getProfileImageLink());
+            Glide.with((Activity) context)
+                    .load(ContextCompat.getDrawable((Activity) context, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        }
 
         //setting new comments display
         viewHolder.viewComments.setText("Go to discussion (" + ((int) broadcast.getNumberOfComments()) + ")");
