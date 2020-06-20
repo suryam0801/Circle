@@ -89,7 +89,7 @@ public class PinEntryEditText extends androidx.appcompat.widget.AppCompatEditTex
         mMaxLength = attrs.getAttributeIntValue(XML_NAMESPACE_ANDROID, "maxLength", 4);
         mNumChars = mMaxLength;
 
-        //Disable copy paste
+        //Disable post_icon paste
         super.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                 return false;
