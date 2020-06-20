@@ -25,7 +25,7 @@
             android:layout_width="340dp"
             android:layout_height="240dp"
             android:layout_gravity="center"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="80dp"
             android:background="@drawable/undraw_best_place_r685" />
 
         <TextView
