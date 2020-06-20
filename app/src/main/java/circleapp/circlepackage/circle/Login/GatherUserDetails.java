@@ -118,8 +118,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     EditText name;
     TextView resetprofpic;
     Button  register;
-    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7;
-    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg;
+    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7,avatar8;
+    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg;
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
@@ -129,7 +129,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     //location services elements
     private FusedLocationProviderClient client;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private String ward, district;
+    private String ward, district,temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +156,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatar5 = findViewById(R.id.avatar5);
         avatar6 = findViewById(R.id.avatar6);
         avatar7 = findViewById(R.id.avatar7);
+        avatar8 = findViewById(R.id.avatar8);
         avatar1_bg = findViewById(R.id.avatar1_State);
         avatar2_bg = findViewById(R.id.avatar2_State);
         avatar3_bg = findViewById(R.id.avatar3_State);
@@ -163,6 +164,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatar5_bg = findViewById(R.id.avatar5_State);
         avatar6_bg = findViewById(R.id.avatar6_State);
         avatar7_bg = findViewById(R.id.avatar7_State);
+        avatar8_bg = findViewById(R.id.avatar8_State);
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
         ward = getIntent().getStringExtra("ward");
@@ -185,11 +187,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 downloadUri =null;
                     avatar1.setPressed(true);
                 int visibility = avatar1_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar1_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar1.setPressed(false);
@@ -203,12 +213,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar5_bg.setVisibility(View.GONE);
                     avatar6_bg.setVisibility(View.GONE);
                     avatar7_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar2.setPressed(false);
                     avatar3.setPressed(false);
                     avatar4.setPressed(false);
                     avatar5.setPressed(false);
                     avatar6.setPressed(false);
                     avatar7.setPressed(false);
+                    avatar8.setPressed(false);
                 }
             }
         });
@@ -217,12 +229,20 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                     avatar = String.valueOf(R.drawable.avatar2);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 downloadUri =null;
                     avatar2.setPressed(true);
                 int visibility = avatar1_bg.getVisibility();
                 int visibility2  = avatar2_bg.getVisibility();
                 if(visibility2 == View.VISIBLE  )
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar2_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar2.setPressed(false);
@@ -236,12 +256,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar5_bg.setVisibility(View.GONE);
                     avatar6_bg.setVisibility(View.GONE);
                     avatar7_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar1.setPressed(false);
                     avatar3.setPressed(false);
                     avatar4.setPressed(false);
                     avatar5.setPressed(false);
                     avatar6.setPressed(false);
                     avatar7.setPressed(false);
+                    avatar8.setPressed(false);
 
                 }
             }
@@ -251,11 +273,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 downloadUri =null;
                 avatar3.setPressed(true);
                 int visibility = avatar3_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar3_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar3.setPressed(false);
@@ -269,12 +299,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar5_bg.setVisibility(View.GONE);
                     avatar6_bg.setVisibility(View.GONE);
                     avatar7_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar2.setPressed(false);
                     avatar1.setPressed(false);
                     avatar4.setPressed(false);
                     avatar5.setPressed(false);
                     avatar6.setPressed(false);
                     avatar7.setPressed(false);
+                    avatar8.setPressed(false);
                 }
             }
         });
@@ -283,11 +315,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 downloadUri =null;
                 avatar4.setPressed(true);
                 int visibility = avatar4_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar4_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar4.setPressed(false);
@@ -301,12 +341,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar5_bg.setVisibility(View.GONE);
                     avatar6_bg.setVisibility(View.GONE);
                     avatar7_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar2.setPressed(false);
                     avatar3.setPressed(false);
                     avatar1.setPressed(false);
                     avatar5.setPressed(false);
                     avatar6.setPressed(false);
                     avatar7.setPressed(false);
+                    avatar8.setPressed(false);
                 }
             }
         });
@@ -315,11 +357,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 downloadUri =null;
                 avatar5.setPressed(true);
                 int visibility = avatar5_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar5_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar5.setPressed(false);
@@ -333,12 +383,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar4_bg.setVisibility(View.GONE);
                     avatar6_bg.setVisibility(View.GONE);
                     avatar7_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar2.setPressed(false);
                     avatar3.setPressed(false);
                     avatar4.setPressed(false);
                     avatar1.setPressed(false);
                     avatar6.setPressed(false);
                     avatar7.setPressed(false);
+                    avatar8.setPressed(false);
                 }
             }
         });
@@ -347,11 +399,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 downloadUri =null;
                 avatar6.setPressed(true);
                 int visibility = avatar6_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar6_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar6.setPressed(false);
@@ -365,12 +425,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar4_bg.setVisibility(View.GONE);
                     avatar5_bg.setVisibility(View.GONE);
                     avatar7_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar2.setPressed(false);
                     avatar3.setPressed(false);
                     avatar4.setPressed(false);
                     avatar5.setPressed(false);
                     avatar1.setPressed(false);
                     avatar7.setPressed(false);
+                    avatar8.setPressed(false);
                 }
             }
         });
@@ -379,11 +441,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
                 avatar7.setPressed(true);
                 downloadUri =null;
                 int visibility = avatar7_bg.getVisibility();
                 if(visibility == View.VISIBLE)
                 {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
                     avatar7_bg.setVisibility(View.GONE);
                     avatar = "";
                     avatar7.setPressed(false);
@@ -397,12 +467,56 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     avatar4_bg.setVisibility(View.GONE);
                     avatar5_bg.setVisibility(View.GONE);
                     avatar6_bg.setVisibility(View.GONE);
+                    avatar8_bg.setVisibility(View.GONE);
                     avatar1.setPressed(false);
                     avatar2.setPressed(false);
                     avatar3.setPressed(false);
                     avatar4.setPressed(false);
                     avatar5.setPressed(false);
                     avatar6.setPressed(false);
+                    avatar8.setPressed(false);
+                }
+            }
+        });
+        avatar8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //add code to unpress rest of the buttons
+                avatar = String.valueOf(R.drawable.avatar8);
+                Glide.with(GatherUserDetails.this)
+                        .load(Integer.parseInt(avatar))
+                        .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                        .into(profilePic);
+                avatar8.setPressed(true);
+                downloadUri =null;
+                int visibility = avatar8_bg.getVisibility();
+                if(visibility == View.VISIBLE)
+                {
+                    Glide.with(GatherUserDetails.this)
+                            .load(Integer.parseInt(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+                            .placeholder(ContextCompat.getDrawable(GatherUserDetails.this, Integer.parseInt(avatar)))
+                            .into(profilePic);
+                    avatar8_bg.setVisibility(View.GONE);
+                    avatar = "";
+                    avatar8.setPressed(false);
+                }
+                else
+                {
+                    avatar8_bg.setVisibility(View.VISIBLE);
+                    avatar2_bg.setVisibility(View.GONE);
+                    avatar1_bg.setVisibility(View.GONE);
+                    avatar3_bg.setVisibility(View.GONE);
+                    avatar4_bg.setVisibility(View.GONE);
+                    avatar5_bg.setVisibility(View.GONE);
+                    avatar6_bg.setVisibility(View.GONE);
+                    avatar7_bg.setVisibility(View.GONE);
+                    avatar1.setPressed(false);
+                    avatar2.setPressed(false);
+                    avatar3.setPressed(false);
+                    avatar4.setPressed(false);
+                    avatar5.setPressed(false);
+                    avatar6.setPressed(false);
+                    avatar7.setPressed(false);
                 }
             }
         });
@@ -475,7 +589,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         takePhoto();
                     }
                     else{
-                        runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
+                        runtimePermissionHelper.askPermission(CAMERA);
                     }
                 }
                 else if (options[item].equals("Choose from Gallery"))
