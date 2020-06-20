@@ -122,6 +122,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
+    int photo;
 
     //location services elements
     private FusedLocationProviderClient client;
@@ -144,6 +145,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
         progressDialog.setTitle("Registering User....");
+        photo = 0;
         avatar = "";
         avatar1 = findViewById(R.id.avatar1);
         avatar2 = findViewById(R.id.avatar2);
@@ -462,6 +464,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("Take Photo"))
                 {
+                    photo = 1;
                     if (runtimePermissionHelper.isPermissionAvailable(CAMERA)){
                         takePhoto();
                     }
@@ -507,7 +510,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectFile();
+                if(photo==0){
+                    selectFile();
+                }
                 analyticsLogEvents.logEvents(GatherUserDetails.this,"storage_granted","permission_granted","gather_user_details");
         } else {
                 Toast.makeText(GatherUserDetails.this,
