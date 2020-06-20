@@ -1,10 +1,12 @@
 package circleapp.circlepackage.circle.Login;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +18,9 @@ import android.location.Location;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,8 +64,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -84,6 +92,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.CAMERA;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 
 public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
@@ -95,6 +104,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private Uri filePath;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
+    private static final int REQUEST_IMAGE_CAPTURE = 102;
     private Uri downloadUri;
     private CircleImageView profilePic;
     private FirebaseDatabase database;
@@ -111,6 +121,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg;
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
+    RuntimePermissionHelper runtimePermissionHelper;
 
     //location services elements
     private FusedLocationProviderClient client;
@@ -151,7 +162,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         profilePic = findViewById(R.id.profile_image);
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
-        RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
+        runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         analyticsLogEvents = new AnalyticsLogEvents();
@@ -391,20 +402,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             }
         });
         //listener for button to add the profilepic
-        profilepicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-
-                    selectFile();
-                } else {
-                    analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_off","asked_permission", "gather_user_details");
-                    runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
-                }
-
-            }
+        profilepicButton.setOnClickListener(v -> {
+            selectImage();
         });
 
         // Listener for Register button
@@ -446,6 +445,61 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
+    public void takePhoto(){
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        downloadUri = getImageUri();
+        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
+        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
+    }
+    private void selectImage() {
+        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(GatherUserDetails.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo"))
+                {
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)){
+                        takePhoto();
+                    }
+                    else{
+                        runtimePermissionHelper.requestPermissionsIfDenied(CAMERA);
+                    }
+                }
+                else if (options[item].equals("Choose from Gallery"))
+                {
+                    if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+                        selectFile();
+                    } else {
+                        analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_off","asked_permission", "gather_user_details");
+                        runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
+                    }
+
+                }
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+    private Uri getImageUri(){
+        Uri m_imgUri = null;
+        File m_file;
+        try {
+            SimpleDateFormat m_sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String m_curentDateandTime = m_sdf.format(new Date());
+            String m_imagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + m_curentDateandTime + ".jpg";
+            m_file = new File(m_imagePath);
+            m_imgUri = Uri.fromFile(m_file);
+        } catch (Exception p_e) {
+        }
+        return m_imgUri;
+    }
+
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
@@ -511,6 +565,75 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         downloadUri = uri;
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setPhotoUri(uri)
+                                .build();
+                        firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
+                        Log.d(TAG, "Profile URL: " + downloadUri.toString());
+                        Glide.with(GatherUserDetails.this).load(downloadUri.toString()).into(profilePic);
+
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                //if the upload is not successfull
+                                //hiding the progress dialog
+                                progressDialog.dismiss();
+                                analyticsLogEvents.logEvents(GatherUserDetails.this,"pic_upload_fail","device_error","gather_user_details");
+
+                                //and displaying error message
+                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            filePath = downloadUri;
+            Log.d("test2",""+filePath);
+            //check the path for the image
+            //if the image path is notnull the uploading process will start
+            if (filePath != null) {
+
+
+                //Creating an  custom dialog to show the uploading status
+                final ProgressDialog progressDialog = new ProgressDialog(GatherUserDetails.this);
+                progressDialog.setTitle("Uploading");
+                progressDialog.show();
+
+                //generating random id to store the profliepic
+                String id = UUID.randomUUID().toString();
+                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+
+                //storing  the pic
+                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                        //displaying percentage in progress dialog
+                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                    }
+                })
+                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+
+                                // Continue with the task to get the download URL
+                                return profileRef.getDownloadUrl();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        progressDialog.dismiss();
+                        //and displaying a success toast
+//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
+                        downloadUri = uri;
+                        Log.d("test1",""+downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
