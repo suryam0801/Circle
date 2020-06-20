@@ -929,7 +929,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
     }
-    private void createInitialCirlces() {
+    /*private void createInitialCirlces() {
         analyticsLogEvents.logEvents(GatherUserDetails.this,"default_circles_added","new_location","gather_user_details");
 
         //admin circle
@@ -978,5 +978,5 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         broadcastId1 = HelperMethods.createBroadcast("Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)","Mekkala Nair",-(1800*1000),0,circleId4);
         broadcastId2 = HelperMethods.createPollBroadcast("How long have you been in quarantine?","Mekkala Nair", 0, pollOptionsQuarantineCircle, 0 ,circleId4);
         HelperMethods.createComment("Nithin M", "Where are you guys buying your essentials?",0,circleId4,broadcastId1);
-    }
+    }*/
 }

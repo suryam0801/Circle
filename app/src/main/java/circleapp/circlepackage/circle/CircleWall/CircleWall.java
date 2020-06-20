@@ -63,14 +63,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private User user;
 
     //create broadcast popup ui elements
-    private EditText setMessageET, setPollQuestionET, setPollOptionET;
-    private LinearLayout pollCreateView, additionalSelector, pollOptionsDisplay;
-    private TextView circleBannerName, descPlaceHolder;
-    private Button btnAddPollOption, btnUploadBroadcast;
+    private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET;
+    private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay;
+    private TextView circleBannerName;
+    private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost;
-    private Button clearBroadcastPopup;
     String usersState;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
@@ -266,24 +265,23 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createBroadcastPopup.setContentView(R.layout.broadcast_create_popup_layout); //set dialog view
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        setTitleET = createBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
         setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
-        descPlaceHolder = createBroadcastPopup.findViewById(R.id.description_placeholder_tv);
         setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
         setPollOptionET = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
         pollOptionsDisplay = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_display);
         pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
-        additionalSelector = createBroadcastPopup.findViewById(R.id.additional_selector_view);
         btnAddPollOption = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
         btnUploadBroadcast = createBroadcastPopup.findViewById(R.id.upload_broadcast_btn);
-        clearBroadcastPopup = createBroadcastPopup.findViewById(R.id.clear_broadcast_popup);
+        broadcastDisplay = createBroadcastPopup.findViewById(R.id.create_broadcast_display);
+        cancelButton = createBroadcastPopup.findViewById(R.id.create_broadcast_cancel_btn);
 
-        clearBroadcastPopup.setOnClickListener(view -> createBroadcastPopup.dismiss());
+        cancelButton.setOnClickListener(view -> createBroadcastPopup.dismiss());
 
         //default will show message
         if (flag.equals("poll")) {
             pollCreateView.setVisibility(View.VISIBLE);
-            setMessageET.setVisibility(View.GONE);
-            descPlaceHolder.setVisibility(View.GONE);
+            broadcastDisplay.setVisibility(View.GONE);
         }
 
         btnAddPollOption.setOnClickListener(view -> {
@@ -298,17 +296,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             } else {
                 if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
 
-                    LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
-                    lparams.setMargins(0, 10, 20, 0);
-
-                    final TextView tv = new TextView(CircleWall.this);
-                    tv.setLayoutParams(lparams);
-                    tv.setText(option);
-                    tv.setTextColor(Color.WHITE);
-                    tv.setGravity(Gravity.CENTER_VERTICAL);
-                    tv.setBackground(getResources().getDrawable(R.drawable.poll_creation_item_option_background));
-                    tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_white_24dp, 0);
-                    tv.setPaddingRelative(40, 10, 40, 10);
+                    final TextView tv = generatePollOptionTV(option);
 
                     tv.setOnClickListener(view1 -> {
                         pollOptionsDisplay.removeView(tv);
@@ -329,7 +317,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 pollExists = true;
 
             //only for message broadcast
-            if(pollExists == false && setMessageET.getText().toString().isEmpty())
+            if(pollExists == false && setTitleET.getText().toString().isEmpty())
                 Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
             else
                 createBroadcast();
@@ -359,22 +347,27 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         if (pollExists) {
             Poll poll = new Poll(pollQuestion, options, null);
-            createAndUploadBroadcast(broadcastId, null, currentUserName, currentUserId, true, poll);
+            createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll);
         } else {
+            String title = null;
             String message = null;
+
             if (!setMessageET.getText().toString().isEmpty())
                 message = setMessageET.getText().toString();
-            createAndUploadBroadcast(broadcastId, message, currentUserName, currentUserId, false, null);
+            if(!setTitleET.getText().toString().isEmpty())
+                title = setTitleET.getText().toString();
+
+            createAndUploadBroadcast(broadcastId, title,  message, currentUserName, currentUserId, false, null);
         }
     }
 
-    public void createAndUploadBroadcast(String broadcastId, String message, String userName, String userId, boolean localPollExists, Poll poll) {
+    public void createAndUploadBroadcast(String broadcastId, String title, String message, String userName, String userId, boolean localPollExists, Poll poll) {
         Broadcast broadcast;
         if(localPollExists) {
-            broadcast = new Broadcast(broadcastId, message, null, userName, userId, true,
+            broadcast = new Broadcast(broadcastId, title, message, null, userName, userId, true,
                     System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
         } else {
-            broadcast = new Broadcast(broadcastId, message, null,
+            broadcast = new Broadcast(broadcastId, title, message, null,
                     userName, userId, false, System.currentTimeMillis(), null,
                     user.getProfileImageLink(), 0, 0);
         }
@@ -389,6 +382,22 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         broadcastsDB.child(circle.getId()).child(broadcastId).setValue(broadcast);
         pollExists = false;
         pollAnswerOptionsList.clear();
+    }
+
+    public TextView generatePollOptionTV(String option){
+        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
+        lparams.setMargins(0, 10, 20, 0);
+
+        final TextView tv = new TextView(CircleWall.this);
+        tv.setLayoutParams(lparams);
+        tv.setText(option);
+        tv.setTextColor(Color.WHITE);
+        tv.setGravity(Gravity.CENTER_VERTICAL);
+        tv.setBackground(getResources().getDrawable(R.drawable.poll_creation_item_option_background));
+        tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_white_24dp, 0);
+        tv.setPaddingRelative(40, 10, 40, 10);
+
+        return tv;
     }
 
     @Override
