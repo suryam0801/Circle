@@ -71,6 +71,32 @@ public final class RuntimePermissionHelper {
         }
         askPermission(permission);
     }
+    public void requestCameraPermissionsIfDenied(final String permission) {
+        if (canShowPermissionRationaleDialog(permission)) {
+            showMessageOKCancel(activity.getResources().getString(R.string.camera_permission_message),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            askPermission(permission);
+                        }
+                    });
+            return;
+        }
+        askPermission(permission);
+    }
+    public void requestStoragePermissionsIfDenied(final String permission) {
+        if (canShowPermissionRationaleDialog(permission)) {
+            showMessageOKCancel(activity.getResources().getString(R.string.storage_permission_message),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            askPermission(permission);
+                        }
+                    });
+            return;
+        }
+        askPermission(permission);
+    }
 
     public void setActivity(Activity activity) {
         this.activity = activity;
@@ -102,7 +128,7 @@ public final class RuntimePermissionHelper {
         }
     }
 
-    private void askPermission(String permission) {
+    public void askPermission(String permission) {
         ActivityCompat.requestPermissions(activity, new String[] {permission}, PERMISSION_REQUEST_CODE);
     }
 

@@ -7,47 +7,63 @@
 
     <TextView
         android:id="@+id/skip_get_started"
-        android:layout_width="80dp"
-        android:textAlignment="center"
-        android:layout_height="50dp"
-        android:layout_marginStart="330dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_height="30dp"
         android:fontFamily="@font/roboto_medium"
         android:text="Skip"
-        android:gravity="center"
-        android:textSize="17dp" />
+        android:layout_gravity="right"
+        android:textSize="19dp" />
 
-    <ImageView
-        android:layout_width="320dp"
-        android:layout_height="222dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="120dp"
-        android:background="@drawable/undraw_best_place_r685" />
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        android:layout_weight="99">
+        <ImageView
+            android:layout_width="340dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/undraw_best_place_r685" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="50dp"
+            android:text="Join and participate in activities around your local community."
+            android:textAlignment="center"
+            android:textSize="17dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textAlignment="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp"
-        android:text="Join and participate in activities around your local community."
-        android:textSize="17dp"/>
-    Get the word out to your circle effectively and manage your interactions easily
-    <Button
-        android:id="@+id/getStartedButton"
-        android:layout_width="match_parent"
-        android:layout_marginRight="130dp"
-        android:layout_marginLeft="130dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="150dp"
-        android:background="@drawable/gradient_button"
-        android:fontFamily="@font/roboto_black"
-        android:gravity="start|center"
-        android:paddingLeft="19dp"
-        android:paddingRight="19dp"
-        android:text="Get started"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFFFF"
-        android:textSize="19dp" />
+        android:layout_weight="99"
+        android:layout_marginBottom="20dp">
+
+        <Button
+            android:id="@+id/getStartedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/gradient_button"
+            android:fontFamily="@font/roboto_black"
+            android:gravity="start|center"
+            android:paddingLeft="19dp"
+            android:paddingRight="19dp"
+            android:text="Get started"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFFFF"
+            android:textSize="19dp" />
+
+    </LinearLayout>
 </LinearLayout>
