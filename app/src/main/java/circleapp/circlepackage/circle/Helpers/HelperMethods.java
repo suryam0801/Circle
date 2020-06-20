@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
 public class HelperMethods {
@@ -91,6 +92,15 @@ public class HelperMethods {
         return newNotifs;
     }
 
+    public static int returnNoOfCommentsPostTimestamp(List<Comment> commentList, long timestamp){
+        int counter = 0;
+        for(Comment comment : commentList){
+            if(comment.getTimestamp() > timestamp)
+                ++counter;
+        }
+
+        return counter;
+    }
     public static String getCircleIdFromShareURL (String url){
         String lines[] = url.split("\\r?\\n");
         for (int i = 0; i < lines.length; i++) {

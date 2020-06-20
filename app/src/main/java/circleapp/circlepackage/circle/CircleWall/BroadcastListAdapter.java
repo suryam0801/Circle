@@ -101,44 +101,16 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        //setting new comments display
-        viewHolder.viewComments.setText("Go to discussion (" + ((int) broadcast.getNumberOfComments()) + ")");
-        if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
-            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
-        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
-            if (broadcast.getNumberOfComments() > 0)
-                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
-        } else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
-            viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
-        }
+        //new comments setter
+        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + "");
+        if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+            viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
 
+
+        //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
-            if (user.getNewTimeStampsComments() != null) {
-                HashMap<String, Long> newTimeStampsComments = new HashMap<>(user.getNewTimeStampsComments());
-                newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
-                int newReadValue = user.getNoOfReadDiscussions();
-
-                if (user.getNewTimeStampsComments().containsKey(broadcast.getId()) && (user.getNewTimeStampsComments().get(broadcast.getId()) == broadcast.getLatestCommentTimestamp()))
-                    newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
-                else if (!user.getNewTimeStampsComments().containsKey(broadcast.getId()))
-                    newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
-
-                user.setNewTimeStampsComments(newTimeStampsComments);
-                user.setNoOfReadDiscussions(newReadValue);
-                SessionStorage.saveUser((Activity) context, user);
-            } else if (user.getNewTimeStampsComments() == null) {
-                HashMap<String, Long> newTimeStampsComments = new HashMap<>();
-                newTimeStampsComments.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
-                int newReadValue = user.getNoOfReadDiscussions() + broadcast.getNumberOfComments();
-
-                user.setNewTimeStampsComments(newTimeStampsComments);
-                user.setNoOfReadDiscussions(newReadValue);
-                SessionStorage.saveUser((Activity) context, user);
-            }
-
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
-            context.startActivity(new Intent(context.getApplicationContext(), BroadcastComments.class));
+            context.startActivity(new Intent((Activity)context, BroadcastComments.class));
+            SessionStorage.saveBroadcast((Activity)context, broadcast);
             ((Activity) context).finish();
         });
 
@@ -276,6 +248,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         return button;
     }
+
 
     public void vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
