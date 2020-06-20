@@ -10,14 +10,20 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
 public class HelperMethods {
@@ -168,6 +174,52 @@ public class HelperMethods {
         ClipData clip = ClipData.newPlainText("Clip Copied", shareMessage);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
+    }
+
+    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        String id = uuidGet();
+        Poll poll = new Poll(text, pollOptions, null);
+        Broadcast broadcast = new Broadcast(id, null, null, creatorName, "AdminId",true, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
+        broadcastsDB.child(circleId).child(id).setValue(broadcast);
+        return id;
+    }
+    public static String createBroadcast(String text, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        String id = uuidGet();
+        Broadcast broadcast = new Broadcast(id, text, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
+        broadcastsDB.child(circleId).child(id).setValue(broadcast);
+        return id;
+    }
+    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference circlesDB;
+        circlesDB = database.getReference("Circles");
+        HashMap<String, Boolean> circleIntTags = new HashMap<>();
+        circleIntTags.put("sample", true);
+        String id = uuidGet();
+        Circle circle = new Circle(id, name,description, acceptanceType, "CreatorAdmin", creatorName, circleIntTags, null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        circlesDB.child(id).setValue(circle);
+        return id;
+    }
+    public static void createComment(String name, String text, int offsetTimeStamp ,String circleId, String broadcastId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference commentsDB;
+        commentsDB = database.getReference("BroadcastComments");
+        String id = uuidGet();
+        Comment comment = new Comment(name, text, id, null, System.currentTimeMillis()+offsetTimeStamp);
+        commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
+    }
+    public static String uuidGet(){
+        return UUID.randomUUID().toString();
     }
 
 }

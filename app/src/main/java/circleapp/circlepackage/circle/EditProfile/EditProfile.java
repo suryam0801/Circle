@@ -112,7 +112,6 @@ public class EditProfile extends AppCompatActivity {
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
         analyticsLogEvents = new AnalyticsLogEvents();
-
         userName.setText(user.getName());
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
