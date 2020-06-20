@@ -831,6 +831,20 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                             if (task.isSuccessful()) {
                                 Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
 
+                                //creating initial circles if district is not present in locationInterestTags
+                                /*tagsDB = database.getReference("Tags");
+                                tagsDB.child("locationInterestTags").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot snapshot) {
+                                        if (!snapshot.hasChild(district)) {
+                                            createInitialCirlces();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    }
+                                });*/
                                 //Adding the user to collection
                                 addUser();
                                 Log.d(TAG,"User Registered success fully added");
@@ -877,21 +891,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(GatherUserDetails.this, user);
-        //creating initial circles if district is not present in locationInterestTags
-        tagsDB = database.getReference("Tags");
-        tagsDB.child("locationInterestTags").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.hasChild(district)) {
-                    createInitialCirlces();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
             Log.d(TAG,"User data success fully added realtime db");
