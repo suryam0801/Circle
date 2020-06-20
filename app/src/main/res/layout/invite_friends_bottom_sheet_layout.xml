@@ -10,55 +10,56 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/invitation"
-        android:scaleX=".8"
-        android:scaleY=".8"></ImageView>
+        android:background="@drawable/invite"
+        android:layout_marginTop="20dp"></ImageView>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_bold"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/roboto_condensed_bold"
         android:gravity="center"
-        android:text="Invite a friend to your circle"
+        android:text="Invite your friends"
         android:textColor="@color/black"
-        android:textSize="25dp"></TextView>
+        android:textSize="16dp"></TextView>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="40dp"
-        android:fontFamily="@font/roboto_regular"
+        android:layout_marginRight="60dp"
+        android:fontFamily="@font/roboto_condensed"
         android:gravity="center"
-        android:text="Welcome to your circle! Share this link with friends and they will be able to join"
-        android:textColor="@color/grey"
-        android:textSize="12dp"></TextView>
-
+        android:text="You can invite people in your contacts to join your circle with this link. Copy the link or share the link directly from this screen."
+        android:textColor="#828282"
+        android:textSize="11dp"></TextView>
 
     <TextView
         android:id="@+id/bottom_dialog_copy_link"
-        android:layout_width="match_parent"
+        android:layout_width="237dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/green_border_button"
-        android:fontFamily="@font/roboto_regular"
-        android:gravity="center"
-        android:text="Invite a friend to your circle"
-        android:textColor="@color/black"
-        android:textSize="15dp"></TextView>
+        android:layout_marginTop="25dp"
+        android:background="@drawable/blue_border_background"
+        android:drawableStart="@drawable/ic_baseline_file_copy_24"
+        android:drawablePadding="10dp"
+        android:fontFamily="@font/roboto_condensed"
+        android:gravity="center_vertical"
+        android:paddingStart="56dp"
+        android:text="Copy shareable link"
+        android:textColor="@color/color_blue"
+        android:textSize="12dp"></TextView>
 
     <Button
         android:id="@+id/bottom_dialog_share_link"
-        android:layout_width="match_parent"
+        android:layout_width="237dp"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/gradient_button_background"
-        android:text="Share Link"
+        android:fontFamily="@font/roboto_condensed"
+        android:text="More share options"
         android:textAllCaps="false"
-        android:textColor="@color/white">
-    </Button>
+        android:textColor="@color/white"
+        android:textSize="12dp"></Button>
 
 </LinearLayout>

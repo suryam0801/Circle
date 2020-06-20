@@ -3,6 +3,8 @@ package circleapp.circlepackage.circle.CreateCircle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
@@ -25,10 +30,12 @@ import circleapp.circlepackage.circle.R;
 public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAdapter.ViewHolder> {
 
     private List<String> categoryList;
+    private List<Drawable> iconList;
     private Context context;
 
-    public CategoryPickerAdapter(Context context, List<String> categoryList, CreateCircleCategoryPicker createCircleCategoryPicker) {
+    public CategoryPickerAdapter(Context context, List<String> categoryList, List<Drawable> iconList) {
         this.categoryList = categoryList;
+        this.iconList = iconList;
         this.context = context;
     }
 
@@ -39,9 +46,11 @@ public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAd
         return new circleapp.circlepackage.circle.CreateCircle.CategoryPickerAdapter.ViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.categoryName.setText(categoryList.get(position));
+        holder.iconImageView.setBackground(iconList.get(position));
         holder.container.setOnClickListener(view -> {
             Intent intent = new Intent(context, CreateCircle.class);
             intent.putExtra("category_name", categoryList.get(position));
@@ -59,11 +68,13 @@ public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAd
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView categoryName;
+        private AppCompatImageView iconImageView;
         private LinearLayout container;
         public ViewHolder(View view) {
             super(view);
             categoryName = view.findViewById(R.id.category_picker_category_name);
             container = view.findViewById(R.id.category_picker_item_cointainer);
+            iconImageView = view.findViewById(R.id.category_picker_icon_display);
         }
     }
 }
