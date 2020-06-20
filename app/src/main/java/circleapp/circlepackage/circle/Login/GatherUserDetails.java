@@ -524,6 +524,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
+            Log.d("test2",""+filePath);
 
             //check the path for the image
             //if the image path is notnull the uploading process will start
