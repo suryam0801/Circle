@@ -98,6 +98,15 @@ public class HelperMethods {
         return newNotifs;
     }
 
+    public static int returnNoOfCommentsPostTimestamp(List<Comment> commentList, long timestamp){
+        int counter = 0;
+        for(Comment comment : commentList){
+            if(comment.getTimestamp() > timestamp)
+                ++counter;
+        }
+
+        return counter;
+    }
     public static String getCircleIdFromShareURL (String url){
         String lines[] = url.split("\\r?\\n");
         for (int i = 0; i < lines.length; i++) {

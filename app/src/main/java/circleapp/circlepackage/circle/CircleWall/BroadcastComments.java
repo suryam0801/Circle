@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,12 +20,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -62,9 +65,6 @@ public class BroadcastComments extends AppCompatActivity {
         broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(broadcast.getId());
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        userDB.child("newTimeStampsComments").setValue(user.getNewTimeStampsComments());
-        userDB.child("noOfReadDiscussions").setValue(user.getNoOfReadDiscussions());
-
         commentsListView = findViewById(R.id.comments_listView);
         commentEditText = findViewById(R.id.comment_type_editText);
         commentSend = findViewById(R.id.comment_send_button);
@@ -79,7 +79,7 @@ public class BroadcastComments extends AppCompatActivity {
         commentEditText.clearFocus();
 
         loadComments();
-//        BroadcastComments.setSoftInputMode(SOFT_INPUT_ADJUST_PAN);
+
         commentSend.setOnClickListener(view -> {
             if (!commentEditText.getText().toString().trim().equals(""))
                 makeCommentEntry();
@@ -93,7 +93,7 @@ public class BroadcastComments extends AppCompatActivity {
     }
 
     public void loadComments() {
-        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timestamp").limitToLast(13).addChildEventListener(new ChildEventListener() {
+        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
@@ -101,6 +101,10 @@ public class BroadcastComments extends AppCompatActivity {
                 commentAdapter.notifyDataSetChanged();
                 commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
                 emptyHolder.setVisibility(View.GONE);
+
+                //call view activity only after all comments have been populated
+                if(commentsList.size() == broadcast.getNumberOfComments())
+                    updateUserFields("view");
             }
 
             @Override
@@ -127,8 +131,10 @@ public class BroadcastComments extends AppCompatActivity {
     }
 
     public void makeCommentEntry() {
+        long currentCommentTimeStamp = System.currentTimeMillis();
+
         Map<String, Object> map = new HashMap<>();
-        map.put("timestamp", System.currentTimeMillis());
+        map.put("timestamp", currentCommentTimeStamp);
         map.put("comment", commentEditText.getText().toString().trim());
         map.put("commentorId", SessionStorage.getUser(BroadcastComments.this).getUserId());
         map.put("commentorPicURL", SessionStorage.getUser(BroadcastComments.this).getProfileImageLink());
@@ -136,18 +142,51 @@ public class BroadcastComments extends AppCompatActivity {
 
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
 
-        int noOfNewDiscussions = circle.getNoOfNewDiscussions() + 1;
-        int noOfNewBroadcasts = broadcast.getNumberOfComments() + 1;
-        circlesDB.child("noOfNewDiscussions").setValue(noOfNewDiscussions);
-        broadcastDB.child("latestCommentTimestamp").setValue(System.currentTimeMillis());
-        broadcastDB.child("numberOfComments").setValue(noOfNewBroadcasts);
+        updateCommentNumbersPostCreate(currentCommentTimeStamp);
+        updateUserFields("create");
+    }
 
-        circle.setNoOfNewDiscussions(noOfNewDiscussions);
-        SessionStorage.saveCircle(BroadcastComments.this, circle);
-        broadcast.setLatestCommentTimestamp(System.currentTimeMillis());
-        broadcast.setNumberOfComments(noOfNewBroadcasts);
+    public void updateCommentNumbersPostCreate(long timetamp){
+        //updating broadCastTimeStamp after creating the comment
+        int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
+        broadcastDB.child("latestCommentTimestamp").setValue(timetamp);
+        broadcastDB.child("numberOfComments").setValue(broacastNumberOfComments);
+        broadcast.setLatestCommentTimestamp(timetamp);
+        broadcast.setNumberOfComments(broacastNumberOfComments);
         SessionStorage.saveBroadcast(BroadcastComments.this, broadcast);
 
+        //updating number of discussions in circle
+        int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
+        circlesDB.child("noOfNewDiscussions").setValue(circleNewNumberOfDiscussions);
+        circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
+        SessionStorage.saveCircle(BroadcastComments.this, circle);
+    }
+
+    public void updateUserFields(String navFrom){
+
+        int userNumberOfReadDiscussions;
+        switch (navFrom){
+            case "create":
+                //updating userReadDiscussions after creating the comment
+                userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + 1;
+                user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
+                userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
+                break;
+
+            case "view":
+                int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
+                userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + numberOfUnreadComments;
+                user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
+                userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
+                break;
+        }
+
+        //updating user latest timestamp for that comment
+        HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
+        tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
+        user.setNewTimeStampsComments(tempCommentTimeStamps);
+        SessionStorage.saveUser(BroadcastComments.this, user);
+        userDB.child("newTimeStampsComments").child(broadcast.getId()).setValue(broadcast.getLatestCommentTimestamp());
     }
 
     @Override
