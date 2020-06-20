@@ -183,17 +183,17 @@ public class HelperMethods {
         broadcastsDB = database.getReference("Broadcasts");
         String id = uuidGet();
         Poll poll = new Poll(text, pollOptions, null);
-        Broadcast broadcast = new Broadcast(id, null, null, creatorName, "AdminId",true, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId",true, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
     }
-    public static String createBroadcast(String text, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
+    public static String createBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference broadcastsDB;
         broadcastsDB = database.getReference("Broadcasts");
         String id = uuidGet();
-        Broadcast broadcast = new Broadcast(id, text, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
     }

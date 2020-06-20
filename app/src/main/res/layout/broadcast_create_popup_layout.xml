@@ -15,74 +15,93 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="100"
-            android:orientation="horizontal">
+            android:id="@+id/create_broadcast_display"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
                 android:layout_weight="99"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Create New Broadcast"
                 android:textColor="#3B3B3B"
-                android:textSize="16dp">
-            </TextView>
+                android:textSize="16dp"></TextView>
 
-            <Button
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:id="@+id/clear_broadcast_popup"
-                android:background="@drawable/ic_clear_light_black_24dp">
-            </Button>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Title"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <EditText
+                android:id="@+id/broadcastTitleEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#D1D1D1"
+                android:textColor="@color/black"
+                android:textSize="12dp"></EditText>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Description"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <EditText
+                android:id="@+id/broadcastDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/unpressable_button"
+                android:padding="20dp"
+                android:textSize="12dp"
+                android:textColor="@color/black"></EditText>
+
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/description_placeholder_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Description"
-            android:textColor="#9D9D9D"
-            android:textSize="12dp"></TextView>
-
-        <EditText
-            android:id="@+id/broadcastDescriptionEditText"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/blue_border_background"
-            android:padding="20dp"
-            android:textColor="@color/black"></EditText>
 
 
         <LinearLayout
             android:id="@+id/poll_create_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/poll_background_file"
             android:orientation="vertical"
-            android:padding="20dp"
             android:visibility="gone">
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Create Poll"
-                android:textColor="#6CACFF"
+                android:layout_weight="99"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Create New Poll"
+                android:textColor="#3B3B3B"
                 android:textSize="16dp"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Ask your question"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
 
             <EditText
                 android:id="@+id/poll_create_question_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/blue_border_background"
+                android:background="@drawable/unpressable_button"
                 android:fontFamily="@font/roboto_medium"
-                android:hint="What would you like to ask?"
                 android:padding="20dp"
                 android:textColor="@color/black"
                 android:textColorHint="#9D9D9D"
@@ -108,18 +127,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:backgroundTint="#6CACFF"
-                    android:hint="Enter the answer options"
+                    android:backgroundTint="#D1D1D1"
+                    android:hint="Enter poll option"
                     android:paddingLeft="10dp"
                     android:textColor="@color/black"
-                    android:textColorHint="#9D9D9D"
                     android:textSize="12dp"></EditText>
 
                 <Button
                     android:id="@+id/poll_create_answer_option_add_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:background="@drawable/blue_border_background"
+                    android:background="@drawable/unpressable_button"
+                    android:drawableStart="@drawable/ic_baseline_add_blue_24"
+                    android:drawablePadding="0dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="25dp"
                     android:text="Add"
                     android:textAllCaps="false"
                     android:textColor="#6CACFF"></Button>
@@ -128,90 +150,34 @@
 
         </LinearLayout>
 
-
         <LinearLayout
-            android:id="@+id/attachmentUploadView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/dashed_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/create_broadcast_file_upload_cloud_image_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_cloud_upload_blue_24dp"></ImageView>
+            <Button
+                android:id="@+id/create_broadcast_cancel_btn"
+                android:layout_width="110dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/unpressable_button"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="#828282"></Button>
 
-            <TextView
-                android:id="@+id/create_broadcast_file_upload_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Click to upload your files"
-                android:textColor="#6CACFF"
-                android:textSize="12dp"></TextView>
-
+            <Button
+                android:id="@+id/upload_broadcast_btn"
+                android:layout_width="110dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/blue_border_background"
+                android:text="Upload"
+                android:textAllCaps="false"
+                android:textColor="@color/color_blue"></Button>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/additional_selector_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Click to "
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
-            <TextView
-                android:id="@+id/upload_file_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:text="upload file "
-                android:textColor="#6CACFF"
-                android:textSize="12dp"></TextView>
-
-            <TextView
-                android:id="@+id/upload_or_poll_or_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/roboto_regular"
-                android:text="or "
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
-            <TextView
-                android:id="@+id/poll_create_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/roboto_regular"
-                android:text="create poll"
-                android:textColor="#6CACFF"
-                android:textSize="12dp"></TextView>
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/upload_broadcast_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/gradient_button_background"
-            android:text="Send Broadcast"
-            android:textAllCaps="false"
-            android:textColor="@color/white"></Button>
     </LinearLayout>
 
 </ScrollView>

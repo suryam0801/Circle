@@ -10,10 +10,12 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.rpc.Help;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,8 +33,6 @@ public class CommentAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.CommentList = CommentList;
     }
-
-
 
     @Override
     public int getCount() {
@@ -65,18 +65,15 @@ public class CommentAdapter extends BaseAdapter {
         final String name=CommentList.get(position).getCommentorName();
         final String cmnt=CommentList.get(position).getComment();
         final String profPicURI = CommentList.get(position).getCommentorPicURL();
-        final long createdTime = CommentList.get(position).getTimestamp();
 
+        final long createdTime = CommentList.get(position).getTimestamp();
         final long currentTime = System.currentTimeMillis();
 
-        long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
-        long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
+        String timeString = HelperMethods.getTimeElapsed(currentTime, createdTime);
 
         userName.setText(name);
         comment.setText(cmnt);
-
+        timeElapsed.setText(timeString);
         Glide.with(mContext)
                 .load(profPicURI)
                 .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
@@ -84,20 +81,6 @@ public class CommentAdapter extends BaseAdapter {
 
         ++count;
         if(count == 4) count = 0;
-
-
-        if(seconds < 60) {
-            timeElapsed.setText(seconds + "s ago");
-        } else if (minutes >= 1 && minutes < 60){
-            timeElapsed.setText(minutes + "m ago");
-        } else if (hours >= 1 && hours < 24) {
-            timeElapsed.setText(hours + "h ago");
-        } else if (days >= 1 && days < 365 ) {
-            if(days >= 7)
-                timeElapsed.setText((days/7) + "w ago");
-            else
-                timeElapsed.setText(days + "d ago");
-        }
 
         return pview;
     }

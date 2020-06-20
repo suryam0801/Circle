@@ -43,7 +43,6 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class ExploreTabbedActivity extends AppCompatActivity {
 
-
     private ImageView profPicHolder, notificationBell;
     private User user;
     private Uri intentUri;
