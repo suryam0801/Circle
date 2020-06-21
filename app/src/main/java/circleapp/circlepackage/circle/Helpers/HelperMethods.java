@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -34,6 +37,8 @@ import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.R;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMethods {
@@ -251,6 +256,27 @@ public class HelperMethods {
         }
         return m_imgUri;
     }
-
-
+    public static void setProfilePicMethod(Context context,CircleImageView profilePic, String avatar, ImageView avatarBg, ImageButton avatarButton, ImageView[] avatarBgList, ImageButton[] avatarList){
+        GlideSetProfilePic(context,avatar, profilePic);
+        avatarButton.setPressed(true);
+        int visibility = avatarBg.getVisibility();
+        if(visibility == View.VISIBLE)
+        {
+            GlideSetProfilePic(context,String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+            avatarBg.setVisibility(View.GONE);
+            avatar = "";
+            avatarButton.setPressed(false);
+        }
+        else
+        {
+            for(int i=0; i<8;i++){
+                if(avatarList[i]!=avatarButton){
+                    avatarBgList[i].setVisibility(View.GONE);
+                    avatarList[i].setPressed(false);
+                }
+                else
+                    avatarBgList[i].setVisibility(View.VISIBLE);
+            }
+        }
+    }
 }

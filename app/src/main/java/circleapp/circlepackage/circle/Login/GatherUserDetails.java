@@ -116,14 +116,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     SharedPreferences pref;
     String Name, contact, userId;
     EditText name;
-    TextView resetprofpic;
     Button  register;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7,avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
-    String def1,def2,def3,def4,def5;
-
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
@@ -146,7 +143,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
-        resetprofpic = findViewById(R.id.resetTV);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
         progressDialog.setTitle("Registering User....");
@@ -169,13 +165,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList[6] = avatar7_bg = findViewById(R.id.avatar7_State);
         avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
         profilePic = findViewById(R.id.profile_image);
-
-        def1 = String.valueOf(R.id.avatar1);
-        def2 = String.valueOf(R.id.avatar2);
-        def3 = String.valueOf(R.id.avatar3);
-        def4 = String.valueOf(R.id.avatar4);
-        def5 = String.valueOf(R.id.avatar5);
-
         setProfile = findViewById(R.id.imagePreview);
 
         ward = getIntent().getStringExtra("ward");
@@ -185,28 +174,23 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         analyticsLogEvents = new AnalyticsLogEvents();
 
-        resetprofpic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                
-            }
-        });
-
         //listener for button to add the profilepic
         avatar1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
-                setProfilePicMethod(avatar,avatar1_bg,avatar1);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar1_bg,avatar1,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                    avatar = String.valueOf(R.drawable.avatar2);
-                setProfilePicMethod(avatar,avatar2_bg,avatar2);
+                avatar = String.valueOf(R.drawable.avatar2);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar2_bg,avatar2,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar3.setOnClickListener(new View.OnClickListener() {
@@ -214,7 +198,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
-                setProfilePicMethod(avatar,avatar3_bg,avatar3);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar3_bg,avatar3,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar4.setOnClickListener(new View.OnClickListener() {
@@ -222,7 +207,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
-                setProfilePicMethod(avatar,avatar4_bg,avatar4);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar4_bg,avatar4,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar5.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +216,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
-                setProfilePicMethod(avatar,avatar5_bg,avatar5);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar5_bg,avatar5,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar6.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +225,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
-                setProfilePicMethod(avatar,avatar6_bg,avatar6);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar6_bg,avatar6,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar7.setOnClickListener(new View.OnClickListener() {
@@ -246,7 +234,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
-                setProfilePicMethod(avatar,avatar7_bg,avatar7);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar7_bg,avatar7,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar8.setOnClickListener(new View.OnClickListener() {
@@ -254,7 +243,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar8);
-                setProfilePicMethod(avatar,avatar8_bg,avatar8);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar8_bg,avatar8,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         //listener for button to add the profilepic
@@ -330,7 +320,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        downloadUri = getImageUri();
+        downloadUri = HelperMethods.getImageUri();
         m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
         startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
     }
@@ -372,20 +362,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
         builder.show();
     }
-    private Uri getImageUri(){
-        Uri m_imgUri = null;
-        File m_file;
-        try {
-            SimpleDateFormat m_sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String m_curentDateandTime = m_sdf.format(new Date());
-            String m_imagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + m_curentDateandTime + ".jpg";
-            m_file = new File(m_imagePath);
-            m_imgUri = Uri.fromFile(m_file);
-        } catch (Exception p_e) {
-        }
-        return m_imgUri;
-    }
-
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
@@ -416,8 +392,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-            Log.d("test2",""+filePath);
-
             //check the path for the image
             //if the image path is notnull the uploading process will start
             if (filePath != null) {
@@ -464,6 +438,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(downloadUri.toString()).into(profilePic);
+                        for(int i =0; i<8; i++){
+                            avatarBgList[i].setVisibility(View.INVISIBLE);
+                        }
 
                     }
                 })
@@ -484,7 +461,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
-            Log.d("test2",""+filePath);
             //check the path for the image
             //if the image path is notnull the uploading process will start
             if (filePath != null) {
@@ -533,7 +509,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(downloadUri.toString()).into(profilePic);
-
+                        for(int i =0; i<8; i++){
+                            avatarBgList[i].setVisibility(View.INVISIBLE);
+                        }
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
