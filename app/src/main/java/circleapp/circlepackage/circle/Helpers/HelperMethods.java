@@ -6,6 +6,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +18,10 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -233,5 +238,19 @@ public class HelperMethods {
                 .placeholder(ContextCompat.getDrawable(context, Integer.parseInt(avatar)))
                 .into(profilePic);
     }
+    public static Uri getImageUri(){
+        Uri m_imgUri = null;
+        File m_file;
+        try {
+            SimpleDateFormat m_sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            String m_curentDateandTime = m_sdf.format(new Date());
+            String m_imagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + m_curentDateandTime + ".jpg";
+            m_file = new File(m_imagePath);
+            m_imgUri = Uri.fromFile(m_file);
+        } catch (Exception p_e) {
+        }
+        return m_imgUri;
+    }
+
 
 }
