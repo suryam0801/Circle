@@ -38,6 +38,7 @@ import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMethods {
@@ -145,7 +146,7 @@ public class HelperMethods {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
 
         if (seconds < 60) {
-           timeElapsedReturnString = seconds + "s ago";
+            timeElapsedReturnString = seconds + "s ago";
         } else if (minutes >= 1 && minutes < 60) {
             timeElapsedReturnString = minutes + "m ago";
         } else if (hours >= 1 && hours < 24) {

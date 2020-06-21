@@ -431,7 +431,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         if(user.getNewTimeStampsComments() == null){
             //first time viewing any comments
             commentTimeStampTemp = new HashMap<>();
-            commentTimeStampTemp.put(b.getId(), b.getLatestCommentTimestamp());
+            commentTimeStampTemp.put(b.getId(), (long) 0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);
@@ -439,7 +439,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         } else if(user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())){
             //if timestampcomments exists but does not contain value for that particular broadcast
             commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
-            commentTimeStampTemp.put(b.getId(), b.getLatestCommentTimestamp());
+            commentTimeStampTemp.put(b.getId(), (long)  0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);

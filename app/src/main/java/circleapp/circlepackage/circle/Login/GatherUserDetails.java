@@ -285,6 +285,30 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
     }
 
+    public void setProfilePicMethod(String avatar, ImageView avatarBg, ImageButton avatarButton){
+        HelperMethods.GlideSetProfilePic(GatherUserDetails.this,avatar, profilePic);
+        downloadUri =null;
+        avatarButton.setPressed(true);
+        int visibility = avatarBg.getVisibility();
+        if(visibility == View.VISIBLE)
+        {
+            HelperMethods.GlideSetProfilePic(GatherUserDetails.this,String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+            avatarBg.setVisibility(View.GONE);
+            avatarButton.setPressed(false);
+        }
+        else
+        {
+            for(int i=0; i<8;i++){
+                if(avatarList[i]!=avatarButton){
+                    avatarBgList[i].setVisibility(View.GONE);
+                    avatarList[i].setPressed(false);
+                }
+                else
+                    avatarBgList[i].setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     public void selectFile(){
 
         Intent intent = new Intent();
