@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tag_picker_popup_background"
+    android:layout_gravity="center"
+    android:gravity="center"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter your username"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginLeft="3dp"
+        android:textColor="#B3B1B1"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="115dp"
+        android:textSize="14dp">
+    </TextView>
+    <EditText
+        android:id="@+id/edit_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="#ACA9A9"
+        android:textColorHint="#ACA9A9"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="13dp"
+        android:ems="10"
+        android:nextFocusDown="@id/registerButton"
+        android:inputType="textPersonName"
+        android:imeOptions="actionDone"
+        android:digits="@string/digits"
+        android:textColor="@color/black"/>
+    <Button
+        android:id="@+id/edit_name_Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/gradient_button"
+        android:fontFamily="@font/roboto_black"
+        android:gravity="start|center"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:layout_marginBottom="20dp"
+        android:text="Finalize Name"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFFFF"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textAlignment="center"
+        android:textSize="18dp" />
+
+</LinearLayout>

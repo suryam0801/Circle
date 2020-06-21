@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -56,11 +57,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Circle circle;
     private FirebaseAuth currentUser;
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3,
-            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6, R.drawable.avatar6};
+//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3,
+//            R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6, R.drawable.avatar6};
 
     private Vibrator v;
     private User user;
+    private  int propic;
+    int myImageList;
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
@@ -95,11 +98,18 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        Glide.with(context)
-                .load(broadcast.getCreatorPhotoURI())
-                .placeholder(ContextCompat.getDrawable(context, myImageList[count]))
-                .into(viewHolder.profPicDisplay);
-
+        if (broadcast.getCreatorPhotoURI().length() > 10) {
+            Glide.with(context)
+                    .load(broadcast.getCreatorPhotoURI())
+                    .into(viewHolder.profPicDisplay);
+        } else {
+            propic = Integer.parseInt(broadcast.getCreatorPhotoURI());
+            myImageList = propic;
+            Glide.with(context)
+                    .load(propic)
+                    .placeholder(ContextCompat.getDrawable(context, myImageList))
+                    .into(viewHolder.profPicDisplay);
+        }
         ++count;
         if (count == 4) count = 0;
 

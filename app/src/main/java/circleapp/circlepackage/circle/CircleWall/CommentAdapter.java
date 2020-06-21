@@ -23,8 +23,10 @@ public class CommentAdapter extends BaseAdapter {
     private Context mContext;
     private List<Comment> CommentList;
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-            R.drawable.avatar2, R.drawable.avatar5};
+    private  int propic;
+    int myImageList;
+//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+//            R.drawable.avatar2, R.drawable.avatar5};
 
 
     public CommentAdapter(Context mContext, List<Comment> CommentList) {
@@ -77,11 +79,18 @@ public class CommentAdapter extends BaseAdapter {
         userName.setText(name);
         comment.setText(cmnt);
 
-        Glide.with(mContext)
-                .load(profPicURI)
-                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
-                .into(profPic);
-
+        if (profPicURI.length() > 10) {
+            Glide.with(mContext)
+                    .load(profPicURI)
+                    .into(profPic);
+        } else {
+            propic = Integer.parseInt(profPicURI);
+            myImageList = propic;
+            Glide.with(mContext)
+                    .load(propic)
+                    .placeholder(ContextCompat.getDrawable(mContext, myImageList))
+                    .into(profPic);
+        }
         ++count;
         if(count == 4) count = 0;
 
