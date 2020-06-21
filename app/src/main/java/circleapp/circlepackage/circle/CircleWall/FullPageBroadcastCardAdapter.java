@@ -76,7 +76,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         Broadcast currentBroadcast = broadcastList.get(position);
-        broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(currentBroadcast.getId());
 
         commentAdapter= new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
@@ -153,6 +152,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     public void updateCommentNumbersPostCreate(long timetamp, Broadcast broadcast){
+        broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(broadcast.getId());
+
         //updating broadCastTimeStamp after creating the comment
         int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
         broadcastDB.child("latestCommentTimestamp").setValue(timetamp);

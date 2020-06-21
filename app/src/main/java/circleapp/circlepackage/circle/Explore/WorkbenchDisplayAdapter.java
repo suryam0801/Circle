@@ -136,7 +136,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.newDiscussionDisplay.setVisibility(View.VISIBLE);
         }
 
-
         holder.container.setOnClickListener(view -> {
             if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 

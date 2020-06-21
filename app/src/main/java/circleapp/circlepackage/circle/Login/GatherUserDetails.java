@@ -294,6 +294,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             }
         });
     }
+
     public void setProfilePicMethod(String avatar, ImageView avatarBg, ImageButton avatarButton){
         HelperMethods.GlideSetProfilePic(GatherUserDetails.this,avatar, profilePic);
         downloadUri =null;
@@ -303,7 +304,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         {
             HelperMethods.GlideSetProfilePic(GatherUserDetails.this,String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
             avatarBg.setVisibility(View.GONE);
-            avatar = "";
             avatarButton.setPressed(false);
         }
         else
