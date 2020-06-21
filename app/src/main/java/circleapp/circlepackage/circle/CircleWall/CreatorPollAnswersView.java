@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.view.WindowManager;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -49,6 +48,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
 
         Poll poll = broadcast.getPoll();
         HashMap<String, String> userResponse = poll.getUserResponse();
+
+        User user = SessionStorage.getUser(CreatorPollAnswersView.this);
 
         database = FirebaseDatabase.getInstance();
         circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId()); //circle.getId()
