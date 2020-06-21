@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.CircleWall;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.google.rpc.Help;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.R;
@@ -25,8 +27,10 @@ public class CommentAdapter extends BaseAdapter {
     private Context mContext;
     private List<Comment> CommentList;
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-            R.drawable.avatar2, R.drawable.avatar5};
+    private  int propic;
+    int myImageList;
+//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+//            R.drawable.avatar2, R.drawable.avatar5};
 
 
     public CommentAdapter(Context mContext, List<Comment> CommentList) {
@@ -73,14 +77,37 @@ public class CommentAdapter extends BaseAdapter {
 
         userName.setText(name);
         comment.setText(cmnt);
-        timeElapsed.setText(timeString);
-        Glide.with(mContext)
-                .load(profPicURI)
-                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
-                .into(profPic);
 
+
+      
         ++count;
         if(count == 4) count = 0;
+
+
+        if(seconds < 60) {
+            timeElapsed.setText(seconds + "s ago");
+        } else if (minutes >= 1 && minutes < 60){
+            timeElapsed.setText(minutes + "m ago");
+        } else if (hours >= 1 && hours < 24) {
+            timeElapsed.setText(hours + "h ago");
+        } else if (days >= 1 && days < 365 ) {
+            if(days >= 7)
+                timeElapsed.setText((days/7) + "w ago");
+            else
+                timeElapsed.setText(days + "d ago");
+
+        timeElapsed.setText(timeString);
+        if (profPicURI.length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) mContext)
+                    .load(profPicURI)
+                    .into(profPic);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(profPicURI);
+            Glide.with((Activity) mContext)
+                    .load(ContextCompat.getDrawable((Activity) mContext, profilePic))
+                    .into(profPic);
+
+        }
 
         return pview;
     }

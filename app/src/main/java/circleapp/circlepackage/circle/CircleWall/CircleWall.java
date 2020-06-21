@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +29,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,6 +150,64 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         loadCircleBroadcasts();
     }
 
+    private void loadCircleBroadcasts() {
+
+        //initialize recylcerview
+        RecyclerView recyclerView = findViewById(R.id.broadcastViewRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        //initializing the CircleDisplayAdapter and setting the adapter to recycler view
+        //adapter adds all items from the circle list and displays them in individual cards in the recycler view
+        final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
+        recyclerView.setAdapter(adapter);
+
+        broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
+                broadcastList.add(0, broadcast); //to store timestamp values descendingly
+                adapter.notifyItemInserted(0);
+                recyclerView.setAdapter(adapter);
+
+                emptyDisplay.setVisibility(View.GONE);
+                initializeNewCommentsAlertTimestamp(broadcast);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
+                int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
+                broadcastList.remove(position);
+                adapter.notifyItemRemoved(position);
+
+                broadcastList.add(position, broadcast);
+                adapter.notifyItemInserted(position);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
+                int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
+                broadcastList.remove(position);
+                adapter.notifyItemRemoved(position);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
     public void showExitDialog() {
         confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
         final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
@@ -202,62 +263,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         analyticsLogEvents.logEvents(CircleWall.this, "circle_exit", "exit_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
-    }
-
-    private void loadCircleBroadcasts() {
-
-        //initialize recylcerview
-        RecyclerView recyclerView = findViewById(R.id.broadcastViewRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        //initializing the CircleDisplayAdapter and setting the adapter to recycler view
-        //adapter adds all items from the circle list and displays them in individual cards in the recycler view
-        final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
-        recyclerView.setAdapter(adapter);
-
-        broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                broadcastList.add(0, broadcast); //to store timestamp values descendingly
-                adapter.notifyItemInserted(0);
-                recyclerView.setAdapter(adapter);
-
-                emptyDisplay.setVisibility(View.GONE);
-                initializeNewCommentsAlertTimestamp(broadcast);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
-                broadcastList.remove(position);
-                adapter.notifyItemRemoved(position);
-
-                broadcastList.add(position, broadcast);
-                adapter.notifyItemInserted(position);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
-                broadcastList.remove(position);
-                adapter.notifyItemRemoved(position);
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void showCreateBroadcastDialog(String flag) {

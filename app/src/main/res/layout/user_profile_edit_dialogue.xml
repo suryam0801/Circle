@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tag_picker_popup_background"
+    android:layout_gravity="center"
+    android:gravity="center">
+    <LinearLayout
+        android:layout_width="324dp"
+        android:layout_height="201dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="35dp"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/avatar1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/avatar1"/>
+                <ImageView
+                    android:id="@+id/avatar1_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/avatar2"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar2">
+                </ImageButton>
+                <ImageView
+                    android:id="@+id/avatar2_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/avatar3"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar3" />
+                <ImageView
+                    android:id="@+id/avatar3_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/avatar4"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar4" />
+                <ImageView
+                    android:id="@+id/avatar4_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/avatar5"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar5" />
+                <ImageView
+                    android:id="@+id/avatar5_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/avatar6"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar6" />
+                <ImageView
+                    android:id="@+id/avatar6_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
+                android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/avatar7"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar7" />
+                <ImageView
+                    android:id="@+id/avatar7_State"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/imagePreview"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/ic_account_circle_black_24dp"
+                    app:civ_border_color="#FF000000"
+                    app:civ_border_width="2dp" />
+
+                <Button
+                    android:id="@+id/profilePicSetterImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="45dp"
+                    android:background="@drawable/edit_project_button_background"
+                    android:foreground="@drawable/edit_drawable"
+                    android:foregroundGravity="center" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/edit_profile_Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/gradient_button"
+        android:fontFamily="@font/roboto_black"
+        android:gravity="start|center"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:layout_marginBottom="20dp"
+        android:text="Upload Profile"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFFFF"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textAlignment="center"
+        android:textSize="18dp" />
+
+
+
+</LinearLayout>

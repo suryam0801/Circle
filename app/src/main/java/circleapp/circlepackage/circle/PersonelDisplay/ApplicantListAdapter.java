@@ -34,6 +34,8 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     private FirebaseDatabase database;
     private DatabaseReference circlesPersonelDB, circleDB;
     private String state;
+    private  int propic;
+    int myImageList;
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;
@@ -56,10 +58,23 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
         circlesPersonelDB = database.getReference("CirclePersonel");
         circleDB = database.getReference("Circles");
 
-        Glide.with(mContext)
-                .load(selectedApplicant.getPhotoURI())
-                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.avatar4))
-                .into(holder.profPic);
+        if (selectedApplicant.getPhotoURI().length() > 10) {
+            Glide.with(mContext)
+                    .load(selectedApplicant.getPhotoURI())
+                    .into(holder.profPic);
+        } else {
+            propic = Integer.parseInt(selectedApplicant.getPhotoURI());
+            myImageList = propic;
+            Glide.with(mContext)
+                    .load(propic)
+                    .placeholder(ContextCompat.getDrawable(mContext, myImageList))
+                    .into(holder.profPic);
+        }
+
+//        Glide.with(mContext)
+//                .load(selectedApplicant.getPhotoURI())
+//                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.avatar4))
+//                .into(holder.profPic);
 
         //Set text for TextView
         final String nameDisplay = selectedApplicant.getName();
