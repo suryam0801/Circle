@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -85,40 +89,21 @@ public class SessionStorage {
         return new Gson().fromJson(string, Broadcast.class);
     }
 
-/*
-    public static void saveWorker(Activity activity, Worker worker)
+    public static void saveBroadcastList(Activity activity, List<Broadcast> broadcastList)
     {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        String string = new Gson().toJson(worker);
-        editor.putString("memberTransfer", string);
+        String string = new Gson().toJson(broadcastList);
+        editor.putString("tempBroadcastList", string);
         editor.apply();
     }
 
-    public static Worker getWorker(Activity activity)
+    public static List<Broadcast> getBroadcastList(Activity activity)
     {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
-        String string = sharedPref.getString("memberTransfer","1234");
-        return new Gson().fromJson(string, Worker.class);
+        String string = sharedPref.getString("tempBroadcastList","1234");
+        Type type = new TypeToken<List<Broadcast>>(){}.getType();
+        return new Gson().fromJson(string, type);
     }
-*/
-
-/*
-    public static void saveApplicant(Activity activity, Applicant applicant)
-    {
-        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        String string = new Gson().toJson(applicant);
-        editor.putString("tempApplicant", string);
-        editor.apply();
-    }
-
-    public static Applicant getApplicant(Activity activity)
-    {
-        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME,Activity.MODE_PRIVATE);
-        String string = sharedPref.getString("tempApplicant","1234");
-        return new Gson().fromJson(string, Applicant.class);
-    }
-*/
 
 }

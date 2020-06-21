@@ -32,7 +32,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +104,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         long createdTime = broadcast.getTimeStamp();
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
+
+        viewHolder.timeElapsedDisplay.setOnClickListener(view -> {
+            SessionStorage.saveBroadcastList((Activity) context, broadcastList);
+            context.startActivity(new Intent((Activity) context, FullPageBroadcastCardView.class));
+            ((Activity) context).finish();
+        });
 
         //new comments setter
         viewHolder.viewComments.setText(broadcast.getNumberOfComments() + "");
