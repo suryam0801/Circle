@@ -180,8 +180,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
-                    android:layout_width="75dp"
-                    android:layout_height="75dp"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/ic_account_circle_black_24dp"
                     app:civ_border_color="#FF000000"
@@ -191,9 +191,10 @@
                     android:id="@+id/profilePicSetterImage"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="45dp"
+                    android:layout_marginLeft="55dp"
+                    android:layout_marginTop="60dp"
                     android:background="@drawable/edit_project_button_background"
+                    android:foreground="@drawable/ic_camera_alt_white_24dp"
                     android:foregroundGravity="center" />
             </RelativeLayout>
 

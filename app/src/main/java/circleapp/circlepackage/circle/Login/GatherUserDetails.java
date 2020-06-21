@@ -122,8 +122,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
-    String def1,def2,def3,def4,def5;
-
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
@@ -169,13 +167,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList[6] = avatar7_bg = findViewById(R.id.avatar7_State);
         avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
         profilePic = findViewById(R.id.profile_image);
-
-        def1 = String.valueOf(R.id.avatar1);
-        def2 = String.valueOf(R.id.avatar2);
-        def3 = String.valueOf(R.id.avatar3);
-        def4 = String.valueOf(R.id.avatar4);
-        def5 = String.valueOf(R.id.avatar5);
-
         setProfile = findViewById(R.id.imagePreview);
 
         ward = getIntent().getStringExtra("ward");
@@ -184,13 +175,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         analyticsLogEvents = new AnalyticsLogEvents();
-
-        resetprofpic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                
-            }
-        });
 
         //listener for button to add the profilepic
         avatar1.setOnClickListener(new View.OnClickListener() {
@@ -330,7 +314,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        downloadUri = getImageUri();
+        downloadUri = HelperMethods.getImageUri();
         m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
         startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
     }
@@ -372,20 +356,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
         builder.show();
     }
-    private Uri getImageUri(){
-        Uri m_imgUri = null;
-        File m_file;
-        try {
-            SimpleDateFormat m_sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-            String m_curentDateandTime = m_sdf.format(new Date());
-            String m_imagePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + m_curentDateandTime + ".jpg";
-            m_file = new File(m_imagePath);
-            m_imgUri = Uri.fromFile(m_file);
-        } catch (Exception p_e) {
-        }
-        return m_imgUri;
-    }
-
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
@@ -416,8 +386,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-            Log.d("test2",""+filePath);
-
             //check the path for the image
             //if the image path is notnull the uploading process will start
             if (filePath != null) {
@@ -484,7 +452,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         }
         else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
-            Log.d("test2",""+filePath);
             //check the path for the image
             //if the image path is notnull the uploading process will start
             if (filePath != null) {
