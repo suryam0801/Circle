@@ -1,26 +1,31 @@
 package circleapp.circlepackage.circle.CircleWall;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,83 +33,73 @@ import java.util.List;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-public class BroadcastComments extends AppCompatActivity {
-
-    private ListView commentsListView;
-    private List<Comment> commentsList = new ArrayList<>();
-    private CommentAdapter commentAdapter;
-    private EditText commentEditText;
-    private Button commentSend;
+public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageBroadcastCardAdapter.ViewHolder> {
+    private Context mContext;
+    private List<Broadcast> broadcastList;
     private Circle circle;
     private FirebaseDatabase database;
     private DatabaseReference broadcastCommentsDB, circlesDB, broadcastDB, userDB;
-    private ImageButton back;
-    private Broadcast broadcast;
-    private User user;
-    private LinearLayout emptyHolder;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_broadcast_comments);
 
-        circle = SessionStorage.getCircle(BroadcastComments.this);
-        broadcast = SessionStorage.getBroadcast(BroadcastComments.this);
-        user = SessionStorage.getUser(BroadcastComments.this);
+    public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle) {
+        this.mContext = mContext;
+        this.broadcastList = broadcastList;
+        this.circle = circle;
 
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
         circlesDB = database.getReference("Circles").child(circle.getId());
-        broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(broadcast.getId());
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        commentsListView = findViewById(R.id.comments_listView);
-        commentEditText = findViewById(R.id.comment_type_editText);
-        commentSend = findViewById(R.id.comment_send_button);
-        back = findViewById(R.id.bck_broadcastComments);
-        commentsList = new ArrayList<>();
-        emptyHolder = findViewById(R.id.commentWall_empty_display);
-        emptyHolder.setVisibility(View.VISIBLE);
-
-        commentAdapter= new CommentAdapter(BroadcastComments.this, commentsList);
-        commentsListView.setAdapter(commentAdapter);
-
-        commentEditText.clearFocus();
-
-        loadComments();
-
-        commentSend.setOnClickListener(view -> {
-            if (!commentEditText.getText().toString().trim().equals(""))
-                makeCommentEntry();
-            commentEditText.setText("");
-        });
-
-        back.setOnClickListener(view -> {
-            startActivity(new Intent(BroadcastComments.this, CircleWall.class));
-            finish();
-        });
     }
 
-    public void loadComments() {
-        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
+    @NonNull
+    @Override
+    public FullPageBroadcastCardAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.broadcast_full_page_card_item, parent, false);
+        return new FullPageBroadcastCardAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
+        ((Activity)mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        CommentAdapter commentAdapter;
+        List<Comment> commentsList = new ArrayList<>();
+        Broadcast currentBroadcast = broadcastList.get(position);
+        broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(currentBroadcast.getId());
+
+        commentAdapter= new CommentAdapter(mContext, commentsList);
+        holder.commentListView.setAdapter(commentAdapter);
+
+        holder.commentSend.setOnClickListener(view -> {
+            if(holder.commentEditText.getText() != null){
+                makeCommentEntry(currentBroadcast, holder.commentEditText.getText().toString());
+                holder.commentEditText.setText("");
+            } else {
+                Toast.makeText(mContext, "Please type a comment first", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        broadcastCommentsDB.child(circle.getId()).child(currentBroadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
-                emptyHolder.setVisibility(View.GONE);
+                holder.commentListView.setSelection(holder.commentListView.getAdapter().getCount()-1);
 
-                //call view activity only after all comments have been populated
-                if(commentsList.size() == broadcast.getNumberOfComments())
-                    updateUserFields("view");
+                if(commentsList.size() == currentBroadcast.getNumberOfComments())
+               updateUserFields("view", commentsList, currentBroadcast);
             }
 
             @Override
@@ -130,39 +125,51 @@ public class BroadcastComments extends AppCompatActivity {
 
     }
 
-    public void makeCommentEntry() {
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return broadcastList.size();
+    }
+
+    public void makeCommentEntry(Broadcast broadcast, String commentMessage) {
         long currentCommentTimeStamp = System.currentTimeMillis();
 
         Map<String, Object> map = new HashMap<>();
         map.put("timestamp", currentCommentTimeStamp);
-        map.put("comment", commentEditText.getText().toString().trim());
-        map.put("commentorId", SessionStorage.getUser(BroadcastComments.this).getUserId());
-        map.put("commentorPicURL", SessionStorage.getUser(BroadcastComments.this).getProfileImageLink());
-        map.put("commentorName", SessionStorage.getUser(BroadcastComments.this).getName().trim());
+        map.put("comment", commentMessage);
+        map.put("commentorId", SessionStorage.getUser((Activity) mContext).getUserId());
+        map.put("commentorPicURL", SessionStorage.getUser((Activity) mContext).getProfileImageLink());
+        map.put("commentorName", SessionStorage.getUser((Activity) mContext).getName().trim());
 
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
 
-        updateCommentNumbersPostCreate(currentCommentTimeStamp);
-        updateUserFields("create");
+        updateCommentNumbersPostCreate(currentCommentTimeStamp, broadcast);
+        updateUserFields("create", null, broadcast);
     }
 
-    public void updateCommentNumbersPostCreate(long timetamp){
+    public void updateCommentNumbersPostCreate(long timetamp, Broadcast broadcast){
         //updating broadCastTimeStamp after creating the comment
         int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
         broadcastDB.child("latestCommentTimestamp").setValue(timetamp);
         broadcastDB.child("numberOfComments").setValue(broacastNumberOfComments);
         broadcast.setLatestCommentTimestamp(timetamp);
         broadcast.setNumberOfComments(broacastNumberOfComments);
-        SessionStorage.saveBroadcast(BroadcastComments.this, broadcast);
+        SessionStorage.saveBroadcast((Activity) mContext, broadcast);
 
         //updating number of discussions in circle
         int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
         circlesDB.child("noOfNewDiscussions").setValue(circleNewNumberOfDiscussions);
         circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
-        SessionStorage.saveCircle(BroadcastComments.this, circle);
+        SessionStorage.saveCircle((Activity) mContext, circle);
     }
 
-    public void updateUserFields(String navFrom){
+    public void updateUserFields(String navFrom, List<Comment> commentsList, Broadcast broadcast){
+        User user = SessionStorage.getUser((Activity) mContext);
 
         int userNumberOfReadDiscussions;
         switch (navFrom){
@@ -185,14 +192,20 @@ public class BroadcastComments extends AppCompatActivity {
         HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
         tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
         user.setNewTimeStampsComments(tempCommentTimeStamps);
-        SessionStorage.saveUser(BroadcastComments.this, user);
+        SessionStorage.saveUser((Activity) mContext, user);
         userDB.child("newTimeStampsComments").child(broadcast.getId()).setValue(broadcast.getLatestCommentTimestamp());
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(BroadcastComments.this, CircleWall.class));
-        finish();
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        ListView commentListView;
+        private EditText commentEditText;
+        private Button commentSend;
+        public ViewHolder(View view) {
+            super(view);
+            commentListView = view.findViewById(R.id.full_page_broadcast_comments_display);
+            commentEditText = view.findViewById(R.id.full_page_broadcast_comment_entry);
+            commentSend = view.findViewById(R.id.fullpage_broadcast_comment_send_button);
+        }
     }
 }

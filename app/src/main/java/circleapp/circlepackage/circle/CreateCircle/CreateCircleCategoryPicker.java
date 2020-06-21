@@ -1,26 +1,21 @@
 package circleapp.circlepackage.circle.CreateCircle;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Explore.WorkbenchDisplayAdapter;
 import circleapp.circlepackage.circle.R;
 
 public class CreateCircleCategoryPicker extends AppCompatActivity {
 
     List<String> categoryList = new ArrayList<>();
+    List<Drawable> iconList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +32,23 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
         categoryList.add("Science & Tech");
         categoryList.add("Gaming");
 
+        iconList.add(getResources().getDrawable(R.drawable.barbell));
+        iconList.add(getResources().getDrawable(R.drawable.calendar));
+        iconList.add(getResources().getDrawable(R.drawable.students));
+        iconList.add(getResources().getDrawable(R.drawable.buildings));
+        iconList.add(getResources().getDrawable(R.drawable.football));
+        iconList.add(getResources().getDrawable(R.drawable.friends));
+        iconList.add(getResources().getDrawable(R.drawable.popcorn));
+        iconList.add(getResources().getDrawable(R.drawable.smartphone));
+        iconList.add(getResources().getDrawable(R.drawable.gaming));
+
         RecyclerView wbrecyclerView = findViewById(R.id.category_picker_recycler_view);
+        wbrecyclerView.setNestedScrollingEnabled(false);
         wbrecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(CreateCircleCategoryPicker.this, RecyclerView.VERTICAL, false);
         wbrecyclerView.setLayoutManager(wblayoutManager);
 
-        final RecyclerView.Adapter wbadapter = new CategoryPickerAdapter(CreateCircleCategoryPicker.this, categoryList, CreateCircleCategoryPicker.this);
+        final RecyclerView.Adapter wbadapter = new CategoryPickerAdapter(CreateCircleCategoryPicker.this, categoryList, iconList);
         wbrecyclerView.setAdapter(wbadapter);
     }
 }

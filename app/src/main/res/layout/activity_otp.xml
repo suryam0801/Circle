@@ -3,27 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="30dp"
     android:background="@color/white"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".Login.OtpActivity">
 
     <TextView
-            android:id="@+id/otp_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:text="Enter Verification Code"
-    android:textColor="@color/color_blue"
-        android:textSize="22sp" />
+        android:id="@+id/otp_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/roboto_bold"
+        android:text="Enter Verification Code"
+        android:textColor="@color/color_blue"
+        android:textSize="27sp" />
 
-            <TextView
+    <TextView
                 android:id="@+id/otp_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
+        android:layout_gravity="center"
                 android:fontFamily="@font/roboto_medium"
                 android:text="We have sent you an OTP \n for phone number verification"
                 android:textAlignment="center"
@@ -35,8 +38,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="50dp"
                 android:layout_marginRight="70dp"
+                android:gravity="center"
                 android:cursorVisible="false"
                 android:digits="1234567890"
                 android:inputType="number"
@@ -48,7 +52,8 @@
                 android:id="@+id/resend_otp_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="55dp"
+                android:layout_gravity="center"
                 android:text="Resend code in: "
                 android:textColor="@color/black"
                 android:textSize="15dp"></TextView>
@@ -56,14 +61,16 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="25dp">
 
                 <Button
                     android:id="@+id/verify_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="45dp"
+                    android:layout_marginEnd="45dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/gradient_button"
                     android:fontFamily="@font/roboto_medium"
                     android:text="Verify OTP"

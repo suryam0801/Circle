@@ -87,7 +87,7 @@
                         android:id="@+id/newNotifAlertTV"
                         android:layout_width="33dp"
                         android:layout_height="55dp"
-                        android:drawableTop="@drawable/copy"
+                        android:drawableTop="@drawable/post_icon"
                         android:fontFamily="@font/roboto_condensed_bold"
                         android:gravity="center"
                         android:text="5"

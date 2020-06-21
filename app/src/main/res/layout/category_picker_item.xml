@@ -2,34 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
     android:gravity="center_vertical"
-    android:layout_margin="15dp"
-    android:background="@drawable/poll_background_file"
+    android:layout_marginTop="10dp"
+    android:padding="10dp"
+    android:background="@drawable/category_picker_item_background"
     android:id="@+id/category_picker_item_cointainer"
     android:orientation="horizontal">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <RelativeLayout
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:id="@+id/cateogry_picker_foreground"
-        android:scaleY=".7"
-        android:scaleX=".7"
-        android:background="@drawable/gradient_button"
-        android:layout_gravity="center"></androidx.appcompat.widget.AppCompatImageView>
+        android:gravity="center"
+        android:background="@drawable/category_icon_background">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/category_picker_icon_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX=".7"
+            android:scaleY=".7"
+            android:layout_gravity="center"></androidx.appcompat.widget.AppCompatImageView>
+    </RelativeLayout>
+
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="Title"
         android:textSize="14dp"
         android:textColor="@color/black"
         android:gravity="center_vertical"
+        android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_gray_24"
         android:textStyle="bold"
-        android:fontFamily="@font/roboto_regular"
-        android:paddingBottom="5dp"
-        android:paddingLeft="7dp"
-        android:layout_marginRight="45dp"
+        android:fontFamily="@font/roboto_bold"
+        android:paddingLeft="17dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/category_picker_category_name"
         />
 </LinearLayout>

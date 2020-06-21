@@ -24,7 +24,7 @@ public class PinEntryEditText extends androidx.appcompat.widget.AppCompatEditTex
     private float mSpace = 24; //24 dp by default, space between the lines
     private float mCharSize;
     private float mNumChars = 4;
-    private float mLineSpacing = 8; //8dp by default, height of the text from our lines
+    private float mLineSpacing = 6; //8dp by default, height of the text from our lines
     private int mMaxLength = 4;
 
     private OnClickListener mClickListener;
@@ -89,7 +89,7 @@ public class PinEntryEditText extends androidx.appcompat.widget.AppCompatEditTex
         mMaxLength = attrs.getAttributeIntValue(XML_NAMESPACE_ANDROID, "maxLength", 4);
         mNumChars = mMaxLength;
 
-        //Disable copy paste
+        //Disable post_icon paste
         super.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
                 return false;

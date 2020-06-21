@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="360dp"
+    android:layout_height="match_parent"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/tag_picker_popup_background"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingRight="25dp"
+        android:gravity="center"
+        android:layout_marginTop="19dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:text="Broadcast Title"
+        android:textColor="@color/black"
+        android:textSize="20dp">
+    </TextView>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="18.5dp"
+        android:background="#EEEEEE">
+    </View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="100"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="99"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/full_page_broadcast_comments_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentBottom="true">
+
+            <EditText
+                android:id="@+id/full_page_broadcast_comment_entry"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="25dp"
+                android:paddingRight="45dp"
+                android:paddingLeft="16dp"
+                android:textSize="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="#D1D1D1"
+                android:hint="Type your comment..."
+                android:paddingBottom="8dp"
+                android:imeOptions="actionSend|flagNoEnterAction"
+                android:background="@drawable/blue_border_background">
+            </EditText>
+
+            <Button
+                android:id="@+id/fullpage_broadcast_comment_send_button"
+                android:layout_width="31dp"
+                android:layout_height="26dp"
+                android:background="@drawable/ic_send_black_24dp"
+                android:layout_alignParentEnd="true"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="25dp"
+                android:paddingBottom="10dp">
+            </Button>
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

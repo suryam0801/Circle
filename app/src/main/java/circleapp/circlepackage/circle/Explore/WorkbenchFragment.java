@@ -85,7 +85,7 @@ public class WorkbenchFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        circlesDB.keepSynced(true); //synchronizes and stores local copy of data
+        circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
         btnAddCircle = view.findViewById(R.id.add_circle_button);

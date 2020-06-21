@@ -90,7 +90,7 @@ public class ExploreFragment extends Fragment {
         user = SessionStorage.getUser(getActivity());
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
-        circlesDB.keepSynced(true); //synchronizes and stores local copy of data
+        circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
         locationDisplay = view.findViewById(R.id.explore_district_name_display);
         emptyExploreDisplay = view.findViewById(R.id.explore_empty_display);
 

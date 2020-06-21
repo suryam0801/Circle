@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
     tools:context=".CreateCircle.CreateCircleCategoryPicker">
 
     <TextView
@@ -12,26 +14,80 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@font/roboto_bold"
         android:gravity="center"
-        android:text="Create your own circle"
+        android:text="Choose a Category"
         android:textColor="@color/black"
-        android:textSize="25dp"></TextView>
+        android:textSize="18dp"></TextView>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/roboto_regular"
+        android:fontFamily="@font/roboto_condensed"
         android:gravity="center"
-        android:text="Create a circle to connect with those around you or share this circle to only your friends"
-        android:textColor="@color/grey"
-        android:textSize="12dp"></TextView>
+        android:lineSpacingExtra="3dp"
+        android:text="You can create unique categories of your own to add circles and invite friends into it."
+        android:textColor="#9D9D9D"
+        android:textSize="13dp"></TextView>
+
+    <LinearLayout
+        android:id="@+id/create_your_own_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/category_picker_item_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/category_icon_background"
+            android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/category_picker_icon_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/new_category"
+                android:scaleX=".7"
+                android:scaleY=".7"></androidx.appcompat.widget.AppCompatImageView>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_gray_24"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center_vertical"
+            android:paddingLeft="17dp"
+            android:text="Create your own"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/roboto_condensed"
+        android:text="Choose an existing category"
+        android:textColor="#9D9D9D"
+        android:textSize="13dp"></TextView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/category_picker_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
