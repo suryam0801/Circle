@@ -25,10 +25,8 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     private HashMap<Subscriber, String> list;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private int count = 0;
-    private  int propic;
-    int myImageList;
-//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-//            R.drawable.avatar2, R.drawable.avatar5};
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+            R.drawable.avatar2, R.drawable.avatar5};
 
 
     public PollAnswerDisplayAdapter(Context mContext, HashMap<Subscriber, String> list) {
@@ -49,23 +47,10 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
         final Subscriber member = (Subscriber) list.keySet().toArray()[position];
         final String answer = (String) list.values().toArray()[position];
 
-        if (member.getPhotoURI().length() > 10) {
-            Glide.with(mContext)
-                    .load(member.getPhotoURI())
-                    .into(holder.profPic);
-        } else {
-            propic = Integer.parseInt(member.getPhotoURI());
-            myImageList = propic;
-            Glide.with(mContext)
-                    .load(propic)
-                    .placeholder(ContextCompat.getDrawable(mContext, myImageList))
-                    .into(holder.profPic);
-        }
-//
-//        Glide.with(mContext)
-//                .load(member.getPhotoURI())
-//                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
-//                .into(holder.profPic);
+        Glide.with(mContext)
+                .load(member.getPhotoURI())
+                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
+                .into(holder.profPic);
 
         ++count;
         if(count == 4) count = 0;
