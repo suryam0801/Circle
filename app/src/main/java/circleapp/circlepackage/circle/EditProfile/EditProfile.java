@@ -6,9 +6,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -17,6 +19,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -29,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,12 +65,17 @@ import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class EditProfile extends AppCompatActivity {
 
@@ -79,19 +89,19 @@ public class EditProfile extends AppCompatActivity {
     private Uri downloadUri;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
+    private static final int REQUEST_IMAGE_CAPTURE = 102;
     String TAG = EditProfile.class.getSimpleName();
     ImageButton editName;
     User user;
     ProgressDialog progressDialog;
-    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7;
-    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg;
+    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
+    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
     private CircleImageView profilePic;
+    RelativeLayout setProfile;
     String avatar;
+    RuntimePermissionHelper runtimePermissionHelper;
     private  int propic;
-    int myImageList;
-
-//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-//            R.drawable.avatar2, R.drawable.avatar5};
+    int photo;
 
     private FirebaseDatabase database;
     private DatabaseReference tags, userDB;
@@ -113,6 +123,7 @@ public class EditProfile extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(EditProfile.this);
         progressDialog.setCancelable(false);
+        runtimePermissionHelper = new RuntimePermissionHelper(EditProfile.this);
 
         userName = findViewById(R.id.viewProfile_name);
         userNumber = findViewById(R.id.viewProfile_email);
@@ -135,6 +146,8 @@ public class EditProfile extends AppCompatActivity {
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
+        avatarList = new ImageButton[8];
+        avatarBgList = new ImageView[8];
 
 
         if (user.getProfileImageLink().length() > 10) {
@@ -171,9 +184,10 @@ public class EditProfile extends AppCompatActivity {
             userDB.child(user.getUserId()).setValue(user);
             SessionStorage.saveUser(EditProfile.this, user);
             finalizeChange = true;
+            finalizeChanges.setVisibility(View.GONE);
 
-            startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
-            finish();
+            /*startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
+            finish();*/
         });
 
         logout.setOnClickListener(view -> {
@@ -194,21 +208,25 @@ public class EditProfile extends AppCompatActivity {
         editUserProfiledialogue = new Dialog(EditProfile.this);
         editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
 
-        avatar1 = editUserProfiledialogue.findViewById(R.id.avatar1);
-        avatar2 = editUserProfiledialogue.findViewById(R.id.avatar2);
-        avatar3 = editUserProfiledialogue.findViewById(R.id.avatar3);
-        avatar4 =editUserProfiledialogue.findViewById(R.id.avatar4);
-        avatar5 = editUserProfiledialogue.findViewById(R.id.avatar5);
-        avatar6 = editUserProfiledialogue.findViewById(R.id.avatar6);
-        avatar7 = editUserProfiledialogue.findViewById(R.id.avatar7);
-        avatar1_bg = editUserProfiledialogue.findViewById(R.id.avatar1_State);
-        avatar2_bg = editUserProfiledialogue.findViewById(R.id.avatar2_State);
-        avatar3_bg = editUserProfiledialogue.findViewById(R.id.avatar3_State);
-        avatar4_bg = editUserProfiledialogue.findViewById(R.id.avatar4_State);
-        avatar5_bg = editUserProfiledialogue.findViewById(R.id.avatar5_State);
-        avatar6_bg = editUserProfiledialogue.findViewById(R.id.avatar6_State);
-        avatar7_bg = editUserProfiledialogue.findViewById(R.id.avatar7_State);
+        avatarList[0] = avatar1 = editUserProfiledialogue.findViewById(R.id.avatar1);
+        avatarList[1] = avatar2 = editUserProfiledialogue.findViewById(R.id.avatar2);
+        avatarList[2] = avatar3 = editUserProfiledialogue.findViewById(R.id.avatar3);
+        avatarList[3] = avatar4 =editUserProfiledialogue.findViewById(R.id.avatar4);
+        avatarList[4] = avatar5 = editUserProfiledialogue.findViewById(R.id.avatar5);
+        avatarList[5] = avatar6 = editUserProfiledialogue.findViewById(R.id.avatar6);
+        avatarList[6] = avatar7 = editUserProfiledialogue.findViewById(R.id.avatar7);
+        avatarList[7] = avatar8 = editUserProfiledialogue.findViewById(R.id.avatar8);
+        avatarBgList[0] = avatar1_bg = editUserProfiledialogue.findViewById(R.id.avatar1_State);
+        avatarBgList[1] = avatar2_bg = editUserProfiledialogue.findViewById(R.id.avatar2_State);
+        avatarBgList[2] = avatar3_bg = editUserProfiledialogue.findViewById(R.id.avatar3_State);
+        avatarBgList[3] = avatar4_bg = editUserProfiledialogue.findViewById(R.id.avatar4_State);
+        avatarBgList[4] = avatar5_bg = editUserProfiledialogue.findViewById(R.id.avatar5_State);
+        avatarBgList[5] = avatar6_bg = editUserProfiledialogue.findViewById(R.id.avatar6_State);
+        avatarBgList[6] = avatar7_bg = editUserProfiledialogue.findViewById(R.id.avatar7_State);
+        avatarBgList[7] = avatar8_bg = editUserProfiledialogue.findViewById(R.id.avatar8_State);
         profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
+        setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
+        photo = 0;
         Button profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
         Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
         Glide.with(EditProfile.this).load(uri).into(profilePic);
@@ -222,15 +240,13 @@ public class EditProfile extends AppCompatActivity {
                         STORAGE_PERMISSION_CODE);
             } else {
                 finalizeChange = false;
-                avatar1_bg.setVisibility(View.GONE);
-                avatar2_bg.setVisibility(View.GONE);
-                avatar3_bg.setVisibility(View.GONE);
-                avatar4_bg.setVisibility(View.GONE);
-                avatar5_bg.setVisibility(View.GONE);
-                avatar6_bg.setVisibility(View.GONE);
-                avatar7_bg.setVisibility(View.GONE);
+                for(int i=0; i<8;i++){
+                    avatarBgList[i].setVisibility(View.GONE);
+                }
                 avatar = "";
-                selectFile();
+                /*selectFile();*/
+                selectImage();
+                editUserProfiledialogue.dismiss();
             }
         });
         //listener for button to add the profilepic
@@ -239,31 +255,8 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
-                downloadUri =null;
-                avatar1.setPressed(true);
-                int visibility = avatar1_bg.getVisibility();
-                if(visibility == View.VISIBLE)
-                {
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar1.setPressed(false);
-                }
-                else
-                {
-                    avatar1_bg.setVisibility(View.VISIBLE);
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar2.setPressed(false);
-                    avatar3.setPressed(false);
-                    avatar4.setPressed(false);
-                    avatar5.setPressed(false);
-                    avatar6.setPressed(false);
-                    avatar7.setPressed(false);
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar1_bg,avatar1,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar2.setOnClickListener(new View.OnClickListener() {
@@ -271,33 +264,8 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar2);
-                downloadUri =null;
-                avatar2.setPressed(true);
-                int visibility = avatar1_bg.getVisibility();
-                int visibility2  = avatar2_bg.getVisibility();
-                if(visibility2 == View.VISIBLE  )
-                {
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar2.setPressed(false);
-                }
-                else
-                {
-                    avatar2_bg.setVisibility(View.VISIBLE);
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar1.setPressed(false);
-                    avatar3.setPressed(false);
-                    avatar4.setPressed(false);
-                    avatar5.setPressed(false);
-                    avatar6.setPressed(false);
-                    avatar7.setPressed(false);
-
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar2_bg,avatar2,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar3.setOnClickListener(new View.OnClickListener() {
@@ -305,31 +273,8 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
-                downloadUri =null;
-                avatar3.setPressed(true);
-                int visibility = avatar3_bg.getVisibility();
-                if(visibility == View.VISIBLE)
-                {
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar3.setPressed(false);
-                }
-                else
-                {
-                    avatar3_bg.setVisibility(View.VISIBLE);
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar2.setPressed(false);
-                    avatar1.setPressed(false);
-                    avatar4.setPressed(false);
-                    avatar5.setPressed(false);
-                    avatar6.setPressed(false);
-                    avatar7.setPressed(false);
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar3_bg,avatar3,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar4.setOnClickListener(new View.OnClickListener() {
@@ -337,31 +282,8 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
-                downloadUri =null;
-                avatar4.setPressed(true);
-                int visibility = avatar4_bg.getVisibility();
-                if(visibility == View.VISIBLE)
-                {
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar4.setPressed(false);
-                }
-                else
-                {
-                    avatar4_bg.setVisibility(View.VISIBLE);
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar2.setPressed(false);
-                    avatar3.setPressed(false);
-                    avatar1.setPressed(false);
-                    avatar5.setPressed(false);
-                    avatar6.setPressed(false);
-                    avatar7.setPressed(false);
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar4_bg,avatar4,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar5.setOnClickListener(new View.OnClickListener() {
@@ -369,31 +291,8 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
-                downloadUri =null;
-                avatar5.setPressed(true);
-                int visibility = avatar5_bg.getVisibility();
-                if(visibility == View.VISIBLE)
-                {
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar5.setPressed(false);
-                }
-                else
-                {
-                    avatar5_bg.setVisibility(View.VISIBLE);
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar2.setPressed(false);
-                    avatar3.setPressed(false);
-                    avatar4.setPressed(false);
-                    avatar1.setPressed(false);
-                    avatar6.setPressed(false);
-                    avatar7.setPressed(false);
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar5_bg,avatar5,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar6.setOnClickListener(new View.OnClickListener() {
@@ -401,31 +300,8 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
-                downloadUri =null;
-                avatar6.setPressed(true);
-                int visibility = avatar6_bg.getVisibility();
-                if(visibility == View.VISIBLE)
-                {
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar6.setPressed(false);
-                }
-                else
-                {
-                    avatar6_bg.setVisibility(View.VISIBLE);
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar2.setPressed(false);
-                    avatar3.setPressed(false);
-                    avatar4.setPressed(false);
-                    avatar5.setPressed(false);
-                    avatar1.setPressed(false);
-                    avatar7.setPressed(false);
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar6_bg,avatar6,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
         avatar7.setOnClickListener(new View.OnClickListener() {
@@ -433,31 +309,17 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
-                avatar7.setPressed(true);
-                downloadUri =null;
-                int visibility = avatar7_bg.getVisibility();
-                if(visibility == View.VISIBLE)
-                {
-                    avatar7_bg.setVisibility(View.GONE);
-                    avatar = "";
-                    avatar7.setPressed(false);
-                }
-                else
-                {
-                    avatar7_bg.setVisibility(View.VISIBLE);
-                    avatar2_bg.setVisibility(View.GONE);
-                    avatar1_bg.setVisibility(View.GONE);
-                    avatar3_bg.setVisibility(View.GONE);
-                    avatar4_bg.setVisibility(View.GONE);
-                    avatar5_bg.setVisibility(View.GONE);
-                    avatar6_bg.setVisibility(View.GONE);
-                    avatar1.setPressed(false);
-                    avatar2.setPressed(false);
-                    avatar3.setPressed(false);
-                    avatar4.setPressed(false);
-                    avatar5.setPressed(false);
-                    avatar6.setPressed(false);
-                }
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar7_bg,avatar7,avatarBgList,avatarList);
+                downloadUri = null;
+            }
+        });
+        avatar8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //add code to unpress rest of the buttons
+                avatar = String.valueOf(R.drawable.avatar8);
+                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar8_bg,avatar8,avatarBgList,avatarList);
+                downloadUri = null;
             }
         });
 
@@ -480,6 +342,7 @@ public class EditProfile extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+                                    HelperMethods.GlideSetProfilePic(EditProfile.this,String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                                     progressDialog.dismiss();
                                     editUserProfiledialogue.dismiss();
                                 }
@@ -504,6 +367,9 @@ public class EditProfile extends AppCompatActivity {
                                                 .load(Integer.parseInt(avatar))
                                                         .into(profileImageView);
                                         progressDialog.dismiss();
+                                        user.setProfileImageLink(avatar);
+                                        SessionStorage.saveUser(EditProfile.this, user);
+                                        finalizeChange = true;
                                         editUserProfiledialogue.dismiss();
                                     }
                                 });
@@ -514,7 +380,8 @@ public class EditProfile extends AppCompatActivity {
             }
             else
                 {
-                    Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
+                    editUserProfiledialogue.dismiss();
+                    //Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
                 }
 
         });
@@ -570,37 +437,81 @@ public class EditProfile extends AppCompatActivity {
 
 
     }
+    public void selectFile(){
 
-    public void selectFile() {
         Intent intent = new Intent();
-        intent.setType("*/*");
+        intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+    public void takePhoto(){
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        downloadUri = HelperMethods.getImageUri();
+        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
+        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
+    }
+    private void selectImage() {
+        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditProfile.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo"))
+                {
+                    photo = 1;
+                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                        runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
+                    }
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)&&runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                        takePhoto();
+                    }
+                    else{
+                        runtimePermissionHelper.askPermission(CAMERA);
+                    }
+                }
+                else if (options[item].equals("Choose from Gallery"))
+                {
+                    photo = 0;
+                    if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+                        selectFile();
+                    } else {
+                        analyticsLogEvents.logEvents(EditProfile.this, "storage_off","asked_permission", "edit_profile");
+                        runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
+                    }
+
+                }
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,
-                permissions,
-                grantResults);
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(EditProfile.this,
-                        "Storage Permission Granted",
-                        Toast.LENGTH_SHORT)
-                        .show();
+    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if(photo==0){
                 selectFile();
-            } else {
-                Toast.makeText(EditProfile.this,
-                        "Storage Permission Denied",
-                        Toast.LENGTH_SHORT)
-                        .show();
             }
+            else if(photo==1){
+                if(runtimePermissionHelper.isPermissionAvailable(CAMERA))
+                    takePhoto();
+            }
+            analyticsLogEvents.logEvents(EditProfile.this,"storage_granted","permission_granted","edit_profile");
+        } else {
+            Toast.makeText(EditProfile.this,
+                    "Permission Denied",
+                    Toast.LENGTH_SHORT)
+                    .show();
         }
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
     }
 
     //code for upload the image
@@ -671,8 +582,148 @@ public class EditProfile extends AppCompatActivity {
                         });
             }
         }
-    }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            filePath = downloadUri;
+            //check the path for the image
+            //if the image path is notnull the uploading process will start
+            if (filePath != null) {
 
+
+                //Creating an  custom dialog to show the uploading status
+                final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+                progressDialog.setTitle("Uploading");
+                progressDialog.show();
+
+                //generating random id to store the profliepic
+                String id = UUID.randomUUID().toString();
+                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+
+                //storing  the pic
+                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                        //displaying percentage in progress dialog
+                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                    }
+                })
+                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+
+                                // Continue with the task to get the download URL
+                                return profileRef.getDownloadUrl();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        progressDialog.dismiss();
+                        //and displaying a success toast
+//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+                        finalizeChanges.setVisibility(View.VISIBLE);
+                        //and displaying a success toast
+                        downloadUri = uri;
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setPhotoUri(uri)
+                                .build();
+                        currentUser.getCurrentUser().updateProfile(profileUpdates);
+                        Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+                        for(int i =0; i<8; i++){
+                            avatarBgList[i].setVisibility(View.INVISIBLE);
+                        }
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                //if the upload is not successfull
+                                //hiding the progress dialog
+                                progressDialog.dismiss();
+                                analyticsLogEvents.logEvents(EditProfile.this,"pic_capture_fail","device_error","edit_profile");
+
+                                //and displaying error message
+                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
+
+        }
+    }
+    /*
+        @Override
+       protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+                filePath = data.getData();
+
+                //check the path for the image
+                //if the image path is notnull the uploading process will start
+                if (filePath != null) {
+
+                    //Creating an  custom dialog to show the uploading status
+                    final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+                    progressDialog.setTitle("Uploading");
+                    progressDialog.show();
+
+                    //generating random id to store the profliepic
+                    String id = UUID.randomUUID().toString();
+                    final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+
+                    //storing  the pic
+                    profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                            //displaying percentage in progress dialog
+                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                        }
+                    })
+                            .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+                                    }
+
+                                    // Continue with the task to get the download URL
+                                    return profileRef.getDownloadUrl();
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            progressDialog.dismiss();
+                            finalizeChanges.setVisibility(View.VISIBLE);
+                            //and displaying a success toast
+                            downloadUri = uri;
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setPhotoUri(uri)
+                                    .build();
+                            currentUser.getCurrentUser().updateProfile(profileUpdates);
+                            Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    //if the upload is not successfull
+                                    //hiding the progress dialog
+                                    progressDialog.dismiss();
+
+                                    //and displaying error message
+                                    Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            }
+        }
+    */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
