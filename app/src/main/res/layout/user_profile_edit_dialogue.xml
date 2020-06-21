@@ -170,36 +170,57 @@
                     android:visibility="gone"
                     android:foreground="@drawable/tick_background"/>
             </RelativeLayout>
-
             <RelativeLayout
-                android:id="@+id/imagePreview"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="4dp"
                 android:orientation="vertical">
-
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="85dp"
-                    android:layout_height="85dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/ic_account_circle_black_24dp"
-                    app:civ_border_color="#FF000000"
-                    app:civ_border_width="2dp" />
-
-                <Button
-                    android:id="@+id/profilePicSetterImage"
+                <ImageButton
+                    android:id="@+id/avatar8"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:background="@drawable/avatar8" />
+                <ImageView
+                    android:id="@+id/avatar8_State"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="55dp"
-                    android:layout_marginTop="60dp"
-                    android:background="@drawable/edit_project_button_background"
-                    android:foreground="@drawable/ic_camera_alt_white_24dp"
-                    android:foregroundGravity="center" />
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="50dp"
+                    android:visibility="gone"
+                    android:foreground="@drawable/tick_background"/>
             </RelativeLayout>
 
+
         </LinearLayout>
+
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/imagePreview"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/ic_account_circle_black_24dp"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp" />
+
+        <Button
+            android:id="@+id/profilePicSetterImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/edit_project_button_background"
+            android:foreground="@drawable/ic_camera_alt_white_24dp"
+            android:foregroundGravity="center" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/edit_profile_Button"
