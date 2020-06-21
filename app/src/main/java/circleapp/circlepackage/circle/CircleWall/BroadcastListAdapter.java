@@ -62,8 +62,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Circle circle;
     private FirebaseAuth currentUser;
 
+    private int count = 0;
+
+
     private Vibrator v;
     private User user;
+    private  int propic;
+    int myImageList;
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
@@ -104,6 +109,34 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         long createdTime = broadcast.getTimeStamp();
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
+
+
+        if (broadcast.getCreatorPhotoURI().length() > 10) {
+            Glide.with(context)
+                    .load(broadcast.getCreatorPhotoURI())
+                    .into(viewHolder.profPicDisplay);
+        } else {
+            propic = Integer.parseInt(broadcast.getCreatorPhotoURI());
+            myImageList = propic;
+            Glide.with(context)
+                    .load(propic)
+                    .placeholder(ContextCompat.getDrawable(context, myImageList))
+                    .into(viewHolder.profPicDisplay);
+        }
+        ++count;
+        if (count == 4) count = 0;
+
+        //setting new comments display
+        viewHolder.viewComments.setText("Go to discussion (" + ((int) broadcast.getNumberOfComments()) + ")");
+        if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
+            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
+            if (broadcast.getNumberOfComments() > 0)
+                viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        } else if (user.getNewTimeStampsComments() == null && broadcast.getNumberOfComments() > 0) {
+            viewHolder.viewComments.setTextColor(Color.parseColor("#6CACFF"));
+        }
 
         viewHolder.timeElapsedDisplay.setOnClickListener(view -> {
             SessionStorage.saveBroadcastList((Activity) context, broadcastList);

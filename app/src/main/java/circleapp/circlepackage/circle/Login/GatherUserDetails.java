@@ -122,9 +122,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg;
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
+    String def1,def2,def3,def4,def5;
+
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
+
 
     //location services elements
     private FusedLocationProviderClient client;
@@ -166,7 +169,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatar7_bg = findViewById(R.id.avatar7_State);
         avatar8_bg = findViewById(R.id.avatar8_State);
         profilePic = findViewById(R.id.profile_image);
+
+        def1 = String.valueOf(R.id.avatar1);
+        def2 = String.valueOf(R.id.avatar2);
+        def3 = String.valueOf(R.id.avatar3);
+        def4 = String.valueOf(R.id.avatar4);
+        def5 = String.valueOf(R.id.avatar5);
+
         setProfile = findViewById(R.id.imagePreview);
+
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
@@ -559,6 +570,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     public void selectFile(){
+
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -937,7 +949,20 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
         pollOptions.put("It's going to rain tomorrow", 0);
         pollOptions.put("No way, its dry as a dog biscuit", 0);
+
+        Poll adminPoll = new Poll("Use polls like this to quickly get your friends’ opinion about something!", pollOptions, null);
+        Broadcast commentBroadcast = new Broadcast("commentBroadcast", "You can have a discussion about your posts down in the " +
+                "comments below. Click on Go to discussion to see the secret message. :)", null, "Jacob",
+                "AdminId", false, (System.currentTimeMillis() - 1), null, def1, 0, 0);
+        Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,
+                System.currentTimeMillis(), adminPoll, def4, 0, 0);
+        Broadcast introBroadcast = new Broadcast("introBroadcast", "Welcome to Circle! Your friendly neighborhood app. Form circles " +
+                "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
+                "opinions - all on a single platform.", null, "Surya", "AdminId", false,
+                (System.currentTimeMillis() + 1), null, def5, 0, 0);
+
         String broadcastId1 = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!","Abrar",-1,pollOptions,0,circleId);
+
 
         String broadcastId2 = HelperMethods.createBroadcast("You can have a discussion about your posts down in the " +
                 "comments below. Click on Go to discussion to see the secret message. :)","Jacob", -1, 0, circleId);
@@ -953,9 +978,23 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
         pollOptionsRunningCircle.put("Sure!", 0);
         pollOptionsRunningCircle.put("Thats too early :(", 0);
+
+        Poll runningPoll = new Poll("Hey guys! Can we go running every friday early in the morning?", pollOptionsRunningCircle, null);
+        Broadcast runnersBroadcastMessage = new Broadcast(runningBroadcastID, "Hi all! This is a group to find mates to go on daily runs with. Runners of all levels welcome!", null, "Vijay Ram", "AdminId", false,
+                System.currentTimeMillis(), null, def3, 0, 0);
+        Broadcast runnersBroadcastPoll = new Broadcast(runningBroadcasPollID, null, null, "Vijay Ram", "AdminId", true,
+                System.currentTimeMillis(), runningPoll, def1, 0, 0);
+        Comment runnerComment = new Comment("Madhu mitha", "Hey where do you guys go running?",
+                runningCommentID, null, System.currentTimeMillis());
+        circlesDB.child(runningCircleID).setValue(runningCircle);
+        broadcastsDB.child(runningCircleID).child(runningBroadcastID).setValue(runnersBroadcastMessage);
+        broadcastsDB.child(runningCircleID).child(runningBroadcasPollID).setValue(runnersBroadcastPoll);
+        commentsDB.child(runningCircleID).child(runningBroadcastID).child(runningCommentID).setValue(runnerComment);
+
         broadcastId1 = HelperMethods.createBroadcast("Hi all! This is a group to find mates to go on daily runs with. Runners of all levels welcome!", "Vijay Ram",0,0,circleId2);
         broadcastId2 = HelperMethods.createPollBroadcast("Hey guys! Can we go running every friday early in the morning?","Vijay Ram",0,pollOptionsRunningCircle,0, circleId2);
         HelperMethods.createComment("Madhu mitha", "Hey where do you guys go running?",0,circleId2,broadcastId2);
+
 
         //students circle
         String circleId3 = HelperMethods.createCircle(district + " Students Hangout!","Lets use this circle to unite all students in " + district + ". Voice your problems, questions, or anything you need support with. You will never walk alone!","automatic","Malavika Kumar",district,2,0);
@@ -963,10 +1002,27 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         pollOptionsStudentsCircle.put("no! it will get cancelled!", 0);
         pollOptionsStudentsCircle.put("im preparing :(", 0);
         pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
+
+        Poll cookingPoll = new Poll("Are you guys still preparing for exams?", pollOptionsStudentsCircle, null);
+        Broadcast studentBroadcast = new Broadcast(studentsBroadcastID, "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. You have the support of all the students from " + district + " here!", null, "Mekkala Nair", "AdminId", false,
+                System.currentTimeMillis(), null, def5, 0, 0);
+        Broadcast studentBroadcastPoll = new Broadcast(studentsBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
+                System.currentTimeMillis(), cookingPoll, def2, 0, 0);
+        Comment studentComment = new Comment("Arijit Samuel", "Can i post promotions for my college events here?",
+                studentsCommentID, null, (System.currentTimeMillis() - (1800 * 1000)));
+        Comment studentCommentResponse = new Comment("Mekkala Nair", "Yeah that's not a problem!",
+                studentsCommentIDResponse, null, System.currentTimeMillis());
+        circlesDB.child(studentsCircleID).setValue(cookingCircle);
+        broadcastsDB.child(studentsCircleID).child(studentsBroadcastID).setValue(studentBroadcast);
+        broadcastsDB.child(studentsCircleID).child(studentsBroadcastPollID).setValue(studentBroadcastPoll);
+        commentsDB.child(studentsCircleID).child(studentsBroadcastID).child(studentsCommentID).setValue(studentComment);
+        commentsDB.child(studentsCircleID).child(studentsBroadcastID).child(studentsCommentIDResponse).setValue(studentCommentResponse);
+
         broadcastId1 = HelperMethods.createBroadcast("Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. You have the support of all the students from " + district + " here!","Mekkala Nair",0,0,circleId3);
         broadcastId2 = HelperMethods.createPollBroadcast("Are you guys still preparing for exams?","Mekkala Nair", 0, pollOptionsStudentsCircle, 0,circleId3);
         HelperMethods.createComment("Arijit Samuel","Can i post promotions for my college events here?",-(1800*1000),circleId3,broadcastId1);
         HelperMethods.createComment("Mekkala Nair", "Yeah that's not a problem!",0,circleId3,broadcastId1);
+
 
         //quarantine circle
         String circleId4 = HelperMethods.createCircle("Quarantine Talks " + district,"Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle","automatic","Surya Manivannan", district, 2,0);
@@ -975,8 +1031,23 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         pollOptionsQuarantineCircle.put("2 months", 0);
         pollOptionsQuarantineCircle.put("3 months", 0);
         pollOptionsQuarantineCircle.put("haven't even started", 0);
+
+        Poll quarantinePoll = new Poll("How long have you been in quarantine?", pollOptionsQuarantineCircle, null);
+        Broadcast quarantineBroadcast = new Broadcast(quarantineBroadcastID, "Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)", null, "Mekkala Nair", "AdminId", false,
+                (System.currentTimeMillis() - (1800 * 1000)), null, def4, 0, 0);
+        Broadcast quarantineBroadcastPoll = new Broadcast(quarantineBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
+                System.currentTimeMillis(), quarantinePoll, def1, 0, 0);
+        Comment quarantineComment = new Comment("Nithin M", "Where are you guys buying your essentials?",
+                quarantineCommentID, null, (System.currentTimeMillis()));
+        circlesDB.child(quarantineCircleID).setValue(quarantineCircle);
+        broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastID).setValue(quarantineBroadcast);
+        broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastPollID).setValue(quarantineBroadcastPoll);
+        commentsDB.child(quarantineCircleID).child(quarantineBroadcastID).child(quarantineCommentID).setValue(quarantineComment);
+    }
+
         broadcastId1 = HelperMethods.createBroadcast("Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)","Mekkala Nair",-(1800*1000),0,circleId4);
         broadcastId2 = HelperMethods.createPollBroadcast("How long have you been in quarantine?","Mekkala Nair", 0, pollOptionsQuarantineCircle, 0 ,circleId4);
         HelperMethods.createComment("Nithin M", "Where are you guys buying your essentials?",0,circleId4,broadcastId1);
     }*/
+
 }
