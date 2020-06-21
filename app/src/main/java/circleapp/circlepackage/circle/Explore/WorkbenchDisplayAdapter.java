@@ -120,7 +120,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         //setting new applicants
         if(HelperMethods.numberOfApplicants(circle,user) > 0){
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
-            holder.newApplicantsDisplay.setText(circle.getApplicantsList().size());
+            holder.newApplicantsDisplay.setText(Integer.toString(circle.getApplicantsList().size()));
         }
 
         //read for new notifs

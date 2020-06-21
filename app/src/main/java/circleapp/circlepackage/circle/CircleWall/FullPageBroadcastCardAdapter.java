@@ -49,7 +49,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private FirebaseDatabase database;
     private DatabaseReference broadcastCommentsDB, circlesDB, broadcastDB, userDB;
 
-
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle) {
         this.mContext = mContext;
         this.broadcastList = broadcastList;
@@ -59,7 +58,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         broadcastCommentsDB = database.getReference("BroadcastComments");
         circlesDB = database.getReference("Circles").child(circle.getId());
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
     }
 
     @NonNull
@@ -79,6 +77,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         commentAdapter= new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
+
 
         holder.commentSend.setOnClickListener(view -> {
             if(holder.commentEditText.getText() != null){
@@ -202,11 +201,13 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         ListView commentListView;
         private EditText commentEditText;
         private Button commentSend;
+        private LinearLayout container;
         public ViewHolder(View view) {
             super(view);
             commentListView = view.findViewById(R.id.full_page_broadcast_comments_display);
             commentEditText = view.findViewById(R.id.full_page_broadcast_comment_entry);
             commentSend = view.findViewById(R.id.fullpage_broadcast_comment_send_button);
+            container = view.findViewById(R.id.full_page_broadcast_container);
         }
     }
 }

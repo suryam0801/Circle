@@ -107,7 +107,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.timeElapsedDisplay.setOnClickListener(view -> {
             SessionStorage.saveBroadcastList((Activity) context, broadcastList);
-            context.startActivity(new Intent((Activity) context, FullPageBroadcastCardView.class));
+            Intent intent = new Intent(context, FullPageBroadcastCardView.class);
+            intent.putExtra("position", i);
+            context.startActivity(intent);
             ((Activity) context).finish();
         });
 
