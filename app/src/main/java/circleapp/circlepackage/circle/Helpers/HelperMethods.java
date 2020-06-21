@@ -10,6 +10,9 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -20,11 +23,13 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.User;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMethods {
 
@@ -220,6 +225,13 @@ public class HelperMethods {
     }
     public static String uuidGet(){
         return UUID.randomUUID().toString();
+    }
+
+    public static void GlideSetProfilePic(Context context, String avatar, CircleImageView profilePic){
+        Glide.with(context)
+                .load(Integer.parseInt(avatar))
+                .placeholder(ContextCompat.getDrawable(context, Integer.parseInt(avatar)))
+                .into(profilePic);
     }
 
 }
