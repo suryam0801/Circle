@@ -27,8 +27,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     private List<Subscriber> memberList;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private int count = 0;
-    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-            R.drawable.avatar2, R.drawable.avatar5};
+    private  int propic;
+    int myImageList;
+//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+//            R.drawable.avatar2, R.drawable.avatar5};
 
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList) {
@@ -49,11 +51,19 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
 
         final Subscriber member = memberList.get(position);
 
-        Glide.with(mContext)
-                .load(member.getPhotoURI())
-                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
-                .into(holder.profPic);
 
+        if (member.getPhotoURI().length() > 10) {
+            Glide.with(mContext)
+                    .load(member.getPhotoURI())
+                    .into(holder.profPic);
+        } else {
+            propic = Integer.parseInt(member.getPhotoURI());
+            myImageList = propic;
+            Glide.with(mContext)
+                    .load(propic)
+                    .placeholder(ContextCompat.getDrawable(mContext, myImageList))
+                    .into(holder.profPic);
+        }
         ++count;
         if(count == 4) count = 0;
 
