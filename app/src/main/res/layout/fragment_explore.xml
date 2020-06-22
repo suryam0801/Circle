@@ -33,22 +33,6 @@
 
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/explore_district_name_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="20dp"
-        android:drawablePadding="10dp"
-        android:fontFamily="@font/roboto_bold"
-        android:drawableStart="@drawable/ic_location_on_black_24dp"
-        android:text="Coimbatore"
-        android:textColor="@color/grey"
-        android:textSize="20dp"></TextView>
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exploreRecyclerView"
         android:layout_width="match_parent"

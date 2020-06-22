@@ -5,11 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
+    android:orientation="horizontal"
+    android:layout_weight="100"
     tools:context=".CircleWall.FullPageBroadcastCardView">
+
+    <LinearLayout
+        android:id="@+id/full_page_broadcast_left_nav"
+        android:layout_width="20dp"
+        android:layout_height="match_parent">
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/full_page_broadcast_left_nav_button"
+            android:layout_width="20dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_chevron_left_black_24dp">
+        </androidx.appcompat.widget.AppCompatImageButton>
+
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_weight="99"
         android:id="@+id/full_page_broadcast_card_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
     </androidx.recyclerview.widget.RecyclerView>
+    <LinearLayout
+        android:id="@+id/full_page_broadcast_right_nav"
+        android:layout_width="20dp"
+        android:layout_height="match_parent">
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/full_page_broadcast_right_nav_button"
+            android:layout_width="20dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:background="@drawable/ic_baseline_chevron_right_24">
+        </androidx.appcompat.widget.AppCompatImageButton>
+
+    </LinearLayout>
+
 </LinearLayout>

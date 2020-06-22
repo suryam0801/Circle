@@ -5,27 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="100"
     tools:context=".Explore.ExploreTabbedActivity">
 
     <RelativeLayout
         android:id="@+id/exploreHeaderBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/explore_district_name_display"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="20dp"
+            android:drawablePadding="10dp"
+            android:layout_marginBottom="5dp"
             android:fontFamily="@font/roboto_regular"
-            android:gravity="center_vertical"
-            android:paddingLeft="13dp"
-            android:paddingTop="17dp"
-            android:paddingBottom="17dp"
-            android:text="Circle"
-            android:textColor="#3B3B3B"
+            android:drawableStart="@drawable/ic_location_on_black_24dp"
+            android:text="Coimbatore"
+            android:textColor="@color/black"
             android:textSize="25dp"></TextView>
+
 
         <ImageButton
             android:id="@+id/main_activity_notifications_bell"
@@ -51,39 +55,21 @@
 
     </RelativeLayout>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/main_tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp"
-        app:tabIndicatorColor="#6CACFF"
-        app:tabIndicatorFullWidth="true"
-        app:tabSelectedTextColor="#6CACFF"
-        app:tabTextColor="#D1D1D1">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/main_workbench_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Circles"></com.google.android.material.tabs.TabItem>
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/main_explore_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Explore"></com.google.android.material.tabs.TabItem>
-
-    </com.google.android.material.tabs.TabLayout>
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
+        android:layout_weight="99"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_above="@id/bottom_navigation"/>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu"
+        android:background="?android:attr/windowBackground">
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 </LinearLayout>

@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Explore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
@@ -13,6 +14,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -51,8 +54,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
-    private TabLayout tabLayout;
-    private TabItem exploreTab, workbenchTab;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
 
@@ -71,9 +72,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
-        tabLayout = findViewById(R.id.main_tab_layout);
-        exploreTab = findViewById(R.id.main_explore_tab);
-        workbenchTab = findViewById(R.id.main_workbench_tab);
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
@@ -102,33 +100,38 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     }
 
     private void setViewPageAdapter() {
-        //setting the tab adapter
-        ViewPager viewPager = findViewById(R.id.view_pager);
-
-        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setAdapter(pagerAdapter);
-
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new WorkbenchFragment()).commit();
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+                    switch (item.getItemId()) {
+                        case R.id.workbench_bottom_nav_item:
+                            selectedFragment = new WorkbenchFragment();
+                            break;
+                        case R.id.explore_bottom_nav_item:
+                            selectedFragment = new ExploreFragment();
+                            break;
+/*
+                        case R.id.notifications_bottom_nav_item:
+                            selectedFragment = new SearchFragment();
+                            break;
+                        case R.id.search_bottom_nav_item:
+                            selectedFragment = new SearchFragment();
+                            break;
+*/
+                    }
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+                    return true;
+                }
+            };
 
     private void showLinkPopup() {
         linkCircleDialog = new Dialog(ExploreTabbedActivity.this);
