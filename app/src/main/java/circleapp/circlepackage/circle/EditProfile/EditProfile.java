@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -395,11 +396,12 @@ public class EditProfile extends AppCompatActivity {
         editUserNamedialogue.setContentView(R.layout.user_name_edit_dialogue); //set dialog view
         final Button edit_name_finalize = editUserNamedialogue.findViewById(R.id.edit_name_Button);
         final EditText edit_name = editUserNamedialogue.findViewById(R.id.edit_name);
+        edit_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         edit_name_finalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = edit_name.getText().toString().trim();
+                String name = edit_name.getText().toString().replaceAll("\\s+", " ");;
                 if (!TextUtils.isEmpty(name))
                 {
                     progressDialog.setTitle("Updating Name....");

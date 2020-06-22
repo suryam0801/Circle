@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -87,6 +89,9 @@ public class OtpActivity extends AppCompatActivity {
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
         mOtpText.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mOtpText, InputMethodManager.SHOW_IMPLICIT);
         mVerifyBtn = findViewById(R.id.verify_btn);
         resendTextView = findViewById(R.id.resend_otp_counter);
         resendTextView.setClickable(false);
@@ -119,6 +124,7 @@ public class OtpActivity extends AppCompatActivity {
 
         mVerifyBtn.setOnClickListener(v -> {
             String otp = mOtpText.getText().toString();
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
             if (otp.isEmpty()) {
                 analyticsLogEvents.logEvents(OtpActivity.this,"empty_otp","otp_text_empty","otp_activity");

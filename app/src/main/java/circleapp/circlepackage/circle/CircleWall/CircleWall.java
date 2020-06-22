@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -50,7 +51,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB, usersDB;
+    private DatabaseReference broadcastsDB,commentsDB, circlesPersonelDB, circlesDB, usersDB;
     private FirebaseAuth currentUser;
 
     private String TAG = CircleWall.class.getSimpleName();
@@ -68,7 +69,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     //create broadcast popup ui elements
     private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET;
     private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay;
-    private TextView circleBannerName;
+    private TextView circleBannerName, broadcastHeader;
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
     FloatingActionMenu floatingActionMenu;
@@ -97,6 +98,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         circlesPersonelDB = database.getReference("CirclePersonel");
         circlesDB = database.getReference("Circles");
         usersDB = database.getReference("Users").child(user.getUserId());
+        commentsDB = database.getReference("BroadcastComments");
         broadcastsDB.keepSynced(true);
         currentUser = FirebaseAuth.getInstance();
         analyticsLogEvents = new AnalyticsLogEvents();
@@ -248,6 +250,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         int currentCreatedCount = user.getCreatedCircles() - 1;
         user.setCreatedCircles(currentCreatedCount);
         usersDB.child("createdCircles").setValue(currentCreatedCount);
+        broadcastsDB.child(circle.getId()).removeValue();
+        commentsDB.child(circle.getId()).removeValue();
         analyticsLogEvents.logEvents(CircleWall.this, "circle_delete", "delete_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
@@ -270,10 +274,15 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createBroadcastPopup.setContentView(R.layout.broadcast_create_popup_layout); //set dialog view
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        broadcastHeader = createBroadcastPopup.findViewById(R.id.broadcast_header);
         setTitleET = createBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
+        setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
+        setMessageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
+        setPollQuestionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setPollOptionET = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
+        setPollOptionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         pollOptionsDisplay = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_display);
         pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
         btnAddPollOption = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
@@ -286,8 +295,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         //default will show message
         if (flag.equals("poll")) {
             pollCreateView.setVisibility(View.VISIBLE);
+            broadcastHeader.setText("Create New Poll");
             broadcastDisplay.setVisibility(View.GONE);
         }
+        else
+            broadcastHeader.setText("Create New Broadcast");
 
         btnAddPollOption.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button", "circle_wall");
