@@ -6,7 +6,6 @@ public class User  {
 
 
     private String Name, contact, profileImageLink, userId, token_id, district, ward;
-    private HashMap<String, Boolean> interestTags;
     private HashMap<String, Integer> notificationsAlert;
     private HashMap<String, Long> newTimeStampsComments;
     private int createdCircles, activeCircles, completedProjects, noOfReadDiscussions;
@@ -17,14 +16,13 @@ public class User  {
     }
 
     public User(String Name, String contact,
-                String profileImageLink, HashMap<String, Boolean> interestTags, String userId,
+                String profileImageLink, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
                 HashMap<String, Long> newDiscussionAlert, int noOfNewComments) {
         this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
-        this.interestTags = interestTags;
         this.userId = userId;
         this.createdCircles = createdCircles;
         this.activeCircles = activeCircles;
@@ -35,14 +33,6 @@ public class User  {
         this.notificationsAlert = notificationsAlert;
         this.newTimeStampsComments = newDiscussionAlert;
         this.noOfReadDiscussions = noOfNewComments;
-    }
-
-    public HashMap<String, Boolean> getInterestTags() {
-        return interestTags;
-    }
-
-    public void setInterestTags(HashMap<String, Boolean> interestTags) {
-        this.interestTags = interestTags;
     }
 
     public void setCreatedCircles(int createdCircles) {
@@ -158,7 +148,6 @@ public class User  {
                 ", token_id='" + token_id + '\'' +
                 ", district='" + district + '\'' +
                 ", ward='" + ward + '\'' +
-                ", interestTags=" + interestTags +
                 ", notificationsAlert=" + notificationsAlert +
                 ", newDiscussionAlert=" + newTimeStampsComments +
                 ", createdCircles=" + createdCircles +

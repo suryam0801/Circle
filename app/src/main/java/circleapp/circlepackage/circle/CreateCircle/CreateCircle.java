@@ -117,23 +117,12 @@ public class CreateCircle extends AppCompatActivity {
 
         String creatorName = currentUser.getCurrentUser().getDisplayName();
 
-        //convert selectedInterests into hashmap
-        HashMap<String, Boolean> interestHashmap = new HashMap<>();
-        if(category.contains("&")){
-            Scanner scanner = new Scanner(category);
-            scanner.useDelimiter("&");
-            interestHashmap.put(scanner.next(), true);
-            interestHashmap.put(scanner.next(), true);
-        } else {
-            interestHashmap.put(category, true);
-        }
-
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
 
         //updating circles
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,
-                interestHashmap, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
+                category, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
                 System.currentTimeMillis(),0, 0);
 
         circleDB.child(myCircleID).setValue(circle);
