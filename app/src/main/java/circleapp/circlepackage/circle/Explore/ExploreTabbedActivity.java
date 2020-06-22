@@ -118,10 +118,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                         case R.id.explore_bottom_nav_item:
                             selectedFragment = new ExploreFragment();
                             break;
-/*
+
                         case R.id.notifications_bottom_nav_item:
-                            selectedFragment = new SearchFragment();
+                            selectedFragment = new NotificationFragment();
                             break;
+/*
                         case R.id.search_bottom_nav_item:
                             selectedFragment = new SearchFragment();
                             break;
