@@ -54,7 +54,6 @@ public class ExploreFragment extends Fragment {
     private User user;
     RecyclerView exploreRecyclerView;
     private LinearLayout emptyExploreDisplay;
-    private TextView locationDisplay;
 
 
     public ExploreFragment() {
@@ -91,11 +90,7 @@ public class ExploreFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
-        locationDisplay = view.findViewById(R.id.explore_district_name_display);
         emptyExploreDisplay = view.findViewById(R.id.explore_empty_display);
-
-        locationDisplay.setText(user.getDistrict());
-        //retrieve interest tags from user
 
         setCircleTabs(view);
         return view;
