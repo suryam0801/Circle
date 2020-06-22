@@ -51,7 +51,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesPersonelDB, circlesDB, usersDB;
+    private DatabaseReference broadcastsDB,commentsDB, circlesPersonelDB, circlesDB, usersDB;
     private FirebaseAuth currentUser;
 
     private String TAG = CircleWall.class.getSimpleName();
@@ -98,6 +98,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         circlesPersonelDB = database.getReference("CirclePersonel");
         circlesDB = database.getReference("Circles");
         usersDB = database.getReference("Users").child(user.getUserId());
+        commentsDB = database.getReference("BroadcastComments");
         broadcastsDB.keepSynced(true);
         currentUser = FirebaseAuth.getInstance();
         analyticsLogEvents = new AnalyticsLogEvents();
@@ -249,6 +250,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         int currentCreatedCount = user.getCreatedCircles() - 1;
         user.setCreatedCircles(currentCreatedCount);
         usersDB.child("createdCircles").setValue(currentCreatedCount);
+        broadcastsDB.child(circle.getId()).removeValue();
+        commentsDB.child(circle.getId()).removeValue();
         analyticsLogEvents.logEvents(CircleWall.this, "circle_delete", "delete_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
