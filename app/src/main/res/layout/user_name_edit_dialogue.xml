@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your username"
+        android:text="Enter your Username"
         android:fontFamily="@font/roboto_regular"
         android:layout_marginLeft="3dp"
         android:textColor="#B3B1B1"
@@ -26,12 +26,14 @@
         android:backgroundTint="#ACA9A9"
         android:textColorHint="#ACA9A9"
         android:fontFamily="@font/roboto_medium"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:textSize="13dp"
         android:ems="10"
         android:nextFocusDown="@id/registerButton"
         android:inputType="textPersonName"
         android:imeOptions="actionDone"
-        android:digits="@string/digits"
+        android:digits="@string/username"
         android:textColor="@color/black"/>
     <Button
         android:id="@+id/edit_name_Button"

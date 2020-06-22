@@ -265,6 +265,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     else {
                         analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success","gather_user_details");
                         Name = name.getText().toString();
+                        Name = Name.replaceAll("\\s+", " ");
                         contact = pref.getString("key_name5", null);
 
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
