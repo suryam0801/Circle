@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -67,6 +68,8 @@ public class CreateCircle extends AppCompatActivity {
         back = findViewById(R.id.bck_create);
         typeInfoButton = findViewById(R.id.circle_type_info_button);
         typePrompt = findViewById(R.id.circle_type_tip_prompt);
+        circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle","on_button_click");
 

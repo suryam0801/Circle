@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +68,7 @@ public class BroadcastComments extends AppCompatActivity {
 
         commentsListView = findViewById(R.id.comments_listView);
         commentEditText = findViewById(R.id.comment_type_editText);
+        commentEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         commentSend = findViewById(R.id.comment_send_button);
         back = findViewById(R.id.bck_broadcastComments);
         commentsList = new ArrayList<>();

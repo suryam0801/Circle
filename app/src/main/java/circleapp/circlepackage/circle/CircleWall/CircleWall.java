@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -271,9 +272,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         setTitleET = createBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
+        setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
+        setMessageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
+        setPollQuestionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setPollOptionET = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
+        setPollOptionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         pollOptionsDisplay = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_display);
         pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
         btnAddPollOption = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
