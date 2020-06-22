@@ -69,7 +69,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     //create broadcast popup ui elements
     private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET;
     private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay;
-    private TextView circleBannerName;
+    private TextView circleBannerName, broadcastHeader;
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
     FloatingActionMenu floatingActionMenu;
@@ -271,6 +271,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createBroadcastPopup.setContentView(R.layout.broadcast_create_popup_layout); //set dialog view
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        broadcastHeader = createBroadcastPopup.findViewById(R.id.broadcast_header);
         setTitleET = createBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
         setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
@@ -291,8 +292,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         //default will show message
         if (flag.equals("poll")) {
             pollCreateView.setVisibility(View.VISIBLE);
+            broadcastHeader.setText("Create New Poll");
             broadcastDisplay.setVisibility(View.GONE);
         }
+        else
+            broadcastHeader.setText("Create New Broadcast");
 
         btnAddPollOption.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button", "circle_wall");
