@@ -24,9 +24,9 @@ exports.sendNotification = functions.firestore.document("Users/{user_id}/Notific
 
         return Promise.all([from_data, to_data]).then(result =>{
 
-            const from_name = result[0].data().firstName;
+            const from_name = result[0].data().name;
 
-            const to_name = result[1].data().firstName;
+            const to_name = result[1].data().name;
 
             const token = result[1].data().token_id;
 
@@ -83,9 +83,9 @@ exports.sendBroadcastNotification = functions.firestore.document("Users/{user_id
 
         return Promise.all([from_data, to_data]).then(result =>{
 
-            const from_name = result[0].data().firstName;
+            const from_name = result[0].data().name;
 
-            const to_name = result[1].data().firstName;
+            const to_name = result[1].data().name;
 
             const token = result[1].data().token_id;
 

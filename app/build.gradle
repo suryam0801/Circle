@@ -103,6 +103,8 @@ dependencies {
     implementation 'com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1'
 
     implementation 'com.github.clans:fab:1.6.4'
+    //Cirect Boot
+    implementation 'com.google.firebase:firebase-messaging-directboot:20.2.1'
 
     //firebase quality functions
     implementation 'com.google.firebase:firebase-analytics:17.4.3'
