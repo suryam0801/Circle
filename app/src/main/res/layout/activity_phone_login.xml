@@ -118,7 +118,7 @@
                     android:padding="16dp"
                     android:textColor="@color/color_blue"
                     android:textColorHint="@color/grey"
-                    android:textSize="17sp" />
+                    android:textSize="18sp" />
 
 
             </LinearLayout>
