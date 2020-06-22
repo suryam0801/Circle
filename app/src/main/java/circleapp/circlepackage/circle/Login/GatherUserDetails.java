@@ -627,7 +627,18 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             startActivity(i);
             Log.d(TAG,"Intent lines are executed...");
             SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
-            sendnotify();
+//            sendnotify();
+            db.collection("Users")
+                    .document(userId)
+                    .set(user)
+                    .addOnSuccessListener(aVoid -> {
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                        }
+                    });
             finish();
         });
     }
