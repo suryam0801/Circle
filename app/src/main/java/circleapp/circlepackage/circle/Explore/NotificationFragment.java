@@ -1,19 +1,20 @@
-package circleapp.circlepackage.circle.Notification;
+package circleapp.circlepackage.circle.Explore;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -30,18 +31,23 @@ import java.util.List;
 import java.util.Scanner;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Explore.NotificationAdapter;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
-public class NotificationActivity extends AppCompatActivity {
+public class NotificationFragment extends Fragment {
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-    private String TAG = NotificationActivity.class.getSimpleName();
+    private String mParam1;
+    private String mParam2;
+
     private ListView thisWeekListView, previousListView;
     private List<Notification> thisWeekNotifs, previousNotifs;
+//    private NotificationAdapter adapterThisWeek, adapterPrevious;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -49,17 +55,41 @@ public class NotificationActivity extends AppCompatActivity {
     private DatabaseReference notifyDb, circlesDB;
     private FirebaseAuth currentUser;
     AnalyticsLogEvents analyticsLogEvents;
-    private ImageButton back;
     private Circle circle;
 
+    public NotificationFragment() {
+        // Required empty public constructor
+    }
+
+
+    public static NotificationFragment newInstance(String param1, String param2) {
+        NotificationFragment fragment = new NotificationFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_notification, container, false);
+
         analyticsLogEvents= new AnalyticsLogEvents();
-        thisWeekListView = findViewById(R.id.thisweek_notifications_display);
-        previousListView = findViewById(R.id.all_time_notifications_display);
-        prevnotify = findViewById(R.id.prevnotifytext);
+        thisWeekListView = view.findViewById(R.id.thisweek_notifications_display);
+        previousListView = view.findViewById(R.id.all_time_notifications_display);
+        prevnotify = view.findViewById(R.id.prevnotifytext);
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
         circle = new Circle();
@@ -67,19 +97,12 @@ public class NotificationActivity extends AppCompatActivity {
         notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
         circlesDB = database.getReference("Circles");
 
+loadNotifications();
 
 
-        back = findViewById(R.id.bck_notifications);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(NotificationActivity.this, ExploreTabbedActivity.class));
-                finish();
-            }
-        });
-
-        loadNotifications();
+        return view;
     }
+
 
     private void loadNotifications() {
         notifyDb.orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
@@ -110,20 +133,18 @@ public class NotificationActivity extends AppCompatActivity {
                     prevnotify.setVisibility(View.VISIBLE);
                 }
 
-                adapterThisWeek = new NotificationAdapter(getApplicationContext(), thisWeekNotifs);
-                adapterPrevious = new NotificationAdapter(getApplicationContext(), previousNotifs);
+                adapterThisWeek = new NotificationAdapter(getContext(),thisWeekNotifs);
+                adapterPrevious = new NotificationAdapter(getContext(), previousNotifs);
 
                 previousListView.setAdapter(adapterPrevious);
                 thisWeekListView.setAdapter(adapterThisWeek);
 
-                Utility.setListViewHeightBasedOnChildren(thisWeekListView);
-                Utility.setListViewHeightBasedOnChildren(previousListView);
+                NotificationFragment.Utility.setListViewHeightBasedOnChildren(thisWeekListView);
+                NotificationFragment.Utility.setListViewHeightBasedOnChildren(previousListView);
 
                 thisWeekListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                            circle=SessionStorage.getCircle(NotificationActivity.this);
-//                            Circle current = new Circlele();
                         Notification curent = thisWeekNotifs.get(position);
                         String circleid = curent.getCircleId();
                         circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
@@ -131,13 +152,14 @@ public class NotificationActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Circle circle = dataSnapshot.getValue(Circle.class);
                                 if (circle.getMembersList().containsKey(currentUser.getUid())) {
-                                    analyticsLogEvents.logEvents(NotificationActivity.this, "notification_clicked_wall","to_circle_wall","notification");
-                                    SessionStorage.saveCircle(NotificationActivity.this, circle);
-                                    startActivity(new Intent(NotificationActivity.this, CircleWall.class));
-                                    finish();
+                                    analyticsLogEvents.logEvents(getContext(), "notification_clicked_wall","to_circle_wall","notification");
+                                    SessionStorage.saveCircle((Activity) getContext(), circle);
+                                    startActivity(new Intent(getContext(), CircleWall.class));
+                                    ((Activity) getContext()).finish();
+
                                 } else {
-                                    analyticsLogEvents.logEvents(NotificationActivity.this, "notification_clicked_invalid_user","not_part_of_circle","notification");
-                                    Toast.makeText(NotificationActivity.this, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
+                                    analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user","not_part_of_circle","notification");
+                                    Toast.makeText(getContext(), "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -161,13 +183,13 @@ public class NotificationActivity extends AppCompatActivity {
                                 Circle circle = dataSnapshot.getValue(Circle.class);
                                 String state = curent.getState();
                                 if (state.equalsIgnoreCase("Accepted") || state.equalsIgnoreCase("Rejected")) {
-                                    SessionStorage.saveCircle(NotificationActivity.this, circle);
-                                    startActivity(new Intent(NotificationActivity.this, CircleWall.class));
-                                    finish();
+                                    SessionStorage.saveCircle((Activity) getContext(), circle);
+                                    startActivity(new Intent(getContext(), CircleWall.class));
+                                    ((Activity) getContext()).finish();
                                 } else if (state.equalsIgnoreCase("broadcast_added")) {
-                                    SessionStorage.saveCircle(NotificationActivity.this, circle);
-                                    startActivity(new Intent(NotificationActivity.this, CircleWall.class));
-                                    finish();
+                                    SessionStorage.saveCircle((Activity) getContext(), circle);
+                                    startActivity(new Intent(getContext(), CircleWall.class));
+                                    ((Activity) getContext()).finish();
                                 }
 
                             }
@@ -206,6 +228,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
 
+
     public static class Utility {
 
         public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -230,6 +253,7 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
+
     public static String getCurrentTimeStamp() {
         try {
 
@@ -244,11 +268,5 @@ public class NotificationActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(NotificationActivity.this, ExploreTabbedActivity.class);
-        startActivity(intent);
-        finish();
-    }
+
 }

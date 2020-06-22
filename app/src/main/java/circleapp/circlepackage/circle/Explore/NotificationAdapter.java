@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Notification;
+package circleapp.circlepackage.circle.Explore;
 
 import android.content.Context;
 import android.graphics.Color;
