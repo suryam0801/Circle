@@ -36,6 +36,7 @@ import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
+import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -233,6 +234,17 @@ public class HelperMethods {
         Comment comment = new Comment(name, text, id, null, System.currentTimeMillis()+offsetTimeStamp);
         commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
+
+    public static void createReportAbuse(String circleId, String creatorId, String userId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference reportAbuseDB;
+        reportAbuseDB = database.getReference("ReportAbuse");
+        String id = uuidGet();
+        ReportAbuse reportAbuse = new ReportAbuse(id, circleId, creatorId, userId);
+        reportAbuseDB.child(id).setValue(reportAbuse);
+    }
+
     public static String uuidGet(){
         return UUID.randomUUID().toString();
     }
