@@ -5,14 +5,23 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -279,4 +288,75 @@ public class HelperMethods {
             }
         }
     }
+
+    public static LinearLayout generateLayoutPollOptionBackground(Context context, RadioButton button, int percentage) {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+        linearLayoutParams.setMargins(0, 10, 0, 10);
+        linearLayoutParams.weight = 100;
+        layout.setLayoutParams(linearLayoutParams);
+        layout.setBackground(new PercentDrawable(100, "#EFF6FF"));
+
+        TextView tv = new TextView(context);
+        tv.setText(percentage + "%");
+        tv.setTextAppearance(context, R.style.poll_percentage_textview_style);
+        tv.setPadding(0, 0, 30, 0);
+
+        layout.addView(button);
+        layout.addView(tv);
+
+        return layout;
+    }
+
+    public static RadioButton generateRadioButton(Context context, String optionName, int percentage) {
+        RadioButton button = new RadioButton(context);
+        LinearLayout.LayoutParams rbParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+        rbParams.weight = 90;
+        rbParams.setMargins(0, 0, 0, 0);
+        button.setPadding(10, 0, 0, 0);
+        button.setLayoutParams(rbParams);
+        button.setHighlightColor(Color.BLACK);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{Color.parseColor("#6CACFF")}, //disabled
+                        new int[]{Color.parseColor("#6CACFF")} //enabled
+                },
+                new int[]{
+                        Color.parseColor("#6CACFF") //disabled
+                        , Color.parseColor("#6CACFF") //enabled
+                }
+        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            button.setButtonTintList(colorStateList);
+
+
+        button.setBackground(new PercentDrawable(percentage, "#D8E9FF"));
+        button.setTextColor(Color.BLACK);
+        button.setText(optionName);
+
+        return button;
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
 }

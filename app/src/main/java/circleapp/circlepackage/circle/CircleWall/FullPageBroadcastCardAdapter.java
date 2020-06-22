@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -69,18 +71,18 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     @Override
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
-        ((Activity)mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         Broadcast currentBroadcast = broadcastList.get(position);
 
-        commentAdapter= new CommentAdapter(mContext, commentsList);
+        commentAdapter = new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
 
 
         holder.commentSend.setOnClickListener(view -> {
-            if(holder.commentEditText.getText() != null){
+            if (holder.commentEditText.getText() != null) {
                 makeCommentEntry(currentBroadcast, holder.commentEditText.getText().toString());
                 holder.commentEditText.setText("");
             } else {
@@ -94,10 +96,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                holder.commentListView.setSelection(holder.commentListView.getAdapter().getCount()-1);
+                holder.commentListView.setSelection(holder.commentListView.getAdapter().getCount() - 1);
 
-                if(commentsList.size() == currentBroadcast.getNumberOfComments())
-               updateUserFields("view", commentsList, currentBroadcast);
+                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
+                if (commentsList.size() == currentBroadcast.getNumberOfComments())
+                    updateUserFields("view", commentsList, currentBroadcast);
             }
 
             @Override
@@ -150,7 +153,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         updateUserFields("create", null, broadcast);
     }
 
-    public void updateCommentNumbersPostCreate(long timetamp, Broadcast broadcast){
+    public void updateCommentNumbersPostCreate(long timetamp, Broadcast broadcast) {
         broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(broadcast.getId());
 
         //updating broadCastTimeStamp after creating the comment
@@ -168,11 +171,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         SessionStorage.saveCircle((Activity) mContext, circle);
     }
 
-    public void updateUserFields(String navFrom, List<Comment> commentsList, Broadcast broadcast){
+    public void updateUserFields(String navFrom, List<Comment> commentsList, Broadcast broadcast) {
         User user = SessionStorage.getUser((Activity) mContext);
 
         int userNumberOfReadDiscussions;
-        switch (navFrom){
+        switch (navFrom) {
             case "create":
                 //updating userReadDiscussions after creating the comment
                 userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + 1;
@@ -201,7 +204,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         ListView commentListView;
         private EditText commentEditText;
         private Button commentSend;
-        private LinearLayout container;
+        private ScrollView container;
+
         public ViewHolder(View view) {
             super(view);
             commentListView = view.findViewById(R.id.full_page_broadcast_comments_display);
