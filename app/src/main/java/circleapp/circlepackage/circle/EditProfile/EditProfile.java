@@ -401,14 +401,14 @@ public class EditProfile extends AppCompatActivity {
         edit_name_finalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = edit_name.getText().toString().trim();
+                String name = edit_name.getText().toString().replaceAll("\\s+", " ");;
                 if (!TextUtils.isEmpty(name))
                 {
                     progressDialog.setTitle("Updating Name....");
                     progressDialog.show();
                     String userId = currentUser.getInstance().getCurrentUser().getUid();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(name.replaceAll("\\s+", " "))
+                            .setDisplayName(name)
                             .build();
                     currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
