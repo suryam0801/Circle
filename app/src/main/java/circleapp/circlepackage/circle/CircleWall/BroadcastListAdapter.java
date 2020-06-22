@@ -72,6 +72,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.broadcastList = broadcastList;
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
+        user = SessionStorage.getUser((Activity) context);
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
@@ -85,18 +86,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
 
         final Broadcast broadcast = broadcastList.get(i);
-        user = SessionStorage.getUser((Activity) context);
 
         final Poll poll;
 
-        if (user.getProfileImageLink().length() > 10) { //checking if its uploaded image
+        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
             Glide.with((Activity) context)
                     .load(user.getProfileImageLink())
                     .into(viewHolder.profPicDisplay);
         } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(user.getProfileImageLink());
+            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
             Glide.with((Activity) context)
-                    .load(ContextCompat.getDrawable((Activity) context, profilePic))
+                    .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);
         }
 

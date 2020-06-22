@@ -137,6 +137,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         String timeElapsed = HelperMethods.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
         holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
 
+        holder.categoryDisplay.setText(circle.getCategory());
+
     }
 
 

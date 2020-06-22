@@ -6,8 +6,10 @@
     android:layout_marginTop="12dp"
     android:layout_marginBottom="5dp"
     android:layout_marginRight="25dp"
-    android:paddingRight="20dp"
-    android:background="@drawable/create_broadcast_popup_background"
+    android:paddingRight="15dp"
+    android:paddingLeft="8dp"
+    android:paddingTop="13dp"
+    android:background="@drawable/broadcast_cards"
     android:elevation="3dp"
     android:orientation="vertical">
 
