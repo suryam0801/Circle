@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,7 +115,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         });
 
         //new comments setter
-        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + "");
+        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
         if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
             viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
 
@@ -142,7 +143,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcast.isPollExists() == true) {
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
-            viewHolder.pollQuestionDisplay.setText(poll.getQuestion());
+            viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+            viewHolder.broadcastTitle.setText(poll.getQuestion());
             HashMap<String, Integer> pollOptions = poll.getOptions();
 
             //Option Percentage Calculation
@@ -164,8 +166,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 if (totalValue != 0)
                     percentage = (int) (((double) entry.getValue() / totalValue) * 100);
 
-                RadioButton button = generateRadioButton(entry.getKey(), percentage);
-                LinearLayout layout = generateTextViewLayoutBackground(button, percentage);
+                RadioButton button = HelperMethods.generateRadioButton(context, entry.getKey(), percentage);
+                LinearLayout layout = HelperMethods.generateLayoutPollOptionBackground(context, button, percentage);
 
                 if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
                     button.setChecked(true);
@@ -212,56 +214,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         return broadcastList.size();
     }
 
-    public LinearLayout generateTextViewLayoutBackground(RadioButton button, int percentage) {
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
-        linearLayoutParams.setMargins(0, 10, 0, 10);
-        linearLayoutParams.weight = 100;
-        layout.setLayoutParams(linearLayoutParams);
-        layout.setBackground(new PercentDrawable(100, "#EFF6FF"));
-
-        TextView tv = new TextView(context);
-        tv.setText(percentage + "%");
-        tv.setTextAppearance(context, R.style.poll_percentage_textview_style);
-        tv.setPadding(0, 0, 30, 0);
-
-        layout.addView(button);
-        layout.addView(tv);
-
-        return layout;
-    }
-
-    public RadioButton generateRadioButton(String optionName, int percentage) {
-        RadioButton button = new RadioButton(context);
-        LinearLayout.LayoutParams rbParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
-        rbParams.weight = 90;
-        rbParams.setMargins(0, 0, 0, 0);
-        button.setPadding(10, 0, 0, 0);
-        button.setLayoutParams(rbParams);
-        button.setHighlightColor(Color.BLACK);
-        ColorStateList colorStateList = new ColorStateList(
-                new int[][]{
-                        new int[]{Color.parseColor("#6CACFF")}, //disabled
-                        new int[]{Color.parseColor("#6CACFF")} //enabled
-                },
-                new int[]{
-                        Color.parseColor("#6CACFF") //disabled
-                        , Color.parseColor("#6CACFF") //enabled
-                }
-        );
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            button.setButtonTintList(colorStateList);
-
-
-        button.setBackground(new PercentDrawable(percentage, "#D8E9FF"));
-        button.setTextColor(Color.BLACK);
-        button.setText(optionName);
-
-        return button;
-    }
-
-
     public void vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -273,10 +225,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView broadcastNameDisplay, broadcastMessageDisplay,
-                pollQuestionDisplay, timeElapsedDisplay, viewComments;
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
         private CircleImageView profPicDisplay;
-        private LinearLayout pollDisplay, pollOptionsDisplayGroup;
+        private LinearLayout pollOptionsDisplayGroup;
+        private ScrollView pollDisplay;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
@@ -288,13 +240,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             broadcastDB = database.getReference("Broadcasts");
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.broadcastWall_Message);
-            pollQuestionDisplay = view.findViewById(R.id.broadcastWall_poll_question_textview);
             timeElapsedDisplay = view.findViewById(R.id.broadcastWall_object_postedTime);
             pollOptionsDisplayGroup = view.findViewById(R.id.poll_options_radio_group);
             profPicDisplay = view.findViewById(R.id.broadcasttWall_profilePicture);
             pollDisplay = view.findViewById(R.id.broadcastWall_poll_display_view);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
+            broadcastTitle = view.findViewById(R.id.broadcastWall_Title);
         }
 
         public String getCurrentUserPollOption() {
