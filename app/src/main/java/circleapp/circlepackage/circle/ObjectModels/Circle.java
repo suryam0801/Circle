@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Circle {
-    private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard;
-    private HashMap<String, Boolean>  interestTags, membersList, applicantsList;
+    private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard, category;
+    private HashMap<String, Boolean> membersList, applicantsList;
     private long timestamp;
     private int noOfBroadcasts, noOfNewDiscussions;
 
@@ -14,7 +14,7 @@ public class Circle {
     }
 
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
-                  String creatorName, HashMap<String, Boolean> interestTags,
+                  String creatorName, String category,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
                   String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, int noOfNewDiscussions) {
         this.id = id;
@@ -23,7 +23,7 @@ public class Circle {
         this.acceptanceType = acceptanceType;
         this.creatorID = creatorID;
         this.creatorName = creatorName;
-        this.interestTags = interestTags;
+        this.category = category;
         this.membersList = membersList;
         this.applicantsList = applicantsList;
         this.circleDistrict = circleDistrict;
@@ -81,12 +81,12 @@ public class Circle {
         this.creatorName = creatorName;
     }
 
-    public HashMap<String, Boolean> getInterestTags() {
-        return interestTags;
+    public String getCategory() {
+        return category;
     }
 
-    public void setInterestTags(HashMap<String, Boolean> interestTags) {
-        this.interestTags = interestTags;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public HashMap<String, Boolean> getMembersList() {
@@ -156,7 +156,6 @@ public class Circle {
                 ", creatorName='" + creatorName + '\'' +
                 ", circleDistrict='" + circleDistrict + '\'' +
                 ", circleWard='" + circleWard + '\'' +
-                ", interestTags=" + interestTags +
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +
                 ", timestamp=" + timestamp +

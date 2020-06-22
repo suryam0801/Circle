@@ -1,207 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wbContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="15dp"
     android:layout_marginTop="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginBottom="10dp"
+    android:background="@drawable/create_broadcast_popup_background"
+    android:elevation="4dp"
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/wbContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#D8E9FF"
-        android:orientation="horizontal">
-
-        <View
-            android:id="@+id/wb_divider_line"
-            android:layout_width="7dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/edit_project_button_background"></View>
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical"
+        android:weightSum="100">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp"
-            android:orientation="vertical"
-            android:weightSum="100">
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/avatar3"></de.hdodenhof.circleimageview.CircleImageView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="10"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/wbcircleName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_condensed_bold"
-                        android:text="Circle Name"
-                        android:textColor="@color/black"
-                        android:textSize="18dp"></TextView>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_condensed"
-                            android:text="By "
-                            android:textColor="@color/disabledBtnBg"
-                            android:textSize="12dp" />
-
-                        <TextView
-                            android:id="@+id/wbcircle_creatorName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_condensed"
-                            android:text="Creator Name"
-                            android:textColor="@color/color_blue"
-                            android:textSize="12dp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="99">
-                    <TextView
-                        android:id="@+id/newNotifAlertTV"
-                        android:layout_width="33dp"
-                        android:layout_height="55dp"
-                        android:drawableTop="@drawable/post_icon"
-                        android:fontFamily="@font/roboto_condensed_bold"
-                        android:gravity="center"
-                        android:text="5"
-                        android:layout_marginRight="5dp"
-                        android:textColor="@color/black"
-                        android:visibility="gone"></TextView>
-
-                    <TextView
-                        android:id="@+id/newApplicantsDisplay"
-                        android:layout_width="33dp"
-                        android:layout_height="55dp"
-                        android:drawableTop="@drawable/ic_person_black_24dp"
-                        android:fontFamily="@font/roboto_condensed_bold"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textColor="@color/black"
-                        android:visibility="gone"></TextView>
-
-                    <TextView
-                        android:id="@+id/newDiscussionDisplay"
-                        android:layout_width="33dp"
-                        android:layout_height="55dp"
-                        android:drawableTop="@drawable/ic_baseline_chat_bubble_outline_24"
-                        android:fontFamily="@font/roboto_condensed_bold"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textColor="@color/black"
-                        android:visibility="gone"></TextView>
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="27dp"
-                    android:background="@drawable/avatar1"></de.hdodenhof.circleimageview.CircleImageView>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/avatar3"></de.hdodenhof.circleimageview.CircleImageView>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/avatar2"></de.hdodenhof.circleimageview.CircleImageView>
-
-                <Button
-                    android:id="@+id/wb_members_count_button"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="40dp"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="50dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:padding="0dp"
-                    android:text="+358"
-                    android:textAllCaps="false"
-                    android:textColor="@color/color_blue"
-                    android:textSize="11dp"></Button>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp">
-
-                <LinearLayout
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal">
-                    <Button
-                        android:id="@+id/wb_share_circle_button"
-                        android:layout_width="80dp"
-                        android:layout_height="34dp"
-                        android:background="@drawable/join_button_background_explore_card"
-                        android:drawableStart="@drawable/ic_person_add_black_24dp"
-                        android:fontFamily="@font/roboto_condensed"
-                        android:paddingLeft="13dp"
-                        android:paddingRight="10dp"
-                        android:text="Invite"
-                        android:layout_marginRight="6dp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="13dp">
-                    </Button>
-                </LinearLayout>
+                android:layout_weight="10"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/circle_created_date"
+                    android:id="@+id/wbcircleName"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:fontFamily="@font/roboto_condensed"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="17 Feb, 2020"
-                    android:textColor="@color/color_blue"
-                    android:textSize="12dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Circle Name"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"></TextView>
 
-            </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Created By "
+                        android:textColor="@color/disabledBtnBg"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/wbcircle_creatorName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Creator Name"
+                        android:textColor="@color/color_blue"
+                        android:textSize="12dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="99">
+
+                <TextView
+                    android:id="@+id/newNotifAlertTV"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:fontFamily="@font/roboto_condensed_bold"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:visibility="gone"></TextView>
+
+                <TextView
+                    android:id="@+id/newApplicantsDisplay"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:fontFamily="@font/roboto_condensed_bold"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:visibility="gone"></TextView>
+
+                <TextView
+                    android:id="@+id/newDiscussionDisplay"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:fontFamily="@font/roboto_condensed_bold"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:visibility="gone"></TextView>
+
+            </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp">
 
+
+            <Button
+                android:id="@+id/wb_share_circle_button"
+                android:layout_width="25dp"
+                android:layout_height="23dp"
+                android:layout_marginTop="15dp"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/roboto_condensed"
+                android:background="@drawable/ic_share_black_24dp"></Button>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/workbench_circle_category_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="1"
+                    android:text="Housing &amp; Communities"
+                    android:textColor="#BDBDBD"
+                    android:textSize="14dp" />
+                <TextView
+                    android:id="@+id/workbench_circle_created_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:layout_marginTop="5dp"
+                    android:maxLines="1"
+                    android:text="Time Elapsed"
+                    android:textColor="#BDBDBD"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 </LinearLayout>

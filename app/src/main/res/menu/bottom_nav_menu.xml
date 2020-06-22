@@ -4,17 +4,19 @@
         android:id="@+id/workbench_bottom_nav_item"
         android:icon="@drawable/ic_share_black_24dp"
         android:title="My Cirlces" />
+    
     <item
         android:id="@+id/explore_bottom_nav_item"
         android:icon="@drawable/ic_outline_explore_24"
         android:title="Explore" />
-    <item
-        android:id="@+id/notifications_bottom_nav_item"
-        android:icon="@drawable/ic_notifications_none_black_24dp"
-        android:title="Notifications" />
 
     <item
         android:id="@+id/search_bottom_nav_item"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Search" />
+
+    <item
+        android:id="@+id/notifications_bottom_nav_item"
+        android:icon="@drawable/ic_notifications_none_black_24dp"
+        android:title="Notifications" />
 </menu>

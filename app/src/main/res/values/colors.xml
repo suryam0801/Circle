@@ -23,12 +23,9 @@
     <color name="lightGray">#F2F2F2</color>
 
     <!--workbench adapter color codes-->
-    <color name="lightBlue">#D8E9FF</color>
-    <color name="darkBlue">#158BF1</color>
-    <color name="lightPink">#FFD1E9</color>
-    <color name="darkPink">#FF38A2</color>
-    <color name="lightOrange">#FFDDBB</color>
-    <color name="darkOrange">#FF9C38</color>
+    <color name="request_alert_color">#FF6161</color>
+    <color name="broadcast_alert_color">#11F692</color>
+    <color name="comment_alert_color">#158BF1</color>
 
     <!--explore adapter color codes-->
     <color name="solidPurple">#A274FF</color>
