@@ -78,9 +78,10 @@
             android:layout_marginBottom="5dp"
             android:id="@+id/uploaded_image_display_broadcast"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:visibility="gone" />
 
+        
         <TextView
             android:id="@+id/broadcastWall_Message"
             android:layout_width="wrap_content"
