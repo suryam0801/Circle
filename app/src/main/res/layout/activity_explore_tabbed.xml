@@ -29,7 +29,7 @@
             android:drawableStart="@drawable/ic_location_on_black_24dp"
             android:text="Coimbatore"
             android:textColor="@color/black"
-            android:textSize="25dp"></TextView>
+            android:textSize="23dp"></TextView>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/explore_profilePicture"

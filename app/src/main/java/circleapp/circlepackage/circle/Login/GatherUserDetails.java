@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -52,9 +54,17 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 import java.util.HashMap;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -221,7 +231,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-                selectImage();
+            photo = 2;
+            if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(GatherUserDetails.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            }
+            selectImage();
         });
 
         // Listener for Register button
@@ -343,6 +361,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             filePath = data.getData();
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
+
             if (filePath != null) {
 
                 //Creating an  custom dialog to show the uploading status
@@ -412,6 +433,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
             if (filePath != null) {
 
 
@@ -514,22 +537,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
             //update the user display name
             firebaseAuth.getCurrentUser().updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                                //Adding the user to collection
-                                addUser();
-                                Log.d(TAG,"User Registered success fully added");
-                                Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                //to signout the current firebase user
-                                firebaseAuth.signOut();
-                                //delete the user details
-                                firebaseAuth.getCurrentUser().delete();
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                            //Adding the user to collection
+                            addUser();
+                            Log.d(TAG,"User Registered success fully added");
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            //to signout the current firebase user
+                            firebaseAuth.signOut();
+                            //delete the user details
+                            firebaseAuth.getCurrentUser().delete();
                         }
                     });
 
@@ -554,13 +574,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             Log.d(TAG,"DownloadURI ::"+downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
-            user = new User(Name, contact, downloadUri.toString(),interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         } else
             {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             Log.d(TAG,"Avatar :: "+avatar);
-            user = new User(Name, contact, avatar, interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         }
         //storing user as a json in file locally
         String string = new Gson().toJson(user);

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -35,11 +36,13 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     private String TAG = CreatorPollAnswersView.class.getSimpleName();
     AnalyticsLogEvents analyticsLogEvents;
     private int responseCount;
+    private ImageButton bckBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creator_poll_answers_view);
+        bckBtn = findViewById(R.id.bck_pollresults);
 
         analyticsLogEvents = new AnalyticsLogEvents();
         responseCount = 0;
@@ -95,5 +98,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
 
             }
         });
+    bckBtn.setOnClickListener(v -> {
+        onBackPressed();
+    });
     }
 }

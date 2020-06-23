@@ -301,12 +301,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         btnAddPollOption.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button", "circle_wall");
 
-            String option = setPollOptionET.getText().toString() + " ";
+            String option = setPollOptionET.getText().toString();
 
 
-            if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]"))) {
+            if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]")|| option.isEmpty())) {
                 //checking for invalid characters
-                Toast.makeText(getApplicationContext(), "Cannot use special characters", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Option cannot use special characters or be empty", Toast.LENGTH_SHORT).show();
             } else {
                 if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
 

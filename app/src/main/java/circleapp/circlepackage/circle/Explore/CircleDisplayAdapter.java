@@ -156,7 +156,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             super(view);
             container = view.findViewById(R.id.container);
             threeMemberPicContainer = view.findViewById(R.id.three_memers_prof_pic);
-            tv_createdDate = view.findViewById(R.id.circle_created_date);
+            tv_createdDate = view.findViewById(R.id.explore_circle_created_date);
             tv_circleName = view.findViewById(R.id.circle_name);
             tv_creatorName = view.findViewById(R.id.circle_creatorName);
             tv_circleDesc = view.findViewById(R.id.circle_desc);

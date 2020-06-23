@@ -178,7 +178,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/blue_border_background"
-                android:text="Upload"
+                android:text="Post"
                 android:textAllCaps="false"
                 android:textColor="@color/color_blue"></Button>
         </LinearLayout>
