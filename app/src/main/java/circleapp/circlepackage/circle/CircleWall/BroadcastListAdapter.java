@@ -104,15 +104,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     .into(viewHolder.profPicDisplay);
         }
 
-        Glide.with((Activity) context)
-                .load(ContextCompat.getDrawable(context, R.drawable.science_and_tech_background))
-                .into(viewHolder.imageDisplay);
-
-        viewHolder.imageDisplay.setOnClickListener(view -> {
-            context.startActivity(new Intent(context, FullPageImageDisplay.class));
-            ((Activity) context).finish();
-        });
-
         viewHolder.broadcastTitle.setText(broadcast.getTitle());
 
         //calculating and setting time elapsed
@@ -136,7 +127,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
                 viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
         } catch (Exception e){
-            //null value for get new timestamp comments
+            //null value for get new timestamp comments for particular broadcast
         }
 
         //view discussion onclick
@@ -144,6 +135,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             context.startActivity(new Intent((Activity)context, BroadcastComments.class));
             SessionStorage.saveBroadcast((Activity)context, broadcast);
             ((Activity) context).finish();
+        });
+
+        viewHolder.viewPollAnswers.setOnClickListener(view -> {
+            SessionStorage.saveBroadcast((Activity) context, broadcast);
+            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
 
         //set the details of each circle to its respective card.
@@ -154,10 +150,21 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         else
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
 
-        viewHolder.viewPollAnswers.setOnClickListener(view -> {
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
-            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
-        });
+        if(broadcast.getAttachmentURI()!=null){
+            viewHolder.imageDisplay.setVisibility(View.VISIBLE);
+            //setting imageview
+            Glide.with((Activity) context)
+                    .load(broadcast.getAttachmentURI())
+                    .into(viewHolder.imageDisplay);
+
+            //navigate to full screen photo display when clicked
+            viewHolder.imageDisplay.setOnClickListener(view -> {
+                Intent intent = new Intent(context, FullPageImageDisplay.class);
+                intent.putExtra("uri", broadcast.getAttachmentURI());
+                context.startActivity(intent);
+                ((Activity) context).finish();
+            });
+        }
 
         if (broadcast.isPollExists() == true) {
             poll = broadcast.getPoll();

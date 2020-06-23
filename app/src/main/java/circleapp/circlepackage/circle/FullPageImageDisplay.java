@@ -16,9 +16,11 @@ public class FullPageImageDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_page_image_display);
 
+        String uri = getIntent().getStringExtra("uri");
+
         PhotoView photoView = findViewById(R.id.full_page_photo_view);
         Glide.with(this)
-                .load(ContextCompat.getDrawable(this, R.drawable.science_and_tech_background))
+                .load(uri)
                 .into(photoView);
     }
 }
