@@ -73,6 +73,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
     View decorView;
+    boolean first_time_user;
 
     public final static String PREFS = "PrefsFile";
 
@@ -90,7 +91,14 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         analyticsLogEvents = new AnalyticsLogEvents();
         intentUri = getIntent().getData();
         decorView = getWindow().getDecorView();
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean value = (boolean) extras.get("first_time_user");
+            first_time_user = value;
+        }
+        if(first_time_user){
+            showCase();
+        }
         hideSystemUI();
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -316,6 +324,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void showCase(){
+        
     }
 
     @Override
