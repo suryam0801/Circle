@@ -40,7 +40,6 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -230,7 +229,7 @@ public class HelperMethods {
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
         String id = uuidGet();
-        Circle circle = new Circle(id, name,description, acceptanceType, "CreatorAdmin", creatorName, "Category", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name,description, acceptanceType, "CreatorAdmin", creatorName, "Category","default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         circlesDB.child(id).setValue(circle);
         return id;
     }
