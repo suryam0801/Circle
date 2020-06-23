@@ -148,31 +148,28 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
-                    switch (item.getItemId()) {
-                        case R.id.workbench_bottom_nav_item:
-                            selectedFragment = new WorkbenchFragment();
-                            break;
-                        case R.id.explore_bottom_nav_item:
-                            selectedFragment = new ExploreFragment();
-                            break;
+            item -> {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.workbench_bottom_nav_item:
+                        selectedFragment = new WorkbenchFragment();
+                        break;
+                    case R.id.explore_bottom_nav_item:
+                        selectedFragment = new ExploreFragment();
+                        break;
 
-                        case R.id.notifications_bottom_nav_item:
-                            selectedFragment = new NotificationFragment();
-                            break;
+                    case R.id.notifications_bottom_nav_item:
+                        selectedFragment = new NotificationFragment();
+                        break;
 /*
-                        case R.id.search_bottom_nav_item:
-                            selectedFragment = new SearchFragment();
-                            break;
+                    case R.id.search_bottom_nav_item:
+                        selectedFragment = new SearchFragment();
+                        break;
 */
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    return true;
                 }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selectedFragment).commit();
+                return true;
             };
 
     private void showLinkPopup() {

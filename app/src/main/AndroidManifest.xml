@@ -9,10 +9,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH"/>
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".Helpers.InAppNotificationHelper"
@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CircleWall.FullPageBroadcastCardView"></activity>
+        <activity android:name=".FullPageImageDisplay"></activity>
+        <activity android:name=".CircleWall.FullPageBroadcastCardView" />
         <activity
             android:name=".CreateCircle.CreateCircleCategoryPicker"
             android:label="@string/title_activity_create_circle_category_picker"
@@ -95,13 +96,16 @@
         <activity
             android:name=".Explore.CircleDisplayAdapter"
             tools:ignore="Instantiatable" />
-        <service android:name=".Helpers.FireBaseInstanceIDService"
-            android:exported="false"
-            android:directBootAware="true">
+
+        <service
+            android:name=".Helpers.FireBaseInstanceIDService"
+            android:directBootAware="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <receiver
             android:name=".Helpers.MyBroadCastReceiver"
             android:directBootAware="true"
@@ -123,8 +127,7 @@
             android:name=".Helpers.CheckRecentRun"
             android:enabled="true"
             android:exported="false"
-            android:process=":remote">
-        </service>
+            android:process=":remote"></service>
     </application>
 
 </manifest>
