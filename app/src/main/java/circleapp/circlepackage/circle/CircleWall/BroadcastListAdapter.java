@@ -1,12 +1,14 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
@@ -28,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,6 +49,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FullPageImageDisplay;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -62,7 +67,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Context context;
     private Circle circle;
     private FirebaseAuth currentUser;
-
     private Vibrator v;
     private User user;
 
@@ -99,6 +103,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);
         }
+
+        Glide.with((Activity) context)
+                .load(ContextCompat.getDrawable(context, R.drawable.science_and_tech_background))
+                .into(viewHolder.imageDisplay);
+
+        viewHolder.imageDisplay.setOnClickListener(view -> {
+            context.startActivity(new Intent(context, FullPageImageDisplay.class));
+            ((Activity) context).finish();
+        });
+
+        viewHolder.broadcastTitle.setText(broadcast.getTitle());
 
         //calculating and setting time elapsed
         long currentTime = System.currentTimeMillis();
@@ -237,6 +252,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
         private Button viewPollAnswers;
+        private PhotoView imageDisplay;
 
         public ViewHolder(View view) {
             super(view);
@@ -252,6 +268,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
             broadcastTitle = view.findViewById(R.id.broadcastWall_Title);
             container = view.findViewById(R.id.broadcast_display_container);
+            imageDisplay = view.findViewById(R.id.uploaded_image_display_broadcast);
         }
 
         public String getCurrentUserPollOption() {
@@ -262,4 +279,5 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             this.currentUserPollOption = currentUserPollOption;
         }
     }
+
 }
