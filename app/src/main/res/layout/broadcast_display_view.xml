@@ -81,7 +81,7 @@
             android:layout_height="200dp"
             android:visibility="gone" />
 
-        
+
         <TextView
             android:id="@+id/broadcastWall_Message"
             android:layout_width="wrap_content"
@@ -93,6 +93,8 @@
             android:text="Message"
             android:textColor="#9D9D9D"
             android:textSize="14dp"></TextView>
+
+        
 
         <ScrollView
             android:id="@+id/broadcastWall_poll_display_view"
