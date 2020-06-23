@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -28,12 +29,14 @@ import java.util.List;
 import java.util.Locale;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDisplayAdapter.ViewHolder> {
 
@@ -66,6 +69,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
         analyticsLogEvents = new AnalyticsLogEvents();
+        Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
 
 
         //set the details of each circle to its respective card.
@@ -151,6 +155,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB,
                 newNotifAlert, newApplicantsDisplay, newDiscussionDisplay, categoryDisplay;
+        private CircleImageView backgroundPic;
         private LinearLayout container;
         private Button shareCircles;
         public ViewHolder(View view) {
@@ -164,6 +169,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
             newDiscussionDisplay = view.findViewById(R.id.newDiscussionDisplay);
             categoryDisplay = view.findViewById(R.id.workbench_circle_category_display);
+            backgroundPic = view.findViewById(R.id.background_image_workbench);
         }
     }
 

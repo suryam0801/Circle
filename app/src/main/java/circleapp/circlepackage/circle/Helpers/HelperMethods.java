@@ -3,14 +3,17 @@ package circleapp.circlepackage.circle.Helpers;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +33,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,11 +45,11 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
+import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -229,7 +234,7 @@ public class HelperMethods {
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
         String id = uuidGet();
-        Circle circle = new Circle(id, name,description, acceptanceType, "CreatorAdmin", creatorName, "Category", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name,description, acceptanceType, "CreatorAdmin", creatorName, "Category","default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         circlesDB.child(id).setValue(circle);
         return id;
     }
@@ -242,6 +247,17 @@ public class HelperMethods {
         Comment comment = new Comment(name, text, id, null, System.currentTimeMillis()+offsetTimeStamp);
         commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
+
+    public static void createReportAbuse(String circleId, String creatorId, String userId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference reportAbuseDB;
+        reportAbuseDB = database.getReference("ReportAbuse");
+        String id = uuidGet();
+        ReportAbuse reportAbuse = new ReportAbuse(id, circleId, creatorId, userId);
+        reportAbuseDB.child(id).setValue(reportAbuse);
+    }
+
     public static String uuidGet(){
         return UUID.randomUUID().toString();
     }
@@ -357,6 +373,19 @@ public class HelperMethods {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+    public static void compressImage(ContentResolver resolver, Uri filePath){
+        Bitmap bmp = null;
+        try {
+            bmp = MediaStore.Images.Media.getBitmap(resolver, filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        //here you can choose quality factor in third parameter(ex. i choosen 20)
+        bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] fileInBytes = baos.toByteArray();
     }
 
 }

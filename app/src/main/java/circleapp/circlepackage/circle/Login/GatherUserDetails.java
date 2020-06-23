@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.location.Address;
@@ -65,6 +67,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -77,6 +80,7 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -249,7 +253,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-                selectImage();
+            photo = 2;
+            if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(GatherUserDetails.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            }
+            selectImage();
         });
 
         // Listener for Register button
@@ -371,6 +383,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             filePath = data.getData();
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
+
             if (filePath != null) {
 
                 //Creating an  custom dialog to show the uploading status
@@ -440,6 +455,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
             if (filePath != null) {
 
 

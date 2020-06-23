@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Circle {
-    private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard, category;
+    private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard, category,backgroundImageLink;
     private HashMap<String, Boolean> membersList, applicantsList;
     private long timestamp;
     private int noOfBroadcasts, noOfNewDiscussions;
@@ -14,12 +14,13 @@ public class Circle {
     }
 
     public Circle(String id, String name, String description, String acceptanceType, String creatorID,
-                  String creatorName, String category,
+                  String creatorName, String category, String backgroundImageLink,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
                   String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, int noOfNewDiscussions) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.backgroundImageLink = backgroundImageLink;
         this.acceptanceType = acceptanceType;
         this.creatorID = creatorID;
         this.creatorName = creatorName;
@@ -144,6 +145,10 @@ public class Circle {
     public void setNoOfNewDiscussions(int noOfNewDiscussions) {
         this.noOfNewDiscussions = noOfNewDiscussions;
     }
+    public String getBackgroundImageLink() { return backgroundImageLink; }
+
+    public void setBackgroundImageLink(String backgroundImageLink) { this.backgroundImageLink = backgroundImageLink; }
+
 
     @Override
     public String toString() {
@@ -154,6 +159,8 @@ public class Circle {
                 ", acceptanceType='" + acceptanceType + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorName='" + creatorName + '\'' +
+                ", category='" + category + '\'' +
+                ", backgroundImageLink='" + backgroundImageLink + '\'' +
                 ", circleDistrict='" + circleDistrict + '\'' +
                 ", circleWard='" + circleWard + '\'' +
                 ", membersList=" + membersList +

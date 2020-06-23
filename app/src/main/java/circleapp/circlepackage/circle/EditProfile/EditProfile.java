@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -233,6 +234,7 @@ public class EditProfile extends AppCompatActivity {
         Glide.with(EditProfile.this).load(uri).into(profilePic);
         profilepicButton.setOnClickListener( view ->{
             analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic","edit_profile");
+            photo = 2;
             if (ContextCompat.checkSelfPermission(EditProfile.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -522,6 +524,8 @@ public class EditProfile extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
 
             //check the path for the image
             //if the image path is notnull the uploading process will start
@@ -588,6 +592,8 @@ public class EditProfile extends AppCompatActivity {
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
             if (filePath != null) {
 
 
@@ -656,76 +662,6 @@ public class EditProfile extends AppCompatActivity {
 
         }
     }
-    /*
-        @Override
-       protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-                filePath = data.getData();
-
-                //check the path for the image
-                //if the image path is notnull the uploading process will start
-                if (filePath != null) {
-
-                    //Creating an  custom dialog to show the uploading status
-                    final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-                    progressDialog.setTitle("Uploading");
-                    progressDialog.show();
-
-                    //generating random id to store the profliepic
-                    String id = UUID.randomUUID().toString();
-                    final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
-
-                    //storing  the pic
-                    profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                            //displaying percentage in progress dialog
-                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                        }
-                    })
-                            .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                @Override
-                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                    if (!task.isSuccessful()) {
-                                        throw task.getException();
-                                    }
-
-                                    // Continue with the task to get the download URL
-                                    return profileRef.getDownloadUrl();
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            progressDialog.dismiss();
-                            finalizeChanges.setVisibility(View.VISIBLE);
-                            //and displaying a success toast
-                            downloadUri = uri;
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    .setPhotoUri(uri)
-                                    .build();
-                            currentUser.getCurrentUser().updateProfile(profileUpdates);
-                            Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
-
-                        }
-                    })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    //if the upload is not successfull
-                                    //hiding the progress dialog
-                                    progressDialog.dismiss();
-
-                                    //and displaying error message
-                                    Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                }
-            }
-        }
-    */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
