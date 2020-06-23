@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -205,7 +207,7 @@ public class HelperMethods {
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
     }
 
-    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
+/*    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference broadcastsDB;
@@ -225,7 +227,7 @@ public class HelperMethods {
         Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
-    }
+    }*/
     public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions){
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
@@ -386,6 +388,34 @@ public class HelperMethods {
         //here you can choose quality factor in third parameter(ex. i choosen 20)
         bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);
         byte[] fileInBytes = baos.toByteArray();
+    }
+    public static void increaseTouchArea(View view){
+        final View parent = (View) view.getParent();  // button: the view you want to enlarge hit area
+        parent.post( new Runnable() {
+            public void run() {
+                final Rect rect = new Rect();
+                view.getHitRect(rect);
+                rect.top -= 80;    // increase top hit area
+                rect.left -= 80;   // increase left hit area
+                rect.bottom += 80; // increase bottom hit area
+                rect.right += 80;  // increase right hit area
+                parent.setTouchDelegate( new TouchDelegate( rect , view));
+            }
+        });
+    }
+    public static void increaseTouchArea(View view, int top, int left, int bottom, int right){
+        final View parent = (View) view.getParent();  // button: the view you want to enlarge hit area
+        parent.post( new Runnable() {
+            public void run() {
+                final Rect rect = new Rect();
+                view.getHitRect(rect);
+                rect.top -= top;    // increase top hit area
+                rect.left -= left;   // increase left hit area
+                rect.bottom += bottom; // increase bottom hit area
+                rect.right += right;  // increase right hit area
+                parent.setTouchDelegate( new TouchDelegate( rect , view));
+            }
+        });
     }
 
 }

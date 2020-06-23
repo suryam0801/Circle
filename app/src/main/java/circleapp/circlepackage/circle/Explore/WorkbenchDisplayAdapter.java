@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -134,7 +135,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         });
 
         //update new notifs value
-        holder.shareCircles.setOnClickListener(view -> {
+        holder.relativeLayout.setOnClickListener(view -> {
             HelperMethods.showShareCirclePopup(circle, (Activity) context);
         });
 
@@ -157,6 +158,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 newNotifAlert, newApplicantsDisplay, newDiscussionDisplay, categoryDisplay;
         private CircleImageView backgroundPic;
         private LinearLayout container;
+        private RelativeLayout relativeLayout;
         private Button shareCircles;
         public ViewHolder(View view) {
             super(view);
@@ -164,6 +166,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             container = view.findViewById(R.id.wbContainer);
             tv_MycircleName = view.findViewById(R.id.wbcircleName);
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
+            relativeLayout = view.findViewById(R.id.wb_share_circle_button_layout);
             shareCircles = view.findViewById(R.id.wb_share_circle_button);
             tv_circleCreatedDateWB = view.findViewById(R.id.workbench_circle_created_date);
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
