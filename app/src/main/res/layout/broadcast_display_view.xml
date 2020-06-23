@@ -9,6 +9,7 @@
     android:paddingRight="15dp"
     android:paddingLeft="8dp"
     android:paddingTop="13dp"
+    android:id="@+id/broadcast_display_container"
     android:background="@drawable/broadcast_cards"
     android:elevation="3dp"
     android:orientation="vertical">
