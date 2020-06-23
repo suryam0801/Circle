@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -279,6 +280,8 @@ public class CreateCircle extends AppCompatActivity {
             filePath = data.getData();
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
             if (filePath != null) {
 
                 //Creating an  custom dialog to show the uploading status
@@ -345,6 +348,8 @@ public class CreateCircle extends AppCompatActivity {
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
             if (filePath != null) {
 
 

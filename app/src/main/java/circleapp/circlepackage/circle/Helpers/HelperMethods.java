@@ -3,14 +3,17 @@ package circleapp.circlepackage.circle.Helpers;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +33,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -368,6 +373,19 @@ public class HelperMethods {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+    public static void compressImage(ContentResolver resolver, Uri filePath){
+        Bitmap bmp = null;
+        try {
+            bmp = MediaStore.Images.Media.getBitmap(resolver, filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        //here you can choose quality factor in third parameter(ex. i choosen 20)
+        bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] fileInBytes = baos.toByteArray();
     }
 
 }
