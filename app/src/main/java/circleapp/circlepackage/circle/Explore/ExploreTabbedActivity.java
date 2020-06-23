@@ -6,15 +6,22 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,19 +31,20 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.CheckRecentRun;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Notification.NotificationActivity;
+import circleapp.circlepackage.circle.Helpers.MyBroadCastReceiver;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -46,7 +54,8 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class ExploreTabbedActivity extends AppCompatActivity {
 
-    private ImageView profPicHolder, notificationBell;
+    private ImageView profPicHolder;
+    TextView location;
     private User user;
     private Uri intentUri;
     private FirebaseDatabase database;
@@ -56,13 +65,43 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private String url;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
+    AlarmManager alarmManager;
+    PendingIntent pendingIntent;
+    View decorView;
+
+    public final static String PREFS = "PrefsFile";
+
+    private SharedPreferences settings = null;
+    private SharedPreferences.Editor editor = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
+        location  = findViewById(R.id.explore_district_name_display);
+        User user = SessionStorage.getUser(this);
+        location.setText(user.getDistrict());
         analyticsLogEvents = new AnalyticsLogEvents();
         intentUri = getIntent().getData();
+        decorView = getWindow().getDecorView();
+
+        hideSystemUI();
+
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent alarmIntent = new Intent(ExploreTabbedActivity.this, MyBroadCastReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(ExploreTabbedActivity.this, 0, alarmIntent, 0);
+
+        settings = getSharedPreferences(PREFS, MODE_PRIVATE);
+        editor = settings.edit();
+        if (!settings.contains("lastRun"))
+            enableNotification(null);
+        else
+            recordRunTime();
+
+        Log.v("ExploreTabbedActivity", "Starting CheckRecentRun service...");
+        startService(new Intent(this,  CheckRecentRun.class));
+
         //recieve ur request on opening
         if (intentUri != null) {
             analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_link", "used_link", "read_external_link");
@@ -71,7 +110,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         }
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
-        notificationBell = findViewById(R.id.main_activity_notifications_bell);
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
@@ -86,10 +124,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                     .into(profPicHolder);
         }
 
-        notificationBell.setOnClickListener(v -> {
-            startActivity(new Intent(ExploreTabbedActivity.this, NotificationActivity.class));
-            finish();
-        });
+
 
         profPicHolder.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
@@ -269,4 +304,78 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        startAlarm();
+        Log.d("onDestroy Called"," func called");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                13,05, 0);
+        setAlarm(calendar.getTimeInMillis());
+        enableNotification(null);
+
+    }
+
+    private void setAlarm(long time) {
+        Log.d("StartAlarm","Func called");
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        //creating a new intent specifying the broadcast receiver
+        Intent i = new Intent(this, MyBroadCastReceiver.class);
+
+        //creating a pending intent using the intent
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
+
+        //setting the repeating alarm that will be fired every day
+        am.setRepeating(AlarmManager.RTC, time, AlarmManager.INTERVAL_DAY, pi);
+        Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show();
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+//            Log.d("StartAlarm","setAndAllowWhileIdle");
+//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            alarmManager.setExact(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+//        } else {
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+//        }
+
+
+    }
+    public void recordRunTime() {
+        editor.putLong("lastRun", System.currentTimeMillis());
+        editor.commit();
+    }
+
+    public void enableNotification(View v) {
+        editor.putLong("lastRun", System.currentTimeMillis());
+        editor.putBoolean("enabled", true);
+        editor.commit();
+        Log.d("ExploreTabbedActivity", "Notifications enabled");
+    }
+
+    public void disableNotification(View v) {
+        editor.putBoolean("enabled", false);
+        editor.commit();
+        Log.v("ExploreTabbedActivity", "Notifications disabled");
+    }
+    private void hideSystemUI() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
 }

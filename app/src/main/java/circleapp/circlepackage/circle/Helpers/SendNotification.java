@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Notification;
+package circleapp.circlepackage.circle.Helpers;
 
 import android.util.Log;
 

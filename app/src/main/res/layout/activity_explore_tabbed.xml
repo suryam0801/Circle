@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:weightSum="100"
     tools:context=".Explore.ExploreTabbedActivity">
 
@@ -29,18 +30,6 @@
             android:text="Coimbatore"
             android:textColor="@color/black"
             android:textSize="25dp"></TextView>
-
-
-        <ImageButton
-            android:id="@+id/main_activity_notifications_bell"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="60dp"
-            android:background="@drawable/ic_notifications_none_black_24dp"
-            android:tooltipText="Notification Page"></ImageButton>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/explore_profilePicture"
@@ -70,6 +59,6 @@
         android:paddingBottom="5dp"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_nav_menu"
-        android:background="?android:attr/windowBackground">
+        android:background="@color/white">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 </LinearLayout>
