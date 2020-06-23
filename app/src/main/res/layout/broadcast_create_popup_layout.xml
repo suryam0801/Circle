@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/create_broadcast_display"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/broadcast_header"
@@ -153,12 +154,88 @@
 
             </LinearLayout>
 
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/create_image_display"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/photo_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="99"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Post New Photo"
+                android:textColor="#3B3B3B"
+                android:textSize="16dp"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Title"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <EditText
+                android:id="@+id/photoTitleEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#D1D1D1"
+                android:textColor="@color/black"
+                android:textSize="12dp"></EditText>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Add Photo"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:id="@+id/add_photo_btn">
+    <TextView
+        android:id="@+id/backgroundText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="15dp"
+        android:gravity="center"
+        android:text="Add Photo +"
+        android:textColor="@color/color_blue"
+        android:visibility="visible"></TextView>
+    <ImageView
+        android:id="@+id/upload_photo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
+        android:inputType="textCapSentences"
+        android:background="@drawable/unpressable_button"
+        android:padding="20dp"
+        android:textSize="12dp"
+        android:textColor="@color/black"></ImageView>
+</RelativeLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_gravity="center"
             android:orientation="horizontal">
 
             <Button
@@ -173,7 +250,7 @@
 
             <Button
                 android:id="@+id/upload_broadcast_btn"
-                android:layout_width="110dp"
+                android:layout_width="170dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"

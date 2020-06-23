@@ -207,7 +207,7 @@ public class HelperMethods {
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
     }
 
-    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
+/*    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference broadcastsDB;
@@ -227,7 +227,7 @@ public class HelperMethods {
         Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
-    }
+    }*/
     public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions){
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
