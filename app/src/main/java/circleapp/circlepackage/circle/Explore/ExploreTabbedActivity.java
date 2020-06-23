@@ -51,6 +51,9 @@ import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import ru.dimorinny.showcasecard.position.Center;
+import ru.dimorinny.showcasecard.step.ShowCaseStep;
+import ru.dimorinny.showcasecard.step.ShowCaseStepDisplayer;
 
 
 public class ExploreTabbedActivity extends AppCompatActivity {
@@ -110,10 +113,17 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             url = getIntent().getData().toString();
             processUrl(url);
         }
+        
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
+
+
+        new ShowCaseStepDisplayer.Builder(this)
+                .addStep(new ShowCaseStep(profPicHolder, "Message at center"))
+                .addStep(new ShowCaseStep(locationDisplay, "Message at View"))
+                .build().start();
 
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
