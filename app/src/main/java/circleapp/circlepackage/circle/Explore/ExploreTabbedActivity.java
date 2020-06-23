@@ -113,6 +113,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             url = getIntent().getData().toString();
             processUrl(url);
         }
+        
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
