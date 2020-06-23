@@ -111,6 +111,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         }
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
+        HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
 
 
