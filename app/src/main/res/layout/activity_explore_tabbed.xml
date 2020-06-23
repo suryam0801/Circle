@@ -30,7 +30,6 @@
             android:text="Coimbatore"
             android:textColor="@color/black"
             android:textSize="23dp"></TextView>
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/explore_profilePicture"
             android:layout_width="32dp"

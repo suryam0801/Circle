@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_marginBottom="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/feedbackWall_empty_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_marginTop="150dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="167dp"
+                    android:layout_height="160dp"
+                    android:background="@drawable/empty_comments_placeholder"></ImageView>
+
+                <TextView
+                    android:layout_width="248dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineSpacingExtra="5dp"
+                    android:paddingTop="43dp"
+                    android:text="There are current no documents in this project. Click the button to upload and share a new document."
+                    android:textAlignment="center"
+                    android:textColor="#828282"
+                    android:textSize="12dp"></TextView>
+
+            </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:id="@+id/feedback_listView">
+        </ListView>
+
+    </LinearLayout>
+        <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:id="@+id/feedback_type_editText"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="25dp"
+            android:paddingRight="45dp"
+            android:paddingLeft="16dp"
+            android:textSize="12dp"
+            android:inputType="textCapSentences"
+            android:textColor="@color/black"
+            android:textColorHint="#D1D1D1"
+            android:hint="Type your Feedback..."
+            android:paddingBottom="8dp"
+            android:imeOptions="actionSend|flagNoEnterAction"
+            android:background="@drawable/blue_border_background">
+        </EditText>
+
+        <Button
+            android:id="@+id/feedback_send_button"
+            android:layout_width="31dp"
+            android:layout_height="26dp"
+            android:background="@drawable/ic_send_black_24dp"
+            android:layout_alignParentEnd="true"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="25dp"
+            android:paddingBottom="10dp">
+        </Button>
+        </RelativeLayout>
+
+</RelativeLayout>
