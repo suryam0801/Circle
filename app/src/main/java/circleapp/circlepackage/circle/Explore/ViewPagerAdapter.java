@@ -25,6 +25,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return new ExploreFragment();
             case 2:
                 return new NotificationFragment();
+            case 3:
+                return new FeedbackFragment();
             default:
                 return null;
         }
