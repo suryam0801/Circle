@@ -17,7 +17,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Notification.NotificationActivity;
 import circleapp.circlepackage.circle.R;
 
 public class FireBaseInstanceIDService extends FirebaseMessagingService {
