@@ -218,7 +218,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     Bundle params1 = new Bundle();
                     params1.putString("PollInteracted", "Radio button");
 
-                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
                     String option = button.getText().toString();
                     HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
                     int currentSelectedVoteCount = poll.getOptions().get(option);
@@ -235,14 +234,31 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                         pollOptionsTemp.put(option, currentSelectedVoteCount);
                         pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
                         viewHolder.setCurrentUserPollOption(option);
-
                     }
+
+                    HashMap<String, String> userResponseHashmap;
+                    if(poll.getUserResponse()!=null){
+                        userResponseHashmap = new HashMap<>(poll.getUserResponse());
+                        userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+                    } else {
+                        userResponseHashmap = new HashMap<>();
+                        userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+                    }
+
+                    poll.setOptions(pollOptionsTemp);
+                    poll.setUserResponse(userResponseHashmap);
+                    broadcast.setPoll(poll);
 
                     broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll")
                             .child("userResponse").child(currentUser.getCurrentUser().getUid()).setValue(viewHolder.getCurrentUserPollOption());
 
                     broadcastDB.child(circle.getId()).child(broadcast.getId())
                             .child("poll").child("options").setValue(pollOptionsTemp);
+
+                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
+
+                    setBroadcastInfo(context, viewHolder, broadcast);
+
                 });
                 viewHolder.pollOptionsDisplayGroup.addView(layout);
                 button.setPressed(true);

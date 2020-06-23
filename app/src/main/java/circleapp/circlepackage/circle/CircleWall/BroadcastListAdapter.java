@@ -116,8 +116,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         //new comments setter
         viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
-        if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-            viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
+
+        try{
+            if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+                viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
+        } catch (Exception e){
+            //null value for get new timestamp comments
+        }
 
 
         //view discussion onclick
