@@ -234,6 +234,7 @@ public class EditProfile extends AppCompatActivity {
         Glide.with(EditProfile.this).load(uri).into(profilePic);
         profilepicButton.setOnClickListener( view ->{
             analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic","edit_profile");
+            photo = 2;
             if (ContextCompat.checkSelfPermission(EditProfile.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {

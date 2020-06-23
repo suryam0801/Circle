@@ -2,7 +2,10 @@ package circleapp.circlepackage.circle.CreateCircle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -45,6 +48,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -151,6 +155,14 @@ public class CreateCircle extends AppCompatActivity {
 
         typeInfoButton.setOnClickListener(view -> typePrompt.setVisibility(View.VISIBLE));
         addLogo.setOnClickListener(v->{
+            photo = 2;
+            if (ContextCompat.checkSelfPermission(CreateCircle.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(CreateCircle.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            }
             selectImage();
         });
     }

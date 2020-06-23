@@ -80,6 +80,7 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -252,7 +253,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-                selectImage();
+            photo = 2;
+            if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(GatherUserDetails.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            }
+            selectImage();
         });
 
         // Listener for Register button
