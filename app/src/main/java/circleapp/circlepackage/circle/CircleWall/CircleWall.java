@@ -357,6 +357,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             broadcastDisplay.setVisibility(View.GONE);
             imageCreateView.setVisibility(View.GONE);
         }
+        
         else if(flag.equals("image")){
             addPhotoText.setVisibility(View.VISIBLE);
             pollCreateView.setVisibility(View.GONE);
