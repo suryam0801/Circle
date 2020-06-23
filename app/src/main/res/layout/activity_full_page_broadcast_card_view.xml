@@ -4,24 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
-    android:orientation="horizontal"
+    android:background="@drawable/default_broadcast_background"
+    android:orientation="vertical"
     android:layout_weight="100"
     tools:context=".CircleWall.FullPageBroadcastCardView">
 
-    <LinearLayout
-        android:id="@+id/full_page_broadcast_left_nav"
-        android:layout_width="20dp"
-        android:layout_height="match_parent">
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/full_page_broadcast_left_nav_button"
-            android:layout_width="20dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_chevron_left_black_24dp">
-        </androidx.appcompat.widget.AppCompatImageButton>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    </LinearLayout>
+        <ImageButton
+            android:id="@+id/bck_fullpage_broadcast"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_chevron_left_black_24dp">
+        </ImageButton>
+
+
+        <TextView
+            android:id="@+id/full_page_broadcast_banner_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="100dp"
+            android:layout_alignStart="@+id/bck_Circlewall"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="21dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Circle Board"
+            android:textColor="#000000"
+            android:textSize="16dp">
+        </TextView>
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/ic_exit_to_app_black_24dp">
+        </ImageButton>
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/baseline_group_black_18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="60dp">
+        </ImageButton>
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_weight="99"
         android:id="@+id/full_page_broadcast_card_recycler_view"
@@ -29,18 +66,5 @@
         android:layout_height="match_parent"
         >
     </androidx.recyclerview.widget.RecyclerView>
-    <LinearLayout
-        android:id="@+id/full_page_broadcast_right_nav"
-        android:layout_width="20dp"
-        android:layout_height="match_parent">
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/full_page_broadcast_right_nav_button"
-            android:layout_width="20dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_baseline_chevron_right_24">
-        </androidx.appcompat.widget.AppCompatImageButton>
-
-    </LinearLayout>
 
 </LinearLayout>

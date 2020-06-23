@@ -1,7 +1,13 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +17,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +48,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -47,7 +59,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private List<Broadcast> broadcastList;
     private Circle circle;
     private FirebaseDatabase database;
-    private DatabaseReference broadcastCommentsDB, circlesDB, broadcastDB, userDB;
+    private DatabaseReference broadcastCommentsDB, broadcastDB, userDB;
+    private Vibrator v;
+    private FirebaseAuth currentUser;
+    private User user;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle) {
         this.mContext = mContext;
@@ -56,8 +71,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
-        circlesDB = database.getReference("Circles").child(circle.getId());
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        broadcastDB = database.getReference("Broadcasts");
+        currentUser = FirebaseAuth.getInstance();
+        user = SessionStorage.getUser((Activity) mContext);
+        v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @NonNull
@@ -69,24 +87,16 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     @Override
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
-        ((Activity)mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         Broadcast currentBroadcast = broadcastList.get(position);
 
-        commentAdapter= new CommentAdapter(mContext, commentsList);
+        commentAdapter = new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
 
-
-        holder.commentSend.setOnClickListener(view -> {
-            if(holder.commentEditText.getText() != null){
-                makeCommentEntry(currentBroadcast, holder.commentEditText.getText().toString());
-                holder.commentEditText.setText("");
-            } else {
-                Toast.makeText(mContext, "Please type a comment first", Toast.LENGTH_SHORT).show();
-            }
-        });
+        setBroadcastInfo(mContext, holder, currentBroadcast);
 
         broadcastCommentsDB.child(circle.getId()).child(currentBroadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
             @Override
@@ -94,10 +104,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                holder.commentListView.setSelection(holder.commentListView.getAdapter().getCount()-1);
+                holder.commentListView.setSelection(holder.commentListView.getAdapter().getCount() - 1);
 
-                if(commentsList.size() == currentBroadcast.getNumberOfComments())
-               updateUserFields("view", commentsList, currentBroadcast);
+                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
+                if (commentsList.size() == currentBroadcast.getNumberOfComments())
+                    updateUserFields(commentsList, currentBroadcast);
             }
 
             @Override
@@ -123,6 +134,123 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     }
 
+    public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast){
+
+        final Poll poll;
+
+        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) context)
+                    .load(broadcast.getCreatorPhotoURI())
+                    .into(viewHolder.profPicDisplay);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
+            Glide.with((Activity) context)
+                    .load(ContextCompat.getDrawable((Activity) context, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        }
+
+        //calculating and setting time elapsed
+        long currentTime = System.currentTimeMillis();
+        long createdTime = broadcast.getTimeStamp();
+        String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
+        viewHolder.timeElapsedDisplay.setText(timeElapsed);
+
+        //new comments setter
+        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
+        if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+            viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
+
+
+        //view discussion onclick
+        viewHolder.viewComments.setOnClickListener(view -> {
+            context.startActivity(new Intent((Activity)context, BroadcastComments.class));
+            SessionStorage.saveBroadcast((Activity)context, broadcast);
+            ((Activity) context).finish();
+        });
+
+        //set the details of each circle to its respective card.
+        viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
+
+        if (broadcast.getMessage() == null)
+            viewHolder.broadcastMessageDisplay.setVisibility(View.GONE);
+        else
+            viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
+
+        viewHolder.viewPollAnswers.setOnClickListener(view -> {
+            SessionStorage.saveBroadcast((Activity) context, broadcast);
+            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
+        });
+
+        if (broadcast.isPollExists() == true) {
+            poll = broadcast.getPoll();
+            viewHolder.pollOptionsDisplayGroup.setVisibility(View.VISIBLE);
+            viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+            viewHolder.broadcastTitle.setText(poll.getQuestion());
+            HashMap<String, Integer> pollOptions = poll.getOptions();
+
+            //Option Percentage Calculation
+            int totalValue = 0;
+            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+                totalValue += entry.getValue();
+            }
+
+            //clear option display each time to avoid repeating options
+            if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
+                viewHolder.pollOptionsDisplayGroup.removeAllViews();
+
+            if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(currentUser.getCurrentUser().getUid()))
+                viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(currentUser.getCurrentUser().getUid()));
+
+            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+
+                int percentage = 0;
+                if (totalValue != 0)
+                    percentage = (int) (((double) entry.getValue() / totalValue) * 100);
+
+                RadioButton button = HelperMethods.generateRadioButton(context, entry.getKey(), percentage);
+                LinearLayout layout = HelperMethods.generateLayoutPollOptionBackground(context, button, percentage);
+
+                if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
+                    button.setChecked(true);
+
+                button.setOnClickListener(view -> {
+                    vibrate();
+                    Bundle params1 = new Bundle();
+                    params1.putString("PollInteracted", "Radio button");
+
+                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
+                    String option = button.getText().toString();
+                    HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
+                    int currentSelectedVoteCount = poll.getOptions().get(option);
+
+                    if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
+                        ++currentSelectedVoteCount;
+                        pollOptionsTemp.put(option, currentSelectedVoteCount);
+                        viewHolder.setCurrentUserPollOption(option);
+                    } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
+                        int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
+
+                        --userPreviousVoteCount;
+                        ++currentSelectedVoteCount;
+                        pollOptionsTemp.put(option, currentSelectedVoteCount);
+                        pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
+                        viewHolder.setCurrentUserPollOption(option);
+
+                    }
+
+                    broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll")
+                            .child("userResponse").child(currentUser.getCurrentUser().getUid()).setValue(viewHolder.getCurrentUserPollOption());
+
+                    broadcastDB.child(circle.getId()).child(broadcast.getId())
+                            .child("poll").child("options").setValue(pollOptionsTemp);
+                });
+                viewHolder.pollOptionsDisplayGroup.addView(layout);
+                button.setPressed(true);
+            }
+        }
+
+    }
+
 
     @Override
     public long getItemId(int position) {
@@ -134,59 +262,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         return broadcastList.size();
     }
 
-    public void makeCommentEntry(Broadcast broadcast, String commentMessage) {
-        long currentCommentTimeStamp = System.currentTimeMillis();
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("timestamp", currentCommentTimeStamp);
-        map.put("comment", commentMessage);
-        map.put("commentorId", SessionStorage.getUser((Activity) mContext).getUserId());
-        map.put("commentorPicURL", SessionStorage.getUser((Activity) mContext).getProfileImageLink());
-        map.put("commentorName", SessionStorage.getUser((Activity) mContext).getName().trim());
-
-        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
-
-        updateCommentNumbersPostCreate(currentCommentTimeStamp, broadcast);
-        updateUserFields("create", null, broadcast);
-    }
-
-    public void updateCommentNumbersPostCreate(long timetamp, Broadcast broadcast){
-        broadcastDB = database.getReference("Broadcasts").child(circle.getId()).child(broadcast.getId());
-
-        //updating broadCastTimeStamp after creating the comment
-        int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
-        broadcastDB.child("latestCommentTimestamp").setValue(timetamp);
-        broadcastDB.child("numberOfComments").setValue(broacastNumberOfComments);
-        broadcast.setLatestCommentTimestamp(timetamp);
-        broadcast.setNumberOfComments(broacastNumberOfComments);
-        SessionStorage.saveBroadcast((Activity) mContext, broadcast);
-
-        //updating number of discussions in circle
-        int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
-        circlesDB.child("noOfNewDiscussions").setValue(circleNewNumberOfDiscussions);
-        circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
-        SessionStorage.saveCircle((Activity) mContext, circle);
-    }
-
-    public void updateUserFields(String navFrom, List<Comment> commentsList, Broadcast broadcast){
+    public void updateUserFields(List<Comment> commentsList, Broadcast broadcast) {
         User user = SessionStorage.getUser((Activity) mContext);
 
         int userNumberOfReadDiscussions;
-        switch (navFrom){
-            case "create":
-                //updating userReadDiscussions after creating the comment
-                userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + 1;
-                user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
-                userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
-                break;
-
-            case "view":
-                int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
-                userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + numberOfUnreadComments;
-                user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
-                userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
-                break;
-        }
+        int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
+        userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + numberOfUnreadComments;
+        user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
+        userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
 
         //updating user latest timestamp for that comment
         HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
@@ -199,15 +282,44 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ListView commentListView;
-        private EditText commentEditText;
-        private Button commentSend;
-        private LinearLayout container;
+        private ScrollView container;
+
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
+        private CircleImageView profPicDisplay;
+        private LinearLayout pollOptionsDisplayGroup;
+        private String currentUserPollOption = null;
+        private Button viewPollAnswers;
+
         public ViewHolder(View view) {
             super(view);
             commentListView = view.findViewById(R.id.full_page_broadcast_comments_display);
-            commentEditText = view.findViewById(R.id.full_page_broadcast_comment_entry);
-            commentSend = view.findViewById(R.id.fullpage_broadcast_comment_send_button);
             container = view.findViewById(R.id.full_page_broadcast_container);
+            broadcastNameDisplay = view.findViewById(R.id.full_page_broadcast_ownerName);
+            broadcastMessageDisplay = view.findViewById(R.id.full_page_broadcast_Message);
+            timeElapsedDisplay = view.findViewById(R.id.full_page_broadcast_postedTime);
+            profPicDisplay = view.findViewById(R.id.full_page_broadcast_profilePicture);
+            pollOptionsDisplayGroup = view.findViewById(R.id.full_page_broadcast_poll_options_radio_group);
+            viewComments = view.findViewById(R.id.full_page_broadcast_viewComments);
+            viewPollAnswers = view.findViewById(R.id.full_page_broadcast_view_poll_answers);
+            broadcastTitle = view.findViewById(R.id.full_page_broadcast_Title);
+        }
+
+        public String getCurrentUserPollOption() {
+            return currentUserPollOption;
+        }
+
+        public void setCurrentUserPollOption(String currentUserPollOption) {
+            this.currentUserPollOption = currentUserPollOption;
         }
     }
+
+    public void vibrate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(50);
+        }
+    }
+
 }

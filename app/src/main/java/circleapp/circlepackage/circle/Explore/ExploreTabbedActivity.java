@@ -54,6 +54,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
+    private TextView locationDisplay;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
 
@@ -72,8 +73,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
         notificationBell = findViewById(R.id.main_activity_notifications_bell);
+        locationDisplay = findViewById(R.id.explore_district_name_display);
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
+
+        locationDisplay.setText(user.getDistrict());
 
         if (user.getProfileImageLink().length() > 10) { //checking if its uploaded image
             Glide.with(ExploreTabbedActivity.this)
@@ -118,10 +122,11 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                         case R.id.explore_bottom_nav_item:
                             selectedFragment = new ExploreFragment();
                             break;
-/*
+
                         case R.id.notifications_bottom_nav_item:
-                            selectedFragment = new SearchFragment();
+                            selectedFragment = new NotificationFragment();
                             break;
+/*
                         case R.id.search_bottom_nav_item:
                             selectedFragment = new SearchFragment();
                             break;

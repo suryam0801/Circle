@@ -67,72 +67,39 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         userDB = database.getReference("Users").child(user.getUserId());
         analyticsLogEvents = new AnalyticsLogEvents();
 
-        GradientDrawable wbLayoutBackground = HelperMethods.gradientRectangleDrawableSetter(20);
-        GradientDrawable wbLineBackground = HelperMethods.gradientRectangleDrawableSetter(20);
-        GradientDrawable wbButtonBackground = HelperMethods.gradientRectangleDrawableSetter(50);
-        GradientDrawable wbShareButtonBackground = HelperMethods.gradientRectangleDrawableSetter(500);
-
-        int textViewColorCode = 0;
-        switch (position % 3) {
-            case 0:
-                wbLayoutBackground.setColor(context.getResources().getColor(R.color.lightBlue));
-                wbLineBackground.setColor(context.getResources().getColor(R.color.darkBlue));
-                wbButtonBackground.setColor(context.getResources().getColor(R.color.darkBlue));
-                wbShareButtonBackground.setColor(context.getResources().getColor(R.color.darkBlue));
-                textViewColorCode = context.getResources().getColor(R.color.darkBlue);
-                break;
-            case 1:
-                wbLayoutBackground.setColor(context.getResources().getColor(R.color.lightPink));
-                wbLineBackground.setColor(context.getResources().getColor(R.color.darkPink));
-                wbButtonBackground.setColor(context.getResources().getColor(R.color.darkPink));
-                wbShareButtonBackground.setColor(context.getResources().getColor(R.color.darkPink));
-                textViewColorCode = context.getResources().getColor(R.color.darkPink);
-                break;
-            case 2:
-                wbLayoutBackground.setColor(context.getResources().getColor(R.color.lightOrange));
-                wbLineBackground.setColor(context.getResources().getColor(R.color.darkOrange));
-                wbButtonBackground.setColor(context.getResources().getColor(R.color.darkOrange));
-                wbShareButtonBackground.setColor(context.getResources().getColor(R.color.darkOrange));
-                textViewColorCode = context.getResources().getColor(R.color.darkOrange);
-                break;
-        }
-
-        //setting textcolors
-        holder.tv_MycircleName.setTextColor(textViewColorCode);
-        holder.tv_circleCreatorName.setTextColor(textViewColorCode);
-        holder.tv_circleCreatedDateWB.setTextColor(textViewColorCode);
-        holder.membersCount.setTextColor(textViewColorCode);
 
         //set the details of each circle to its respective card.
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
-        holder.container.setBackground(wbLayoutBackground);
-        holder.divider.setBackground(wbLineBackground);
-        holder.shareCircles.setBackground(wbShareButtonBackground);
         holder.tv_MycircleName.setText(circle.getName());
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
-        //setting members list
-        if (circle.getMembersList() != null)
-            holder.membersCount.setText("+" + circle.getMembersList().size());
-        else
-            holder.membersCount.setText("Circle is empty. Invite members!");
+
 
         //setting new applicants
         if(HelperMethods.numberOfApplicants(circle,user) > 0){
+            GradientDrawable itemBackgroundApplicant = HelperMethods.gradientRectangleDrawableSetter(80);
+            itemBackgroundApplicant.setColor(context.getResources().getColor(R.color.request_alert_color));
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
+            holder.newApplicantsDisplay.setBackground(itemBackgroundApplicant);
             holder.newApplicantsDisplay.setText(Integer.toString(circle.getApplicantsList().size()));
         }
 
         //read for new notifs
         int newNotifs = HelperMethods.newNotifications(circle, user);
         if(newNotifs > 0){
+            GradientDrawable itemBackgroundNotif = HelperMethods.gradientRectangleDrawableSetter(80);
+            itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
             holder.newNotifAlert.setText(newNotifs+"");
+            holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
 
         //read for new disscussions
         if(user.getNoOfReadDiscussions() < circle.getNoOfNewDiscussions()){
+            GradientDrawable itemBackgroundDiscussion = HelperMethods.gradientRectangleDrawableSetter(80);
+            itemBackgroundDiscussion.setColor(context.getResources().getColor(R.color.comment_alert_color));
             holder.newDiscussionDisplay.setText((circle.getNoOfNewDiscussions() - user.getNoOfReadDiscussions()) + "");
+            holder.newDiscussionDisplay.setBackground(itemBackgroundDiscussion);
             holder.newDiscussionDisplay.setVisibility(View.VISIBLE);
         }
 
@@ -167,8 +134,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             HelperMethods.showShareCirclePopup(circle, (Activity) context);
         });
 
-        String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", circle.getTimestamp());
-        holder.tv_circleCreatedDateWB.setText(date);
+        String timeElapsed = HelperMethods.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
+        holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
+
+        holder.categoryDisplay.setText(circle.getCategory());
+
     }
 
 
@@ -179,11 +149,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB, newNotifAlert,
-                membersCount, newApplicantsDisplay, newDiscussionDisplay;
+        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB,
+                newNotifAlert, newApplicantsDisplay, newDiscussionDisplay, categoryDisplay;
         private LinearLayout container;
         private Button shareCircles;
-        private View divider;
         public ViewHolder(View view) {
             super(view);
             newApplicantsDisplay = view.findViewById(R.id.newApplicantsDisplay);
@@ -191,11 +160,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             tv_MycircleName = view.findViewById(R.id.wbcircleName);
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
             shareCircles = view.findViewById(R.id.wb_share_circle_button);
-            tv_circleCreatedDateWB = view.findViewById(R.id.circle_created_date);
+            tv_circleCreatedDateWB = view.findViewById(R.id.workbench_circle_created_date);
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
-            divider = view.findViewById(R.id.wb_divider_line);
-            membersCount = view.findViewById(R.id.wb_members_count_button);
             newDiscussionDisplay = view.findViewById(R.id.newDiscussionDisplay);
+            categoryDisplay = view.findViewById(R.id.workbench_circle_category_display);
         }
     }
+
 }

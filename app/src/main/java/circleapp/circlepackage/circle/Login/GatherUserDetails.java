@@ -542,22 +542,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
             //update the user display name
             firebaseAuth.getCurrentUser().updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                                //Adding the user to collection
-                                addUser();
-                                Log.d(TAG,"User Registered success fully added");
-                                Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                //to signout the current firebase user
-                                firebaseAuth.signOut();
-                                //delete the user details
-                                firebaseAuth.getCurrentUser().delete();
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                            //Adding the user to collection
+                            addUser();
+                            Log.d(TAG,"User Registered success fully added");
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            //to signout the current firebase user
+                            firebaseAuth.signOut();
+                            //delete the user details
+                            firebaseAuth.getCurrentUser().delete();
                         }
                     });
 
@@ -582,13 +579,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             Log.d(TAG,"DownloadURI ::"+downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
-            user = new User(Name, contact, downloadUri.toString(),interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         } else
             {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             Log.d(TAG,"Avatar :: "+avatar);
-            user = new User(Name, contact, avatar, interestTag, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         }
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
