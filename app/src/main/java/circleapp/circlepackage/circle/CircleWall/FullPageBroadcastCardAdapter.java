@@ -29,6 +29,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.FullPageImageDisplay;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
@@ -149,6 +151,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     .into(viewHolder.profPicDisplay);
         }
 
+        viewHolder.broadcastTitle.setText(broadcast.getTitle());
+
         //calculating and setting time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime = broadcast.getTimeStamp();
@@ -180,6 +184,23 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             SessionStorage.saveBroadcast((Activity) context, broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
+
+        if(broadcast.getAttachmentURI()!=null){
+            viewHolder.imageView.setVisibility(View.VISIBLE);
+            //setting imageview
+            Glide.with((Activity) context)
+                    .load(broadcast.getAttachmentURI())
+                    .into(viewHolder.imageView);
+
+            //navigate to full screen photo display when clicked
+            viewHolder.imageView.setOnClickListener(view -> {
+                Intent intent = new Intent(context, FullPageImageDisplay.class);
+                intent.putExtra("uri", broadcast.getAttachmentURI());
+                context.startActivity(intent);
+                ((Activity) context).finish();
+            });
+        }
+
 
         if (broadcast.isPollExists() == true) {
             poll = broadcast.getPoll();
@@ -305,6 +326,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         private LinearLayout pollOptionsDisplayGroup;
         private String currentUserPollOption = null;
         private Button viewPollAnswers;
+        private PhotoView imageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -318,6 +340,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             viewComments = view.findViewById(R.id.full_page_broadcast_viewComments);
             viewPollAnswers = view.findViewById(R.id.full_page_broadcast_view_poll_answers);
             broadcastTitle = view.findViewById(R.id.full_page_broadcast_Title);
+            imageView = view.findViewById(R.id.uploaded_image_display_broadcast_full_page);
         }
 
         public String getCurrentUserPollOption() {

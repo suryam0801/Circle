@@ -81,6 +81,14 @@
                         android:visibility="gone"></Button>
                 </LinearLayout>
 
+                <com.github.chrisbanes.photoview.PhotoView
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/uploaded_image_display_broadcast_full_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/full_page_broadcast_Message"
                     android:layout_width="wrap_content"
