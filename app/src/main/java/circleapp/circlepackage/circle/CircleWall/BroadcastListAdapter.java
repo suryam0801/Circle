@@ -106,7 +106,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        viewHolder.timeElapsedDisplay.setOnClickListener(view -> {
+        viewHolder.container.setOnClickListener(view -> {
             SessionStorage.saveBroadcastList((Activity) context, broadcastList);
             Intent intent = new Intent(context, FullPageBroadcastCardView.class);
             intent.putExtra("position", i);
@@ -116,9 +116,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         //new comments setter
         viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
-        if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-            viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
 
+        try{
+            if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+                viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
+        } catch (Exception e){
+            //null value for get new timestamp comments
+        }
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
@@ -227,7 +231,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
         private CircleImageView profPicDisplay;
-        private LinearLayout pollOptionsDisplayGroup;
+        private LinearLayout pollOptionsDisplayGroup, container;
         private ScrollView pollDisplay;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
@@ -247,6 +251,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
             broadcastTitle = view.findViewById(R.id.broadcastWall_Title);
+            container = view.findViewById(R.id.broadcast_display_container);
         }
 
         public String getCurrentUserPollOption() {

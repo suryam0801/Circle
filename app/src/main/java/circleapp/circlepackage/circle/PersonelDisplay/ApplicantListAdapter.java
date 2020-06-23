@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Notification.SendNotification;
+import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
