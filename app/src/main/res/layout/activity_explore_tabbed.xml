@@ -43,7 +43,6 @@
 
     </RelativeLayout>
 
-
     <FrameLayout
         android:layout_weight="99"
         android:id="@+id/fragment_container"

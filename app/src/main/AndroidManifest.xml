@@ -24,6 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".FullPageImageDisplay"></activity>
+
         <activity android:name=".CircleWall.FullPageBroadcastCardView" />
         <activity
             android:name=".CreateCircle.CreateCircleCategoryPicker"

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/broadcast_display_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="25dp"
     android:layout_marginTop="12dp"
-    android:layout_marginBottom="5dp"
     android:layout_marginRight="25dp"
-    android:paddingRight="15dp"
-    android:paddingLeft="8dp"
-    android:paddingTop="13dp"
-    android:id="@+id/broadcast_display_container"
+    android:layout_marginBottom="5dp"
     android:background="@drawable/broadcast_cards"
     android:elevation="3dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingTop="13dp"
+    android:paddingRight="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,11 +73,19 @@
                 android:visibility="gone"></Button>
         </LinearLayout>
 
+        <com.github.chrisbanes.photoview.PhotoView
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/uploaded_image_display_broadcast"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/broadcastWall_Message"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/roboto_regular"
             android:lineSpacingExtra="4dp"
             android:maxLines="3"
@@ -85,21 +93,23 @@
             android:textColor="#9D9D9D"
             android:textSize="14dp"></TextView>
 
+
+
         <ScrollView
             android:id="@+id/broadcastWall_poll_display_view"
             android:layout_width="match_parent"
             android:layout_height="117dp"
             android:layout_marginTop="10dp"
             android:layout_weight="100"
-            android:scrollbarSize="0dp"
             android:orientation="horizontal"
+            android:scrollbarSize="0dp"
             android:visibility="gone">
+
             <LinearLayout
                 android:id="@+id/poll_options_radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
         </ScrollView>
 
         <LinearLayout
@@ -107,26 +117,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
-            android:weightSum="100"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="100">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="17dp"
                 android:layout_gravity="center"
-                android:background="@drawable/message">
-            </ImageView>
+                android:background="@drawable/message"></ImageView>
 
             <TextView
                 android:id="@+id/broadcastWall_object_viewComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="16 messages"
-                android:layout_marginBottom="2dp"
                 android:layout_marginLeft="5dp"
-                android:fontFamily="@font/roboto_condensed"
-                android:textColor="#000000"
+                android:layout_marginBottom="2dp"
                 android:layout_weight="99"
+                android:fontFamily="@font/roboto_condensed"
+                android:text="16 messages"
+                android:textColor="#000000"
                 android:textSize="13dp"></TextView>
 
             <TextView
