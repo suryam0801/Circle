@@ -71,7 +71,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         Circle currentCircle = circleList.get(i);
 
-
         //check if circle acceptance is review
         if (currentCircle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
@@ -82,60 +81,29 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
         }
 
-        GradientDrawable wbItemBackground = HelperMethods.gradientRectangleDrawableSetter(30);
-
-        GradientDrawable moreMembersColor = HelperMethods.gradientRectangleDrawableSetter(130);
-
-        GradientDrawable dividerColor = HelperMethods.gradientRectangleDrawableSetter(1);
-
-        switch (i % 3) {
-            case 0:
-                wbItemBackground.setColor(context.getResources().getColor(R.color.solidPurple));
-                moreMembersColor.setColor(context.getResources().getColor(R.color.transparentPurple));
-                dividerColor.setColor(context.getResources().getColor(R.color.transparentPurple));
-                break;
-            case 1:
-                wbItemBackground.setColor(context.getResources().getColor(R.color.solidPink));
-                moreMembersColor.setColor(context.getResources().getColor(R.color.transparentPink));
-                dividerColor.setColor(context.getResources().getColor(R.color.transparentPink));
-                break;
-            case 2:
-                wbItemBackground.setColor(context.getResources().getColor(R.color.solidTurquoise));
-                moreMembersColor.setColor(context.getResources().getColor(R.color.transparentTurqoise));
-                dividerColor.setColor(context.getResources().getColor(R.color.transparentTurqoise));
-                break;
-        }
 
         //set the details of each circle to its respective card.
         viewHolder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         viewHolder.tv_circleName.setText(currentCircle.getName());
         viewHolder.tv_creatorName.setText("By " + currentCircle.getCreatorName());
         viewHolder.tv_circleDesc.setText(currentCircle.getDescription());
-        viewHolder.container.setBackground(wbItemBackground);
-        viewHolder.membersCount.setBackground(moreMembersColor);
-        viewHolder.divider.setBackground(dividerColor);
 
         String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
 
-        if (currentCircle.getMembersList() != null)
-            viewHolder.membersCount.setText("+" + currentCircle.getMembersList().size());
-        else {
-            viewHolder.threeMemberPicContainer.setVisibility(View.GONE);
-            viewHolder.membersCount.setText("Be the first to join");
-        }
-
         //onclick for join and share
         viewHolder.join.setOnClickListener(view -> {
             if (!isApplicant)
-                applyOrJoin(viewHolder, currentCircle);
+                applyOrJoin(currentCircle);
             else if (currentCircle.getApplicantsList() == null)
-                applyOrJoin(viewHolder, currentCircle);
+                applyOrJoin(currentCircle);
         });
 
         viewHolder.share.setOnClickListener(view -> {
             HelperMethods.showShareCirclePopup(currentCircle, (Activity) context);
         });
+
+        viewHolder.categoryDisplay.setText(currentCircle.getCategory());
     }
 
     @Override
@@ -145,29 +113,25 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate;
+        private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
         private LinearLayout container;
-        private RelativeLayout threeMemberPicContainer;
         private ImageButton share;
-        private Button join, membersCount;
-        private View divider;
+        private Button join;
 
         public ViewHolder(View view) {
             super(view);
             container = view.findViewById(R.id.container);
-            threeMemberPicContainer = view.findViewById(R.id.three_memers_prof_pic);
             tv_createdDate = view.findViewById(R.id.explore_circle_created_date);
             tv_circleName = view.findViewById(R.id.circle_name);
             tv_creatorName = view.findViewById(R.id.circle_creatorName);
             tv_circleDesc = view.findViewById(R.id.circle_desc);
             share = view.findViewById(R.id.circle_card_share);
             join = view.findViewById(R.id.circle_card_join);
-            membersCount = view.findViewById(R.id.members_count_button);
-            divider = view.findViewById(R.id.project_item_divider);
+            categoryDisplay = view.findViewById(R.id.circle_category);
         }
     }
 
-    private void applyOrJoin(ViewHolder viewHolder, final Circle circle) {
+    private void applyOrJoin(final Circle circle) {
 
         circleJoinDialog.setContentView(R.layout.apply_popup_layout);
         circleJoinDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
