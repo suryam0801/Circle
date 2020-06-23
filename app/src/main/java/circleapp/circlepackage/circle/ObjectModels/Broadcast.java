@@ -2,13 +2,21 @@ package circleapp.circlepackage.circle.ObjectModels;
 
 public class Broadcast {
     private String id, title, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
-    private boolean pollExists;
+    private boolean pollExists, imageExists;
     private long timeStamp, latestCommentTimestamp;
     private int numberOfComments;
     private Poll poll;
 
+    public boolean isImageExists() {
+        return imageExists;
+    }
+
+    public void setImageExists(boolean imageExists) {
+        this.imageExists = imageExists;
+    }
+
     public Broadcast(String id, String title, String message, String attachmentURI, String creatorName,
-                     String creatorID, boolean pollExists, long timeStamp, Poll poll, String creatorPhotoURI,
+                     String creatorID, boolean pollExists, boolean imageExists, long timeStamp, Poll poll, String creatorPhotoURI,
                      long latestCommentTimestamp, int numberOfComments) {
         this.id = id;
         this.title = title;
@@ -17,6 +25,7 @@ public class Broadcast {
         this.creatorName = creatorName;
         this.creatorID = creatorID;
         this.pollExists = pollExists;
+        this.imageExists = imageExists;
         this.creatorPhotoURI = creatorPhotoURI;
         this.timeStamp = timeStamp;
         this.poll = poll;
@@ -135,6 +144,7 @@ public class Broadcast {
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorPhotoURI='" + creatorPhotoURI + '\'' +
                 ", pollExists=" + pollExists +
+                ", imageExists" + imageExists +
                 ", timeStamp=" + timeStamp +
                 ", latestCommentTimestamp=" + latestCommentTimestamp +
                 ", numberOfComments=" + numberOfComments +

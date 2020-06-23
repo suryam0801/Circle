@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -94,6 +95,7 @@ public class OtpActivity extends AppCompatActivity {
         imm.showSoftInput(mOtpText, InputMethodManager.SHOW_IMPLICIT);
         mVerifyBtn = findViewById(R.id.verify_btn);
         resendTextView = findViewById(R.id.resend_otp_counter);
+        HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
 
 
