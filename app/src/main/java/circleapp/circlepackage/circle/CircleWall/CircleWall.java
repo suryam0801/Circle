@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -340,6 +341,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void showCreateBroadcastDialog(String flag) {
         createBroadcastPopup = new Dialog(CircleWall.this);
         createBroadcastPopup.setContentView(R.layout.broadcast_create_popup_layout); //set dialog view
+        createBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         downloadUri = null;
 
@@ -423,11 +425,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             }
             selectImage();
         });
+
         btnAddPollOption.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button", "circle_wall");
 
             String option = setPollOptionET.getText().toString();
-
 
             if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]")|| option.isEmpty())) {
                 //checking for invalid characters
@@ -566,6 +568,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         return tv;
     }
+
     public void selectFile(){
 
         Intent intent = new Intent();
@@ -573,6 +576,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
+
     public void takePhoto(){
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -581,6 +585,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
         startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
     }
+
     private void selectImage() {
         final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(CircleWall.this);
@@ -809,6 +814,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     //bottom sheet dialog onclick (only called when nagivating from create circle)
     @Override
     public void onButtonClicked(String text) {
+
         switch (text) {
             case "shareLink":
                 HelperMethods.showShareCirclePopup(circle, CircleWall.this);

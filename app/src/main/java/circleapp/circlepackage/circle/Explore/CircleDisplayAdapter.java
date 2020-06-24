@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
@@ -111,8 +113,15 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 applyOrJoin(currentCircle);
         });
 
-        viewHolder.share.setOnClickListener(view -> {
-            HelperMethods.showShareCirclePopup(currentCircle, (Activity) context);
+        viewHolder.shareLayout.setOnClickListener(view -> {
+            SessionStorage.saveCircle((Activity) context, currentCircle);
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
+        });
+        viewHolder.shareButton.setOnClickListener(view -> {
+            SessionStorage.saveCircle((Activity) context, currentCircle);
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         viewHolder.categoryDisplay.setText(currentCircle.getCategory());
@@ -126,8 +135,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
-        private LinearLayout container;
-        private ImageButton share;
+        private LinearLayout container, shareLayout;
+        private ImageButton shareButton;
         private Button join;
         CircleImageView circleLogo;
 
@@ -138,7 +147,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             tv_circleName = view.findViewById(R.id.circle_name);
             tv_creatorName = view.findViewById(R.id.circle_creatorName);
             tv_circleDesc = view.findViewById(R.id.circle_desc);
-            share = view.findViewById(R.id.circle_card_share);
+            shareLayout = view.findViewById(R.id.circle_card_share_layout);
+            shareButton = view.findViewById(R.id.circle_card_share_button);
             join = view.findViewById(R.id.circle_card_join);
             categoryDisplay = view.findViewById(R.id.circle_category);
             circleLogo = view.findViewById(R.id.explore_circle_logo);
