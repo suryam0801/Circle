@@ -405,7 +405,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                                 .build();
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(GatherUserDetails.this).load(downloadUri.toString()).into(profilePic);
+                        Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
                         for(int i =0; i<8; i++){
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }
@@ -478,7 +478,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                                 .build();
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(GatherUserDetails.this).load(downloadUri.toString()).into(profilePic);
+                        Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
                         for(int i =0; i<8; i++){
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }

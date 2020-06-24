@@ -103,11 +103,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     //create broadcast popup ui elements
     private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
     private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay,imageCreateView;
-    private TextView circleBannerName, broadcastHeader, addPhotoText;
+    private TextView circleBannerName, broadcastHeader, addPhotoText, pollAddPhotoText;
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
-    private ImageView addPhoto;
-    private RelativeLayout photoUploadButtonView;
+    private ImageView addPhoto, pollAddPhoto ;
+    private RelativeLayout photoUploadButtonView, pollUploadButtonView;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
     String usersState,broadcastid;
@@ -343,26 +343,33 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         downloadUri = null;
 
+        broadcastDisplay = createBroadcastPopup.findViewById(R.id.create_broadcast_display);
         broadcastHeader = createBroadcastPopup.findViewById(R.id.broadcast_header);
         setTitleET = createBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
         setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        setTitlePhoto = createBroadcastPopup.findViewById(R.id.photoTitleEditText);
-        setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        addPhoto = createBroadcastPopup.findViewById(R.id.display_photo_add_broadcast);
-        photoUploadButtonView = createBroadcastPopup.findViewById(R.id.add_photo_view);
         setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
         setMessageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+        imageCreateView = createBroadcastPopup.findViewById(R.id.create_image_display);
+        setTitlePhoto = createBroadcastPopup.findViewById(R.id.photoTitleEditText);
+        setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        addPhoto = createBroadcastPopup.findViewById(R.id.photo_display_photo_add_broadcast);
+        photoUploadButtonView = createBroadcastPopup.findViewById(R.id.photo_add_photo_view);
+        addPhotoText = createBroadcastPopup.findViewById(R.id.photo_upload_photo);
+
+        pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
         setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
         setPollQuestionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setPollOptionET = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
         setPollOptionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         pollOptionsDisplay = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_display);
-        pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
         btnAddPollOption = createBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
+        pollAddPhoto = createBroadcastPopup.findViewById(R.id.poll_display_photo_add_broadcast);
+        pollUploadButtonView = createBroadcastPopup.findViewById(R.id.poll_add_photo_view);
+        pollAddPhotoText = createBroadcastPopup.findViewById(R.id.poll_upload_photo);
+
+
         btnUploadBroadcast = createBroadcastPopup.findViewById(R.id.upload_broadcast_btn);
-        broadcastDisplay = createBroadcastPopup.findViewById(R.id.create_broadcast_display);
-        imageCreateView = createBroadcastPopup.findViewById(R.id.create_image_display);
-        addPhotoText = createBroadcastPopup.findViewById(R.id.upload_photo);
         cancelButton = createBroadcastPopup.findViewById(R.id.create_broadcast_cancel_btn);
 
         cancelButton.setOnClickListener(view -> createBroadcastPopup.dismiss());
@@ -386,6 +393,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             imageCreateView.setVisibility(View.GONE);
             broadcastHeader.setText("Create New Broadcast");
         }
+
+        pollUploadButtonView.setOnClickListener(v -> {
+            photo = 2;
+            if (ContextCompat.checkSelfPermission(CircleWall.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(CircleWall.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        STORAGE_PERMISSION_CODE);
+            }
+            selectImage();
+        });
 
         photoUploadButtonView.setOnClickListener(v -> {
             photo = 2;
@@ -427,8 +446,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         btnUploadBroadcast.setOnClickListener(view -> {
-            if (!pollAnswerOptionsList.isEmpty())
+            if (!pollAnswerOptionsList.isEmpty()){
                 pollExists = true;
+                if(downloadUri!=null)
+                    imageExists = true;
+            }
             else if(downloadUri!=null){
                 imageExists = true;
             }
@@ -436,7 +458,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             //only for message broadcast
             if(imageExists==false && pollExists == false && setTitleET.getText().toString().isEmpty())
                 Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
-            else if(imageExists==true&&downloadUri==null||setTitlePhoto.getText().toString().isEmpty()){
+            else if(imageExists==true&&downloadUri==null||pollExists==true||setTitlePhoto.getText().toString().isEmpty()){
 //                Toast.makeText(getApplicationContext(), "Please upload a photo and set Title", Toast.LENGTH_SHORT).show();
                 createBroadcast();
             }
@@ -467,10 +489,15 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
         if (pollExists) {
+
             Poll poll = new Poll(pollQuestion, options, null);
-            createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll,null,false);
+            if(imageExists){
+                createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll,downloadUri.toString(),true);
+            }
+            else
+                createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll,null,false);
         }
-        else if(imageExists){
+        else if(imageExists&&!pollExists){
             createAndUploadBroadcast(broadcastId, setTitlePhoto.getText().toString(), null, currentUserName, currentUserId, false, null,downloadUri.toString(),true);
         }
         else {
@@ -488,13 +515,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     public void createAndUploadBroadcast(String broadcastId, String title, String message, String userName, String userId, boolean localPollExists, Poll poll, String attachmentUri, boolean localImageExists) {
         Broadcast broadcast;
-        if(localPollExists) {
+        if(localPollExists&&!localImageExists) {
             broadcast = new Broadcast(broadcastId, title, message, null, userName, userId, true,false,
                     System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
         }
-        else if(localImageExists){
+        else if(localImageExists&&!localPollExists){
             broadcast = new Broadcast(broadcastId, title, null, attachmentUri, userName, userId, false,true,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
+        }
+        else if(localImageExists&&localPollExists){
+            broadcast = new Broadcast(broadcastId, title, message, downloadUri.toString(), userName, userId, true,true,
+                    System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
         }
         else {
             broadcast = new Broadcast(broadcastId, title, message, null,
@@ -657,6 +688,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         downloadUri = uri;
                         photoUploadButtonView.setVisibility(View.GONE);
                         addPhoto.setVisibility(View.VISIBLE);
+                        pollUploadButtonView.setVisibility(View.GONE);
+                        pollAddPhoto.setVisibility(View.VISIBLE);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();

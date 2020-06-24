@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
 
             <TextView
@@ -153,7 +153,39 @@
                     android:textColor="#6CACFF"></Button>
 
             </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/poll_add_photo_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/dotted_gray_line"
+                android:layout_gravity="center">
 
+                <TextView
+                    android:id="@+id/poll_upload_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="10dp"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:drawableStart="@drawable/ic_cloud_upload_blue_24dp"
+                    android:text="Add Photo +"
+                    android:textColor="@color/color_blue"
+                    android:visibility="visible"></TextView>
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/poll_display_photo_add_broadcast"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:inputType="textCapSentences"
+                android:padding="20dp"
+                android:textColor="@color/black"
+                android:textSize="12dp"
+                android:visibility="gone"></ImageView>
 
         </LinearLayout>
 
@@ -162,7 +194,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/photo_header"
@@ -205,14 +237,14 @@
                 android:textSize="12dp"></TextView>
 
             <RelativeLayout
-                android:id="@+id/add_photo_view"
+                android:id="@+id/photo_add_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:background="@drawable/dotted_gray_line"
                 android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/upload_photo"
+                    android:id="@+id/photo_upload_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -227,7 +259,7 @@
             </RelativeLayout>
 
             <ImageView
-                android:id="@+id/display_photo_add_broadcast"
+                android:id="@+id/photo_display_photo_add_broadcast"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

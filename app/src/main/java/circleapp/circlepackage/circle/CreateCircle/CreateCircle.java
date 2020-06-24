@@ -338,7 +338,7 @@ public class CreateCircle extends AppCompatActivity {
                                 .build();
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(CreateCircle.this).load(downloadUri.toString()).into(backgroundPic);
+                        Glide.with(CreateCircle.this).load(filePath).into(backgroundPic);
 
                     }
                 })
@@ -408,7 +408,7 @@ public class CreateCircle extends AppCompatActivity {
                                 .build();
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(CreateCircle.this).load(downloadUri.toString()).into(backgroundPic);
+                        Glide.with(CreateCircle.this).load(filePath).into(backgroundPic);
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
