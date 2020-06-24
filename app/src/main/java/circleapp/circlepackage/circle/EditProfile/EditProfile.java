@@ -578,7 +578,7 @@ public class EditProfile extends AppCompatActivity {
                                 .setPhotoUri(uri)
                                 .build();
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
-                        Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+                        Glide.with(EditProfile.this).load(filePath).into(profileImageView);
 
                     }
                 })
@@ -647,7 +647,7 @@ public class EditProfile extends AppCompatActivity {
                                 .setPhotoUri(uri)
                                 .build();
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
-                        Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+                        Glide.with(EditProfile.this).load(filePath).into(profileImageView);
                         for(int i =0; i<8; i++){
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }
