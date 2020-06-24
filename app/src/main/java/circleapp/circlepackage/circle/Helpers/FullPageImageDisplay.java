@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle;
+package circleapp.circlepackage.circle.Helpers;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
+
+import circleapp.circlepackage.circle.R;
 
 public class FullPageImageDisplay extends AppCompatActivity {
 
