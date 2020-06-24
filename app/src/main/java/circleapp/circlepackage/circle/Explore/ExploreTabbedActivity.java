@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -64,7 +65,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
-    private FloatingActionButton btnAddCircle;
+    //private FloatingActionButton btnAddCircle;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     View decorView;
@@ -93,7 +94,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
-        btnAddCircle = findViewById(R.id.add_circle_button);
+        //btnAddCircle = findViewById(R.id.add_circle_button);
 
         SharedPreferences firstInstanceRunPref = HelperMethods.getFirstRunPrefs(getApplicationContext());
         if (firstInstanceRunPref.getBoolean("firstrun", true)) {
@@ -123,9 +124,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     .into(profPicHolder);
         }
 
+/*
         btnAddCircle.setOnClickListener(v -> {
             startActivity(new Intent(this, CreateCircleCategoryPicker.class));
         });
+*/
 
         profPicHolder.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
@@ -151,7 +154,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     case R.id.explore_bottom_nav_item:
                         selectedFragment = new ExploreFragment();
                         break;
-
+                    case R.id.placeholder_menu:
+                        selectedFragment = new WorkbenchFragment();
+                        startActivity(new Intent(ExploreTabbedActivity.this, CreateCircle.class));
+                        finish();
+                        break;
                     case R.id.notifications_bottom_nav_item:
                         selectedFragment = new NotificationFragment();
                         break;

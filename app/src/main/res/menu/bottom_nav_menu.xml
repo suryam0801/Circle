@@ -11,6 +11,7 @@
         android:title="Explore" />
 
     <item
+        android:id="@+id/placeholder_menu"
         android:title="" />
 
     <item
