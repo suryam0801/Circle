@@ -44,6 +44,7 @@ public class SendNotification {
         applicationStatus.put("state", "broadcast_added");
         applicationStatus.put("circleName", circleName);
         applicationStatus.put("circleId", circleId);
+        applicationStatus.put("broadcastId", broadcastId);
         applicationStatus.put("creatorName", creatorName);
         applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
         applicationStatus.put("notificationId", notificationId);
@@ -56,6 +57,14 @@ public class SendNotification {
             member = membersList.keySet();
             for (String i :member)
             {
+
+                userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d(TAG,"Notification Sended Successfully !!!");
+                }
+            });
+
                 db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -69,12 +78,6 @@ public class SendNotification {
                     }
                 });
 
-                userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG,"Notification Sended Successfully !!!");
-                    }
-                });
 
             }
         }

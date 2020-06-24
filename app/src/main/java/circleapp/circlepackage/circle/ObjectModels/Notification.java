@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Notification implements Parcelable {
-    private String circleName, circleId, from,notify_to, state, date;
+    private String circleName, circleId, from,notify_to, state, date,broadcastId;
     private Long timestamp;
 
     public Notification () {
@@ -21,10 +21,11 @@ public class Notification implements Parcelable {
                 ", state='" + state + '\'' +
                 ", timestamp='" + timestamp + '\'' +
                 ", date='" + date + '\'' +
+                ", broadcastId='" + broadcastId + '\'' +
                 '}';
     }
 
-    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date) {
+    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date,String broadcastId) {
         this.circleName = circleName;
         this.circleId = circleId;
         this.from = from;
@@ -32,6 +33,7 @@ public class Notification implements Parcelable {
         this.timestamp = timestamp;
         this.date = date;
         this.notify_to = notify_to;
+        this.broadcastId = broadcastId;
     }
 
     public String getNotify_to() {
@@ -90,6 +92,13 @@ public class Notification implements Parcelable {
         this.timestamp = timestamp;
     }
 
+    public String getBroadcastId() {
+        return broadcastId;
+    }
+
+    public void setBroadcastId(String broadcastId) {
+        this.broadcastId = broadcastId;
+    }
 
     @Override
     public int describeContents() {
@@ -105,6 +114,7 @@ public class Notification implements Parcelable {
         parcel.writeString(state);
         parcel.writeLong(timestamp);
         parcel.writeString(date);
+        parcel.writeString(broadcastId);
     }
 
     private Notification(Parcel in) {
@@ -115,6 +125,7 @@ public class Notification implements Parcelable {
         state = in.readString();
         timestamp = in.readLong();
         date = in.readString();
+        broadcastId = in.readString();
     }
 
     public static final Parcelable.Creator<Notification> CREATOR
