@@ -47,8 +47,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
@@ -74,6 +77,7 @@ import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
+import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -94,7 +98,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private Uri downloadUri;
     private CircleImageView profilePic;
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB;
+    private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB, locationsDB;
     private User user;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     ProgressDialog progressDialog;
@@ -128,6 +132,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
         HelperMethods.increaseTouchArea(name,50,50,50,50);
+        locationsDB = database.getReference("Locations");
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
@@ -156,6 +161,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
+        HelperMethods.addDistrict(district);
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -563,8 +569,31 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
+        /*locationsDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Circle circle = snapshot.getValue(Circle.class);
+                    if (circle.getId().equals(circleID)) {
+                        circleExists = true;
+                        Circle popupCircle = circle;
+                        if (getIntent().getData() != null) {
+                            Log.d("wekfjnwef", popupCircle.toString());
+                            showLinkPopup(popupCircle);
+                        }
 
+                    }
+                }
+                if (circleExists == false) {
+                    analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "_expired_invite_link", "incorrect_link", "read_external_link");
+                    Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }*/
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
