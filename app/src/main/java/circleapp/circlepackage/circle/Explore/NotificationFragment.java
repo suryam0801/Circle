@@ -149,23 +149,33 @@ public class NotificationFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Notification curent = thisWeekNotifs.get(position);
+                        Log.d("Notification Fragment","Notification list :: "+curent.toString());
                         String circleid = curent.getCircleId();
                         circlesDB.child(circleid).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Circle circle = dataSnapshot.getValue(Circle.class);
-                                if (circle.getMembersList().containsKey(currentUser.getUid())) {
-                                    analyticsLogEvents.logEvents(getContext(), "notification_clicked_wall","to_circle_wall","notification");
-                                    SessionStorage.saveCircle((Activity) getContext(), circle);
-                                    Intent intent = new Intent(getContext(), CircleWall.class);
-                                    intent.putExtra("broadcastPos", position);
-                                    intent.putExtra("broadcastId", thisWeekNotifs.get(position).getBroadcastId());
-                                    startActivity(intent);
-                                    ((Activity) getContext()).finish();
+                                if (circle != null)
+                                {
+
+                                    Log.d("Notification Fragment","Circle list :: "+circle.toString());
+                                    if (circle.getMembersList().containsKey(currentUser.getCurrentUser().getUid())) {
+                                        analyticsLogEvents.logEvents(getContext(), "notification_clicked_wall","to_circle_wall","notification");
+                                        SessionStorage.saveCircle((Activity) getContext(), circle);
+                                        Intent intent = new Intent(getContext(), CircleWall.class);
+                                        intent.putExtra("broadcastPos", position);
+                                        intent.putExtra("broadcastId", thisWeekNotifs.get(position).getBroadcastId());
+                                        startActivity(intent);
+                                        ((Activity) getContext()).finish();
+                                    } else {
+                                        analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user","not_part_of_circle","notification");
+                                        Toast.makeText(getContext(), "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
                                     analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user","not_part_of_circle","notification");
-                                    Toast.makeText(getContext(), "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
                                 }
+
                             }
 
                             @Override
