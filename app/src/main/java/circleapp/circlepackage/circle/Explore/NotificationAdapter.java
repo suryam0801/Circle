@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Explore;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -13,8 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.mikepenz.materialize.color.Material;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NotificationAdapter extends BaseAdapter {
 
@@ -33,6 +38,7 @@ public class NotificationAdapter extends BaseAdapter {
     private TextView notificationTitle, notificationDescription, timeElapsedTextView;
     private LinearLayout backgroundColor;
     private AppCompatImageView foregroundIcon;
+    CircleImageView profilePic;
 
     public NotificationAdapter(Context mContext, List<Notification> NotificationList){
         this.mContext = mContext;
@@ -66,6 +72,7 @@ public class NotificationAdapter extends BaseAdapter {
         backgroundColor = v.findViewById(R.id.notification_background_icon);
         foregroundIcon = v.findViewById(R.id.notification_foreground_icon);
         timeElapsedTextView = v.findViewById(R.id.notification_time_elapsed);
+        profilePic = v.findViewById(R.id.notification_circle_logo);
 
 
         long createdTime = notif.getTimestamp();
@@ -122,7 +129,10 @@ public class NotificationAdapter extends BaseAdapter {
                 analyticsLogEvents.logEvents(mContext, "rejected_notification","rejectedto_circle","notification");
                 break;
             case "broadcast_added":
+                setLogo(notif.getCircleIcon());
                 notificationTitle.setText("New BroadCast Added");
+                foregroundIcon.setVisibility(View.GONE);
+                profilePic.setVisibility(View.VISIBLE);
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
                 analyticsLogEvents.logEvents(mContext, "broadcast_added","broadcast_added_new","notification");
@@ -168,5 +178,13 @@ public class NotificationAdapter extends BaseAdapter {
         }
 
         return v;
+
+    }
+
+    public void  setLogo(String circleIcon)
+    {
+        Glide.with(mContext)
+                .load(circleIcon)
+                .into(profilePic);
     }
 }
