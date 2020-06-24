@@ -12,7 +12,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -64,7 +63,6 @@ import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -109,7 +107,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
     private ImageView addPhoto;
-    private RelativeLayout relativeLayout;
+    private RelativeLayout photoUploadButtonView;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
     String usersState,broadcastid;
@@ -350,8 +348,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setTitlePhoto = createBroadcastPopup.findViewById(R.id.photoTitleEditText);
         setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        addPhoto = createBroadcastPopup.findViewById(R.id.upload_photo);
-        relativeLayout = createBroadcastPopup.findViewById(R.id.add_photo_btn);
+        addPhoto = createBroadcastPopup.findViewById(R.id.display_photo_add_broadcast);
+        photoUploadButtonView = createBroadcastPopup.findViewById(R.id.add_photo_view);
         setMessageET = createBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
         setMessageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
@@ -364,9 +362,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         btnUploadBroadcast = createBroadcastPopup.findViewById(R.id.upload_broadcast_btn);
         broadcastDisplay = createBroadcastPopup.findViewById(R.id.create_broadcast_display);
         imageCreateView = createBroadcastPopup.findViewById(R.id.create_image_display);
-        addPhotoText = createBroadcastPopup.findViewById(R.id.backgroundText);
+        addPhotoText = createBroadcastPopup.findViewById(R.id.upload_photo);
         cancelButton = createBroadcastPopup.findViewById(R.id.create_broadcast_cancel_btn);
-
 
         cancelButton.setOnClickListener(view -> createBroadcastPopup.dismiss());
 
@@ -390,7 +387,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             broadcastHeader.setText("Create New Broadcast");
         }
 
-        relativeLayout.setOnClickListener(v -> {
+        photoUploadButtonView.setOnClickListener(v -> {
             photo = 2;
             if (ContextCompat.checkSelfPermission(CircleWall.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -658,13 +655,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         downloadUri = uri;
-                        addPhotoText.setVisibility(View.GONE);
+                        photoUploadButtonView.setVisibility(View.GONE);
+                        addPhoto.setVisibility(View.VISIBLE);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(CircleWall.this).load(downloadUri.toString()).into(addPhoto);
+                        Glide.with(CircleWall.this).load(filePath).into(addPhoto);
 
                     }
                 })
@@ -728,14 +726,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         downloadUri = uri;
-                        addPhotoText.setVisibility(View.GONE);
+
+                        photoUploadButtonView.setVisibility(View.GONE);
+                        addPhoto.setVisibility(View.VISIBLE);
+
                         Log.d("test1",""+downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(CircleWall.this).load(downloadUri.toString()).into(addPhoto);
+                        Glide.with(CircleWall.this).load(filePath).into(addPhoto);
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {

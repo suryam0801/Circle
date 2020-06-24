@@ -161,10 +161,7 @@ public class NotificationFragment extends Fragment {
                                     intent.putExtra("broadcastPos", position);
                                     intent.putExtra("broadcastId", thisWeekNotifs.get(position).getBroadcastId());
                                     startActivity(intent);
-                                    Log.d("NotificationFragment",thisWeekNotifs.get(position).getBroadcastId().toString());
                                     ((Activity) getContext()).finish();
-//                                    startActivity(new Intent(getContext(), CircleWall.class));
-
                                 } else {
                                     analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user","not_part_of_circle","notification");
                                     Toast.makeText(getContext(), "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
