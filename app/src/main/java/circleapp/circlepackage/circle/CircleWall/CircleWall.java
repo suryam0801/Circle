@@ -102,7 +102,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     //create broadcast popup ui elements
     private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
-    private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay,imageCreateView;
+    private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay,imageCreateView, pollImageUploadInitiation;
     private TextView circleBannerName, broadcastHeader, addPhotoText, pollAddPhotoText;
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
@@ -356,6 +356,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         addPhoto = createBroadcastPopup.findViewById(R.id.photo_display_photo_add_broadcast);
         photoUploadButtonView = createBroadcastPopup.findViewById(R.id.photo_add_photo_view);
         addPhotoText = createBroadcastPopup.findViewById(R.id.photo_upload_photo);
+        pollImageUploadInitiation = createBroadcastPopup.findViewById(R.id.poll_image_upload_initiate_layout);
 
         pollCreateView = createBroadcastPopup.findViewById(R.id.poll_create_layout);
         setPollQuestionET = createBroadcastPopup.findViewById(R.id.poll_create_question_editText);
@@ -393,6 +394,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             imageCreateView.setVisibility(View.GONE);
             broadcastHeader.setText("Create New Broadcast");
         }
+
+        pollImageUploadInitiation.setOnClickListener(view -> {
+            pollImageUploadInitiation.setVisibility(View.GONE);
+            pollUploadButtonView.setVisibility(View.VISIBLE);
+        });
 
         pollUploadButtonView.setOnClickListener(v -> {
             photo = 2;
@@ -695,8 +701,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                                 .build();
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(CircleWall.this).load(filePath).into(addPhoto);
 
+                        Glide.with(CircleWall.this).load(filePath).into(addPhoto);
+                        Glide.with(CircleWall.this).load(filePath).into(pollAddPhoto);
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {
@@ -762,6 +769,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
                         photoUploadButtonView.setVisibility(View.GONE);
                         addPhoto.setVisibility(View.VISIBLE);
+                        pollAddPhoto.setVisibility(View.VISIBLE);
 
                         Log.d("test1",""+downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -770,6 +778,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(CircleWall.this).load(filePath).into(addPhoto);
+                        Glide.with(CircleWall.this).load(filePath).into(pollAddPhoto);
                     }
                 })
                         .addOnFailureListener(new OnFailureListener() {

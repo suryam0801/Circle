@@ -124,6 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="100"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <EditText
@@ -135,7 +136,6 @@
                     android:backgroundTint="#D1D1D1"
                     android:hint="Enter poll option"
                     android:inputType="textCapSentences"
-                    android:paddingLeft="10dp"
                     android:textColor="@color/black"
                     android:textSize="12dp"></EditText>
 
@@ -153,22 +153,64 @@
                     android:textColor="#6CACFF"></Button>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/poll_image_upload_initiate_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="You can also"
+                    android:textColor="#9D9D9D"
+                    android:textSize="12dp"></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text=" Add an Image"
+                    android:textColor="@color/color_blue"
+                    android:textSize="12dp"></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text=" to this poll (optional)"
+                    android:textColor="#9D9D9D"
+                    android:textSize="12dp"></TextView>
+
+            </LinearLayout>
+
             <RelativeLayout
                 android:id="@+id/poll_add_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:background="@drawable/dotted_gray_line"
-                android:layout_gravity="center">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/poll_upload_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:drawableStart="@drawable/ic_cloud_upload_blue_24dp"
                     android:drawablePadding="10dp"
                     android:scaleX="1.2"
                     android:scaleY="1.2"
-                    android:drawableStart="@drawable/ic_cloud_upload_blue_24dp"
                     android:text="Add Photo +"
                     android:textColor="@color/color_blue"
                     android:visibility="visible"></TextView>
@@ -177,14 +219,9 @@
 
             <ImageView
                 android:id="@+id/poll_display_photo_add_broadcast"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textCapSentences"
-                android:padding="20dp"
-                android:textColor="@color/black"
-                android:textSize="12dp"
                 android:visibility="gone"></ImageView>
 
         </LinearLayout>
@@ -240,18 +277,18 @@
                 android:id="@+id/photo_add_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@drawable/dotted_gray_line"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:background="@drawable/dotted_gray_line">
 
                 <TextView
                     android:id="@+id/photo_upload_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:drawableStart="@drawable/ic_cloud_upload_blue_24dp"
                     android:drawablePadding="10dp"
                     android:scaleX="1.2"
                     android:scaleY="1.2"
-                    android:drawableStart="@drawable/ic_cloud_upload_blue_24dp"
                     android:text="Add Photo +"
                     android:textColor="@color/color_blue"
                     android:visibility="visible"></TextView>
@@ -275,7 +312,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="end"
             android:orientation="horizontal">
 
             <Button
