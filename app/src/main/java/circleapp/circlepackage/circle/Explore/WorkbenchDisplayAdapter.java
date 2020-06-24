@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -70,8 +71,15 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
         analyticsLogEvents = new AnalyticsLogEvents();
-        Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
-
+        if(!circle.getBackgroundImageLink().equals("default"))
+            Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
+        else
+        {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(holder.backgroundPic);
+        }
 
         //set the details of each circle to its respective card.
         holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));

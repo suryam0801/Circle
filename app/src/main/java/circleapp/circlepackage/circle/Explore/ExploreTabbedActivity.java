@@ -110,7 +110,14 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             Glide.with(ExploreTabbedActivity.this)
                     .load(user.getProfileImageLink())
                     .into(profPicHolder);
-        } else { //checking if it is default avatar
+        }
+        else if(user.getProfileImageLink().equals("default")){
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(ExploreTabbedActivity.this)
+                    .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
+                    .into(profPicHolder);
+        }
+        else { //checking if it is default avatar
             int profilePic = Integer.parseInt(user.getProfileImageLink());
             Glide.with(ExploreTabbedActivity.this)
                     .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
