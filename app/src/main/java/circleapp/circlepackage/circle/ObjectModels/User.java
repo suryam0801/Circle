@@ -7,8 +7,9 @@ public class User  {
 
     private String Name, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Integer> notificationsAlert;
+    private HashMap<String, Integer> noOfReadDiscussions;
     private HashMap<String, Long> newTimeStampsComments;
-    private int createdCircles, activeCircles, completedProjects, noOfReadDiscussions;
+    private int createdCircles, activeCircles, completedProjects;
 
 
     public User(){
@@ -19,7 +20,7 @@ public class User  {
                 String profileImageLink, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
-                HashMap<String, Long> newDiscussionAlert, int noOfNewComments) {
+                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments) {
         this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
@@ -130,11 +131,11 @@ public class User  {
         this.newTimeStampsComments = newTimeStampsComments;
     }
 
-    public int getNoOfReadDiscussions() {
+    public HashMap<String, Integer> getNoOfReadDiscussions() {
         return noOfReadDiscussions;
     }
 
-    public void setNoOfReadDiscussions(int noOfReadDiscussions) {
+    public void setNoOfReadDiscussions(HashMap<String, Integer> noOfReadDiscussions) {
         this.noOfReadDiscussions = noOfReadDiscussions;
     }
 

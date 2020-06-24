@@ -127,11 +127,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         user = SessionStorage.getUser(CircleWall.this);
         circle = SessionStorage.getCircle(CircleWall.this);
 
-        if (getIntent().getBooleanExtra("fromCircleWall", false) == true) {
-            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
-        }
-
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos",0);
         Log.d(TAG,"Broadcst Id:: "+broadcastid+"::::pos:: "+broadcastPos);
@@ -147,6 +142,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         currentUser = FirebaseAuth.getInstance();
         analyticsLogEvents = new AnalyticsLogEvents();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
+        }
 
         circleBannerName = findViewById(R.id.circleBannerName);
         exitOrDeleteButton = findViewById(R.id.share_with_friend_button);
@@ -205,6 +205,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 //        getItemPosition(broadcastid);
         loadCircleBroadcasts();
     }
+
     public int getItemPosition(String broadcastId)
     {
         for (int position=0; position<broadcastList.size(); position++)

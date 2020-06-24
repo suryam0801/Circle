@@ -60,10 +60,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMethods {
 
-    public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle){
+    public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
         int position = 0;
-        for(Circle c : circleList){
-            if(c.getId().equals(circle.getId()))
+        for (Circle c : circleList) {
+            if (c.getId().equals(circle.getId()))
                 return position;
 
             position++;
@@ -71,10 +71,10 @@ public class HelperMethods {
         return position;
     }
 
-    public static int returnIndexOfBroadcast(List<Broadcast> broadcastList, Broadcast broadcast){
+    public static int returnIndexOfBroadcast(List<Broadcast> broadcastList, Broadcast broadcast) {
         int position = 0;
-        for(Broadcast b : broadcastList){
-            if(broadcast.getId().equals(b.getId()))
+        for (Broadcast b : broadcastList) {
+            if (broadcast.getId().equals(b.getId()))
                 return position;
 
             position++;
@@ -82,64 +82,73 @@ public class HelperMethods {
         return position;
     }
 
-    public static boolean isMemberOfCircle (Circle circle, String uID){
+    public static boolean isMemberOfCircle(Circle circle, String uID) {
         boolean isMember = false;
-        if(circle.getMembersList()!=null){
-            for(String memberId : circle.getMembersList().keySet()){
-                if(memberId.equals(uID))
+        if (circle.getMembersList() != null) {
+            for (String memberId : circle.getMembersList().keySet()) {
+                if (memberId.equals(uID))
                     isMember = true;
             }
         }
         return isMember;
     }
 
-    public static boolean listContainsCircle (List<Circle> circleList, Circle circle){
+    public static boolean listContainsCircle(List<Circle> circleList, Circle circle) {
         boolean containsCircle = false;
-        for(Circle c : circleList){
-            if(c.getId().equals(circle.getId()))
+        for (Circle c : circleList) {
+            if (c.getId().equals(circle.getId()))
                 containsCircle = true;
         }
         return containsCircle;
     }
 
-    public static int numberOfApplicants(Circle c, User user){
+    public static int numberOfApplicants(Circle c, User user) {
         int numOfApplicants = 0;
-        if(c.getApplicantsList()!=null && user.getUserId().equals(c.getCreatorID())){
+        if (c.getApplicantsList() != null && user.getUserId().equals(c.getCreatorID())) {
             numOfApplicants = c.getApplicantsList().size();
         }
         return numOfApplicants;
     }
 
-    public static boolean ifUserApplied(Circle c, String userId){
+    public static boolean ifUserApplied(Circle c, String userId) {
         boolean isApplicant = false;
-        if(c.getApplicantsList() != null && c.getApplicantsList().keySet().contains(userId))
+        if (c.getApplicantsList() != null && c.getApplicantsList().keySet().contains(userId))
             isApplicant = true;
 
         return isApplicant;
     }
 
-    public static int newNotifications(Circle c, User user){
+    public static int newNotifications(Circle c, User user) {
         int newNotifs = 0;
-        if(user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(c.getId())){
+        if (user.getNotificationsAlert() != null && user.getNotificationsAlert().containsKey(c.getId())) {
             int userRead = user.getNotificationsAlert().get(c.getId());
 
-            if(c.getNoOfBroadcasts() > userRead)
+            if (c.getNoOfBroadcasts() > userRead)
                 newNotifs = c.getNoOfBroadcasts() - userRead;
 
         }
         return newNotifs;
     }
 
-    public static int returnNoOfCommentsPostTimestamp(List<Comment> commentList, long timestamp){
+    public static int returnNoOfCommentsPostTimestamp(List<Comment> commentList, long timestamp) {
         int counter = 0;
-        for(Comment comment : commentList){
-            if(comment.getTimestamp() > timestamp)
+        for (Comment comment : commentList) {
+            if (comment.getTimestamp() > timestamp)
                 ++counter;
         }
 
         return counter;
     }
-    public static String getCircleIdFromShareURL (String url){
+
+    public static int returnNumberOfReadCommentsForCircle(User user, Circle circle) {
+        int commentNumberReturnVal = 0;
+        if (user.getNoOfReadDiscussions() != null && user.getNoOfReadDiscussions().containsKey(circle.getId())) {
+            commentNumberReturnVal = user.getNoOfReadDiscussions().get(circle.getId());
+        }
+        return commentNumberReturnVal;
+    }
+
+    public static String getCircleIdFromShareURL(String url) {
         String lines[] = url.split("\\r?\\n");
         for (int i = 0; i < lines.length; i++) {
             Log.d("URL", lines[i]);
@@ -148,13 +157,13 @@ public class HelperMethods {
         return url;
     }
 
-    public static String convertIntoDateFormat(String dateDormat, long timestamp){
+    public static String convertIntoDateFormat(String dateDormat, long timestamp) {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(timestamp);
         return DateFormat.format("", cal).toString();
     }
 
-    public static String getTimeElapsed (long currentTime, long createdTime){
+    public static String getTimeElapsed(long currentTime, long createdTime) {
         String timeElapsedReturnString = "";
 
         long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
@@ -178,7 +187,7 @@ public class HelperMethods {
         return timeElapsedReturnString;
     }
 
-    public static GradientDrawable gradientRectangleDrawableSetter(int radius){
+    public static GradientDrawable gradientRectangleDrawableSetter(int radius) {
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setCornerRadius(radius);
@@ -199,7 +208,7 @@ public class HelperMethods {
         }
     }
 
-    public static void copyLinkToClipBoard (Circle circle, Activity activity){
+    public static void copyLinkToClipBoard(Circle circle, Activity activity) {
         String shareMessage = "\nCome join my circle: " + circle.getName() + "\n\n";
         shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + circle.getId();
         ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -208,28 +217,28 @@ public class HelperMethods {
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
     }
 
-/*    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
-        broadcastsDB = database.getReference("Broadcasts");
-        String id = uuidGet();
-        Poll poll = new Poll(text, pollOptions, null);
-        Broadcast broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId",true, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
-        broadcastsDB.child(circleId).child(id).setValue(broadcast);
-        return id;
-    }
-    public static String createBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
-        broadcastsDB = database.getReference("Broadcasts");
-        String id = uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
-        broadcastsDB.child(circleId).child(id).setValue(broadcast);
-        return id;
-    }*/
-    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions){
+    /*    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
+            FirebaseDatabase database;
+            database = FirebaseDatabase.getInstance();
+            DatabaseReference broadcastsDB;
+            broadcastsDB = database.getReference("Broadcasts");
+            String id = uuidGet();
+            Poll poll = new Poll(text, pollOptions, null);
+            Broadcast broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId",true, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
+            broadcastsDB.child(circleId).child(id).setValue(broadcast);
+            return id;
+        }
+        public static String createBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
+            FirebaseDatabase database;
+            database = FirebaseDatabase.getInstance();
+            DatabaseReference broadcastsDB;
+            broadcastsDB = database.getReference("Broadcasts");
+            String id = uuidGet();
+            Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
+            broadcastsDB.child(circleId).child(id).setValue(broadcast);
+            return id;
+        }*/
+    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference circlesDB;
@@ -237,21 +246,22 @@ public class HelperMethods {
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
         String id = uuidGet();
-        Circle circle = new Circle(id, name,description, acceptanceType, "CreatorAdmin", creatorName, "Category","default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name, description, acceptanceType, "CreatorAdmin", creatorName, "Category", "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         circlesDB.child(id).setValue(circle);
         return id;
     }
-    public static void createComment(String name, String text, int offsetTimeStamp ,String circleId, String broadcastId){
+
+    public static void createComment(String name, String text, int offsetTimeStamp, String circleId, String broadcastId) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference commentsDB;
         commentsDB = database.getReference("BroadcastComments");
         String id = uuidGet();
-        Comment comment = new Comment(name, text, id, null, System.currentTimeMillis()+offsetTimeStamp);
+        Comment comment = new Comment(name, text, id, null, System.currentTimeMillis() + offsetTimeStamp);
         commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
 
-    public static void createReportAbuse(String circleId, String creatorId, String userId){
+    public static void createReportAbuse(String circleId, String creatorId, String userId) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference reportAbuseDB;
@@ -261,17 +271,18 @@ public class HelperMethods {
         reportAbuseDB.child(id).setValue(reportAbuse);
     }
 
-    public static String uuidGet(){
+    public static String uuidGet() {
         return UUID.randomUUID().toString();
     }
 
-    public static void GlideSetProfilePic(Context context, String avatar, CircleImageView profilePic){
+    public static void GlideSetProfilePic(Context context, String avatar, CircleImageView profilePic) {
         Glide.with(context)
                 .load(Integer.parseInt(avatar))
                 .placeholder(ContextCompat.getDrawable(context, Integer.parseInt(avatar)))
                 .into(profilePic);
     }
-    public static Uri getImageUri(){
+
+    public static Uri getImageUri() {
         Uri m_imgUri = null;
         File m_file;
         try {
@@ -284,25 +295,22 @@ public class HelperMethods {
         }
         return m_imgUri;
     }
-    public static void setProfilePicMethod(Context context,CircleImageView profilePic, String avatar, ImageView avatarBg, ImageButton avatarButton, ImageView[] avatarBgList, ImageButton[] avatarList){
-        GlideSetProfilePic(context,avatar, profilePic);
+
+    public static void setProfilePicMethod(Context context, CircleImageView profilePic, String avatar, ImageView avatarBg, ImageButton avatarButton, ImageView[] avatarBgList, ImageButton[] avatarList) {
+        GlideSetProfilePic(context, avatar, profilePic);
         avatarButton.setPressed(true);
         int visibility = avatarBg.getVisibility();
-        if(visibility == View.VISIBLE)
-        {
-            GlideSetProfilePic(context,String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+        if (visibility == View.VISIBLE) {
+            GlideSetProfilePic(context, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
             avatarBg.setVisibility(View.GONE);
             avatar = "";
             avatarButton.setPressed(false);
-        }
-        else
-        {
-            for(int i=0; i<8;i++){
-                if(avatarList[i]!=avatarButton){
+        } else {
+            for (int i = 0; i < 8; i++) {
+                if (avatarList[i] != avatarButton) {
                     avatarBgList[i].setVisibility(View.GONE);
                     avatarList[i].setPressed(false);
-                }
-                else
+                } else
                     avatarBgList[i].setVisibility(View.VISIBLE);
             }
         }
@@ -377,7 +385,8 @@ public class HelperMethods {
         listView.setLayoutParams(params);
         listView.requestLayout();
     }
-    public static void compressImage(ContentResolver resolver, Uri filePath){
+
+    public static void compressImage(ContentResolver resolver, Uri filePath) {
         Bitmap bmp = null;
         try {
             bmp = MediaStore.Images.Media.getBitmap(resolver, filePath);
@@ -390,9 +399,10 @@ public class HelperMethods {
         bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);
         byte[] fileInBytes = baos.toByteArray();
     }
-    public static void increaseTouchArea(View view){
+
+    public static void increaseTouchArea(View view) {
         final View parent = (View) view.getParent();  // button: the view you want to enlarge hit area
-        parent.post( new Runnable() {
+        parent.post(new Runnable() {
             public void run() {
                 final Rect rect = new Rect();
                 view.getHitRect(rect);
@@ -400,13 +410,14 @@ public class HelperMethods {
                 rect.left -= 80;   // increase left hit area
                 rect.bottom += 80; // increase bottom hit area
                 rect.right += 80;  // increase right hit area
-                parent.setTouchDelegate( new TouchDelegate( rect , view));
+                parent.setTouchDelegate(new TouchDelegate(rect, view));
             }
         });
     }
-    public static void increaseTouchArea(View view, int top, int left, int bottom, int right){
+
+    public static void increaseTouchArea(View view, int top, int left, int bottom, int right) {
         final View parent = (View) view.getParent();  // button: the view you want to enlarge hit area
-        parent.post( new Runnable() {
+        parent.post(new Runnable() {
             public void run() {
                 final Rect rect = new Rect();
                 view.getHitRect(rect);
@@ -414,12 +425,12 @@ public class HelperMethods {
                 rect.left -= left;   // increase left hit area
                 rect.bottom += bottom; // increase bottom hit area
                 rect.right += right;  // increase right hit area
-                parent.setTouchDelegate( new TouchDelegate( rect , view));
+                parent.setTouchDelegate(new TouchDelegate(rect, view));
             }
         });
     }
 
-    public static SharedPreferences getFirstRunPrefs(Context context){
+    public static SharedPreferences getFirstRunPrefs(Context context) {
         SharedPreferences firstInstanceRunPref = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
         return firstInstanceRunPref;
     }
