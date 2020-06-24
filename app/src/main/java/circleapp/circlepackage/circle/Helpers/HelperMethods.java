@@ -217,27 +217,51 @@ public class HelperMethods {
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
     }
 
-    /*    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, int noOfComments, String circleId){
+    public static void addDistrict(String district){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference locationsDB;
+        locationsDB = database.getReference("Locations");
+        HashMap <String,Boolean> location = new HashMap<>();
+        locationsDB.child(district).setValue(false);
+
+    }
+    public static String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        String id = uuidGet();
+        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, "AdminId",false, true, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
+        broadcastsDB.child(circleId).child(id).setValue(broadcast);
+        return id;
+    }
+    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, String downloadUri, int noOfComments, String circleId){
             FirebaseDatabase database;
             database = FirebaseDatabase.getInstance();
             DatabaseReference broadcastsDB;
             broadcastsDB = database.getReference("Broadcasts");
             String id = uuidGet();
+            Broadcast broadcast;
             Poll poll = new Poll(text, pollOptions, null);
-            Broadcast broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId",true, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
+            if(downloadUri!=null)
+                broadcast = new Broadcast(id, null, null, downloadUri, creatorName,"AdminId",true,true, System.currentTimeMillis()+offsetTimeStamp, poll, "default",0, noOfComments);
+            else
+                broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId",true, false, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
             broadcastsDB.child(circleId).child(id).setValue(broadcast);
             return id;
         }
-        public static String createBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
+        public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
             FirebaseDatabase database;
             database = FirebaseDatabase.getInstance();
             DatabaseReference broadcastsDB;
             broadcastsDB = database.getReference("Broadcasts");
             String id = uuidGet();
-            Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
+            Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false,false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
             broadcastsDB.child(circleId).child(id).setValue(broadcast);
             return id;
-        }*/
+        }
+
     public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
