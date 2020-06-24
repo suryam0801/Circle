@@ -12,9 +12,10 @@
     android:scaleType="fitXY">
 
     <RelativeLayout
+        android:id="@+id/circle_banner_image"
         android:layout_width="match_parent"
         android:layout_height="156dp"
-        android:background="@drawable/science_and_tech_background">
+        android:background="@drawable/banner_own_circle">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="50dp"
