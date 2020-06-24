@@ -594,7 +594,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             progressDialog.cancel();
             Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
-            i.putExtra("first_time_user",true);
             startActivity(i);
             Log.d(TAG,"Intent lines are executed...");
             SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());

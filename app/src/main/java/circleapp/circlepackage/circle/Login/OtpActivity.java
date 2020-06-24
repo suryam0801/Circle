@@ -247,7 +247,6 @@ public class OtpActivity extends AppCompatActivity {
         Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        homeIntent.putExtra("first_time_user",false);
         startActivity(homeIntent);
         finish();
     }
