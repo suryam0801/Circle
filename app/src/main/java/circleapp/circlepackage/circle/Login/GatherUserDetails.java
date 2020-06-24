@@ -251,8 +251,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( avatar != "" || downloadUri != null){
-
                     if(name.getText().equals("") || name.getText().toString().isEmpty()){
 
                         Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -273,11 +271,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
                     }
                 }
-                else
-                    {
-                        Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
-                    }
-            }
         });
     }
 
@@ -580,12 +573,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward, district, null, null, 0);
-        } else
+        } else if(!avatar.equals(""))
             {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null",true);
             Log.d(TAG,"Avatar :: "+avatar);
             user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district, null, null, 0);
+        }
+        else {
+            user = new User(Name, contact, "default", userId, 0, 0, 0, token_id, ward, district, null, null, 0);
         }
         //storing user as a json in file locally
         String string = new Gson().toJson(user);

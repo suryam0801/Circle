@@ -156,7 +156,14 @@ public class EditProfile extends AppCompatActivity {
             Glide.with(EditProfile.this)
                     .load(user.getProfileImageLink())
                     .into(profileImageView);
-        } else {
+        }
+        else if(user.getProfileImageLink().equals("default")){
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(EditProfile.this)
+                    .load(ContextCompat.getDrawable(EditProfile.this, profilePic))
+                    .into(profileImageView);
+        }
+        else {
             propic = Integer.parseInt(user.getProfileImageLink());
             Glide.with(EditProfile.this)
                     .load(propic)

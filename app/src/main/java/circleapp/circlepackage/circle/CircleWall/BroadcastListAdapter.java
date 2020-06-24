@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.FullPageImageDisplay;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
@@ -75,7 +76,14 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             Glide.with((Activity) context)
                     .load(user.getProfileImageLink())
                     .into(viewHolder.profPicDisplay);
-        } else { //checking if it is default avatar
+        }
+        else if(user.getProfileImageLink().equals("default")){
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        }
+        else { //checking if it is default avatar
             int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
             Glide.with((Activity) context)
                     .load(ContextCompat.getDrawable(context, profilePic))

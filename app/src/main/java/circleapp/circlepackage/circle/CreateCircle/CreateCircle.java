@@ -136,16 +136,12 @@ public class CreateCircle extends AppCompatActivity {
         btn_createCircle.setOnClickListener(view -> {
             String cName = circleNameEntry.getText().toString().trim();
             String cDescription = circleDescriptionEntry.getText().toString().trim();
-            if(downloadUri!=null){
                 if (!cName.isEmpty() && !cDescription.isEmpty()) {
                     analyticsLogEvents.logEvents(CreateCircle.this, "created_circle", "new_circle_created","on_button_click");
                     createCircle(cName, cDescription);
                 } else {
                     Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
                 }
-            }
-            else
-                Toast.makeText(getApplicationContext(), "Select a Logo to Continue....", Toast.LENGTH_SHORT).show();
         });
 
         back.setOnClickListener(view -> {
@@ -189,7 +185,10 @@ public class CreateCircle extends AppCompatActivity {
 
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
-        backgroundImageLink = downloadUri.toString();
+        if(downloadUri!=null)
+            backgroundImageLink = downloadUri.toString();
+        else
+            backgroundImageLink = "default";
 
         //updating circles
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,

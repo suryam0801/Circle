@@ -17,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,6 +35,7 @@ import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdapter.ViewHolder> {
     private List<Circle> circleList;
@@ -70,6 +73,15 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     public void onBindViewHolder(CircleDisplayAdapter.ViewHolder viewHolder, int i) {
 
         Circle currentCircle = circleList.get(i);
+        if(!currentCircle.getBackgroundImageLink().equals("default"))
+            Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
+        else
+        {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(viewHolder.circleLogo);
+        }
 
         //check if circle acceptance is review
         if (currentCircle.getAcceptanceType().equalsIgnoreCase("review"))
@@ -117,6 +129,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         private LinearLayout container;
         private ImageButton share;
         private Button join;
+        CircleImageView circleLogo;
 
         public ViewHolder(View view) {
             super(view);
@@ -128,6 +141,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             share = view.findViewById(R.id.circle_card_share);
             join = view.findViewById(R.id.circle_card_join);
             categoryDisplay = view.findViewById(R.id.circle_category);
+            circleLogo = view.findViewById(R.id.explore_circle_logo);
         }
     }
 
