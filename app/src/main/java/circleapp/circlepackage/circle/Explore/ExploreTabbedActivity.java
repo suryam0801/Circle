@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -57,9 +60,12 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
+    private FloatingActionButton btnAddCircle;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     View decorView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +78,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         //to hide the status and nav bar
         decorView = getWindow().getDecorView();
-        hideSystemUI();
+        //hideSystemUI();
 
         //recieve ur request on opening
         if (intentUri != null) {
@@ -80,18 +86,19 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             url = getIntent().getData().toString();
             processUrl(url);
         }
-        
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
+        btnAddCircle = findViewById(R.id.add_circle_button);
 
-
-        new ShowCaseStepDisplayer.Builder(this)
-                .addStep(new ShowCaseStep(profPicHolder, "Message at center"))
-                .addStep(new ShowCaseStep(locationDisplay, "Message at View"))
-                .build().start();
-
+        SharedPreferences firstInstanceRunPref = HelperMethods.getFirstRunPrefs(getApplicationContext());
+        if (firstInstanceRunPref.getBoolean("firstrun", true)) {
+            new ShowCaseStepDisplayer.Builder(this)
+                    .addStep(new ShowCaseStep(profPicHolder, "Message at center"))
+                    .addStep(new ShowCaseStep(locationDisplay, "Message at View"))
+                    .build().start();
+        }
 
         user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
@@ -108,7 +115,9 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                     .into(profPicHolder);
         }
 
-
+        btnAddCircle.setOnClickListener(v -> {
+            startActivity(new Intent(this, CreateCircleCategoryPicker.class));
+        });
 
         profPicHolder.setOnClickListener(v -> {
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
@@ -125,32 +134,24 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                 new WorkbenchFragment()).commit();
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.workbench_bottom_nav_item:
+                        selectedFragment = new WorkbenchFragment();
+                        break;
+                    case R.id.explore_bottom_nav_item:
+                        selectedFragment = new ExploreFragment();
+                        break;
 
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
-                    switch (item.getItemId()) {
-                        case R.id.workbench_bottom_nav_item:
-                            selectedFragment = new WorkbenchFragment();
-                            break;
-                        case R.id.explore_bottom_nav_item:
-                            selectedFragment = new ExploreFragment();
-                            break;
+                    case R.id.notifications_bottom_nav_item:
+                        selectedFragment = new NotificationFragment();
+                        break;
 
-                        case R.id.notifications_bottom_nav_item:
-                            selectedFragment = new NotificationFragment();
-                            break;
+                    case R.id.search_bottom_nav_item:
+                        selectedFragment = new FeedbackFragment();
+                        break;
 
-                        case R.id.search_bottom_nav_item:
-                            selectedFragment = new FeedbackFragment();
-                            break;
-
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    return true;
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
@@ -291,7 +292,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             }
         });
     }
-    private void hideSystemUI() {
+    /*private void hideSystemUI() {
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content
         // doesn't resize when the system bars hide and show.
@@ -302,5 +303,5 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }
+    }*/
 }
