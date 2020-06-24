@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,13 +78,13 @@ public class FeedbackFragment extends Fragment {
 
         feedbackSend.setOnClickListener(v -> {
             if (!feedbackEditText.getText().toString().trim().equals(""))
-                makeFeedbackEntry();
+                makeFeedbackEntry(view);
             feedbackEditText.setText("");
         });
         return view;
     }
 
-    private void makeFeedbackEntry() {
+    private void makeFeedbackEntry(View view) {
         long currentCommentTimeStamp = System.currentTimeMillis();
 
         User user = SessionStorage.getUser((Activity) getContext());
@@ -97,6 +98,8 @@ public class FeedbackFragment extends Fragment {
         feedbackDb.child(SessionStorage.getUser((Activity) getContext()).getDistrict())
                 .push()
                 .setValue(map);
+
+        Toast.makeText(view.getContext(), "Thanks for your feedback :)", Toast.LENGTH_SHORT).show();
     }
 
 
