@@ -74,11 +74,11 @@
         </LinearLayout>
 
         <com.github.chrisbanes.photoview.PhotoView
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
             android:id="@+id/uploaded_image_display_broadcast"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:visibility="gone" />
 
         <TextView
@@ -92,7 +92,6 @@
             android:text="Message"
             android:textColor="#9D9D9D"
             android:textSize="14dp"></TextView>
-
 
 
         <ScrollView
