@@ -24,7 +24,7 @@ public class SendNotification {
     private static String TAG = SendNotification.class.getSimpleName();
 //    Circle circle = SessionStorage.getCircle(SendNotification.class.getCon);
 
-    public static void sendBCinfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList)
+    public static void sendBCinfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList,String circleIcon)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userNotify;
@@ -44,6 +44,7 @@ public class SendNotification {
         applicationStatus.put("state", "broadcast_added");
         applicationStatus.put("circleName", circleName);
         applicationStatus.put("circleId", circleId);
+        applicationStatus.put("circleIcon", circleIcon);
         applicationStatus.put("broadcastId", broadcastId);
         applicationStatus.put("creatorName", creatorName);
         applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());

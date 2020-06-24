@@ -16,6 +16,9 @@
             android:layout_height="32dp"
             android:gravity="center"
             android:background="@drawable/ic_check_circle_black_24dp">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/notification_foreground_icon"
@@ -25,6 +28,14 @@
                 android:foregroundGravity="center"
                 android:scaleX=".6"
                 android:scaleY=".6"></androidx.appcompat.widget.AppCompatImageView>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/notification_circle_logo"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:visibility="gone"
+                android:background="@drawable/ic_account_circle_black_24dp" />
+            </RelativeLayout>
 
         </LinearLayout>
 

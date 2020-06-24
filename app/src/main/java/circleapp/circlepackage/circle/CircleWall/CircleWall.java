@@ -487,7 +487,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
 
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList());
+        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(),circle.getBackgroundImageLink());
 
         //creating poll options hashmap
         HashMap<String, Integer> options = new HashMap<>();
