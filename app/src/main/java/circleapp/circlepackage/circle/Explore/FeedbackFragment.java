@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,19 +39,10 @@ public class FeedbackFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
-    private ListView feedbacksListView;
-    private List<Feedback> feedbacksList = new ArrayList<>();
-    private FeedbackAdapter feedbackAdapter;
     private EditText feedbackEditText;
     private Button feedbackSend;
     private FirebaseDatabase database;
-    private DatabaseReference feedbackDb, circlesDB, broadcastDB, userDB;
-    private ImageButton back;
-    private User user;
-    private FirebaseAuth currentUser;
-
-    private LinearLayout emptyHolder;
-
+    private DatabaseReference feedbackDb;
     public FeedbackFragment(){}
 
     public static FeedbackFragment newInstance(String param1, String param2) {
@@ -78,98 +70,36 @@ public class FeedbackFragment extends Fragment {
 
         database = FirebaseDatabase.getInstance();
         feedbackDb = database.getReference("UserFeedback");
-        userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        feedbacksListView = view.findViewById(R.id.feedback_listView);
         feedbackEditText = view.findViewById(R.id.feedback_type_editText);
         feedbackSend = view.findViewById(R.id.feedback_send_button);
-        emptyHolder =view.findViewById(R.id.feedbackWall_empty_display);
-        emptyHolder.setVisibility(View.VISIBLE);
-        feedbacksList = new ArrayList<>();
-
-        feedbackAdapter= new FeedbackAdapter(getContext(), feedbacksList);
-        feedbacksListView.setAdapter(feedbackAdapter);
 
         feedbackEditText.clearFocus();
 
-        loadFeedback();
-        feedbackSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!feedbackEditText.getText().toString().trim().equals(""))
-                    makeFeedbackEntry();
-                feedbackEditText.setText("");
-
-            }
+        feedbackSend.setOnClickListener(v -> {
+            if (!feedbackEditText.getText().toString().trim().equals(""))
+                makeFeedbackEntry(view);
+            feedbackEditText.setText("");
         });
         return view;
     }
-    private void loadFeedback() {
 
-//        feedbackDb.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Log.d("Feedback",dataSnapshot.toString());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
-        feedbackDb.child(SessionStorage.getUser((Activity) getContext()).getDistrict())
-//                .child(SessionStorage.getUser(FeedbackActivity.this).getUserId())
-                .orderByChild("timestamp")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Feedback tempComment = dataSnapshot.getValue(Feedback.class);
-                        feedbacksList.add(tempComment); //to store timestamp values descendingly
-                        feedbackAdapter.notifyDataSetChanged();
-                        feedbacksListView.setSelection(feedbacksListView.getAdapter().getCount()-1);
-                        emptyHolder.setVisibility(View.GONE);
-
-                        //call view activity only after all comments have been populated
-//                if(commentsList.size() == broadcast.getNumberOfComments())
-//                    updateUserFields("view");
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
-    private void makeFeedbackEntry() {
+    private void makeFeedbackEntry(View view) {
         long currentCommentTimeStamp = System.currentTimeMillis();
+
+        User user = SessionStorage.getUser((Activity) getContext());
 
         Map<String, Object> map = new HashMap<>();
         map.put("timestamp", currentCommentTimeStamp);
         map.put("feedback", feedbackEditText.getText().toString().trim());
-        map.put("userId", SessionStorage.getUser((Activity) getContext()).getUserId());
-        map.put("userName", SessionStorage.getUser((Activity) getContext()).getName().trim());
+        map.put("userId", user.getUserId());
+        map.put("userName", user.getName().trim());
 
         feedbackDb.child(SessionStorage.getUser((Activity) getContext()).getDistrict())
-//                .child(SessionStorage.getUser(FeedbackActivity.this).getUserId())
                 .push()
                 .setValue(map);
+
+        Toast.makeText(view.getContext(), "Thanks for your feedback :)", Toast.LENGTH_SHORT).show();
     }
 
 

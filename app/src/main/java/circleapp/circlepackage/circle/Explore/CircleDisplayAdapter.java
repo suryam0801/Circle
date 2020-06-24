@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -98,7 +99,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
 
         //set the details of each circle to its respective card.
-        viewHolder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         viewHolder.tv_circleName.setText(currentCircle.getName());
         viewHolder.tv_creatorName.setText("By " + currentCircle.getCreatorName());
         viewHolder.tv_circleDesc.setText(currentCircle.getDescription());
@@ -129,28 +129,34 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         circleCategory = currentCircle.getCategory();
         switch (circleCategory){
             case "Events":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_events);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_events)).centerCrop().into(viewHolder.bannerImage);
                 break;
             case "Apartments & Communities":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_apartment_and_communities);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_apartment_and_communities)).centerCrop().into(viewHolder.bannerImage);
                 break;
             case "Sports":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_sports);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_sports)).centerCrop().into(viewHolder.bannerImage);
                 break;
             case "Friends & Family":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_friends_and_family);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_friends_and_family)).centerCrop().into(viewHolder.bannerImage);
                 break;
             case "Food & Entertainment":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_food_and_entertainment);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_food_and_entertainment)).centerCrop().into(viewHolder.bannerImage);
                 break;
             case "Science & Tech":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_science_and_tech_background);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_science_and_tech_background)).centerCrop().into(viewHolder.bannerImage);
                 break;
             case "Gaming":
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_gaming);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_gaming)).centerCrop().into(viewHolder.bannerImage);
+                break;
+            case "Health & Fitness":
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_health_and_fitness)).centerCrop().into(viewHolder.bannerImage);
+                break;
+            case "Students & Clubs":
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_students_and_clubs)).centerCrop().into(viewHolder.bannerImage);
                 break;
             default:
-                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_own_circle);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_own_circle)).centerCrop().into(viewHolder.bannerImage);
                 break;
         }
     }
@@ -164,7 +170,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
         private LinearLayout container, shareLayout;
-        private RelativeLayout bannerImage;
+        private ImageView bannerImage;
         private ImageButton shareButton;
         private Button join;
         CircleImageView circleLogo;

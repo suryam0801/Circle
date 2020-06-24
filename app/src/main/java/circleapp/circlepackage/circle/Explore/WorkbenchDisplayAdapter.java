@@ -110,7 +110,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         if(readDisussions < circle.getNoOfNewDiscussions()){
             GradientDrawable itemBackgroundDiscussion = HelperMethods.gradientRectangleDrawableSetter(80);
             itemBackgroundDiscussion.setColor(context.getResources().getColor(R.color.comment_alert_color));
-            holder.newDiscussionDisplay.setText((readDisussions - circle.getNoOfNewDiscussions())+"");
+            holder.newDiscussionDisplay.setText((circle.getNoOfNewDiscussions() - readDisussions)+"");
             holder.newDiscussionDisplay.setBackground(itemBackgroundDiscussion);
             holder.newDiscussionDisplay.setVisibility(View.VISIBLE);
         }

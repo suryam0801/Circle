@@ -68,18 +68,4 @@
 
     </RelativeLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_circle_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="#3A8BF3"
-        android:clickable="true"
-        android:src="@drawable/ic_add_white_24dp"
-        android:tooltipText="CreateCircle" />
-
-
 </RelativeLayout>

@@ -76,14 +76,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             Glide.with((Activity) context)
                     .load(user.getProfileImageLink())
                     .into(viewHolder.profPicDisplay);
-        }
-        else if(user.getProfileImageLink().equals("default")){
+        } else if (user.getProfileImageLink().equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
             Glide.with(context)
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);
-        }
-        else { //checking if it is default avatar
+        } else { //checking if it is default avatar
             int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
             Glide.with((Activity) context)
                     .load(ContextCompat.getDrawable(context, profilePic))
@@ -109,17 +107,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //new comments setter
         viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
 
-        try{
-            if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
+        try {
+            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
                 viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
-        } catch (Exception e){
+        } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
-            context.startActivity(new Intent((Activity)context, BroadcastComments.class));
-            SessionStorage.saveBroadcast((Activity)context, broadcast);
+            context.startActivity(new Intent((Activity) context, BroadcastComments.class));
+            SessionStorage.saveBroadcast((Activity) context, broadcast);
             ((Activity) context).finish();
         });
 
@@ -136,7 +134,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         else
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
 
-        if(broadcast.getAttachmentURI()!=null){
+        if (broadcast.getAttachmentURI() != null) {
             viewHolder.imageDisplay.setVisibility(View.VISIBLE);
             //setting imageview
             Glide.with((Activity) context)
@@ -189,7 +187,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     Bundle params1 = new Bundle();
                     params1.putString("PollInteracted", "Radio button");
 
-                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
                     String option = button.getText().toString();
                     HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
                     int currentSelectedVoteCount = poll.getOptions().get(option);
