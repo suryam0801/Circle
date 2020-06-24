@@ -75,6 +75,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     public void onBindViewHolder(CircleDisplayAdapter.ViewHolder viewHolder, int i) {
 
         Circle currentCircle = circleList.get(i);
+        String circleCategory;
         if(!currentCircle.getBackgroundImageLink().equals("default"))
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
         else
@@ -125,6 +126,33 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         });
 
         viewHolder.categoryDisplay.setText(currentCircle.getCategory());
+        circleCategory = currentCircle.getCategory();
+        switch (circleCategory){
+            case "Events":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_events);
+                break;
+            case "Apartments & Communities":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_apartment_and_communities);
+                break;
+            case "Sports":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_sports);
+                break;
+            case "Friends & Family":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_friends_and_family);
+                break;
+            case "Food & Entertainment":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_food_and_entertainment);
+                break;
+            case "Science & Tech":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_science_and_tech_background);
+                break;
+            case "Gaming":
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_gaming);
+                break;
+            default:
+                viewHolder.bannerImage.setBackgroundResource(R.drawable.banner_own_circle);
+                break;
+        }
     }
 
     @Override
@@ -135,7 +163,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
-        private LinearLayout container, shareLayout;
+        private LinearLayout container, shareLayout, bannerImage;
         private ImageButton shareButton;
         private Button join;
         CircleImageView circleLogo;
@@ -152,6 +180,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             join = view.findViewById(R.id.circle_card_join);
             categoryDisplay = view.findViewById(R.id.circle_category);
             circleLogo = view.findViewById(R.id.explore_circle_logo);
+            bannerImage = view.findViewById(R.id.circle_banner_image);
         }
     }
 
