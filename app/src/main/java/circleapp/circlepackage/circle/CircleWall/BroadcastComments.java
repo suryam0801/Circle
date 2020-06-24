@@ -165,21 +165,26 @@ public class BroadcastComments extends AppCompatActivity {
     }
 
     public void updateUserFields(String navFrom){
+        HashMap<String, Integer> tempNoOfDiscussion;
+        if(user.getNoOfReadDiscussions()!=null)
+            tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
+        else
+            tempNoOfDiscussion = new HashMap<>();
 
-        int userNumberOfReadDiscussions;
         switch (navFrom){
             case "create":
                 //updating userReadDiscussions after creating the comment
-                userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + 1;
-                user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
-                userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
+                tempNoOfDiscussion.put(circle.getId(), user.getNoOfReadDiscussions().get(circle.getId()) + 1);
+                user.setNoOfReadDiscussions(tempNoOfDiscussion);
+                userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
                 break;
 
             case "view":
                 int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
-                userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + numberOfUnreadComments;
-                user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
-                userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
+                int currentRead = HelperMethods.returnNumberOfReadCommentsForCircle(user, circle);
+                tempNoOfDiscussion.put(circle.getId(), currentRead + numberOfUnreadComments);
+                user.setNoOfReadDiscussions(tempNoOfDiscussion);
+                userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
                 break;
         }
 

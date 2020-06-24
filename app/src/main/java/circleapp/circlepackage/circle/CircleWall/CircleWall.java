@@ -127,11 +127,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         user = SessionStorage.getUser(CircleWall.this);
         circle = SessionStorage.getCircle(CircleWall.this);
 
-        if (getIntent().getBooleanExtra("fromCircleWall", false) == true) {
-            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
-        }
-
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos",0);
         Log.d(TAG,"Broadcst Id:: "+broadcastid+"::::pos:: "+broadcastPos);
@@ -147,6 +142,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         currentUser = FirebaseAuth.getInstance();
         analyticsLogEvents = new AnalyticsLogEvents();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
+        }
 
         circleBannerName = findViewById(R.id.circleBannerName);
         exitOrDeleteButton = findViewById(R.id.share_with_friend_button);
@@ -205,6 +205,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 //        getItemPosition(broadcastid);
         loadCircleBroadcasts();
     }
+
     public int getItemPosition(String broadcastId)
     {
         for (int position=0; position<broadcastList.size(); position++)
@@ -547,6 +548,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
         SessionStorage.saveCircle(CircleWall.this, circle);
 
+        updateUserCount(circle);
+
         //updating broadcast in broadcast db
         broadcastsDB.child(circle.getId()).child(broadcastId).setValue(broadcast);
         pollExists = false;
@@ -845,5 +848,22 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             usersDB.child("newTimeStampsComments").child(b.getId()).setValue(b.getLatestCommentTimestamp());
         }
     }
+
+    public void updateUserCount(Circle c) {
+        if (user.getNotificationsAlert() != null) {
+            HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
+            newNotifs.put(c.getId(), c.getNoOfBroadcasts());
+            user.setNotificationsAlert(newNotifs);
+            SessionStorage.saveUser(this, user);
+            usersDB.child("notificationsAlert").child(c.getId()).setValue(circle.getNoOfBroadcasts());
+        } else {
+            HashMap<String, Integer> newNotifs = new HashMap<>();
+            newNotifs.put(c.getId(), c.getNoOfBroadcasts());
+            user.setNotificationsAlert(newNotifs);
+            SessionStorage.saveUser(this, user);
+            usersDB.child("notificationsAlert").child(c.getId()).setValue(c.getNoOfBroadcasts());
+        }
+    }
+
 
 }

@@ -203,7 +203,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 applyOrJoin(popupCircle);
             }
         });
-        
+
         //clearing intent data so popup doesnt show each time
         linkCircleDialog.setOnDismissListener(dialogInterface -> {
             getIntent().setData(null);

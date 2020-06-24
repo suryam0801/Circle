@@ -295,11 +295,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public void updateUserFields(List<Comment> commentsList, Broadcast broadcast) {
         User user = SessionStorage.getUser((Activity) mContext);
 
-        int userNumberOfReadDiscussions;
+        HashMap<String, Integer> tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
         int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
-        userNumberOfReadDiscussions = user.getNoOfReadDiscussions() + numberOfUnreadComments;
-        user.setNoOfReadDiscussions(userNumberOfReadDiscussions);
-        userDB.child("noOfReadDiscussions").setValue(userNumberOfReadDiscussions);
+        int currentRead = HelperMethods.returnNumberOfReadCommentsForCircle(user, circle);
+        tempNoOfDiscussion.put(circle.getId(), currentRead + numberOfUnreadComments);
+        user.setNoOfReadDiscussions(tempNoOfDiscussion);
+        userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
 
         //updating user latest timestamp for that comment
         HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
@@ -309,11 +310,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         userDB.child("newTimeStampsComments").child(broadcast.getId()).setValue(broadcast.getLatestCommentTimestamp());
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         ListView commentListView;
         private ScrollView container;
-
         private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
         private CircleImageView profPicDisplay;
         private LinearLayout pollOptionsDisplayGroup;

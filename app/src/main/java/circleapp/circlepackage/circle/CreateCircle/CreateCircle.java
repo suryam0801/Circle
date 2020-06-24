@@ -205,7 +205,7 @@ public class CreateCircle extends AppCompatActivity {
 
         //navigate back to explore. new circle will be available in workbench
         Intent intent = new Intent(CreateCircle.this, CircleWall.class);
-        intent.putExtra("fromCircleWall", true);
+        intent.putExtra("fromCreateCircle", true);
         startActivity(intent);
         finish();
     }
