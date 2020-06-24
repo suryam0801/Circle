@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -418,4 +419,8 @@ public class HelperMethods {
         });
     }
 
+    public static SharedPreferences getFirstRunPrefs(Context context){
+        SharedPreferences firstInstanceRunPref = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
+        return firstInstanceRunPref;
+    }
 }

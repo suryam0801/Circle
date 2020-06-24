@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.get_started_first_page;
@@ -53,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
-        SharedPreferences prefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
-        if (prefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
-            prefs.edit().putBoolean(MainActivity.class.getCanonicalName(),false).apply();
+        SharedPreferences persistenceCheckPrefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
+        if (persistenceCheckPrefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
+            persistenceCheckPrefs.edit().putBoolean(MainActivity.class.getCanonicalName(),false).apply();
             database.setPersistenceEnabled(true);
         }
 
@@ -190,5 +191,16 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         notificationManager.notify(1, notification);
         analyticsLogEvents.logEvents(MainActivity.this, "notification_sent", "success", "main_activity");
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        SharedPreferences firstInstanceRunPref = HelperMethods.getFirstRunPrefs(getApplicationContext());
+        if (firstInstanceRunPref.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            firstInstanceRunPref.edit().putBoolean("firstrun", false).commit();
+        }
     }
 }

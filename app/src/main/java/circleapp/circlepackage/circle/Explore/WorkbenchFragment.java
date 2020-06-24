@@ -51,7 +51,6 @@ public class WorkbenchFragment extends Fragment {
     private FirebaseAuth currentUser;
     private DatabaseReference circlesDB, userDB;
     private User user;
-    private FloatingActionButton btnAddCircle;
     private LinearLayout emptyDisplay;
 
     public WorkbenchFragment() {
@@ -88,14 +87,9 @@ public class WorkbenchFragment extends Fragment {
         circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
-        btnAddCircle = view.findViewById(R.id.add_circle_button);
         emptyDisplay = view.findViewById(R.id.workbench_empty_display);
 
         setWorkbenchTabs(view);
-
-        btnAddCircle.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
-        });
 
         return view;
     }
