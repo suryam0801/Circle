@@ -112,7 +112,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private RelativeLayout relativeLayout;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
-    String usersState;
+    String usersState,broadcastid;
+    int broadcastPos;
     int photo;
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
@@ -131,6 +132,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
         }
+
+        broadcastid = getIntent().getStringExtra("broadcastId");
+        broadcastPos = getIntent().getIntExtra("broadcastPos",0);
+        Log.d(TAG,"Broadcst Id:: "+broadcastid+"::::pos:: "+broadcastPos);
 
         database = FirebaseDatabase.getInstance();
         runtimePermissionHelper = new RuntimePermissionHelper(CircleWall.this);
@@ -198,8 +203,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             floatingActionMenu.close(true);
 
         });
-
+//        getItemPosition(broadcastid);
         loadCircleBroadcasts();
+    }
+    public int getItemPosition(String broadcastId)
+    {
+        for (int position=0; position<broadcastList.size(); position++)
+            if (broadcastList.get(position).getId() == broadcastId)
+            {
+                Log.d(TAG,"pos:: "+position);
+                broadcastPos = position;
+            }
+        return 0;
     }
 
     private void loadCircleBroadcasts() {
@@ -210,10 +225,15 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
 
+
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
+        getItemPosition(broadcastid);
+        recyclerView.scrollToPosition(broadcastPos);
+//        Log.d(TAG, "broadcast list position"+String.valueOf(broadcastList.indexOf(broadcastid)));
+
 
         broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
@@ -222,7 +242,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 broadcastList.add(0, broadcast); //to store timestamp values descendingly
                 adapter.notifyItemInserted(0);
                 recyclerView.setAdapter(adapter);
-
+                recyclerView.scrollToPosition(broadcastPos);
                 emptyDisplay.setVisibility(View.GONE);
                 initializeNewCommentsAlertTimestamp(broadcast);
             }
@@ -420,7 +440,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             if(imageExists==false && pollExists == false && setTitleET.getText().toString().isEmpty())
                 Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
             else if(imageExists==true&&downloadUri==null||setTitlePhoto.getText().toString().isEmpty()){
-                Toast.makeText(getApplicationContext(), "Please upload a photo and set Title", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Please upload a photo and set Title", Toast.LENGTH_SHORT).show();
+                createBroadcast();
             }
             else
                 createBroadcast();

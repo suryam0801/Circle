@@ -52,6 +52,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         circle = SessionStorage.getCircle(this);
         initialBroadcastPosition = getIntent().getIntExtra("position", 0);
 
+
         banner.setText(circle.getName());
         back.setOnClickListener(view ->{
             startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
@@ -65,5 +66,12 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         recyclerView.scrollToPosition(initialBroadcastPosition);
+    }
+    public int getItemPosition(String broadcastId)
+    {
+        for (int position=0; position<broadcastList.size(); position++)
+            if (broadcastList.get(position).getId() == broadcastId)
+                return position;
+        return 0;
     }
 }

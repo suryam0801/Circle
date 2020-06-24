@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Explore;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.FullPageBroadcastCardView;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Explore.NotificationAdapter;
@@ -97,7 +99,8 @@ public class NotificationFragment extends Fragment {
         notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
         circlesDB = database.getReference("Circles");
 
-loadNotifications();
+        loadNotifications();
+
 
 
         return view;
@@ -154,8 +157,13 @@ loadNotifications();
                                 if (circle.getMembersList().containsKey(currentUser.getUid())) {
                                     analyticsLogEvents.logEvents(getContext(), "notification_clicked_wall","to_circle_wall","notification");
                                     SessionStorage.saveCircle((Activity) getContext(), circle);
-                                    startActivity(new Intent(getContext(), CircleWall.class));
+                                    Intent intent = new Intent(getContext(), CircleWall.class);
+                                    intent.putExtra("broadcastPos", position);
+                                    intent.putExtra("broadcastId", thisWeekNotifs.get(position).getBroadcastId());
+                                    startActivity(intent);
+                                    Log.d("NotificationFragment",thisWeekNotifs.get(position).getBroadcastId().toString());
                                     ((Activity) getContext()).finish();
+//                                    startActivity(new Intent(getContext(), CircleWall.class));
 
                                 } else {
                                     analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user","not_part_of_circle","notification");

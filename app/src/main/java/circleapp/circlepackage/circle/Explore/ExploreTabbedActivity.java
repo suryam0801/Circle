@@ -6,7 +6,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -78,7 +81,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
 
         //to hide the status and nav bar
         decorView = getWindow().getDecorView();
-        //hideSystemUI();
 
         //recieve ur request on opening
         if (intentUri != null) {
