@@ -163,7 +163,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
-        private LinearLayout container, shareLayout, bannerImage;
+        private LinearLayout container, shareLayout;
+        private RelativeLayout bannerImage;
         private ImageButton shareButton;
         private Button join;
         CircleImageView circleLogo;
