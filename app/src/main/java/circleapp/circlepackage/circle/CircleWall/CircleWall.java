@@ -547,6 +547,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
         SessionStorage.saveCircle(CircleWall.this, circle);
 
+        updateUserCount(circle);
+
         //updating broadcast in broadcast db
         broadcastsDB.child(circle.getId()).child(broadcastId).setValue(broadcast);
         pollExists = false;
@@ -845,5 +847,22 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             usersDB.child("newTimeStampsComments").child(b.getId()).setValue(b.getLatestCommentTimestamp());
         }
     }
+
+    public void updateUserCount(Circle c) {
+        if (user.getNotificationsAlert() != null) {
+            HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
+            newNotifs.put(c.getId(), c.getNoOfBroadcasts());
+            user.setNotificationsAlert(newNotifs);
+            SessionStorage.saveUser(this, user);
+            usersDB.child("notificationsAlert").child(c.getId()).setValue(circle.getNoOfBroadcasts());
+        } else {
+            HashMap<String, Integer> newNotifs = new HashMap<>();
+            newNotifs.put(c.getId(), c.getNoOfBroadcasts());
+            user.setNotificationsAlert(newNotifs);
+            SessionStorage.saveUser(this, user);
+            usersDB.child("notificationsAlert").child(c.getId()).setValue(c.getNoOfBroadcasts());
+        }
+    }
+
 
 }
