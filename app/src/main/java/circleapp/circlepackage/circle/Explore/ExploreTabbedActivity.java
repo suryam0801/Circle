@@ -17,6 +17,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -51,7 +53,7 @@ import ru.dimorinny.showcasecard.step.ShowCaseStep;
 import ru.dimorinny.showcasecard.step.ShowCaseStepDisplayer;
 
 
-public class ExploreTabbedActivity extends AppCompatActivity {
+public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private ImageView profPicHolder;
     TextView location;
@@ -59,7 +61,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
     private Uri intentUri;
     private FirebaseDatabase database;
     private DatabaseReference circlesDB, usersDB;
-    private Circle popupCircle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
@@ -74,7 +75,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         location  = findViewById(R.id.explore_district_name_display);
-        User user = SessionStorage.getUser(this);
+        user = SessionStorage.getUser(this);
         location.setText(user.getDistrict());
         analyticsLogEvents = new AnalyticsLogEvents();
         intentUri = getIntent().getData();
@@ -101,8 +102,6 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                     .addStep(new ShowCaseStep(locationDisplay, "Message at View"))
                     .build().start();
         }
-
-        user = SessionStorage.getUser(ExploreTabbedActivity.this);
 
         locationDisplay.setText(user.getDistrict());
 
@@ -167,7 +166,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                 return true;
             };
 
-    private void showLinkPopup() {
+    private void showLinkPopup(Circle popupCircle) {
         linkCircleDialog = new Dialog(ExploreTabbedActivity.this);
         linkCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
 
@@ -181,12 +180,7 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         tv_creatorName = linkCircleDialog.findViewById(R.id.circle_creatorName);
         tv_circleDesc = linkCircleDialog.findViewById(R.id.circle_desc);
         join = linkCircleDialog.findViewById(R.id.circle_card_join);
-        share = linkCircleDialog.findViewById(R.id.circle_card_share);
 
-        GradientDrawable wbItemBackground = HelperMethods.gradientRectangleDrawableSetter(30);
-        wbItemBackground.setColor(Color.parseColor("#FE42AE"));
-
-        container.setBackground(wbItemBackground);
         tv_circleName.setText(popupCircle.getName());
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
@@ -197,18 +191,19 @@ public class ExploreTabbedActivity extends AppCompatActivity {
         final boolean alreadyMember = HelperMethods.isMemberOfCircle(popupCircle, user.getUserId());
         final boolean alreadyApplicant = HelperMethods.ifUserApplied(popupCircle, user.getUserId());
 
+        if(alreadyApplicant)
+            join.setText("Already Applied");
+
+        if(alreadyMember)
+            join.setText("Already Member");
+
         join.setOnClickListener(view -> {
             if (!alreadyMember && !alreadyApplicant) {
                 linkCircleDialog.dismiss();
                 applyOrJoin(popupCircle);
             }
         });
-
-        share.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_workbench", "circle_invite_member", "on_button_click");
-            HelperMethods.showShareCirclePopup(popupCircle, ExploreTabbedActivity.this);
-        });
-
+        
         //clearing intent data so popup doesnt show each time
         linkCircleDialog.setOnDismissListener(dialogInterface -> {
             getIntent().setData(null);
@@ -282,9 +277,10 @@ public class ExploreTabbedActivity extends AppCompatActivity {
                     Circle circle = snapshot.getValue(Circle.class);
                     if (circle.getId().equals(circleID)) {
                         circleExists = true;
-                        popupCircle = circle;
+                        Circle popupCircle = circle;
                         if (getIntent().getData() != null) {
-                            showLinkPopup();
+                            Log.d("wekfjnwef", popupCircle.toString());
+                            showLinkPopup(popupCircle);
                         }
 
                     }
@@ -301,6 +297,21 @@ public class ExploreTabbedActivity extends AppCompatActivity {
             }
         });
     }
+
+    //bottom sheet dialog onclick (only called when nagivating from create circle)
+    @Override
+    public void onButtonClicked(String text) {
+        Circle circle = SessionStorage.getCircle(this);
+        switch (text) {
+            case "shareLink":
+                HelperMethods.showShareCirclePopup(circle, this);
+                break;
+            case "copyLink":
+                HelperMethods.copyLinkToClipBoard(circle, this);
+                break;
+        }
+    }
+
     /*private void hideSystemUI() {
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content

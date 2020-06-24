@@ -4,10 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +16,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
+import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -71,6 +68,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
         analyticsLogEvents = new AnalyticsLogEvents();
+
         if(!circle.getBackgroundImageLink().equals("default"))
             Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
         else
@@ -143,15 +141,22 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         });
 
         //update new notifs value
-        holder.relativeLayout.setOnClickListener(view -> {
-            HelperMethods.showShareCirclePopup(circle, (Activity) context);
+        holder.shareCirclesLayout.setOnClickListener(view -> {
+            SessionStorage.saveCircle((Activity) context, circle);
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
+        });
+
+        holder.shareCirclesButton.setOnClickListener(view ->{
+            SessionStorage.saveCircle((Activity) context, circle);
+            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         String timeElapsed = HelperMethods.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
         holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
 
         holder.categoryDisplay.setText(circle.getCategory());
-
     }
 
 
@@ -166,16 +171,16 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 newNotifAlert, newApplicantsDisplay, newDiscussionDisplay, categoryDisplay;
         private CircleImageView backgroundPic;
         private LinearLayout container;
-        private RelativeLayout relativeLayout;
-        private Button shareCircles;
+        private RelativeLayout shareCirclesLayout;
+        private Button shareCirclesButton;
         public ViewHolder(View view) {
             super(view);
             newApplicantsDisplay = view.findViewById(R.id.newApplicantsDisplay);
             container = view.findViewById(R.id.wbContainer);
             tv_MycircleName = view.findViewById(R.id.wbcircleName);
             tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
-            relativeLayout = view.findViewById(R.id.wb_share_circle_button_layout);
-            shareCircles = view.findViewById(R.id.wb_share_circle_button);
+            shareCirclesLayout = view.findViewById(R.id.wb_share_circle_button_layout);
+            shareCirclesButton = view.findViewById(R.id.wb_share_circle_button);
             tv_circleCreatedDateWB = view.findViewById(R.id.workbench_circle_created_date);
             newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
             newDiscussionDisplay = view.findViewById(R.id.newDiscussionDisplay);
