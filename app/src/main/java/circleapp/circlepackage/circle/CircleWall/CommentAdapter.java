@@ -83,14 +83,14 @@ public class CommentAdapter extends BaseAdapter {
         }
         else if(profPicURI.equals("default")){
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(mContext)
-                    .load(ContextCompat.getDrawable(mContext, profilePic))
+            Glide.with(mContext.getApplicationContext())
+                    .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
                     .into(profPic);
         }
         else { //checking if it is default avatar
             int profilePic = Integer.parseInt(profPicURI);
-            Glide.with((Activity) mContext)
-                    .load(ContextCompat.getDrawable(mContext, profilePic))
+            Glide.with(mContext.getApplicationContext())
+                    .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
                     .into(profPic);
         }
 
