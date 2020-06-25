@@ -132,6 +132,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private void setViewPageAdapter() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new WorkbenchFragment()).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
@@ -307,6 +309,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
+
     /*private void hideSystemUI() {
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content
