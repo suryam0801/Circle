@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -173,7 +174,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         private CircleImageView backgroundPic;
         private LinearLayout container;
         private RelativeLayout shareCirclesLayout;
-        private Button shareCirclesButton;
+        private ImageButton shareCirclesButton;
         public ViewHolder(View view) {
             super(view);
             newApplicantsDisplay = view.findViewById(R.id.newApplicantsDisplay);

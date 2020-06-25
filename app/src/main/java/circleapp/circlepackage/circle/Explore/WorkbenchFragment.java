@@ -155,8 +155,7 @@ public class WorkbenchFragment extends Fragment{
                 boolean containsCircle = HelperMethods.listContainsCircle(workbenchCircleList, circle);
 
                 if (containsCircle) {
-                    workbenchCircleList.remove(position);
-                    workbenchCircleList.add(position, circle);
+                    workbenchCircleList.set(position,circle);
                     wbadapter.notifyItemChanged(position);
                 }
             }

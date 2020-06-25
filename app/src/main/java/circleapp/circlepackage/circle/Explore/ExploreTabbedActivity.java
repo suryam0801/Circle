@@ -94,14 +94,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
 
-        SharedPreferences firstInstanceRunPref = HelperMethods.getFirstRunPrefs(getApplicationContext());
-        if (firstInstanceRunPref.getBoolean("firstrun", true)) {
-            new ShowCaseStepDisplayer.Builder(this)
-                    .addStep(new ShowCaseStep(profPicHolder, "Message at center"))
-                    .addStep(new ShowCaseStep(locationDisplay, "Message at View"))
-                    .build().start();
-        }
-
         locationDisplay.setText(user.getDistrict());
 
         if (user.getProfileImageLink().length() > 10) { //checking if its uploaded image
@@ -131,8 +123,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private void setViewPageAdapter() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new WorkbenchFragment()).commit();
+        /*getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new WorkbenchFragment()).commit();*/
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {

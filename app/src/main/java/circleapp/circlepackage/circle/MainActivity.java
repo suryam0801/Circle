@@ -193,14 +193,4 @@ public class MainActivity extends AppCompatActivity {
         analyticsLogEvents.logEvents(MainActivity.this, "notification_sent", "success", "main_activity");
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        SharedPreferences firstInstanceRunPref = HelperMethods.getFirstRunPrefs(getApplicationContext());
-        if (firstInstanceRunPref.getBoolean("firstrun", true)) {
-            // Do first run stuff here then set 'firstrun' as false
-            // using the following line to edit/commit prefs
-            firstInstanceRunPref.edit().putBoolean("firstrun", false).commit();
-        }
-    }
 }
