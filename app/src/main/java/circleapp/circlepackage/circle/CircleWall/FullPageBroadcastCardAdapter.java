@@ -263,12 +263,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                         userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
                     }
 
-                    poll.setOptions(pollOptionsTemp);
-                    poll.setUserResponse(userResponseHashmap);
-                    broadcast.setPoll(poll);
-
-                    broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
-
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
 
                     setBroadcastInfo(context, viewHolder, broadcast);
