@@ -126,19 +126,23 @@
 
             <RelativeLayout
                 android:id="@+id/wb_share_circle_button_layout"
-                android:layout_width="45dp"
-                android:layout_height="43dp"
-                android:layout_alignParentEnd="true">
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/join_circle_background_outline"
+                android:clickable="true"
+                android:gravity="center">
 
-                <Button
+                <ImageButton
                     android:id="@+id/wb_share_circle_button"
-                    android:layout_width="25dp"
-                    android:layout_height="23dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/ic_share_black_24dp"
-                    android:fontFamily="@font/roboto_condensed"></Button>
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:foreground="@drawable/ic_share_white_24dp"></ImageButton>
+
             </RelativeLayout>
+
 
 
             <LinearLayout

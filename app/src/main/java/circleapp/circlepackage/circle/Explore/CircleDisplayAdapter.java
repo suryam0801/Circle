@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private User user;
     AnalyticsLogEvents analyticsLogEvents;
 
-    public CircleDisplayAdapter() {}
+    public CircleDisplayAdapter() {
+    }
 
     //contructor to set latestCircleList and context for Adapter
     public CircleDisplayAdapter(Context context, List<Circle> circleList, User user) {
@@ -77,10 +79,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         Circle currentCircle = circleList.get(i);
         String circleCategory;
-        if(!currentCircle.getBackgroundImageLink().equals("default"))
+        Log.d("efljknwefwe", currentCircle.toString());
+        if (!currentCircle.getBackgroundImageLink().equals("default")) {
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
-        else
-        {
+        }else {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
             Glide.with(context)
                     .load(ContextCompat.getDrawable(context, profilePic))
@@ -100,7 +102,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         //set the details of each circle to its respective card.
         viewHolder.tv_circleName.setText(currentCircle.getName());
-        viewHolder.tv_creatorName.setText("By " + currentCircle.getCreatorName());
+        viewHolder.tv_creatorName.setText(currentCircle.getCreatorName());
         viewHolder.tv_circleDesc.setText(currentCircle.getDescription());
 
         String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
@@ -117,17 +119,17 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.shareLayout.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, currentCircle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
+            bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
         viewHolder.shareButton.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, currentCircle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
+            bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         viewHolder.categoryDisplay.setText(currentCircle.getCategory());
         circleCategory = currentCircle.getCategory();
-        switch (circleCategory){
+        switch (circleCategory) {
             case "Events":
                 Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_events)).centerCrop().into(viewHolder.bannerImage);
                 break;

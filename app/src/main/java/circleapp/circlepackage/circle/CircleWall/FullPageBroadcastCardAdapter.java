@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import circleapp.circlepackage.circle.Helpers.FullPageImageDisplay;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
@@ -268,11 +267,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     poll.setUserResponse(userResponseHashmap);
                     broadcast.setPoll(poll);
 
-                    broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll")
-                            .child("userResponse").child(currentUser.getCurrentUser().getUid()).setValue(viewHolder.getCurrentUserPollOption());
-
-                    broadcastDB.child(circle.getId()).child(broadcast.getId())
-                            .child("poll").child("options").setValue(pollOptionsTemp);
+                    broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
 
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
 

@@ -65,6 +65,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import java.util.HashMap;
@@ -288,7 +289,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         locationsDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                locationList = (Set<String>) ((HashMap<String, Boolean>) dataSnapshot.getValue()).keySet();
+                if(dataSnapshot.exists()){
+                    locationList = (Set<String>) ((HashMap<String, Boolean>) dataSnapshot.getValue()).keySet();
+                } else {
+                    locationList = Collections.<String>emptySet();
+                }
             }
 
             @Override
@@ -709,7 +714,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         studentsPollBroadcastId = HelperMethods.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
                 pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2Fe60bebee-7141-47a0-a502-bf018a8fe31c?alt=media&token=be032bf6-511c-4757-8451-8b7c852f3cdb",
                 0, studentsCircleId);
-
 
     }
 

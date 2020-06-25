@@ -53,7 +53,6 @@ public class ExploreFragment extends Fragment {
 
     private User user;
     RecyclerView exploreRecyclerView;
-    private LinearLayout emptyExploreDisplay;
 
 
     public ExploreFragment() {
@@ -90,7 +89,6 @@ public class ExploreFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
-        emptyExploreDisplay = view.findViewById(R.id.explore_empty_display);
 
         setCircleTabs(view);
         return view;
@@ -112,8 +110,6 @@ public class ExploreFragment extends Fragment {
         circlesDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                emptyExploreDisplay.setVisibility(View.GONE);
-
                 Circle circle = dataSnapshot.getValue(Circle.class);
 
                 boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
@@ -146,8 +142,7 @@ public class ExploreFragment extends Fragment {
                         exploreCircleList.remove(position);
                         adapter.notifyItemRemoved(position);
                     } else {
-                        exploreCircleList.remove(position);
-                        exploreCircleList.add(position, circle);
+                        exploreCircleList.set(position,circle);
                         adapter.notifyItemChanged(position);
                     }
 

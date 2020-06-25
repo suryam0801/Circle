@@ -451,9 +451,4 @@ public class HelperMethods {
             }
         });
     }
-
-    public static SharedPreferences getFirstRunPrefs(Context context) {
-        SharedPreferences firstInstanceRunPref = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
-        return firstInstanceRunPref;
-    }
 }

@@ -4,34 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#fcfcfc"
     tools:context=".Explore.ExploreFragment">
-
-    <LinearLayout
-        android:id="@+id/explore_empty_display"
-        android:layout_width="match_parent"
-        android:visibility="visible"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="167dp"
-            android:layout_height="160dp"
-            android:background="@drawable/empty_members_placeholder"></ImageView>
-
-        <TextView
-            android:layout_width="248dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:lineSpacingExtra="5dp"
-            android:paddingTop="43dp"
-            android:text="Looks like you are already part of all existing circles in your area. Get the party started by creating your own circle."
-            android:textAlignment="center"
-            android:textColor="#828282"
-            android:textSize="12dp"></TextView>
-
-
-    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exploreRecyclerView"

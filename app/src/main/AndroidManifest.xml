@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Helpers.FullPageImageDisplay"></activity>
+        <activity android:name=".CircleWall.FullPageImageDisplay"></activity>
 
         <activity android:name=".CircleWall.FullPageBroadcastCardView" />
         <activity

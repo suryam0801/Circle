@@ -3,6 +3,8 @@ package circleapp.circlepackage.circle.CreateCircle;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,13 +18,18 @@ import circleapp.circlepackage.circle.R;
 
 public class CreateCircleCategoryPicker extends AppCompatActivity {
 
-    List<String> categoryList = new ArrayList<>();
-    List<Drawable> iconList = new ArrayList<>();
+    private List<String> categoryList = new ArrayList<>();
+    private List<Drawable> iconList = new ArrayList<>();
+    private LinearLayout createNewTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_circle_category_picker);
+
+        createNewTag = findViewById(R.id.create_your_own_category);
+
+        createNewTag.setOnClickListener(view -> Toast.makeText(this, "Feature Not Available. Coming Soon.", Toast.LENGTH_SHORT).show());
 
         categoryList.add("Health & Fitness");
         categoryList.add("Events");

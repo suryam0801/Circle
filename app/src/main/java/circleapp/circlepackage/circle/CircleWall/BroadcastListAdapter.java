@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.FullPageImageDisplay;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -66,7 +64,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final BroadcastListAdapter.ViewHolder viewHolder, int i) {
 
         final Broadcast broadcast = broadcastList.get(i);
 
@@ -116,8 +114,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
-            context.startActivity(new Intent((Activity) context, BroadcastComments.class));
             SessionStorage.saveBroadcast((Activity) context, broadcast);
+            Intent intent = new Intent((Activity) context, BroadcastComments.class);
+            intent.putExtra("indexOfBroadcast", i);
+            context.startActivity(intent);
             ((Activity) context).finish();
         });
 
@@ -129,12 +129,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
 
-        if (broadcast.getMessage() == null)
-            viewHolder.broadcastMessageDisplay.setVisibility(View.GONE);
-        else
+        //setting the main view
+        if (broadcast.getMessage() != null) {
+            viewHolder.broadcastMessageDisplay.setVisibility(View.VISIBLE);
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
 
-        if (broadcast.getAttachmentURI() != null) {
+        } else if (broadcast.isImageExists() == true) {
+            Log.d("POSIITON IMAGE FUCKER ", i+"");
             viewHolder.imageDisplay.setVisibility(View.VISIBLE);
             //setting imageview
             Glide.with((Activity) context)
@@ -145,12 +146,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.imageDisplay.setOnClickListener(view -> {
                 Intent intent = new Intent(context, FullPageImageDisplay.class);
                 intent.putExtra("uri", broadcast.getAttachmentURI());
+                intent.putExtra("indexOfBroadcast", i);
                 context.startActivity(intent);
                 ((Activity) context).finish();
             });
-        }
 
-        if (broadcast.isPollExists() == true) {
+        } else if (broadcast.isPollExists() == true && broadcast.isImageExists() == false) {
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
@@ -188,34 +189,48 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     params1.putString("PollInteracted", "Radio button");
 
                     String option = button.getText().toString();
-                    HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
-                    int currentSelectedVoteCount = poll.getOptions().get(option);
-
-                    if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
-                        ++currentSelectedVoteCount;
-                        pollOptionsTemp.put(option, currentSelectedVoteCount);
-                        viewHolder.setCurrentUserPollOption(option);
-                    } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
-                        int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
-
-                        --userPreviousVoteCount;
-                        ++currentSelectedVoteCount;
-                        pollOptionsTemp.put(option, currentSelectedVoteCount);
-                        pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
-                        viewHolder.setCurrentUserPollOption(option);
-
-                    }
-
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll")
-                            .child("userResponse").child(currentUser.getCurrentUser().getUid()).setValue(viewHolder.getCurrentUserPollOption());
-
-                    viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId())
-                            .child("poll").child("options").setValue(pollOptionsTemp);
+                    updatePollAnswer(option, viewHolder, poll, broadcast);
                 });
                 viewHolder.pollOptionsDisplayGroup.addView(layout);
                 button.setPressed(true);
             }
         }
+
+    }
+
+    public void updatePollAnswer(String option, ViewHolder viewHolder, Poll poll, Broadcast broadcast) {
+        HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
+        int currentSelectedVoteCount = poll.getOptions().get(option);
+
+        if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
+            ++currentSelectedVoteCount;
+            pollOptionsTemp.put(option, currentSelectedVoteCount);
+            viewHolder.setCurrentUserPollOption(option);
+        } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
+            int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
+
+            --userPreviousVoteCount;
+            ++currentSelectedVoteCount;
+            pollOptionsTemp.put(option, currentSelectedVoteCount);
+            pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
+            viewHolder.setCurrentUserPollOption(option);
+
+        }
+
+        HashMap<String, String> userResponseHashmap;
+        if (poll.getUserResponse() != null) {
+            userResponseHashmap = new HashMap<>(poll.getUserResponse());
+            userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+        } else {
+            userResponseHashmap = new HashMap<>();
+            userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+        }
+
+        poll.setOptions(pollOptionsTemp);
+        poll.setUserResponse(userResponseHashmap);
+        broadcast.setPoll(poll);
+
+        viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
     }
 
     @Override

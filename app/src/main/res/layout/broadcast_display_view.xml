@@ -90,6 +90,7 @@
             android:fontFamily="@font/roboto_regular"
             android:lineSpacingExtra="4dp"
             android:text="Message"
+            android:visibility="gone"
             android:textColor="#9D9D9D"
             android:textSize="14dp"></TextView>
 

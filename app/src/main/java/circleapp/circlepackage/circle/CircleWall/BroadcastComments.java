@@ -50,11 +50,14 @@ public class BroadcastComments extends AppCompatActivity {
     private Broadcast broadcast;
     private User user;
     private LinearLayout emptyHolder;
+    private int indexOfParentBroadcast = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast_comments);
+
+        indexOfParentBroadcast = getIntent().getIntExtra("indexOfBroadcast", 0);
 
         circle = SessionStorage.getCircle(BroadcastComments.this);
         broadcast = SessionStorage.getBroadcast(BroadcastComments.this);
@@ -89,7 +92,9 @@ public class BroadcastComments extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
-            startActivity(new Intent(BroadcastComments.this, CircleWall.class));
+            Intent intent = new Intent(this, CircleWall.class);
+            intent.putExtra("indexOfBroadcast", indexOfParentBroadcast);
+            startActivity(intent);
             finish();
         });
     }
@@ -204,7 +209,9 @@ public class BroadcastComments extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(BroadcastComments.this, CircleWall.class));
+        Intent intent = new Intent(this, CircleWall.class);
+        intent.putExtra("indexOfBroadcast", indexOfParentBroadcast);
+        startActivity(intent);
         finish();
     }
 }

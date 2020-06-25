@@ -78,7 +78,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB,commentsDB, circlesPersonelDB, circlesDB, usersDB;
+    private DatabaseReference broadcastsDB, commentsDB, circlesPersonelDB, circlesDB, usersDB;
     private FirebaseAuth currentUser;
     RuntimePermissionHelper runtimePermissionHelper;
     private StorageReference storageReference;
@@ -96,22 +96,22 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Circle circle;
 
     private List<String> pollAnswerOptionsList = new ArrayList<>();
-    private boolean pollExists = false, imageExists=false;
+    private boolean pollExists = false, imageExists = false;
 
     private ImageButton exitOrDeleteButton, back, viewPersonelButton;
     private User user;
 
     //create broadcast popup ui elements
     private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
-    private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay,imageCreateView, pollImageUploadInitiation;
+    private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay, imageCreateView, pollImageUploadInitiation;
     private TextView circleBannerName, broadcastHeader, addPhotoText, pollAddPhotoText;
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
-    private ImageView addPhoto, pollAddPhoto ;
+    private ImageView addPhoto, pollAddPhoto;
     private RelativeLayout photoUploadButtonView, pollUploadButtonView;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
-    String usersState,broadcastid;
+    String usersState, broadcastid;
     int broadcastPos;
     int photo;
 
@@ -130,7 +130,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         circle = SessionStorage.getCircle(CircleWall.this);
 
         broadcastid = getIntent().getStringExtra("broadcastId");
-        broadcastPos = getIntent().getIntExtra("broadcastPos",0);
+        broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
 
         database = FirebaseDatabase.getInstance();
         runtimePermissionHelper = new RuntimePermissionHelper(CircleWall.this);
@@ -215,12 +215,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         loadCircleBroadcasts();
     }
 
-    public int getItemPosition(String broadcastId)
-    {
-        for (int position=0; position<broadcastList.size(); position++)
-            if (broadcastList.get(position).getId() == broadcastId)
-            {
-                Log.d(TAG,"pos:: "+position);
+    public int getItemPosition(String broadcastId) {
+        for (int position = 0; position < broadcastList.size(); position++)
+            if (broadcastList.get(position).getId() == broadcastId) {
+                Log.d(TAG, "pos:: " + position);
                 broadcastPos = position;
             }
         return 0;
@@ -239,10 +237,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
-        getItemPosition(broadcastid);
-        recyclerView.scrollToPosition(broadcastPos);
-//        Log.d(TAG, "broadcast list position"+String.valueOf(broadcastList.indexOf(broadcastid)));
-
+        recyclerView.setItemAnimator(null);
+//        getItemPosition(broadcastid);
+//        recyclerView.scrollToPosition(broadcastPos);
 
         broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override
@@ -254,17 +251,21 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 recyclerView.scrollToPosition(broadcastPos);
                 emptyDisplay.setVisibility(View.GONE);
                 initializeNewCommentsAlertTimestamp(broadcast);
+
+                //coming back from image display
+                int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
+                if (indexOfReturnFromFullImage != 0)
+                    recyclerView.scrollToPosition(indexOfReturnFromFullImage);
+
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
-                broadcastList.remove(position);
-                adapter.notifyItemRemoved(position);
-
-                broadcastList.add(position, broadcast);
-                adapter.notifyItemInserted(position);
+                Log.d("wefkj", position + "");
+                broadcastList.set(position,broadcast);
+                adapter.notifyItemChanged(position);
             }
 
             @Override
@@ -393,14 +394,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             broadcastHeader.setText("Create New Poll");
             broadcastDisplay.setVisibility(View.GONE);
             imageCreateView.setVisibility(View.GONE);
-        }
-        else if(flag.equals("image")){
+        } else if (flag.equals("image")) {
             addPhotoText.setVisibility(View.VISIBLE);
             pollCreateView.setVisibility(View.GONE);
             broadcastDisplay.setVisibility(View.GONE);
             imageCreateView.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             pollCreateView.setVisibility(View.GONE);
             broadcastDisplay.setVisibility(View.VISIBLE);
             imageCreateView.setVisibility(View.GONE);
@@ -441,7 +440,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             String option = setPollOptionET.getText().toString();
 
-            if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]")|| option.isEmpty())) {
+            if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]") || option.isEmpty())) {
                 //checking for invalid characters
                 Toast.makeText(getApplicationContext(), "Option cannot use special characters or be empty", Toast.LENGTH_SHORT).show();
             } else {
@@ -464,23 +463,21 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         btnUploadBroadcast.setOnClickListener(view -> {
-            if (!pollAnswerOptionsList.isEmpty()){
+            if (!pollAnswerOptionsList.isEmpty()) {
                 pollExists = true;
-                if(downloadUri!=null)
+                if (downloadUri != null)
                     imageExists = true;
-            }
-            else if(downloadUri!=null){
+            } else if (downloadUri != null) {
                 imageExists = true;
             }
 
             //only for message broadcast
-            if(imageExists==false && pollExists == false && setTitleET.getText().toString().isEmpty())
+            if (imageExists == false && pollExists == false && setTitleET.getText().toString().isEmpty())
                 Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
-            else if(imageExists==true&&downloadUri==null||pollExists==true||setTitlePhoto.getText().toString().isEmpty()){
+            else if (imageExists == true && downloadUri == null || pollExists == true || setTitlePhoto.getText().toString().isEmpty()) {
 //                Toast.makeText(getApplicationContext(), "Please upload a photo and set Title", Toast.LENGTH_SHORT).show();
                 createBroadcast();
-            }
-            else
+            } else
                 createBroadcast();
 
         });
@@ -497,7 +494,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
 
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(),circle.getBackgroundImageLink());
+        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink());
 
         //creating poll options hashmap
         HashMap<String, Integer> options = new HashMap<>();
@@ -509,43 +506,37 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         if (pollExists) {
 
             Poll poll = new Poll(pollQuestion, options, null);
-            if(imageExists){
-                createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll,downloadUri.toString(),true);
-            }
-            else
-                createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll,null,false);
-        }
-        else if(imageExists&&!pollExists){
-            createAndUploadBroadcast(broadcastId, setTitlePhoto.getText().toString(), null, currentUserName, currentUserId, false, null,downloadUri.toString(),true);
-        }
-        else {
+            if (imageExists) {
+                createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll, downloadUri.toString(), true);
+            } else
+                createAndUploadBroadcast(broadcastId, null, null, currentUserName, currentUserId, true, poll, null, false);
+        } else if (imageExists && !pollExists) {
+            createAndUploadBroadcast(broadcastId, setTitlePhoto.getText().toString(), null, currentUserName, currentUserId, false, null, downloadUri.toString(), true);
+        } else {
             String title = null;
             String message = null;
 
             if (!setMessageET.getText().toString().isEmpty())
                 message = setMessageET.getText().toString();
-            if(!setTitleET.getText().toString().isEmpty())
+            if (!setTitleET.getText().toString().isEmpty())
                 title = setTitleET.getText().toString();
 
-            createAndUploadBroadcast(broadcastId, title,  message, currentUserName, currentUserId, false, null, null, false);
+            createAndUploadBroadcast(broadcastId, title, message, currentUserName, currentUserId, false, null, null, false);
         }
     }
 
     public void createAndUploadBroadcast(String broadcastId, String title, String message, String userName, String userId, boolean localPollExists, Poll poll, String attachmentUri, boolean localImageExists) {
         Broadcast broadcast;
-        if(localPollExists&&!localImageExists) {
-            broadcast = new Broadcast(broadcastId, title, message, null, userName, userId, true,false,
+        if (localPollExists && !localImageExists) {
+            broadcast = new Broadcast(broadcastId, title, message, null, userName, userId, true, false,
                     System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
-        }
-        else if(localImageExists&&!localPollExists){
-            broadcast = new Broadcast(broadcastId, title, null, attachmentUri, userName, userId, false,true,
+        } else if (localImageExists && !localPollExists) {
+            broadcast = new Broadcast(broadcastId, title, null, attachmentUri, userName, userId, false, true,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
-        }
-        else if(localImageExists&&localPollExists){
-            broadcast = new Broadcast(broadcastId, title, message, downloadUri.toString(), userName, userId, true,true,
+        } else if (localImageExists && localPollExists) {
+            broadcast = new Broadcast(broadcastId, title, message, downloadUri.toString(), userName, userId, true, true,
                     System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
-        }
-        else {
+        } else {
             broadcast = new Broadcast(broadcastId, title, message, null,
                     userName, userId, false, false, System.currentTimeMillis(), null,
                     user.getProfileImageLink(), 0, 0);
@@ -565,7 +556,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         pollAnswerOptionsList.clear();
     }
 
-    public TextView generatePollOptionTV(String option){
+    public TextView generatePollOptionTV(String option) {
         LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
         lparams.setMargins(0, 10, 20, 0);
 
@@ -581,7 +572,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         return tv;
     }
 
-    public void selectFile(){
+    public void selectFile() {
 
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -589,7 +580,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
 
-    public void takePhoto(){
+    public void takePhoto() {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -599,37 +590,32 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     }
 
     private void selectImage() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(CircleWall.this);
         builder.setTitle("Add Photo!");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo"))
-                {
+                if (options[item].equals("Take Photo")) {
                     photo = 1;
-                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
                     }
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)&&runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         takePhoto();
-                    }
-                    else{
+                    } else {
                         runtimePermissionHelper.askPermission(CAMERA);
                     }
-                }
-                else if (options[item].equals("Choose from Gallery"))
-                {
+                } else if (options[item].equals("Choose from Gallery")) {
                     photo = 0;
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
-                        analyticsLogEvents.logEvents(CircleWall.this, "storage_off","asked_permission", "gather_user_details");
+                        analyticsLogEvents.logEvents(CircleWall.this, "storage_off", "asked_permission", "gather_user_details");
                         runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                     }
 
-                }
-                else if (options[item].equals("Cancel")) {
+                } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
@@ -639,25 +625,24 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if(photo==0){
+            if (photo == 0) {
                 selectFile();
-            }
-            else if(photo==1){
-                if(runtimePermissionHelper.isPermissionAvailable(CAMERA))
+            } else if (photo == 1) {
+                if (runtimePermissionHelper.isPermissionAvailable(CAMERA))
                     takePhoto();
             }
-            analyticsLogEvents.logEvents(CircleWall.this,"storage_granted","permission_granted","circle_wall");
+            analyticsLogEvents.logEvents(CircleWall.this, "storage_granted", "permission_granted", "circle_wall");
         } else {
             Toast.makeText(CircleWall.this,
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
                     .show();
         }
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //code for upload the image
@@ -729,7 +714,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(CircleWall.this,"pic_upload_fail","device_error","circle_wall");
+                                analyticsLogEvents.logEvents(CircleWall.this, "pic_upload_fail", "device_error", "circle_wall");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -737,8 +722,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         });
             }
 
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
@@ -788,7 +772,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         addPhoto.setVisibility(View.VISIBLE);
                         pollAddPhoto.setVisibility(View.VISIBLE);
 
-                        Log.d("test1",""+downloadUri);
+                        Log.d("test1", "" + downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
@@ -804,7 +788,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(CircleWall.this,"pic_capture_fail","device_error","circle_wall");
+                                analyticsLogEvents.logEvents(CircleWall.this, "pic_capture_fail", "device_error", "circle_wall");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -837,9 +821,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
     }
 
-    public void initializeNewCommentsAlertTimestamp(Broadcast b){
+    public void initializeNewCommentsAlertTimestamp(Broadcast b) {
         HashMap<String, Long> commentTimeStampTemp;
-        if(user.getNewTimeStampsComments() == null){
+        if (user.getNewTimeStampsComments() == null) {
             //first time viewing any comments
             commentTimeStampTemp = new HashMap<>();
             commentTimeStampTemp.put(b.getId(), (long) 0);
@@ -847,10 +831,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             SessionStorage.saveUser(CircleWall.this, user);
             usersDB.child("newTimeStampsComments").child(b.getId()).setValue(b.getLatestCommentTimestamp());
-        } else if(user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())){
+        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
-            commentTimeStampTemp.put(b.getId(), (long)  0);
+            commentTimeStampTemp.put(b.getId(), (long) 0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);
