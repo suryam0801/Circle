@@ -129,6 +129,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
 
+
         //setting the main view
         if (broadcast.getMessage() != null) {
             viewHolder.broadcastMessageDisplay.setVisibility(View.VISIBLE);

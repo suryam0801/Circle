@@ -164,10 +164,26 @@
             android:weightSum="100"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_weight="99"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:lineSpacingExtra="4dp"
+                android:text="Comments"
+                android:textColor="#000000"
+                android:textSize="16dp"></TextView>
+
             <ListView
                 android:id="@+id/full_page_broadcast_comments_display"
                 android:layout_width="match_parent"
                 android:layout_weight="99"
+                android:divider="@null"
+                android:layout_marginBottom="10dp"
+                android:dividerHeight="0dp"
                 android:layout_height="match_parent">
             </ListView>
 
