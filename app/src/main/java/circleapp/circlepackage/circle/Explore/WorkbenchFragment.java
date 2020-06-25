@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -91,6 +92,26 @@ public class WorkbenchFragment extends Fragment{
         circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
+
+        emptyDisplay = view.findViewById(R.id.workbench_empty_display);
+        ImageButton explore = view.findViewById(R.id.placeholder_explore_circle_layout);
+        ImageButton create = view.findViewById(R.id.placeholder_create_circle_layout);
+
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
+                getActivity().finish();
+            }
+        });
+
+        explore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ExploreFragment()).commit();
+            }
+        });
 
         setWorkbenchTabs(view);
 
