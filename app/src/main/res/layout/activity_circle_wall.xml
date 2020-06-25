@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/default_broadcast_background"
@@ -11,36 +11,69 @@
     <LinearLayout
         android:id="@+id/circle_wall_empty_display"
         android:layout_width="match_parent"
-        android:visibility="visible"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="167dp"
-            android:layout_height="160dp"
-            android:background="@drawable/empty_members_placeholder"></ImageView>
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginBottom="90dp">
 
         <TextView
-            android:layout_width="248dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:lineSpacingExtra="5dp"
-            android:paddingTop="43dp"
-            android:text="Welcome! There are currently no new posts here. Reach out to your new mates by clicking the '+' button"
-            android:textAlignment="center"
-            android:textColor="#828282"
-            android:textSize="12dp"></TextView>
+            android:text="Choose any to get started"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="30dp">
+        </TextView>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:weightSum="99">
+
+            <TextView
+                android:id="@+id/circle_wall_get_started_poll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:drawableTop="@drawable/ic_poll"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="New Poll"></TextView>
+
+            <TextView
+                android:id="@+id/circle_wall_get_started_broadcast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:drawableTop="@drawable/ic_message"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="New Broadcast"></TextView>
+
+            <TextView
+                android:id="@+id/circle_wall_get_started_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:drawableTop="@drawable/ic_camera_alt_white_24dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="New Image"></TextView>
+
+        </LinearLayout>
 
     </LinearLayout>
 
 
     <LinearLayout
+        android:id="@+id/circle_wall_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/circle_wall_header"
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -52,45 +85,41 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_chevron_left_black_24dp">
-            </ImageButton>
+                android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
 
 
             <TextView
                 android:id="@+id/circleBannerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/bck_Circlewall"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="40dp"
-                android:layout_marginRight="100dp"
-                android:layout_alignStart="@+id/bck_Circlewall"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="100dp"
                 android:layout_marginBottom="21dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Circle Board"
                 android:textColor="#000000"
-                android:textSize="16dp">
-            </TextView>
+                android:textSize="16dp"></TextView>
 
             <ImageButton
+                android:id="@+id/share_with_friend_button"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:id="@+id/share_with_friend_button"
-                android:background="@drawable/ic_exit_to_app_black_24dp">
-            </ImageButton>
+                android:background="@drawable/ic_exit_to_app_black_24dp"></ImageButton>
 
             <ImageButton
+                android:id="@+id/shareCircle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:id="@+id/shareCircle"
-                android:background="@drawable/baseline_group_black_18dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="60dp">
-            </ImageButton>
+                android:layout_centerVertical="true"
+                android:layout_marginRight="60dp"
+                android:background="@drawable/baseline_group_black_18dp"></ImageButton>
         </RelativeLayout>
 
         <View
@@ -101,8 +130,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/broadcastViewRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 
@@ -154,13 +182,13 @@
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/poll_creation_FAB"
+            style="@style/MenuButtonsSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_poll"
             app:fab_size="normal"
-            fab:fab_label="New poll"
 
-            style="@style/MenuButtonsSmall"/>
+            fab:fab_label="New poll" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/message_creation_FAB"
@@ -169,6 +197,7 @@
             android:src="@drawable/ic_message"
             fab:fab_label="New broadcast"
             fab:fab_size="normal" />
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/image_creation_FAB"
             android:layout_width="wrap_content"

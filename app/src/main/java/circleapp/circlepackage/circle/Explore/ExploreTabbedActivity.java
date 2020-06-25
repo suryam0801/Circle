@@ -49,12 +49,13 @@ import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import de.hdodenhof.circleimageview.CircleImageView;
 import ru.dimorinny.showcasecard.position.Center;
 import ru.dimorinny.showcasecard.step.ShowCaseStep;
 import ru.dimorinny.showcasecard.step.ShowCaseStepDisplayer;
 
 
-public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
+public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private ImageView profPicHolder;
     TextView location;
@@ -73,7 +74,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
-        location  = findViewById(R.id.explore_district_name_display);
+        location = findViewById(R.id.explore_district_name_display);
         user = SessionStorage.getUser(this);
         location.setText(user.getDistrict());
         analyticsLogEvents = new AnalyticsLogEvents();
@@ -107,14 +108,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             Glide.with(ExploreTabbedActivity.this)
                     .load(user.getProfileImageLink())
                     .into(profPicHolder);
-        }
-        else if(user.getProfileImageLink().equals("default")){
+        } else if (user.getProfileImageLink().equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
             Glide.with(ExploreTabbedActivity.this)
                     .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
                     .into(profPicHolder);
-        }
-        else { //checking if it is default avatar
+        } else { //checking if it is default avatar
             int profilePic = Integer.parseInt(user.getProfileImageLink());
             Glide.with(ExploreTabbedActivity.this)
                     .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
@@ -137,32 +136,32 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
-                Fragment selectedFragment = null;
-                switch (item.getItemId()) {
-                    case R.id.workbench_bottom_nav_item:
-                        selectedFragment = new WorkbenchFragment();
-                        break;
-                    case R.id.explore_bottom_nav_item:
-                        selectedFragment = new ExploreFragment();
-                        break;
-                    case R.id.create_circle_nav_bar:
-                        selectedFragment = new WorkbenchFragment();
-                        startActivity(new Intent(ExploreTabbedActivity.this, CreateCircleCategoryPicker.class));
-                        finish();
-                        break;
-                    case R.id.notifications_bottom_nav_item:
-                        selectedFragment = new NotificationFragment();
-                        break;
+        Fragment selectedFragment = null;
+        switch (item.getItemId()) {
+            case R.id.workbench_bottom_nav_item:
+                selectedFragment = new WorkbenchFragment();
+                break;
+            case R.id.explore_bottom_nav_item:
+                selectedFragment = new ExploreFragment();
+                break;
+            case R.id.create_circle_nav_bar:
+                selectedFragment = new WorkbenchFragment();
+                startActivity(new Intent(ExploreTabbedActivity.this, CreateCircleCategoryPicker.class));
+                finish();
+                break;
+            case R.id.notifications_bottom_nav_item:
+                selectedFragment = new NotificationFragment();
+                break;
 
-                    case R.id.search_bottom_nav_item:
-                        selectedFragment = new FeedbackFragment();
-                        break;
+            case R.id.search_bottom_nav_item:
+                selectedFragment = new FeedbackFragment();
+                break;
 
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        selectedFragment).commit();
-                return true;
-            };
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                selectedFragment).commit();
+        return true;
+    };
 
     private void showLinkPopup(Circle popupCircle) {
         linkCircleDialog = new Dialog(ExploreTabbedActivity.this);
@@ -171,13 +170,60 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         TextView tv_circleName, tv_creatorName, tv_circleDesc;
         Button join;
         ImageButton share;
-        LinearLayout container;
+        ImageView bannerImage;
+        CircleImageView profPic;
 
-        container = linkCircleDialog.findViewById(R.id.container);
         tv_circleName = linkCircleDialog.findViewById(R.id.circle_name);
         tv_creatorName = linkCircleDialog.findViewById(R.id.circle_creatorName);
         tv_circleDesc = linkCircleDialog.findViewById(R.id.circle_desc);
         join = linkCircleDialog.findViewById(R.id.circle_card_join);
+        bannerImage = linkCircleDialog.findViewById(R.id.circle_banner_image);
+        profPic = linkCircleDialog.findViewById(R.id.explore_circle_logo);
+
+        switch (popupCircle.getCategory()) {
+            case "Events":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_events)).centerCrop().into(bannerImage);
+                break;
+            case "Apartments & Communities":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_apartment_and_communities)).centerCrop().into(bannerImage);
+                break;
+            case "Sports":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_sports)).centerCrop().into(bannerImage);
+                break;
+            case "Friends & Family":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_friends_and_family)).centerCrop().into(bannerImage);
+                break;
+            case "Food & Entertainment":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_food_and_entertainment)).centerCrop().into(bannerImage);
+                break;
+            case "Science & Tech":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_science_and_tech_background)).centerCrop().into(bannerImage);
+                break;
+            case "Gaming":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_gaming)).centerCrop().into(bannerImage);
+                break;
+            case "Health & Fitness":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_health_and_fitness)).centerCrop().into(bannerImage);
+                break;
+            case "Students & Clubs":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_students_and_clubs)).centerCrop().into(bannerImage);
+                break;
+            case "The Circle App":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.admin_circle_banner)).centerCrop().into(bannerImage);
+                break;
+            default:
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);
+                break;
+        }
+
+        if (!popupCircle.getBackgroundImageLink().equals("default"))
+            Glide.with(this).load(popupCircle.getBackgroundImageLink()).into(profPic);
+        else {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
+            Glide.with(this)
+                    .load(ContextCompat.getDrawable(this, profilePic))
+                    .into(profPic);
+        }
 
         tv_circleName.setText(popupCircle.getName());
         tv_creatorName.setText(popupCircle.getCreatorName());
@@ -189,10 +235,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         final boolean alreadyMember = HelperMethods.isMemberOfCircle(popupCircle, user.getUserId());
         final boolean alreadyApplicant = HelperMethods.ifUserApplied(popupCircle, user.getUserId());
 
-        if(alreadyApplicant)
+        if (alreadyApplicant)
             join.setText("Already Applied");
 
-        if(alreadyMember)
+        if (alreadyMember)
             join.setText("Already Member");
 
         join.setOnClickListener(view -> {
@@ -309,17 +355,4 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
-
-    /*private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }*/
 }

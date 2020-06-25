@@ -174,7 +174,12 @@ public class BroadcastComments extends AppCompatActivity {
         switch (navFrom){
             case "create":
                 //updating userReadDiscussions after creating the comment
-                tempNoOfDiscussion.put(circle.getId(), user.getNoOfReadDiscussions().get(circle.getId()) + 1);
+                int updateDiscussionInt;
+                if(tempNoOfDiscussion.containsKey(circle.getId()))
+                    updateDiscussionInt = tempNoOfDiscussion.get(circle.getId());
+                else
+                    updateDiscussionInt = 0;
+                tempNoOfDiscussion.put(circle.getId(), updateDiscussionInt + 1);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
                 break;

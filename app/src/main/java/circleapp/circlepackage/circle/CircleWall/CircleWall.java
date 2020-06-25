@@ -115,6 +115,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     int broadcastPos;
     int photo;
 
+    private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto;
+
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
     AnalyticsLogEvents analyticsLogEvents;
@@ -129,7 +131,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos",0);
-        Log.d(TAG,"Broadcst Id:: "+broadcastid+"::::pos:: "+broadcastPos);
 
         database = FirebaseDatabase.getInstance();
         runtimePermissionHelper = new RuntimePermissionHelper(CircleWall.this);
@@ -157,6 +158,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
         imagePost = findViewById(R.id.image_creation_FAB);
+        getStartedPoll = findViewById(R.id.circle_wall_get_started_poll);
+        getStartedBroadcast = findViewById(R.id.circle_wall_get_started_broadcast);
+        getStartedPhoto = findViewById(R.id.circle_wall_get_started_image);
         floatingActionMenu = findViewById(R.id.menu);
         photo = 0;
 
@@ -202,6 +206,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             floatingActionMenu.close(true);
 
         });
+
+        getStartedPhoto.setOnClickListener(view -> showCreateBroadcastDialog("image"));
+        getStartedPoll.setOnClickListener(view -> showCreateBroadcastDialog("poll"));
+        getStartedBroadcast.setOnClickListener(view -> showCreateBroadcastDialog("message"));
+
 //        getItemPosition(broadcastid);
         loadCircleBroadcasts();
     }
