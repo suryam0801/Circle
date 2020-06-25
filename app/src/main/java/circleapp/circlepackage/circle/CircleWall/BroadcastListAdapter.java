@@ -76,7 +76,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             Glide.with((Activity) context)
                     .load(user.getProfileImageLink())
                     .into(viewHolder.profPicDisplay);
-        } else if (user.getProfileImageLink().equals("default")) {
+        } else if (broadcast.getCreatorPhotoURI().equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
             Glide.with(context)
                     .load(ContextCompat.getDrawable(context, profilePic))

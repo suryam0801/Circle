@@ -222,9 +222,7 @@ public class HelperMethods {
         database = FirebaseDatabase.getInstance();
         DatabaseReference locationsDB;
         locationsDB = database.getReference("Locations");
-        HashMap <String,Boolean> location = new HashMap<>();
-        locationsDB.child(district).setValue(false);
-
+        locationsDB.child(district).setValue(true);
     }
     public static String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
         FirebaseDatabase database;
@@ -262,7 +260,7 @@ public class HelperMethods {
             return id;
         }
 
-    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions) {
+    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference circlesDB;
@@ -270,7 +268,7 @@ public class HelperMethods {
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
         String id = uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "CreatorAdmin", creatorName, "Category", "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name, description, acceptanceType, "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         circlesDB.child(id).setValue(circle);
         return id;
     }

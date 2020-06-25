@@ -155,8 +155,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             case "Students & Clubs":
                 Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_students_and_clubs)).centerCrop().into(viewHolder.bannerImage);
                 break;
+            case "The Circle App":
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.admin_circle_banner)).centerCrop().into(viewHolder.bannerImage);
+                break;
             default:
-                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_own_circle)).centerCrop().into(viewHolder.bannerImage);
+                Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_custom_circle)).centerCrop().into(viewHolder.bannerImage);
                 break;
         }
     }

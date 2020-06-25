@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -268,23 +268,24 @@
             </RadioGroup>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/create_circle_submit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/green_border_button"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Create Circle"
+            android:textAllCaps="false"
+            android:textColor="#35C80B"
+            android:textFontWeight="10"
+            android:textSize="15dp"></Button>
+
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/create_circle_submit"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="15dp"
-        android:layout_weight="50"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/green_border_button"
-        android:fontFamily="@font/roboto_regular"
-        android:text="Create Circle"
-        android:textAllCaps="false"
-        android:textColor="#35C80B"
-        android:textFontWeight="10"
-        android:textSize="15dp"></Button>
-
-</RelativeLayout>
+</ScrollView>
