@@ -101,7 +101,4 @@ public class FeedbackFragment extends Fragment {
 
         Toast.makeText(view.getContext(), "Thanks for your feedback :)", Toast.LENGTH_SHORT).show();
     }
-
-
-
 }

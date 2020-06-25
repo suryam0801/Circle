@@ -120,6 +120,7 @@ public class ExploreFragment extends Fragment {
                 boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
 
                 if (!isMember) {
+
                     if (circle.getCreatorName().equals("The Circle Team")) {
                         exploreCircleList.add(0, circle);
                         adapter.notifyItemInserted(0);

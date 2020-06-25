@@ -5,34 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".Explore.WorkbenchFragment">
 
-    <LinearLayout
-        android:id="@+id/workbench_empty_display"
-        android:layout_width="match_parent"
-        android:visibility="visible"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="167dp"
-            android:layout_height="160dp"
-            android:background="@drawable/empty_members_placeholder"></ImageView>
-
-        <TextView
-            android:layout_width="248dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:lineSpacingExtra="5dp"
-            android:paddingTop="43dp"
-            android:text="You will be able to see your circles here, if you want to discover circles in your area swipe right onto Explore. To create your own circle, click the '+' button below"
-            android:textAlignment="center"
-            android:textColor="#828282"
-            android:textSize="12dp"></TextView>
-
-
-    </LinearLayout>
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wbRecyclerView"
         android:layout_width="match_parent"

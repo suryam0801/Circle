@@ -68,6 +68,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
@@ -101,12 +103,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB, locationsDB;
     private User user;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Set<String> locationList;
     ProgressDialog progressDialog;
     SharedPreferences pref;
     String Name, contact, userId;
     EditText name;
-    Button  register;
-    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7,avatar8, avatarList[];
+    Button register;
+    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
     AnalyticsLogEvents analyticsLogEvents;
     String avatar;
@@ -118,7 +121,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     //location services elements
     private FusedLocationProviderClient client;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private String ward, district,temp;
+    private String ward, district, temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +134,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList = new ImageView[8];
         storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
-        HelperMethods.increaseTouchArea(name,50,50,50,50);
+        HelperMethods.increaseTouchArea(name, 50, 50, 50, 50);
         locationsDB = database.getReference("Locations");
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
@@ -157,11 +160,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
-        HelperMethods.increaseTouchArea(setProfile,30,30,30,30);
+        HelperMethods.increaseTouchArea(setProfile, 30, 30, 30, 30);
 
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
-        HelperMethods.addDistrict(district);
+
+        readLocationDB();
+
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -173,7 +178,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar1_bg,avatar1,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -182,7 +187,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar2);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar2_bg,avatar2,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -191,7 +196,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar3_bg,avatar3,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -200,7 +205,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar4_bg,avatar4,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -209,7 +214,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar5_bg,avatar5,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -218,7 +223,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar6_bg,avatar6,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -227,7 +232,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar7_bg,avatar7,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -236,7 +241,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar8);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this,profilePic,avatar,avatar8_bg,avatar8,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -257,37 +262,51 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    if(name.getText().equals("") || name.getText().toString().isEmpty()){
+                if (name.getText().equals("") || name.getText().toString().isEmpty()) {
 
-                        Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success","gather_user_details");
-                        Name = name.getText().toString();
-                        Name = Name.replaceAll("\\s+", " ");
-                        contact = pref.getString("key_name5", null);
+                    Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                } else {
+                    analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success", "gather_user_details");
+                    Name = name.getText().toString();
+                    Name = Name.replaceAll("\\s+", " ");
+                    contact = pref.getString("key_name5", null);
 
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                        //The function to register the Users with their appropriate details
-                        progressDialog.show();
-                        analyticsLogEvents.logEvents(GatherUserDetails.this,"registration_success","user_registered","gather_user_details");
-                        UserReg();
-                        analyticsLogEvents.logEvents(GatherUserDetails.this,ward.trim(),district.trim(),"gather_user_details");
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    //The function to register the Users with their appropriate details
+                    progressDialog.show();
+                    analyticsLogEvents.logEvents(GatherUserDetails.this, "registration_success", "user_registered", "gather_user_details");
+                    UserReg();
+                    analyticsLogEvents.logEvents(GatherUserDetails.this, ward.trim(), district.trim(), "gather_user_details");
 
-                    }
                 }
+            }
         });
     }
 
-    public void selectFile(){
+    public void readLocationDB() {
+        locationsDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                locationList = (Set<String>) ((HashMap<String, Boolean>) dataSnapshot.getValue()).keySet();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void selectFile() {
 
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
-    public void takePhoto(){
+
+    public void takePhoto() {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -295,38 +314,34 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
         startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
     }
+
     private void selectImage() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(GatherUserDetails.this);
         builder.setTitle("Add Photo!");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo"))
-                {
+                if (options[item].equals("Take Photo")) {
                     photo = 1;
-                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
                     }
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)&&runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         takePhoto();
-                    }
-                    else{
+                    } else {
                         runtimePermissionHelper.askPermission(CAMERA);
                     }
-                }
-                else if (options[item].equals("Choose from Gallery"))
-                {
+                } else if (options[item].equals("Choose from Gallery")) {
                     photo = 0;
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
-                        analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_off","asked_permission", "gather_user_details");
+                        analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_off", "asked_permission", "gather_user_details");
                         runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                     }
 
-                }
-                else if (options[item].equals("Cancel")) {
+                } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
@@ -336,25 +351,24 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(photo==0){
-                    selectFile();
-                }
-                else if(photo==1){
-                    if(runtimePermissionHelper.isPermissionAvailable(CAMERA))
-                        takePhoto();
-                }
-                analyticsLogEvents.logEvents(GatherUserDetails.this,"storage_granted","permission_granted","gather_user_details");
-        } else {
-                Toast.makeText(GatherUserDetails.this,
-                        "Permission Denied",
-                        Toast.LENGTH_SHORT)
-                        .show();
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (photo == 0) {
+                selectFile();
+            } else if (photo == 1) {
+                if (runtimePermissionHelper.isPermissionAvailable(CAMERA))
+                    takePhoto();
             }
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+            analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_granted", "permission_granted", "gather_user_details");
+        } else {
+            Toast.makeText(GatherUserDetails.this,
+                    "Permission Denied",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //code for upload the image
@@ -412,7 +426,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
-                        for(int i =0; i<8; i++){
+                        for (int i = 0; i < 8; i++) {
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }
 
@@ -424,7 +438,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(GatherUserDetails.this,"pic_upload_fail","device_error","gather_user_details");
+                                analyticsLogEvents.logEvents(GatherUserDetails.this, "pic_upload_fail", "device_error", "gather_user_details");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -432,8 +446,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         });
             }
 
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
@@ -478,14 +491,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         downloadUri = uri;
-                        Log.d("test1",""+downloadUri);
+                        Log.d("test1", "" + downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
-                        for(int i =0; i<8; i++){
+                        for (int i = 0; i < 8; i++) {
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }
                     }
@@ -496,7 +509,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(GatherUserDetails.this,"pic_capture_fail","device_error","gather_user_details");
+                                analyticsLogEvents.logEvents(GatherUserDetails.this, "pic_capture_fail", "device_error", "gather_user_details");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -527,8 +540,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         return false; // pass on to other listeners.
 
     }
+
     public void UserReg() {
-        Log.d(TAG,"User reg called");
+        Log.d(TAG, "User reg called");
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
@@ -545,8 +559,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         if (task.isSuccessful()) {
                             Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                             //Adding the user to collection
+                            if (!locationList.contains(district))
+                                createInitialCircles();
+
                             addUser();
-                            Log.d(TAG,"User Registered success fully added");
+                            Log.d(TAG, "User Registered success fully added");
                             Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -567,49 +584,24 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         usersDB = database.getReference("Users");
 
+        HelperMethods.addDistrict(district);
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
-        /*locationsDB.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Circle circle = snapshot.getValue(Circle.class);
-                    if (circle.getId().equals(circleID)) {
-                        circleExists = true;
-                        Circle popupCircle = circle;
-                        if (getIntent().getData() != null) {
-                            Log.d("wekfjnwef", popupCircle.toString());
-                            showLinkPopup(popupCircle);
-                        }
 
-                    }
-                }
-                if (circleExists == false) {
-                    analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "_expired_invite_link", "incorrect_link", "read_external_link");
-                    Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }*/
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
             //creaeting the user object
-            Log.d(TAG,"DownloadURI ::"+downloadUri);
+            Log.d(TAG, "DownloadURI ::" + downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
-            interestTag.put("null",true);
+            interestTag.put("null", true);
             user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward, district, null, null, null);
-        } else if(!avatar.equals(""))
-            {
+        } else if (!avatar.equals("")) {
             HashMap<String, Boolean> interestTag = new HashMap<>();
-            interestTag.put("null",true);
-            Log.d(TAG,"Avatar :: "+avatar);
+            interestTag.put("null", true);
+            Log.d(TAG, "Avatar :: " + avatar);
             user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district, null, null, null);
-        }
-        else {
+        } else {
             user = new User(Name, contact, "default", userId, 0, 0, 0, token_id, ward, district, null, null, null);
         }
         //storing user as a json in file locally
@@ -617,14 +609,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         SessionStorage.saveUser(GatherUserDetails.this, user);
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
-            Log.d(TAG,"User data success fully added realtime db");
+            Log.d(TAG, "User data success fully added realtime db");
 
-            Log.d(TAG,"User data success fully added");
+            Log.d(TAG, "User data success fully added");
             progressDialog.cancel();
             Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY );
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(i);
-            Log.d(TAG,"Intent lines are executed...");
+            Log.d(TAG, "Intent lines are executed...");
 //            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
 //            sendnotify();
             db.collection("Users")
@@ -664,113 +656,61 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
     }
-    /*private void createInitialCirlces() {
-        analyticsLogEvents.logEvents(GatherUserDetails.this,"default_circles_added","new_location","gather_user_details");
 
+    private void createInitialCircles() {
         //admin circle
-        String circleId = HelperMethods.createCircle("Meet the developers of Circle","Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.","automatic","The Circle Team", district, 2, 0);
-        HashMap<String, Integer> pollOptions = new HashMap<>(); //creating poll options
-        pollOptions.put("It's going to rain tomorrow", 0);
-        pollOptions.put("No way, its dry as a dog biscuit", 0);
+        String adminCircleId, adminNormalBroadcastId, adminPollBroadcastId;
+        adminCircleId = HelperMethods.createCircle("Meet The Developers", "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
+                "Automatic", "The Circle Team", "Admin World", 2, 0, "The Circle App");
 
-        Poll adminPoll = new Poll("Use polls like this to quickly get your friends’ opinion about something!", pollOptions, null);
-        Broadcast commentBroadcast = new Broadcast("commentBroadcast", "You can have a discussion about your posts down in the " +
-                "comments below. Click on Go to discussion to see the secret message. :)", null, "Jacob",
-                "AdminId", false, (System.currentTimeMillis() - 1), null, def1, 0, 0);
-        Broadcast pollBroadcast = new Broadcast("pollBroadcast", null, null, "Abrar", "AdminId", true,
-                System.currentTimeMillis(), adminPoll, def4, 0, 0);
-        Broadcast introBroadcast = new Broadcast("introBroadcast", "Welcome to Circle! Your friendly neighborhood app. Form circles " +
+        adminNormalBroadcastId = HelperMethods.createMessageBroadcast("Hi guys, Welcome to Circle", "Use this app to form circles " +
                 "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
-                "opinions - all on a single platform.", null, "Surya", "AdminId", false,
-                (System.currentTimeMillis() + 1), null, def5, 0, 0);
+                "opinions. All on a single platform!", "Admin", 1, 0, adminCircleId);
 
-        String broadcastId1 = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!","Abrar",-1,pollOptions,0,circleId);
+        HashMap<String, Integer> adminPollOptions = new HashMap<>(); //creating poll options
+        adminPollOptions.put("This app is amazing!", 0);
+        adminPollOptions.put("I'd like to see some changes", 0);
+        adminPollOptions.put("meh :D", 0);
+        adminPollBroadcastId = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!", "Admin",
+                2, adminPollOptions, null, 0, adminCircleId);
 
 
-        String broadcastId2 = HelperMethods.createBroadcast("You can have a discussion about your posts down in the " +
-                "comments below. Click on Go to discussion to see the secret message. :)","Jacob", -1, 0, circleId);
-        String broadcastId3 = HelperMethods.createBroadcast("Welcome to Circle! Your friendly neighborhood app. Form circles " +
-                "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
-                "opinions - all on a single platform.","Surya", 1,0,circleId);
+        //quarantine circle
+        String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
+        quarantineCircleId = HelperMethods.createCircle("Quarantine Talks" + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
+                "Automatic", "Vijay Ram", district, 2, 0, "Community Discussion");
 
-        HelperMethods.createComment("Srinithi", "The answer to life is not 42. It's the bonds you build " +
-                "around your circle.",0,circleId,broadcastId2);
+        quarantineNormalBroadcastId = HelperMethods.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
+                        " can help eachother stay safe and clarify any doubts in these uncertain times :)", "Mekkala Nair", 1,
+                0,quarantineCircleId);
 
-        //running circle
-        String circleId2 = HelperMethods.createCircle("Morning Runner's "+district,"Hi guys, i would love to form a morning running group for anybody in " + district + ". Please join if you would like to be part of this friendly runner's circle","automatic","Vijay Ram", district, 2, 0);
-        HashMap<String, Integer> pollOptionsRunningCircle = new HashMap<>(); //creating poll options
-        pollOptionsRunningCircle.put("Sure!", 0);
-        pollOptionsRunningCircle.put("Thats too early :(", 0);
-
-        Poll runningPoll = new Poll("Hey guys! Can we go running every friday early in the morning?", pollOptionsRunningCircle, null);
-        Broadcast runnersBroadcastMessage = new Broadcast(runningBroadcastID, "Hi all! This is a group to find mates to go on daily runs with. Runners of all levels welcome!", null, "Vijay Ram", "AdminId", false,
-                System.currentTimeMillis(), null, def3, 0, 0);
-        Broadcast runnersBroadcastPoll = new Broadcast(runningBroadcasPollID, null, null, "Vijay Ram", "AdminId", true,
-                System.currentTimeMillis(), runningPoll, def1, 0, 0);
-        Comment runnerComment = new Comment("Madhu mitha", "Hey where do you guys go running?",
-                runningCommentID, null, System.currentTimeMillis());
-        circlesDB.child(runningCircleID).setValue(runningCircle);
-        broadcastsDB.child(runningCircleID).child(runningBroadcastID).setValue(runnersBroadcastMessage);
-        broadcastsDB.child(runningCircleID).child(runningBroadcasPollID).setValue(runnersBroadcastPoll);
-        commentsDB.child(runningCircleID).child(runningBroadcastID).child(runningCommentID).setValue(runnerComment);
-
-        broadcastId1 = HelperMethods.createBroadcast("Hi all! This is a group to find mates to go on daily runs with. Runners of all levels welcome!", "Vijay Ram",0,0,circleId2);
-        broadcastId2 = HelperMethods.createPollBroadcast("Hey guys! Can we go running every friday early in the morning?","Vijay Ram",0,pollOptionsRunningCircle,0, circleId2);
-        HelperMethods.createComment("Madhu mitha", "Hey where do you guys go running?",0,circleId2,broadcastId2);
-
+        HashMap<String, Integer> quarantinePollOptions = new HashMap<>(); //creating poll options
+        quarantinePollOptions.put("Lets find out at 8 PM", 0);
+        quarantinePollOptions.put("Never :(", 0);
+        quarantinePollOptions.put("Soon? Please be soon!", 0);
+        quarantinePollBroadcastId = HelperMethods.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
+                2, quarantinePollOptions,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2F4903a0a2-fc75-4c33-b417-98e45a8f6332?alt=media&token=aa71896f-90a9-4e2c-8322-5e04fac8ba56"
+                , 0, quarantineCircleId);
 
         //students circle
-        String circleId3 = HelperMethods.createCircle(district + " Students Hangout!","Lets use this circle to unite all students in " + district + ". Voice your problems, questions, or anything you need support with. You will never walk alone!","automatic","Malavika Kumar",district,2,0);
+        String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
+        studentsCircleId = HelperMethods.createCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
+                "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
+                district, 0, 0, "Students & Clubs");
+
+        studentsNormalBroadcastId = HelperMethods.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
+                "You have the support of all the students from " + district + " here!", "Srinithi", 1, 0, studentsCircleId);
+
         HashMap<String, Integer> pollOptionsStudentsCircle = new HashMap<>(); //creating poll options
         pollOptionsStudentsCircle.put("no! it will get cancelled!", 0);
         pollOptionsStudentsCircle.put("im preparing :(", 0);
         pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
 
-        Poll cookingPoll = new Poll("Are you guys still preparing for exams?", pollOptionsStudentsCircle, null);
-        Broadcast studentBroadcast = new Broadcast(studentsBroadcastID, "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. You have the support of all the students from " + district + " here!", null, "Mekkala Nair", "AdminId", false,
-                System.currentTimeMillis(), null, def5, 0, 0);
-        Broadcast studentBroadcastPoll = new Broadcast(studentsBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
-                System.currentTimeMillis(), cookingPoll, def2, 0, 0);
-        Comment studentComment = new Comment("Arijit Samuel", "Can i post promotions for my college events here?",
-                studentsCommentID, null, (System.currentTimeMillis() - (1800 * 1000)));
-        Comment studentCommentResponse = new Comment("Mekkala Nair", "Yeah that's not a problem!",
-                studentsCommentIDResponse, null, System.currentTimeMillis());
-        circlesDB.child(studentsCircleID).setValue(cookingCircle);
-        broadcastsDB.child(studentsCircleID).child(studentsBroadcastID).setValue(studentBroadcast);
-        broadcastsDB.child(studentsCircleID).child(studentsBroadcastPollID).setValue(studentBroadcastPoll);
-        commentsDB.child(studentsCircleID).child(studentsBroadcastID).child(studentsCommentID).setValue(studentComment);
-        commentsDB.child(studentsCircleID).child(studentsBroadcastID).child(studentsCommentIDResponse).setValue(studentCommentResponse);
-
-        broadcastId1 = HelperMethods.createBroadcast("Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. You have the support of all the students from " + district + " here!","Mekkala Nair",0,0,circleId3);
-        broadcastId2 = HelperMethods.createPollBroadcast("Are you guys still preparing for exams?","Mekkala Nair", 0, pollOptionsStudentsCircle, 0,circleId3);
-        HelperMethods.createComment("Arijit Samuel","Can i post promotions for my college events here?",-(1800*1000),circleId3,broadcastId1);
-        HelperMethods.createComment("Mekkala Nair", "Yeah that's not a problem!",0,circleId3,broadcastId1);
+        studentsPollBroadcastId = HelperMethods.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
+                pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2Fe60bebee-7141-47a0-a502-bf018a8fe31c?alt=media&token=be032bf6-511c-4757-8451-8b7c852f3cdb",
+                0, studentsCircleId);
 
 
-        //quarantine circle
-        String circleId4 = HelperMethods.createCircle("Quarantine Talks " + district,"Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle","automatic","Surya Manivannan", district, 2,0);
-        HashMap<String, Integer> pollOptionsQuarantineCircle = new HashMap<>(); //creating poll options
-        pollOptionsQuarantineCircle.put("1 month", 0);
-        pollOptionsQuarantineCircle.put("2 months", 0);
-        pollOptionsQuarantineCircle.put("3 months", 0);
-        pollOptionsQuarantineCircle.put("haven't even started", 0);
-
-        Poll quarantinePoll = new Poll("How long have you been in quarantine?", pollOptionsQuarantineCircle, null);
-        Broadcast quarantineBroadcast = new Broadcast(quarantineBroadcastID, "Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)", null, "Mekkala Nair", "AdminId", false,
-                (System.currentTimeMillis() - (1800 * 1000)), null, def4, 0, 0);
-        Broadcast quarantineBroadcastPoll = new Broadcast(quarantineBroadcastPollID, null, null, "Mekkala Nair", "AdminId", true,
-                System.currentTimeMillis(), quarantinePoll, def1, 0, 0);
-        Comment quarantineComment = new Comment("Nithin M", "Where are you guys buying your essentials?",
-                quarantineCommentID, null, (System.currentTimeMillis()));
-        circlesDB.child(quarantineCircleID).setValue(quarantineCircle);
-        broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastID).setValue(quarantineBroadcast);
-        broadcastsDB.child(quarantineCircleID).child(quarantineBroadcastPollID).setValue(quarantineBroadcastPoll);
-        commentsDB.child(quarantineCircleID).child(quarantineBroadcastID).child(quarantineCommentID).setValue(quarantineComment);
     }
-
-        broadcastId1 = HelperMethods.createBroadcast("Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we can help eachother stay safe and clarify any doubts in these uncertain times :)","Mekkala Nair",-(1800*1000),0,circleId4);
-        broadcastId2 = HelperMethods.createPollBroadcast("How long have you been in quarantine?","Mekkala Nair", 0, pollOptionsQuarantineCircle, 0 ,circleId4);
-        HelperMethods.createComment("Nithin M", "Where are you guys buying your essentials?",0,circleId4,broadcastId1);
-    }*/
 
 }

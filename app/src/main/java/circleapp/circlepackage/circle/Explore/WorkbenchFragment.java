@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,7 +42,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
  * Use the {@link WorkbenchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkbenchFragment extends Fragment {
+public class WorkbenchFragment extends Fragment{
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -52,6 +55,7 @@ public class WorkbenchFragment extends Fragment {
     private DatabaseReference circlesDB, userDB;
     private User user;
     private LinearLayout emptyDisplay;
+
 
     public WorkbenchFragment() {
         // Required empty public constructor
@@ -87,7 +91,6 @@ public class WorkbenchFragment extends Fragment {
         circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
-        emptyDisplay = view.findViewById(R.id.workbench_empty_display);
 
         setWorkbenchTabs(view);
 
@@ -171,6 +174,4 @@ public class WorkbenchFragment extends Fragment {
             userDB.child("notificationsAlert").child(c.getId()).setValue(0);
         }
     }
-
-
 }

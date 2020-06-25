@@ -54,7 +54,7 @@ import ru.dimorinny.showcasecard.step.ShowCaseStep;
 import ru.dimorinny.showcasecard.step.ShowCaseStepDisplayer;
 
 
-public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
+public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 
     private ImageView profPicHolder;
     TextView location;
@@ -68,7 +68,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     View decorView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,8 +132,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private void setViewPageAdapter() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new WorkbenchFragment()).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
@@ -148,7 +145,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                         break;
                     case R.id.create_circle_nav_bar:
                         selectedFragment = new WorkbenchFragment();
-                        startActivity(new Intent(ExploreTabbedActivity.this, CreateCircle.class));
+                        startActivity(new Intent(ExploreTabbedActivity.this, CreateCircleCategoryPicker.class));
                         finish();
                         break;
                     case R.id.notifications_bottom_nav_item:
@@ -310,7 +307,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
-
     /*private void hideSystemUI() {
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content
