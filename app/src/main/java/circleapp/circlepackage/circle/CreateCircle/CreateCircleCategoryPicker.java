@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.CreateCircle;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.R;
 
 public class CreateCircleCategoryPicker extends AppCompatActivity {
@@ -50,5 +52,11 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
 
         final RecyclerView.Adapter wbadapter = new CategoryPickerAdapter(CreateCircleCategoryPicker.this, categoryList, iconList);
         wbrecyclerView.setAdapter(wbadapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, ExploreTabbedActivity.class));
     }
 }
