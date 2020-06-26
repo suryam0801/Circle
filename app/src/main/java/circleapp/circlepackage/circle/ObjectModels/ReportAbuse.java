@@ -1,7 +1,7 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class ReportAbuse {
-    String reportAbuseID, circleID, creatorID, userID;
+    String reportAbuseID, contentType, creatorID, userID;
 
     public String getReportAbuseId() {
         return reportAbuseID;
@@ -11,9 +11,9 @@ public class ReportAbuse {
         this.reportAbuseID = reportAbuseId;
     }
 
-    public ReportAbuse(String reportAbuseId, String circleId, String creatorID, String userID){
+    public ReportAbuse(String reportAbuseId, String contentType, String creatorID, String userID){
         this.reportAbuseID = reportAbuseId;
-        this.circleID = circleId;
+        this.contentType = contentType;
         this.creatorID = creatorID;
         this.userID = userID;
     }
@@ -34,18 +34,27 @@ public class ReportAbuse {
         this.creatorID = creatorID;
     }
 
-    public String getCircleId() {
-        return circleID;
+    public String getReportAbuseID() {
+        return reportAbuseID;
     }
 
-    public void setCircleId(String circleId) {
-        this.circleID = circleId;
+    public void setReportAbuseID(String reportAbuseID) {
+        this.reportAbuseID = reportAbuseID;
     }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     @Override
     public String toString() {
         return "ReportAbuse{" +
                 "reportAbuseID='" + reportAbuseID + '\'' +
-                ", circleID='" + circleID + '\'' +
+                ", contentType='" + contentType + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", userID='" + userID + '\'' +
                 '}';
