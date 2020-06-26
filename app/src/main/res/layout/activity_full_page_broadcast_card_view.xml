@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/full_page_broadcast_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/default_broadcast_background"
-    android:orientation="vertical"
     android:layout_weight="100"
+    android:orientation="vertical"
     tools:context=".CircleWall.FullPageBroadcastCardView">
 
     <RelativeLayout
@@ -20,51 +20,39 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_chevron_left_black_24dp">
-        </ImageButton>
+            android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
 
 
         <TextView
             android:id="@+id/full_page_broadcast_banner_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/bck_Circlewall"
             android:layout_centerInParent="true"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="100dp"
-            android:layout_alignStart="@+id/bck_Circlewall"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="100dp"
             android:layout_marginBottom="21dp"
             android:fontFamily="@font/roboto_regular"
             android:text="Circle Board"
             android:textColor="#000000"
-            android:textSize="16dp">
-        </TextView>
+            android:textSize="16dp"></TextView>
 
         <ImageButton
+            android:id="@+id/full_page_broadcast_more_options"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:background="@drawable/ic_exit_to_app_black_24dp">
-        </ImageButton>
+            android:background="@drawable/ic_baseline_more_vert_24"></ImageButton>
 
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:background="@drawable/baseline_group_black_18dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="60dp">
-        </ImageButton>
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_weight="99"
         android:id="@+id/full_page_broadcast_card_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_weight="99"></androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

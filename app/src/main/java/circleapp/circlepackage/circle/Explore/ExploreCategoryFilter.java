@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.mikepenz.materialize.color.Material;
@@ -153,6 +154,7 @@ public class ExploreCategoryFilter extends AppCompatActivity {
 
         back.setOnClickListener(view -> {
             Intent intent = new Intent(ExploreCategoryFilter.this, ExploreTabbedActivity.class);
+            intent.putExtra("fromFilters", true);
             startActivity(intent);
             finish();
         });

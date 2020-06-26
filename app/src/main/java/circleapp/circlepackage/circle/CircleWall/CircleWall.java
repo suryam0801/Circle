@@ -25,13 +25,18 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,7 +105,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private boolean pollExists = false, imageExists = false;
 
-    private ImageButton exitOrDeleteButton, back, viewPersonelButton;
+    private ImageButton back, moreOptions;
     private User user;
 
     //create broadcast popup ui elements
@@ -110,7 +115,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog;
     private ImageView addPhoto, pollAddPhoto;
-    private RelativeLayout photoUploadButtonView, pollUploadButtonView;
+    private RelativeLayout photoUploadButtonView, pollUploadButtonView, parentLayout;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
     String usersState, broadcastid;
@@ -152,9 +157,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
         circleBannerName = findViewById(R.id.circleBannerName);
-        exitOrDeleteButton = findViewById(R.id.share_with_friend_button);
         back = findViewById(R.id.bck_Circlewall);
-        viewPersonelButton = findViewById(R.id.shareCircle);
         emptyDisplay = findViewById(R.id.circle_wall_empty_display);
         emptyDisplay.setVisibility(View.VISIBLE);
         poll = findViewById(R.id.poll_creation_FAB);
@@ -164,14 +167,20 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedBroadcast = findViewById(R.id.circle_wall_get_started_broadcast);
         getStartedPhoto = findViewById(R.id.circle_wall_get_started_image);
         floatingActionMenu = findViewById(R.id.menu);
-        photo = 0;
+        moreOptions = findViewById(R.id.circle_wall_more_options);
+        parentLayout = findViewById(R.id.circle_wall_parent_layout);
 
+        photo = 0;
+        setParentBgImage();
+/*
         if (circle.getCreatorID().equals(user.getUserId()))
             exitOrDeleteButton.setBackground(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp));
+*/
 
         circleBannerName.setText(circle.getName());
 
 
+/*
         exitOrDeleteButton.setOnClickListener(view -> {
             if (circle.getCreatorID().equals(user.getUserId()))
                 showDeleteDialog();
@@ -185,6 +194,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             startActivity(intent);
             finish();
         });
+*/
 
         back.setOnClickListener(view -> {
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
@@ -209,6 +219,34 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         });
 
+        moreOptions.setOnClickListener(view -> {
+            PopupMenu popup = new PopupMenu(this, moreOptions);
+            popup.getMenuInflater()
+                    .inflate(R.menu.circle_wall_menu, popup.getMenu());
+            //registering popup with OnMenuItemClickListener
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getTitle().toString()) {
+                    case "Change wallpaper":
+                        startActivity(new Intent(CircleWall.this, CircleWallBackgroundPicker.class));
+                        finish();
+                        break;
+                    case "Invite a friend":
+                        HelperMethods.showShareCirclePopup(circle, CircleWall.this);
+                        break;
+                    case "Report Abuse":
+                        break;
+                    case "Exit circle":
+                        break;
+                    case "Delete circle":
+                        break;
+                    case "Circle Information":
+                        break;
+                }
+                return true;
+            });
+            popup.show();
+        });
+
         getStartedPhoto.setOnClickListener(view -> showCreateBroadcastDialog("image"));
         getStartedPoll.setOnClickListener(view -> showCreateBroadcastDialog("poll"));
         getStartedBroadcast.setOnClickListener(view -> showCreateBroadcastDialog("message"));
@@ -217,13 +255,61 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         loadCircleBroadcasts();
     }
 
-    public int getItemPosition(String broadcastId) {
-        for (int position = 0; position < broadcastList.size(); position++)
-            if (broadcastList.get(position).getId() == broadcastId) {
-                Log.d(TAG, "pos:: " + position);
-                broadcastPos = position;
+    public void setParentBgImage() {
+        String bg = SessionStorage.getCircleWallBgImage(CircleWall.this);
+        if (bg != null) {
+            switch (bg) {
+                case "bg1":
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_1));
+                    break;
+                case "bg2":
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_2));
+                    break;
+                case "bg3":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
+                    moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3));
+                    break;
+                case "bg4":
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_4));
+                    break;
+                case "bg5":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
+                    moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5));
+                    break;
+                case "bg6":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
+                    moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6));
+                    break;
+                case "bg7":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
+                    moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7));
+                    break;
+                case "bg8":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
+                    moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8));
+                    break;
+                case "bg9":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
+                    moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
+                    break;
+                case "bg10":
+                    circleBannerName.setTextColor(Color.WHITE);
+                    parentLayout.setBackgroundColor(Color.WHITE);
+                    break;
             }
-        return 0;
+        }
     }
 
     private void loadCircleBroadcasts() {
@@ -266,7 +352,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
                 int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
                 Log.d("wefkj", position + "");
-                broadcastList.set(position,broadcast);
+                broadcastList.set(position, broadcast);
                 adapter.notifyItemChanged(position);
             }
 
@@ -352,7 +438,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
     }
-    private void showCreateNormalBroadcastDialog(){
+
+    private void showCreateNormalBroadcastDialog() {
 
     }
 
@@ -427,7 +514,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            if(photo==0)
+            if (photo == 0)
                 selectImage();
         });
 
@@ -439,7 +526,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            if(photo==0)
+            if (photo == 0)
                 selectImage();
         });
 
@@ -627,7 +714,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 }
             }
         });
-        if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+        if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
             builder.show();
         }
     }
@@ -638,7 +725,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if(photo==1)
+            if (photo == 1)
                 takePhoto();
             else
                 selectImage();

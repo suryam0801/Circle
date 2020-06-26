@@ -3,23 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/viewMembers"
-        android:title="View members"
+        android:id="@+id/circleInformationMenuBar"
+        android:title="Circle Information"
         android:icon="@drawable/ic_person_outline_black_24dp"
-        app:showAsAction="always" />
+        app:showAsAction="" >
+    </item>
 
     <item
-        android:id="@+id/exitCircle"
-        android:title="Exit circle"
-        app:showAsAction="always">
+        android:id="@+id/changeWallpaperMenuBar"
+        android:title="Change wallpaper"
+        android:icon="@drawable/ic_person_outline_black_24dp"
+        app:showAsAction="" >
+    </item>
+
+    <item
+        android:id="@+id/invite_friendMenuBar"
+        android:title="Invite a friend"
+        android:icon="@drawable/ic_person_outline_black_24dp" >
+    </item>
+
+    <item
+        android:id="@+id/report_abuseMenubar"
+        android:title="Report Abuse"
+        android:icon="@drawable/ic_person_outline_black_24dp" >
+    </item>
+
+    <item
+        android:id="@+id/exitCircleMenuBar"
+        android:title="Exit circle">
 
     </item>
     <item
-        android:id="@+id/deleteCircle"
+        android:id="@+id/deleteCircleMenuBar"
         android:title="Delete circle"
-        app:showAsAction="always"
         android:visible="false">
-
     </item>
 
 </menu>

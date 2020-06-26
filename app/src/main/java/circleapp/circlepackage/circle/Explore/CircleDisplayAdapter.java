@@ -129,6 +129,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         viewHolder.categoryDisplay.setText(currentCircle.getCategory());
         circleCategory = currentCircle.getCategory();
+
+        setBannerBackground(circleCategory, viewHolder);
+    }
+
+    private void setBannerBackground(String circleCategory, ViewHolder viewHolder){
         switch (circleCategory) {
             case "Events":
                 Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_events)).centerCrop().into(viewHolder.bannerImage);
