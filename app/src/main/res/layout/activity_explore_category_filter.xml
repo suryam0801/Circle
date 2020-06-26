@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Explore.ExploreCategoryFilter">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/bck_explore_filter"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@android:color/transparent"
+                    android:scaleX=".8"
+                    android:scaleY=".8"
+                    android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="70dp"
+                    android:text="Filter"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"></TextView>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE"></View>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginRight="23dp"
+                android:fontFamily="@font/roboto_condensed_bold"
+                android:text="Filter options"
+                android:textColor="@color/black"
+                android:textSize="20dp"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/roboto_condensed"
+                android:text="Catgory"
+                android:textColor="#C3BDBD"
+                android:textSize="16dp"></TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Health &amp; Fitness"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/health_and_fitness_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Events"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/events_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Students &amp; Clubs"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/students_and_clubs_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Apartments &amp; Communities"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/apartments_communities_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Sports"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/sports_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Friends &amp; Family"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/friends_and_family_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Food &amp; Entertainment"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/food_and_entertainment_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Science &amp; Tech"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/science_and_tech_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="23dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="Gaming"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"></TextView>
+
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/gaming_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"></com.google.android.material.checkbox.MaterialCheckBox>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/apply_filter_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/poll_creation_item_option_background"
+        android:fontFamily="@font/roboto_condensed"
+        android:text="Apply filter"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16dp"></Button>
+
+</RelativeLayout>

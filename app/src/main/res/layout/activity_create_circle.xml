@@ -53,7 +53,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey"></View>
+                android:background="#EEEEEE"></View>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,14 +83,14 @@
                         android:textSize="12dp"></TextView>
 
                 </LinearLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
                     android:layout_marginLeft="23dp"
+                    android:layout_marginTop="18dp"
                     android:text="Circle Logo"
-                    android:textColor="@color/grey"
-                    ></TextView>
+                    android:textColor="@color/grey"></TextView>
                 <TextView
                     android:id="@+id/logo_help"
                     android:layout_width="match_parent"

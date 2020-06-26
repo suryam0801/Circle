@@ -304,6 +304,14 @@ public class HelperMethods {
                 .into(profilePic);
     }
 
+    public static boolean circleFitsWithinFilterContraints(List<String> filters, Circle circle){
+        boolean circleFits = false;
+        if(filters != null && filters.contains(circle.getCategory()))
+            circleFits = true;
+
+        return circleFits;
+    }
+
     public static Uri getImageUri() {
         Uri m_imgUri = null;
         File m_file;

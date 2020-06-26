@@ -116,8 +116,14 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new WorkbenchFragment()).commit();
+
+        if (getIntent().getBooleanExtra("fromFilters", false)) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new ExploreFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new WorkbenchFragment()).commit();
+        }
 
         setViewPageAdapter();
     }
@@ -125,8 +131,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private void setViewPageAdapter() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        /*getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new WorkbenchFragment()).commit();*/
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
