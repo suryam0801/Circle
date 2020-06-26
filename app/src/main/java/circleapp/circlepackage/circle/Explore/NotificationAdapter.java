@@ -139,8 +139,7 @@ public class NotificationAdapter extends BaseAdapter {
                 break;
             case "new_user":
                 notificationTitle.setText("Welcome to CIRCLE");
-                newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                notificationDescription.setText(newBroadCast);
+                notificationDescription.setText(newuser);
                 break;
             case "new_applicant":
                 gd.setColor(Color.parseColor("#D856FF"));

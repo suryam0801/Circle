@@ -5,7 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
-import com.onesignal.OneSignal;
 
 public class InAppNotificationHelper extends Application {
     public static final String CHANNEL_1_ID = "channel1";
@@ -14,10 +13,6 @@ public class InAppNotificationHelper extends Application {
     public void onCreate() {
         super.onCreate();
         createNotificationChannels();
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .unsubscribeWhenNotificationsAreDisabled(true)
-                .init();
     }
 
     private void createNotificationChannels() {
