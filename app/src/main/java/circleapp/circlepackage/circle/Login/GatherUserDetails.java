@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -33,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -124,6 +126,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     private String ward, district, temp;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,8 +144,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
         progressDialog.setTitle("Registering User....");
-        photo = 0;
         avatar = "";
+        photo = 0;
         avatarList[0] = avatar1 = findViewById(R.id.avatar1);
         avatarList[1] = avatar2 = findViewById(R.id.avatar2);
         avatarList[2] = avatar3 = findViewById(R.id.avatar3);
@@ -248,7 +251,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-            photo = 2;
             if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -256,7 +258,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            selectImage();
+            if(photo==0)
+                selectImage();
         });
 
         // Listener for Register button
@@ -320,6 +323,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void selectImage() {
         final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(GatherUserDetails.this);
@@ -338,7 +342,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         runtimePermissionHelper.askPermission(CAMERA);
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
-                    photo = 0;
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
@@ -351,21 +354,22 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 }
             }
         });
-        builder.show();
+        if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+            builder.show();
+        }
     }
 
     //Check whether the permission is granted or not for uploading the profile pic
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (photo == 0) {
-                selectFile();
-            } else if (photo == 1) {
-                if (runtimePermissionHelper.isPermissionAvailable(CAMERA))
-                    takePhoto();
-            }
+            if(photo==1)
+                takePhoto();
+            else
+                selectImage();
             analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_granted", "permission_granted", "gather_user_details");
         } else {
             Toast.makeText(GatherUserDetails.this,
@@ -380,6 +384,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
             //check the path for the image

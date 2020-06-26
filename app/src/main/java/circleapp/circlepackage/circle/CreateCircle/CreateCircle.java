@@ -151,7 +151,6 @@ public class CreateCircle extends AppCompatActivity {
 
         typeInfoButton.setOnClickListener(view -> typePrompt.setVisibility(View.VISIBLE));
         addLogo.setOnClickListener(v->{
-            photo = 2;
             if (ContextCompat.checkSelfPermission(CreateCircle.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -159,7 +158,8 @@ public class CreateCircle extends AppCompatActivity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            selectImage();
+            if(photo==0)
+                selectImage();
         });
     }
 
@@ -246,7 +246,6 @@ public class CreateCircle extends AppCompatActivity {
                     }
                     else if (options[item].equals("Choose from Gallery"))
                     {
-                        photo = 0;
                         if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                             selectFile();
                         } else {
@@ -259,7 +258,9 @@ public class CreateCircle extends AppCompatActivity {
                     }
                 }
             });
-            builder.show();
+            if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                builder.show();
+            }
         }
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
@@ -267,14 +268,12 @@ public class CreateCircle extends AppCompatActivity {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if(photo==0){
-                selectFile();
-            }
-            else if(photo==1){
-                if(runtimePermissionHelper.isPermissionAvailable(CAMERA))
-                    takePhoto();
-            }
+            if(photo==1)
+                takePhoto();
+            else
+                selectImage();
         } else {
+            photo = 0;
             Toast.makeText(CreateCircle.this,
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
@@ -287,6 +286,7 @@ public class CreateCircle extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
             //check the path for the image
