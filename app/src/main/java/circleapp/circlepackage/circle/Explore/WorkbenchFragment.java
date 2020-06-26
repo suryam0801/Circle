@@ -97,6 +97,11 @@ public class WorkbenchFragment extends Fragment{
         ImageButton explore = view.findViewById(R.id.placeholder_explore_circle_layout);
         ImageButton create = view.findViewById(R.id.placeholder_create_circle_layout);
 
+        //remove placeholder
+        if(user.getActiveCircles()==0&&user.getCreatedCircles()==0){
+            emptyDisplay.setVisibility(View.VISIBLE);
+        }
+
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
