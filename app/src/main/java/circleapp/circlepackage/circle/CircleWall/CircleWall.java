@@ -64,6 +64,7 @@ import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
+import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -350,6 +351,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     }
 
     private void showCreateBroadcastDialog(String flag) {
+        photo = 0;
         createBroadcastPopup = new Dialog(CircleWall.this);
         createBroadcastPopup.setContentView(R.layout.broadcast_create_popup_layout); //set dialog view
         createBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
@@ -412,7 +414,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         pollUploadButtonView.setOnClickListener(v -> {
-            photo = 2;
             if (ContextCompat.checkSelfPermission(CircleWall.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -420,11 +421,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            selectImage();
+            if(photo==0)
+                selectImage();
         });
 
         photoUploadButtonView.setOnClickListener(v -> {
-            photo = 2;
             if (ContextCompat.checkSelfPermission(CircleWall.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -432,7 +433,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            selectImage();
+            if(photo==0)
+                selectImage();
         });
 
         btnAddPollOption.setOnClickListener(view -> {
@@ -607,7 +609,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         runtimePermissionHelper.askPermission(CAMERA);
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
-                    photo = 0;
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
@@ -620,7 +621,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 }
             }
         });
-        builder.show();
+        if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+            builder.show();
+        }
     }
 
     //Check whether the permission is granted or not for uploading the profile pic
@@ -629,14 +632,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (photo == 0) {
-                selectFile();
-            } else if (photo == 1) {
-                if (runtimePermissionHelper.isPermissionAvailable(CAMERA))
-                    takePhoto();
-            }
+            if(photo==1)
+                takePhoto();
+            else
+                selectImage();
             analyticsLogEvents.logEvents(CircleWall.this, "storage_granted", "permission_granted", "circle_wall");
         } else {
+            photo = 0;
             Toast.makeText(CircleWall.this,
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
@@ -649,6 +651,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
             //check the path for the image
