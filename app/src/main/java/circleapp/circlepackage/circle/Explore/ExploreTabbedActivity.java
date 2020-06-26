@@ -66,6 +66,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
+    private BottomNavigationView bottomNav;
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     View decorView;
@@ -93,6 +94,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
+        bottomNav = findViewById(R.id.bottom_navigation);
 
         locationDisplay.setText(user.getDistrict());
 
@@ -118,6 +120,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         });
 
         if (getIntent().getBooleanExtra("fromFilters", false)) {
+            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ExploreFragment()).commit();
         } else {
@@ -129,7 +132,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     }
 
     private void setViewPageAdapter() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
     }
 

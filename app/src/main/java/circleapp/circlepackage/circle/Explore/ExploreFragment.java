@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -113,11 +115,15 @@ public class ExploreFragment extends Fragment {
     }
 
     private void setCircleTabs(View view) {
+        SnapHelper snapHelper = new PagerSnapHelper();
+
         //initialize recylcerview
         exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
         exploreRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         exploreRecyclerView.setLayoutManager(layoutManager);
+        snapHelper.attachToRecyclerView(exploreRecyclerView);
+
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
         final RecyclerView.Adapter adapter = new CircleDisplayAdapter(getContext(), exploreCircleList, user);
