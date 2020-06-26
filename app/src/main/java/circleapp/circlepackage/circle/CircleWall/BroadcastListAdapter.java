@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -13,14 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -134,6 +142,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcast.getMessage() != null) {
             viewHolder.broadcastMessageDisplay.setVisibility(View.VISIBLE);
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
+            viewHolder.progressBar.setVisibility(View.GONE);
+            viewHolder.imageViewLayout.setVisibility(View.GONE);
 
         } else if (broadcast.isImageExists() == true&&broadcast.isPollExists()==false) {
             Log.d("POSIITON IMAGE FUCKER ", i+"");
@@ -141,6 +151,19 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             //setting imageview
             Glide.with((Activity) context)
                     .load(broadcast.getAttachmentURI())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            viewHolder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            viewHolder.progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
                     .into(viewHolder.imageDisplay);
 
             //navigate to full screen photo display when clicked
@@ -160,6 +183,19 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 //setting imageView
                 Glide.with((Activity) context)
                         .load(broadcast.getAttachmentURI())
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                viewHolder.progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                viewHolder.progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
                         .into(viewHolder.imageDisplay);
                 //navigate to full screen photo
                 viewHolder.imageDisplay.setOnClickListener(view -> {
@@ -170,6 +206,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     ((Activity) context).finish();
                 });
             }
+            viewHolder.imageViewLayout.setVisibility(View.GONE);
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
@@ -276,6 +313,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private DatabaseReference broadcastDB;
         private Button viewPollAnswers;
         private PhotoView imageDisplay;
+        private ProgressBar progressBar;
+        private RelativeLayout imageViewLayout;
 
         public ViewHolder(View view) {
             super(view);
@@ -292,6 +331,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             broadcastTitle = view.findViewById(R.id.broadcastWall_Title);
             container = view.findViewById(R.id.broadcast_display_container);
             imageDisplay = view.findViewById(R.id.uploaded_image_display_broadcast);
+            progressBar = view.findViewById(R.id.image_progress);
+            imageViewLayout = view.findViewById(R.id.imageCircleWallView);
         }
 
         public String getCurrentUserPollOption() {
