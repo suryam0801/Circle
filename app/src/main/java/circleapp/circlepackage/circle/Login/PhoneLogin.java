@@ -3,7 +3,10 @@ package circleapp.circlepackage.circle.Login;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
@@ -72,6 +75,8 @@ public class PhoneLogin extends AppCompatActivity {
     int pos;
     AnalyticsLogEvents analyticsLogEvents;
 
+    AlertDialog.Builder confirmation;
+
     public PhoneAuthProvider.ForceResendingToken resendingToken;
     LocationHelper locationHelper;
 
@@ -90,6 +95,9 @@ public class PhoneLogin extends AppCompatActivity {
         mLoginFeedbackText = findViewById(R.id.login_form_feedback);
         ccp = findViewById(R.id.ccp);
         analyticsLogEvents = new AnalyticsLogEvents();
+
+        confirmation = new AlertDialog.Builder(this);
+
 
         pos=getIntent().getIntExtra("pos",1234);
         mCountryName = getIntent().getStringExtra("countryName");
@@ -141,65 +149,46 @@ public class PhoneLogin extends AppCompatActivity {
                 editor.putString("key_name5", complete_phone_number);
                 editor.apply();
 
-                //checking the Edittexts are non-empty
                 if(country_code.isEmpty() || phone_number.isEmpty()){
                     mLoginFeedbackText.setText("Please fill in the form to continue.");
                     mLoginFeedbackText.setVisibility(View.VISIBLE);
                 } else {
                     mLoginProgress.setVisibility(View.VISIBLE);
                     mGenerateBtn.setEnabled(false);
-                    //Sending the OTP to the user mobile number
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            complete_phone_number,
-                            60,
-                            TimeUnit.SECONDS,
-                            PhoneLogin.this,
-                            mCallbacks
-                    );
+
+                    confirmation.setMessage("Are you sure is this your number " + complete_phone_number)
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
+                                    otpIntent.putExtra("phn_num", complete_phone_number);
+                                    otpIntent.putExtra("ward", ward);
+                                    otpIntent.putExtra("district", district);
+                                    startActivity(otpIntent);
+//                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+//                                        intent.addCategory(Intent.CATEGORY_APP_MESSAGING);
+//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                    if (intent.resolveActivity(getPackageManager()) != null) {
+//                                        startActivity(intent);}
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    mPhoneNumber.requestFocus();
+                                }
+                            });
+                    AlertDialog alertDialog = confirmation.create();
+                    alertDialog.setTitle("Confirmation");
+                    alertDialog.show();
+
                 }
             }
         });
 
-        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                // Here we can add the code for Auto Read the OTP
-            }
-
-            @Override
-            public void onVerificationFailed(@NonNull FirebaseException e) {
-                //Display the Error msg to the user through the Textview when error occurs
-                analyticsLogEvents.logEvents(PhoneLogin.this,"phone_number","verification_failed","phone_login");
-                mLoginFeedbackText.setText("Verification Failed, please try again."+e.toString());
-                Log.d("EDITORVIEW", "error: " + e.toString());
-                mLoginFeedbackText.setVisibility(View.VISIBLE);
-                mLoginProgress.setVisibility(View.INVISIBLE);
-                mGenerateBtn.setEnabled(true);
-            }
-
-            @Override
-            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                setResendingToken(forceResendingToken);
-                                Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
-                                otpIntent.putExtra("AuthCredentials", s);
-                                otpIntent.putExtra("phn_num", complete_phone_number);
-                                otpIntent.putExtra("resendToken", forceResendingToken);
-                                otpIntent.putExtra("ward",ward);
-                                otpIntent.putExtra("district",district);
-                                startActivity(otpIntent);
-                                Log.d(TAG,pos+"::"+mCountryDialCode+"::"+ward+"::"+district);
-                                analyticsLogEvents.logEvents(PhoneLogin.this,"otp_sent","verification_success","phone_login");
-                                finish();
-                            }
-                        },
-                        5000);
-            }
-        };
     }
 
     public String getCountryCode(String countryName) {
@@ -235,4 +224,17 @@ public class PhoneLogin extends AppCompatActivity {
         this.resendingToken = resendingToken;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ward = getIntent().getStringExtra("ward");
+        district = getIntent().getStringExtra("district");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ward = getIntent().getStringExtra("ward");
+        district = getIntent().getStringExtra("district");
+    }
 }
