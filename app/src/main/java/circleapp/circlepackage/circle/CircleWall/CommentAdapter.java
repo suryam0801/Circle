@@ -77,7 +77,7 @@ public class CommentAdapter extends BaseAdapter {
         comment.setText(cmnt);
         timeElapsed.setText(timeString);
         if (profPicURI.length() > 10) { //checking if its uploaded image
-            Glide.with((Activity) mContext)
+            Glide.with(mContext.getApplicationContext())
                     .load(profPicURI)
                     .into(profPic);
         }
