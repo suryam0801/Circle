@@ -79,10 +79,10 @@
         <activity android:name=".Login.GatherUserDetails" />
         <activity
             android:name=".Login.OtpActivity"
-            android:noHistory="true" />
+             />
         <activity
             android:name=".Login.PhoneLogin"
-            android:noHistory="true" />
+             />
         <activity android:name=".CircleWall.CircleWall" />
         <activity
             android:name=".MainActivity"

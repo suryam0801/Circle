@@ -1,6 +1,9 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -45,6 +48,8 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
+import static circleapp.circlepackage.circle.R.color.grey;
+
 public class OtpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -60,12 +65,15 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     private String ward, district;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend,mCallbacks;
+
+    AlertDialog.Builder confirmation;
 
     private User userldb;
     AnalyticsLogEvents analyticsLogEvents;
     //    private AppDatabase lDb;
     String doc_id;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +88,12 @@ public class OtpActivity extends AppCompatActivity {
         usersDB = database.getReference("Users");
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
-        //Getting AuthCredentials from the PhoneLogin page
-        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
         phn_number = getIntent().getStringExtra("phn_num");
+        //Getting AuthCredentials from the PhoneLogin page
+//        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
         resendingToken = getIntent().getParcelableExtra("resendToken");
+        progressDialog = new ProgressDialog(OtpActivity.this);
+        confirmation = new AlertDialog.Builder(this);
 
 
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
@@ -94,12 +104,62 @@ public class OtpActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(mOtpText, InputMethodManager.SHOW_IMPLICIT);
         mVerifyBtn = findViewById(R.id.verify_btn);
+        mVerifyBtn.setEnabled(false);
+        mVerifyBtn.setClickable(false);
+
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
 
+        confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
+                        intent.putExtra("ward", ward);
+                        intent.putExtra("district", district);
+                        startActivity(intent);
+                    }
+                });
 
-        new CountDownTimer(30000, 1000) {
+        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                // Here we can add the code for Auto Read the OTP
+                Log.d("TAG","onVerificationCompleted:: "+phoneAuthCredential.getSmsCode());
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                //Display the Error msg to the user through the Textview when error occurs
+                AlertDialog alertDialog = confirmation.create();
+                alertDialog.setTitle("Alert");
+                alertDialog.show();
+
+            }
+
+            @Override
+            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                mAuthVerificationId = s;
+                                mVerifyBtn.setClickable(true);
+                                mVerifyBtn.setEnabled(true);
+                                Log.d("OtpActivity",s);
+                                Toast.makeText(getApplicationContext(), "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        5000);
+            }
+        };
+
+
+
+                new CountDownTimer(900000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 resendTextView.setText("Resend OTP in: " + counter);
@@ -117,12 +177,39 @@ public class OtpActivity extends AppCompatActivity {
                             15,
                             TimeUnit.SECONDS,
                             OtpActivity.this,
-                            mCallbacks
+                            mCallbacksresend
                     );
                     resendTextView.setVisibility(View.GONE);
                 });
             }
         }.start();
+
+        mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                // Here we can add the code for Auto Read the OTP
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                //Display the Error msg to the user through the Textview when error occurs
+            }
+
+            @Override
+            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                mAuthVerificationId = s;
+                                analyticsLogEvents.logEvents(OtpActivity.this,"resent_otp","button_pressed","otp_activity");
+                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                Toast.makeText(getApplicationContext(), "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        5000);
+            }
+        };
 
         mVerifyBtn.setOnClickListener(v -> {
             String otp = mOtpText.getText().toString();
@@ -140,35 +227,11 @@ public class OtpActivity extends AppCompatActivity {
 
                 //Pasing the OTP and credentials for the Verification
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
+                Log.d("OtpActivity","credential:: "+credential.getSmsCode());
                 signInWithPhoneAuthCredential(credential);
             }
         });
 
-        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                // Here we can add the code for Auto Read the OTP
-            }
-
-            @Override
-            public void onVerificationFailed(@NonNull FirebaseException e) {
-                //Display the Error msg to the user through the Textview when error occurs
-            }
-
-            @Override
-            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                analyticsLogEvents.logEvents(OtpActivity.this,"resent_otp","button_pressed","otp_activity");
-                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                Toast.makeText(getApplicationContext(), "OTP Resent", Toast.LENGTH_SHORT).show();
-                            }
-                        },
-                        5000);
-            }
-        };
     }
 
     //Function to check the given OTP
@@ -232,7 +295,15 @@ public class OtpActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //to check the user and change the BUtton text based on the user
+        phn_number = getIntent().getStringExtra("phn_num");
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                            phn_number,
+                            60,
+                            TimeUnit.SECONDS,
+                            OtpActivity.this,
+                            mCallbacks
+                    );
+//        to check the user and change the BUtton text based on the user
         if (mCurrentUser != null) {
             //old user
             mVerifyBtn.setText("Verify & Login");
@@ -262,5 +333,17 @@ public class OtpActivity extends AppCompatActivity {
         startActivity(homeIntent);
         Log.d("OtpActivity",ward+"::"+district);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("OtpActivity","onPause:: "+mOtpText.getText());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("OtpActivity","onResume");
     }
 }
