@@ -171,7 +171,7 @@
                     android:layout_marginLeft="23dp"
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Description (100 words)"
+                    android:text="Description (200 characters)"
                     android:textColor="#9D9D9D"
                     android:textSize="12dp"></TextView>
 
