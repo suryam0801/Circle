@@ -78,20 +78,21 @@ public class CreatorPollAnswersView extends AppCompatActivity {
             totalValue += entry.getValue();
 
         pieChart.setUsePercentValues(true);
+        pieChart.setDescription(null);
         List<PieEntry> pollValues = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet()) {
-            Log.d("wkjefn", ((entry.getValue() / totalValue) * 100)+"");
-            pollValues.add(new PieEntry((entry.getValue() * 100)/ totalValue, entry.getKey()));
-        }
+        for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
+            pollValues.add(new PieEntry((entry.getValue() * 100) / totalValue, entry.getKey()));
 
-        PieDataSet pieDataSet = new PieDataSet(pollValues, "Months");
+
+        PieDataSet pieDataSet = new PieDataSet(pollValues, "Poll Results");
+        pieDataSet.setValueTextSize(15f);
         PieData pieData = new PieData(pieDataSet);
 
         pieChart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         pieChart.animateXY(1400, 1400);
-        pieChart.setCenterTextSize(50f);
+        pieChart.setDrawEntryLabels(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(CreatorPollAnswersView.this));
         final RecyclerView.Adapter adapter = new PollAnswerDisplayAdapter(CreatorPollAnswersView.this, list);
@@ -102,15 +103,15 @@ public class CreatorPollAnswersView extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Subscriber member = dataSnapshot.getValue(Subscriber.class);
 
-                if(userResponse!=null){
+                if (userResponse != null) {
                     for (Map.Entry<String, String> entry : userResponse.entrySet()) {
-                        if(entry.getKey().equals(member.getId())){
+                        if (entry.getKey().equals(member.getId())) {
                             list.put(member, entry.getValue());
                             responseCount++;
                             adapter.notifyDataSetChanged();
                         }
                     }
-                    analyticsLogEvents.logEvents(CreatorPollAnswersView.this, "pollResponseCount", responseCount+"","circle_wall");
+                    analyticsLogEvents.logEvents(CreatorPollAnswersView.this, "pollResponseCount", responseCount + "", "circle_wall");
                 }
             }
 
@@ -134,8 +135,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
 
             }
         });
-    bckBtn.setOnClickListener(v -> {
-        onBackPressed();
-    });
+        bckBtn.setOnClickListener(v -> {
+            onBackPressed();
+        });
     }
 }

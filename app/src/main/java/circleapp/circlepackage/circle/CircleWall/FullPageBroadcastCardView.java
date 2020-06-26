@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,11 +61,15 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             finish();
         });
 
+        SnapHelper snapHelper = new PagerSnapHelper();
+
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
+
+        snapHelper.attachToRecyclerView(recyclerView);
 
         recyclerView.scrollToPosition(initialBroadcastPosition);
     }
