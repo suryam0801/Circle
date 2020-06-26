@@ -73,28 +73,31 @@
                 android:gravity="center_vertical"
                 android:visibility="gone"></Button>
         </LinearLayout>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/imageCircleWallView"
-    android:visibility="visible">
-    <ProgressBar
-        android:id="@+id/image_progress"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="75dp"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:visibility="visible" />
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/uploaded_image_display_broadcast"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:visibility="gone" />
-</RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/image_display_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/image_progress"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="75dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/uploaded_image_display_broadcast"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
         <TextView
             android:id="@+id/broadcastWall_Message"
             android:layout_width="wrap_content"
