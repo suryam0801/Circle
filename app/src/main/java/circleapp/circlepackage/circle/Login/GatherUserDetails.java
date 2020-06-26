@@ -668,6 +668,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     private void createInitialCircles() {
+/*
         //admin circle
         String adminCircleId, adminNormalBroadcastId, adminPollBroadcastId;
         adminCircleId = HelperMethods.createCircle("Meet The Developers", "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
@@ -683,7 +684,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         adminPollOptions.put("meh :D", 0);
         adminPollBroadcastId = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!", "Admin",
                 2, adminPollOptions, null, 0, adminCircleId);
-
+*/
 
         //quarantine circle
         String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
@@ -719,7 +720,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         studentsPollBroadcastId = HelperMethods.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
                 pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2Fe60bebee-7141-47a0-a502-bf018a8fe31c?alt=media&token=be032bf6-511c-4757-8451-8b7c852f3cdb",
                 0, studentsCircleId);
-
     }
 
 }
