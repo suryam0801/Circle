@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Explore;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,10 @@ public class ExploreFragment extends Fragment {
     private User user;
     RecyclerView exploreRecyclerView;
 
+    private List<String> listOfFilters = new ArrayList<>();
+
+    private TextView filter;
+
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -90,6 +95,19 @@ public class ExploreFragment extends Fragment {
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
 
+        listOfFilters = SessionStorage.getFilters(getActivity());
+
+        filter = view.findViewById(R.id.explore_filter_btn);
+
+        filter.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getActivity(), ExploreCategoryFilter.class);
+            SessionStorage.saveFilters(getActivity(), listOfFilters);
+            startActivity(intent);
+        });
+
+        if (listOfFilters != null)
+            Log.d("EXPLORE FRAGMENT", "FILTERS " + listOfFilters.toString());
+
         setCircleTabs(view);
         return view;
     }
@@ -123,8 +141,14 @@ public class ExploreFragment extends Fragment {
                     }
 
                     if (isInLocation) {
-                        exploreCircleList.add(adapter.getItemCount(), circle);
-                        adapter.notifyItemInserted(adapter.getItemCount());
+                        boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+                        if (listOfFilters == null || listOfFilters.isEmpty()) {
+                            exploreCircleList.add(adapter.getItemCount(), circle);
+                            adapter.notifyItemInserted(adapter.getItemCount());
+                        } else if (circleMatchesFilter) {
+                            exploreCircleList.add(adapter.getItemCount(), circle);
+                            adapter.notifyItemInserted(adapter.getItemCount());
+                        }
                     }
                 }
             }
@@ -142,7 +166,7 @@ public class ExploreFragment extends Fragment {
                         exploreCircleList.remove(position);
                         adapter.notifyItemRemoved(position);
                     } else {
-                        exploreCircleList.set(position,circle);
+                        exploreCircleList.set(position, circle);
                         adapter.notifyItemChanged(position);
                     }
 
@@ -153,7 +177,7 @@ public class ExploreFragment extends Fragment {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                if(!exploreCircleList.isEmpty()){
+                if (!exploreCircleList.isEmpty()) {
                     exploreCircleList.remove(position);
                     adapter.notifyItemRemoved(position);
                 }

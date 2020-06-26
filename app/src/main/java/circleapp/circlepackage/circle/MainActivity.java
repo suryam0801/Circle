@@ -193,4 +193,9 @@ public class MainActivity extends AppCompatActivity {
         analyticsLogEvents.logEvents(MainActivity.this, "notification_sent", "success", "main_activity");
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SessionStorage.saveFilters(this, null);
+    }
 }

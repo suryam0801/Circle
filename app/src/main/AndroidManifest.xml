@@ -24,8 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CircleWall.FullPageImageDisplay"></activity>
-
+        <activity android:name=".Explore.ExploreCategoryFilter"></activity>
+        <activity android:name=".CircleWall.FullPageImageDisplay" />
         <activity android:name=".CircleWall.FullPageBroadcastCardView" />
         <activity
             android:name=".CreateCircle.CreateCircleCategoryPicker"
@@ -77,12 +77,8 @@
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity android:name=".Login.GatherUserDetails" />
-        <activity
-            android:name=".Login.OtpActivity"
-             />
-        <activity
-            android:name=".Login.PhoneLogin"
-             />
+        <activity android:name=".Login.OtpActivity" />
+        <activity android:name=".Login.PhoneLogin" />
         <activity android:name=".CircleWall.CircleWall" />
         <activity
             android:name=".MainActivity"
