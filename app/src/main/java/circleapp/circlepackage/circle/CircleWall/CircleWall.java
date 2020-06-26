@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -333,6 +334,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         usersDB.child("createdCircles").setValue(currentCreatedCount);
         broadcastsDB.child(circle.getId()).removeValue();
         commentsDB.child(circle.getId()).removeValue();
+        SessionStorage.saveUser(CircleWall.this, user);
         analyticsLogEvents.logEvents(CircleWall.this, "circle_delete", "delete_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
@@ -345,6 +347,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         int currentActiveCount = user.getActiveCircles() - 1;
         user.setActiveCircles(currentActiveCount);
         usersDB.child("activeCircles").setValue(currentActiveCount);
+        SessionStorage.saveUser(CircleWall.this, user);
         analyticsLogEvents.logEvents(CircleWall.this, "circle_exit", "exit_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();

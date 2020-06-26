@@ -116,6 +116,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
             finish();
         });
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new WorkbenchFragment()).commit();
 
         setViewPageAdapter();
     }
