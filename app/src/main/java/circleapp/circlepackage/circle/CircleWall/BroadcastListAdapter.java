@@ -135,7 +135,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.broadcastMessageDisplay.setVisibility(View.VISIBLE);
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
 
-        } else if (broadcast.isImageExists() == true) {
+        } else if (broadcast.isImageExists() == true&&broadcast.isPollExists()==false) {
             Log.d("POSIITON IMAGE FUCKER ", i+"");
             viewHolder.imageDisplay.setVisibility(View.VISIBLE);
             //setting imageview
@@ -152,7 +152,24 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 ((Activity) context).finish();
             });
 
-        } else if (broadcast.isPollExists() == true && broadcast.isImageExists() == false) {
+        }
+
+        else if (broadcast.isPollExists() == true) {
+            if(broadcast.isImageExists()==true){
+                viewHolder.imageDisplay.setVisibility(View.VISIBLE);
+                //setting imageView
+                Glide.with((Activity) context)
+                        .load(broadcast.getAttachmentURI())
+                        .into(viewHolder.imageDisplay);
+                //navigate to full screen photo
+                viewHolder.imageDisplay.setOnClickListener(view -> {
+                    Intent intent = new Intent(context, FullPageImageDisplay.class);
+                    intent.putExtra("uri", broadcast.getAttachmentURI());
+                    intent.putExtra("indexOfBroadcast", i);
+                    context.startActivity(intent);
+                    ((Activity) context).finish();
+                });
+            }
             poll = broadcast.getPoll();
             viewHolder.pollDisplay.setVisibility(View.VISIBLE);
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);

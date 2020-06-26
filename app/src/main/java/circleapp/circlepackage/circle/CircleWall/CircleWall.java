@@ -352,6 +352,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
     }
+    private void showCreateNormalBroadcastDialog(){
+
+    }
 
     private void showCreateBroadcastDialog(String flag) {
         photo = 0;
