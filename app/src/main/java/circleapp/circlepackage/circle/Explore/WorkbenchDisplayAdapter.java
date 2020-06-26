@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -138,8 +140,16 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
             SessionStorage.saveCircle((Activity) context, circle);
             SessionStorage.saveUser((Activity) context, user);
-            context.startActivity(new Intent(context, CircleWall.class));
-            ((Activity) context).finish();
+
+            SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
+            if (prefs.getBoolean("firstWall", true)) {
+                context.startActivity(new Intent(context, CircleWallBackgroundPicker.class));
+                ((Activity) context).finish();
+                prefs.edit().putBoolean("firstWall", false).commit();
+            } else {
+                context.startActivity(new Intent(context, CircleWall.class));
+                ((Activity) context).finish();
+            }
         });
 
         //update new notifs value
@@ -160,6 +170,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         holder.categoryDisplay.setText(circle.getCategory());
     }
+
 
 
     @Override

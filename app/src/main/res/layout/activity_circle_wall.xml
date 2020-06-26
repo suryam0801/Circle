@@ -3,34 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/circle_wall_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/default_broadcast_background"
     tools:context=".CircleWall.CircleWall">
 
     <LinearLayout
         android:id="@+id/circle_wall_empty_display"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="90dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible"
-        android:layout_marginBottom="90dp">
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
             android:text="Choose any to get started"
             android:textColor="@color/white"
-            android:fontFamily="@font/roboto_bold"
-            android:textSize="30dp">
-        </TextView>
+            android:textSize="30dp"></TextView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="20dp"
+            android:orientation="horizontal"
             android:weightSum="99">
 
             <TextView
@@ -40,8 +39,8 @@
                 android:layout_weight="33"
                 android:drawableTop="@drawable/ic_poll"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:text="New Poll"></TextView>
+                android:text="New Poll"
+                android:textColor="@color/white"></TextView>
 
             <TextView
                 android:id="@+id/circle_wall_get_started_broadcast"
@@ -50,8 +49,8 @@
                 android:layout_weight="33"
                 android:drawableTop="@drawable/ic_message"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:text="New Broadcast"></TextView>
+                android:text="New Broadcast"
+                android:textColor="@color/white"></TextView>
 
             <TextView
                 android:id="@+id/circle_wall_get_started_image"
@@ -60,8 +59,8 @@
                 android:layout_weight="33"
                 android:drawableTop="@drawable/ic_camera_alt_white_24dp"
                 android:gravity="center"
-                android:textColor="@color/white"
-                android:text="New Image"></TextView>
+                android:text="New Image"
+                android:textColor="@color/white"></TextView>
 
         </LinearLayout>
 
@@ -104,28 +103,15 @@
                 android:textSize="16dp"></TextView>
 
             <ImageButton
-                android:id="@+id/share_with_friend_button"
+                android:id="@+id/circle_wall_more_options"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/ic_exit_to_app_black_24dp"></ImageButton>
+                android:background="@drawable/ic_baseline_more_vert_24"></ImageButton>
 
-            <ImageButton
-                android:id="@+id/shareCircle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="60dp"
-                android:background="@drawable/baseline_group_black_18dp"></ImageButton>
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#EEEEEE"></View>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/broadcastViewRecyclerView"
