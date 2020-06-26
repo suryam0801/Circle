@@ -80,6 +80,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Circle currentCircle = circleList.get(i);
         String circleCategory;
         Log.d("efljknwefwe", currentCircle.toString());
+
         if (!currentCircle.getBackgroundImageLink().equals("default")) {
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
         }else {

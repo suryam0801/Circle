@@ -233,7 +233,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
             int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
 
-            --userPreviousVoteCount;
+            if (userPreviousVoteCount != 0)
+                --userPreviousVoteCount;
+
             ++currentSelectedVoteCount;
             pollOptionsTemp.put(option, currentSelectedVoteCount);
             pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);

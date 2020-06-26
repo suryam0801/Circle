@@ -26,7 +26,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     private Context mContext;
     private List<Subscriber> memberList;
     String TAG = "APPLICANT_LIST_ADAPTER";
-    private int count = 0;
     private  int propic;
     int myImageList;
 //    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
@@ -64,8 +63,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
                     .placeholder(ContextCompat.getDrawable(mContext, myImageList))
                     .into(holder.profPic);
         }
-        ++count;
-        if(count == 4) count = 0;
 
         //Set text for TextView
         final String nameDisplay = member.getName();

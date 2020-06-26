@@ -83,10 +83,10 @@ public class EditProfile extends AppCompatActivity {
 
     private CircleImageView profileImageView;
     private TextView userName, userNumber, createdCircles, workingCircles;
-    private Button editProfPic, finalizeChanges, logout;
+    private Button editProfPic, logout;
     private ImageButton back;
     private Uri filePath;
-    private Dialog editUserNamedialogue,editUserProfiledialogue;
+    private Dialog editUserNamedialogue, editUserProfiledialogue;
     private StorageReference storageReference;
     private Uri downloadUri;
     private static final int PICK_IMAGE_REQUEST = 100;
@@ -102,14 +102,14 @@ public class EditProfile extends AppCompatActivity {
     RelativeLayout setProfile;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
-    private  int propic;
+    private int propic;
     int photo;
 
     private FirebaseDatabase database;
     private DatabaseReference tags, userDB;
     private FirebaseAuth currentUser;
 
-    private Boolean finalizeChange= false;
+    private Boolean finalizeChange = false;
 
     //UI elements for location tag selector popup and interest tag selector popup
     AnalyticsLogEvents analyticsLogEvents;
@@ -133,7 +133,6 @@ public class EditProfile extends AppCompatActivity {
         workingCircles = findViewById(R.id.viewProfileActiveCirclesCount);
         editProfPic = findViewById(R.id.profile_view_profilePicSetterImage);
         profileImageView = findViewById(R.id.profile_view_profile_image);
-        finalizeChanges = findViewById(R.id.profile_finalize_changes);
         editName = findViewById(R.id.editName);
         logout = findViewById(R.id.profile_logout);
         back = findViewById(R.id.bck_view_edit_profile);
@@ -152,55 +151,15 @@ public class EditProfile extends AppCompatActivity {
         avatarBgList = new ImageView[8];
 
 
-        if (user.getProfileImageLink().length() > 10) {
-            Glide.with(EditProfile.this)
-                    .load(user.getProfileImageLink())
-                    .into(profileImageView);
-        }
-        else if(user.getProfileImageLink().equals("default")){
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(EditProfile.this)
-                    .load(ContextCompat.getDrawable(EditProfile.this, profilePic))
-                    .into(profileImageView);
-        }
-        else {
-            propic = Integer.parseInt(user.getProfileImageLink());
-            Glide.with(EditProfile.this)
-                    .load(propic)
-                    .into(profileImageView);
-        }
+        HelperMethods.setUserProfileImage(user, this, profileImageView);
 
-//        Random r = new Random();
-//        int count = r.nextInt((4 - 0) + 1);
-//        Glide.with(EditProfile.this)
-//                .load(user.getProfileImageLink())
-//                .placeholder(ContextCompat.getDrawable(EditProfile.this, myImageList[count]))
-//                .into(profileImageView);
-
-            editName.setOnClickListener(view -> {
-                edituserNamedialogue();
-//                Toast.makeText(EditProfile.this,"Please Enter Your Name...",Toast.LENGTH_SHORT).show();
-        });
 
         editProfPic.setOnClickListener(view -> {
             editprofile(user.getProfileImageLink());
         });
 
-        finalizeChanges.setOnClickListener(view -> {
-            if (downloadUri != null)
-                user.setProfileImageLink(downloadUri.toString());
-
-            userDB.child(user.getUserId()).setValue(user);
-            SessionStorage.saveUser(EditProfile.this, user);
-            finalizeChange = true;
-            finalizeChanges.setVisibility(View.GONE);
-
-            /*startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
-            finish();*/
-        });
-
         logout.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "logout","edit_profile");
+            analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "logout", "edit_profile");
             currentUser.signOut();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
@@ -220,7 +179,7 @@ public class EditProfile extends AppCompatActivity {
         avatarList[0] = avatar1 = editUserProfiledialogue.findViewById(R.id.avatar1);
         avatarList[1] = avatar2 = editUserProfiledialogue.findViewById(R.id.avatar2);
         avatarList[2] = avatar3 = editUserProfiledialogue.findViewById(R.id.avatar3);
-        avatarList[3] = avatar4 =editUserProfiledialogue.findViewById(R.id.avatar4);
+        avatarList[3] = avatar4 = editUserProfiledialogue.findViewById(R.id.avatar4);
         avatarList[4] = avatar5 = editUserProfiledialogue.findViewById(R.id.avatar5);
         avatarList[5] = avatar6 = editUserProfiledialogue.findViewById(R.id.avatar6);
         avatarList[6] = avatar7 = editUserProfiledialogue.findViewById(R.id.avatar7);
@@ -239,8 +198,8 @@ public class EditProfile extends AppCompatActivity {
         Button profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
         Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
         Glide.with(EditProfile.this).load(uri).into(profilePic);
-        profilepicButton.setOnClickListener( view ->{
-            analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic","edit_profile");
+        profilepicButton.setOnClickListener(view -> {
+            analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic", "edit_profile");
             if (ContextCompat.checkSelfPermission(EditProfile.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -249,12 +208,12 @@ public class EditProfile extends AppCompatActivity {
                         STORAGE_PERMISSION_CODE);
             } else {
                 finalizeChange = false;
-                for(int i=0; i<8;i++){
+                for (int i = 0; i < 8; i++) {
                     avatarBgList[i].setVisibility(View.GONE);
                 }
                 avatar = "";
                 /*selectFile();*/
-                if(photo==0)
+                if (photo == 0)
                     selectImage();
                 editUserProfiledialogue.dismiss();
             }
@@ -265,7 +224,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar1_bg,avatar1,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -274,7 +233,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar2);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar2_bg,avatar2,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -283,7 +242,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar3_bg,avatar3,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -292,7 +251,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar4_bg,avatar4,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -301,7 +260,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar5_bg,avatar5,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -310,7 +269,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar6_bg,avatar6,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -319,7 +278,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar7_bg,avatar7,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
@@ -328,20 +287,18 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar8);
-                HelperMethods.setProfilePicMethod(EditProfile.this,profilePic,avatar,avatar8_bg,avatar8,avatarBgList,avatarList);
+                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
                 downloadUri = null;
             }
         });
 
 
-        profileuploadButton.setOnClickListener(view ->{
-            if ( avatar != "" || downloadUri != null)
-            {
+        profileuploadButton.setOnClickListener(view -> {
+            if (avatar != "" || downloadUri != null) {
                 progressDialog.setTitle("Uploading Profile....");
                 progressDialog.show();
-                if (downloadUri != null)
-                {
-                    Log.d(TAG,"DownloadURI ::"+downloadUri);
+                if (downloadUri != null) {
+                    Log.d(TAG, "DownloadURI ::" + downloadUri);
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(downloadUri)
                             .build();
@@ -352,7 +309,7 @@ public class EditProfile extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
-                                    HelperMethods.GlideSetProfilePic(EditProfile.this,String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+                                    HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                                     progressDialog.dismiss();
                                     editUserProfiledialogue.dismiss();
                                 }
@@ -361,38 +318,34 @@ public class EditProfile extends AppCompatActivity {
                     });
 
 
+                } else {
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(Uri.parse(avatar))
+                            .build();
+                    currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            userDB.child(currentUser.getCurrentUser().getUid()).child("profileImageLink").setValue(avatar).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Glide.with(EditProfile.this)
+                                            .load(Integer.parseInt(avatar))
+                                            .into(profileImageView);
+                                    progressDialog.dismiss();
+                                    user.setProfileImageLink(avatar);
+                                    SessionStorage.saveUser(EditProfile.this, user);
+                                    finalizeChange = true;
+                                    editUserProfiledialogue.dismiss();
+                                }
+                            });
+                        }
+                    });
                 }
-                else
-                    {
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(Uri.parse(avatar))
-                                .build();
-                        currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                userDB.child(currentUser.getCurrentUser().getUid()).child("profileImageLink").setValue(avatar).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Glide.with(EditProfile.this)
-                                                .load(Integer.parseInt(avatar))
-                                                        .into(profileImageView);
-                                        progressDialog.dismiss();
-                                        user.setProfileImageLink(avatar);
-                                        SessionStorage.saveUser(EditProfile.this, user);
-                                        finalizeChange = true;
-                                        editUserProfiledialogue.dismiss();
-                                    }
-                                });
-                            }
-                        });
-                    }
 
+            } else {
+                editUserProfiledialogue.dismiss();
+                //Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
             }
-            else
-                {
-                    editUserProfiledialogue.dismiss();
-                    //Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
-                }
 
         });
         editUserProfiledialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -410,9 +363,9 @@ public class EditProfile extends AppCompatActivity {
         edit_name_finalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = edit_name.getText().toString().replaceAll("\\s+", " ");;
-                if (!TextUtils.isEmpty(name))
-                {
+                String name = edit_name.getText().toString().replaceAll("\\s+", " ");
+                ;
+                if (!TextUtils.isEmpty(name)) {
                     progressDialog.setTitle("Updating Name....");
                     progressDialog.show();
                     String userId = currentUser.getInstance().getCurrentUser().getUid();
@@ -428,18 +381,16 @@ public class EditProfile extends AppCompatActivity {
                             userDB.child(userId).child("name").setValue(name).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d(TAG,"User Name updated:: "+name);
+                                    Log.d(TAG, "User Name updated:: " + name);
 //                                    editUserNamedialogue.cancel();
                                 }
                             });
                         }
                     });
 
+                } else {
+                    Toast.makeText(EditProfile.this, "Please Enter Your Name...", Toast.LENGTH_SHORT).show();
                 }
-                else
-                    {
-                        Toast.makeText(EditProfile.this,"Please Enter Your Name...",Toast.LENGTH_SHORT).show();
-                    }
             }
         });
 
@@ -448,14 +399,16 @@ public class EditProfile extends AppCompatActivity {
 
 
     }
-    public void selectFile(){
+
+    public void selectFile() {
 
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
-    public void takePhoto(){
+
+    public void takePhoto() {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -463,57 +416,53 @@ public class EditProfile extends AppCompatActivity {
         m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
         startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
     }
+
     private void selectImage() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(EditProfile.this);
         builder.setTitle("Add Photo!");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo"))
-                {
+                if (options[item].equals("Take Photo")) {
                     photo = 1;
-                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
                     }
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA)&&runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         takePhoto();
-                    }
-                    else{
+                    } else {
                         runtimePermissionHelper.askPermission(CAMERA);
                     }
-                }
-                else if (options[item].equals("Choose from Gallery"))
-                {
+                } else if (options[item].equals("Choose from Gallery")) {
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
-                        analyticsLogEvents.logEvents(EditProfile.this, "storage_off","asked_permission", "edit_profile");
+                        analyticsLogEvents.logEvents(EditProfile.this, "storage_off", "asked_permission", "edit_profile");
                         runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                     }
 
-                }
-                else if (options[item].equals("Cancel")) {
+                } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
         });
-        if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
+        if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
             builder.show();
         }
     }
 
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if(photo==1)
+            if (photo == 1)
                 takePhoto();
             else
                 selectImage();
-            analyticsLogEvents.logEvents(EditProfile.this,"storage_granted","permission_granted","edit_profile");
+            analyticsLogEvents.logEvents(EditProfile.this, "storage_granted", "permission_granted", "edit_profile");
         } else {
             photo = 0;
             Toast.makeText(EditProfile.this,
@@ -521,7 +470,7 @@ public class EditProfile extends AppCompatActivity {
                     Toast.LENGTH_SHORT)
                     .show();
         }
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //code for upload the image
@@ -571,7 +520,6 @@ public class EditProfile extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         progressDialog.dismiss();
-                        finalizeChanges.setVisibility(View.VISIBLE);
                         //and displaying a success toast
                         downloadUri = uri;
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -594,8 +542,7 @@ public class EditProfile extends AppCompatActivity {
                             }
                         });
             }
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
@@ -640,7 +587,6 @@ public class EditProfile extends AppCompatActivity {
                         //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
-                        finalizeChanges.setVisibility(View.VISIBLE);
                         //and displaying a success toast
                         downloadUri = uri;
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -648,7 +594,7 @@ public class EditProfile extends AppCompatActivity {
                                 .build();
                         currentUser.getCurrentUser().updateProfile(profileUpdates);
                         Glide.with(EditProfile.this).load(filePath).into(profileImageView);
-                        for(int i =0; i<8; i++){
+                        for (int i = 0; i < 8; i++) {
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }
                     }
@@ -659,7 +605,7 @@ public class EditProfile extends AppCompatActivity {
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(EditProfile.this,"pic_capture_fail","device_error","edit_profile");
+                                analyticsLogEvents.logEvents(EditProfile.this, "pic_capture_fail", "device_error", "edit_profile");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
@@ -669,6 +615,7 @@ public class EditProfile extends AppCompatActivity {
 
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

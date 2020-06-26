@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CircleWall.CircleWallBackgroundPicker"></activity>
+        <activity android:name=".CircleWall.CircleInformation"></activity>
+        <activity android:name=".CircleWall.CircleWallBackgroundPicker" />
         <activity android:name=".Explore.ExploreCategoryFilter" />
         <activity android:name=".CircleWall.FullPageImageDisplay" />
         <activity android:name=".CircleWall.FullPageBroadcastCardView" />

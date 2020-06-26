@@ -48,11 +48,13 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
+import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -77,6 +79,16 @@ public class HelperMethods {
             if (broadcast.getId().equals(b.getId()))
                 return position;
 
+            position++;
+        }
+        return position;
+    }
+
+    public static int returnIndexOfSubscriber(List<Subscriber> subscriberList, Subscriber subscriber){
+        int position = 0;
+        for(Subscriber s : subscriberList){
+            if(subscriber.getId().equals(s.getId()))
+                return position;
             position++;
         }
         return position;
@@ -333,7 +345,6 @@ public class HelperMethods {
         if (visibility == View.VISIBLE) {
             GlideSetProfilePic(context, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
             avatarBg.setVisibility(View.GONE);
-            avatar = "";
             avatarButton.setPressed(false);
         } else {
             for (int i = 0; i < 8; i++) {
@@ -458,5 +469,24 @@ public class HelperMethods {
                 parent.setTouchDelegate(new TouchDelegate(rect, view));
             }
         });
+    }
+
+    public static void setUserProfileImage(User user, Context context, CircleImageView profileImageView){
+        if (user.getProfileImageLink().length() > 10) {
+            Glide.with(context)
+                    .load(user.getProfileImageLink())
+                    .into(profileImageView);
+        } else if (user.getProfileImageLink().equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(profileImageView);
+        } else {
+            int propic = Integer.parseInt(user.getProfileImageLink());
+            Glide.with(context)
+                    .load(propic)
+                    .into(profileImageView);
+        }
+
     }
 }
