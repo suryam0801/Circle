@@ -66,8 +66,9 @@ public class OtpActivity extends AppCompatActivity {
     private String ward, district;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend,mCallbacks;
+    int failcounter;
 
-    AlertDialog.Builder confirmation;
+    AlertDialog.Builder confirmation,verifyfail;
 
     private User userldb;
     AnalyticsLogEvents analyticsLogEvents;
@@ -94,6 +95,9 @@ public class OtpActivity extends AppCompatActivity {
         resendingToken = getIntent().getParcelableExtra("resendToken");
         progressDialog = new ProgressDialog(OtpActivity.this);
         confirmation = new AlertDialog.Builder(this);
+        verifyfail = new AlertDialog.Builder(this);
+        progressDialog.setTitle("Please wait...");
+        progressDialog.show();
 
 
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
@@ -110,6 +114,15 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
+        verifyfail.setMessage("You have Entered Wrong Number 2 times so reopen the app to continue")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        finishAffinity();
+                    }
+                });
 
         confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
                 .setCancelable(false)
@@ -119,6 +132,7 @@ public class OtpActivity extends AppCompatActivity {
                         Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
                         intent.putExtra("ward", ward);
                         intent.putExtra("district", district);
+                        intent.putExtra("fail", "1");
                         startActivity(intent);
                     }
                 });
@@ -133,9 +147,20 @@ public class OtpActivity extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
-                AlertDialog alertDialog = confirmation.create();
-                alertDialog.setTitle("Alert");
-                alertDialog.show();
+                failcounter = failcounter+1;
+                progressDialog.dismiss();
+                if (failcounter != 2)
+                {
+                    AlertDialog alertDialog = confirmation.create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.show();
+                }
+                else
+                    {
+                        AlertDialog dialog = verifyfail.create();
+                        dialog.setTitle("Alert");
+                        dialog.show();
+                    }
 
             }
 
@@ -146,6 +171,7 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                progressDialog.dismiss();
                                 mAuthVerificationId = s;
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);

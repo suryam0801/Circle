@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -67,7 +68,7 @@ public class PhoneLogin extends AppCompatActivity {
     SharedPreferences.Editor editor;
     public static final String PREF_NAME= "LOCATION";
     private Spinner ccp;
-    private String ward, district,mCountryDialCode,mCountryName;
+    private String ward, district,mCountryDialCode,mCountryName,failcount;
 
     private FusedLocationProviderClient client;
     String[] options;
@@ -104,12 +105,15 @@ public class PhoneLogin extends AppCompatActivity {
         mCountryDialCode = getIntent().getStringExtra("dialCode");
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
+        failcount = getIntent().getStringExtra("fail");
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         al = Arrays.asList(options);
         ccp.setSelection(pos);
         mCountryCode.setText(mCountryDialCode);
+        mGenerateBtn.setEnabled(true);
+        mLoginProgress.setVisibility(View.INVISIBLE);
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -153,37 +157,76 @@ public class PhoneLogin extends AppCompatActivity {
                     mLoginFeedbackText.setText("Please fill in the form to continue.");
                     mLoginFeedbackText.setVisibility(View.VISIBLE);
                 } else {
-                    mLoginProgress.setVisibility(View.VISIBLE);
-                    mGenerateBtn.setEnabled(false);
+                    if (phone_number.length() ==10) {
+                        Log.d(TAG,"FailCount:: "+failcount);
 
-                    confirmation.setMessage("Are you sure is this your number " + complete_phone_number)
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                        if (failcount != "1") {
 
-                                    Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
-                                    otpIntent.putExtra("phn_num", complete_phone_number);
-                                    otpIntent.putExtra("ward", ward);
-                                    otpIntent.putExtra("district", district);
-                                    startActivity(otpIntent);
-//                                    Intent intent = new Intent(Intent.ACTION_MAIN);
-//                                        intent.addCategory(Intent.CATEGORY_APP_MESSAGING);
-//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                    if (intent.resolveActivity(getPackageManager()) != null) {
-//                                        startActivity(intent);}
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                    mPhoneNumber.requestFocus();
-                                }
-                            });
-                    AlertDialog alertDialog = confirmation.create();
-                    alertDialog.setTitle("Confirmation");
-                    alertDialog.show();
+                            mLoginProgress.setVisibility(View.VISIBLE);
+                            mGenerateBtn.setEnabled(false);
+
+                            confirmation.setMessage("Are you sure is this your number " + complete_phone_number)
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
+                                            otpIntent.putExtra("phn_num", complete_phone_number);
+                                            otpIntent.putExtra("ward", ward);
+                                            otpIntent.putExtra("district", district);
+                                            startActivity(otpIntent);
+                                            //                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                            //                                        intent.addCategory(Intent.CATEGORY_APP_MESSAGING);
+                                            //                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            //                                    if (intent.resolveActivity(getPackageManager()) != null) {
+                                            //                                        startActivity(intent);}
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            mPhoneNumber.requestFocus();
+                                        }
+                                    });
+                            AlertDialog alertDialog = confirmation.create();
+                            alertDialog.setTitle("Confirmation");
+                            alertDialog.show();
+                        }
+                        else
+                            {
+                                confirmation.setMessage("If you enter a wrong number this time have to reopen the Application so check twice :: "+complete_phone_number)
+                                        .setCancelable(false)
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
+                                                otpIntent.putExtra("phn_num", complete_phone_number);
+                                                otpIntent.putExtra("ward", ward);
+                                                otpIntent.putExtra("district", district);
+                                                startActivity(otpIntent);
+                                            }
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                                mPhoneNumber.requestFocus();
+                                            }
+                                        });
+                                AlertDialog alertDialog = confirmation.create();
+                                alertDialog.setTitle("Confirmation");
+                                alertDialog.show();
+                            }
+                    }
+                    else
+                        {
+                            Toast.makeText(getApplicationContext(), "Enter a Valid 10-digit Number", Toast.LENGTH_SHORT).show();
+//                            mLoginFeedbackText.setText("Enter the 10 digit Number");
+//                            mLoginFeedbackText.setVisibility(View.VISIBLE);
+                        }
 
                 }
             }
@@ -215,26 +258,20 @@ public class PhoneLogin extends AppCompatActivity {
         return countryMap.get(countryName); // "NL" for Netherlands.
     }
 
-
-    public PhoneAuthProvider.ForceResendingToken getResendingToken() {
-        return resendingToken;
-    }
-
-    public void setResendingToken(PhoneAuthProvider.ForceResendingToken resendingToken) {
-        this.resendingToken = resendingToken;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        ward = getIntent().getStringExtra("ward");
-        district = getIntent().getStringExtra("district");
+
+        mGenerateBtn.setEnabled(true);
+        mLoginProgress.setVisibility(View.INVISIBLE);
+
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        ward = getIntent().getStringExtra("ward");
-        district = getIntent().getStringExtra("district");
+
+        mGenerateBtn.setEnabled(true);
+        mLoginProgress.setVisibility(View.INVISIBLE);
     }
 }
