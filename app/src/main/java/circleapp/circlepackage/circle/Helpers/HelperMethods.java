@@ -7,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -41,6 +40,7 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -56,7 +56,6 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -303,14 +302,24 @@ public class HelperMethods {
         commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
 
-    public static void createReportAbuse(String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
+    public static void createReportAbuse(Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
         FirebaseDatabase database;
+        FirebaseAuth currentuser;
+        currentuser = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         DatabaseReference reportAbuseDB;
         reportAbuseDB = database.getReference("ReportAbuse");
         String id = uuidGet();
         ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID , creatorID, userID, reportType);
-        reportAbuseDB.child(id).setValue(reportAbuse);
+        if (currentuser.getCurrentUser().getUid() == creatorID)
+        {
+            Toast.makeText(context,"Stop Reporting your own Content",Toast.LENGTH_SHORT).show();
+        }
+        else
+            {
+
+                reportAbuseDB.child(id).setValue(reportAbuse);
+            }
     }
 
     public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID){
@@ -330,7 +339,7 @@ public class HelperMethods {
             if(sex_check.isChecked())
                 reportType = reportType +"sex";
             reportAbuseDialog.dismiss();
-            HelperMethods.createReportAbuse(circleID,broadcastID,commentID,creatorID,userID,reportType);
+            HelperMethods.createReportAbuse(context,circleID,broadcastID,commentID,creatorID,userID,reportType);
             Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
         });
 
@@ -360,7 +369,7 @@ public class HelperMethods {
                 reportType = reportType +"violence";
             if(sex_check.isChecked())
                 reportType = reportType +"sex";
-            HelperMethods.createReportAbuse(circleID, broadcastID,commentID,creatorID,userID,reportType);
+            HelperMethods.createReportAbuse(context,circleID, broadcastID,commentID,creatorID,userID,reportType);
             Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
             popupWindow.dismiss();
         });
