@@ -111,6 +111,10 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
 
+        viewHolder.reportAbuseBroadcast.setOnClickListener(view->{
+            HelperMethods.showAdapterReportAbusePopup(context, view, currentCircle.getId(), "", "", currentCircle.getCreatorID(), user.getUserId(), "");
+        });
+
         //onclick for join and share
         viewHolder.join.setOnClickListener(view -> {
             if (!isApplicant)
