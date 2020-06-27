@@ -1,10 +1,14 @@
 package circleapp.circlepackage.circle.Explore;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -12,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +60,9 @@ public class ExploreFragment extends Fragment {
 
     private FirebaseDatabase database;
     private DatabaseReference circlesDB;
+
+    private ChipGroup filterDisplay;
+    private RecyclerView.Adapter adapter;
 
     private User user;
     RecyclerView exploreRecyclerView;
@@ -100,6 +110,22 @@ public class ExploreFragment extends Fragment {
         listOfFilters = SessionStorage.getFilters(getActivity());
 
         filter = view.findViewById(R.id.explore_filter_btn);
+        filterDisplay = view.findViewById(R.id.filter_display_chip_group);
+        exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
+
+        //initialize recylcerview
+        exploreRecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        exploreRecyclerView.setLayoutManager(layoutManager);
+
+        //initializing the CircleDisplayAdapter and setting the adapter to recycler view
+        //adapter adds all items from the circle list and displays them in individual cards in the recycler view
+        adapter = new CircleDisplayAdapter(getContext(), exploreCircleList, user);
+        exploreRecyclerView.setAdapter(adapter);
+
+
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(exploreRecyclerView);
 
         filter.setOnClickListener(view1 -> {
             Intent intent = new Intent(getActivity(), ExploreCategoryFilter.class);
@@ -107,27 +133,18 @@ public class ExploreFragment extends Fragment {
             startActivity(intent);
         });
 
-        if (listOfFilters != null)
-            Log.d("EXPLORE FRAGMENT", "FILTERS " + listOfFilters.toString());
+        if (listOfFilters != null) {
+            for(String f : listOfFilters)
+                setFilterChips(f, view);
+        }
 
         setCircleTabs(view);
         return view;
     }
 
     private void setCircleTabs(View view) {
-        SnapHelper snapHelper = new PagerSnapHelper();
 
-        //initialize recylcerview
-        exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
-        exploreRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        exploreRecyclerView.setLayoutManager(layoutManager);
-        snapHelper.attachToRecyclerView(exploreRecyclerView);
-
-        //initializing the CircleDisplayAdapter and setting the adapter to recycler view
-        //adapter adds all items from the circle list and displays them in individual cards in the recycler view
-        final RecyclerView.Adapter adapter = new CircleDisplayAdapter(getContext(), exploreCircleList, user);
-        exploreRecyclerView.setAdapter(adapter);
+        int index = SessionStorage.getTempIndexStore(getActivity());
 
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
@@ -156,6 +173,7 @@ public class ExploreFragment extends Fragment {
                             adapter.notifyItemInserted(adapter.getItemCount());
                         }
                     }
+                    exploreRecyclerView.scrollToPosition(index);
                 }
             }
 
@@ -201,4 +219,32 @@ public class ExploreFragment extends Fragment {
         });
     }
 
+    private void setFilterChips(final String name, View viewFragment) {
+        final Chip chip = new Chip(getContext());
+
+        chip.setCloseIcon(getResources().getDrawable(R.drawable.ic_clear_blue_24dp));
+        chip.setCloseIconVisible(true);
+        chip.setText(name);
+        chip.setChipStrokeColorResource(R.color.color_blue);
+        chip.setChipBackgroundColorResource(R.color.white);
+        chip.setChipStrokeWidth(5f);
+        chip.setChipMinHeight(100f);
+        chip.setTextColor(getResources().getColor(R.color.color_blue));
+
+        chip.setOnCloseIconClickListener(view -> {
+            listOfFilters.remove(chip.getText());
+            filterDisplay.removeView(chip);
+            exploreCircleList.clear();
+            adapter.notifyDataSetChanged();
+            setCircleTabs(viewFragment);
+        });
+
+        filterDisplay.addView(chip);
+    }
+
+    @Override
+    public void onDestroy() {
+        SessionStorage.tempIndexStore(getActivity(), 0);
+        super.onDestroy();
+    }
 }

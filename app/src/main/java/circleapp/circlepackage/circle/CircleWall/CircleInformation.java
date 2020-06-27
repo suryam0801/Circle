@@ -7,9 +7,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.Explore.CircleDisplayAdapter;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -46,6 +49,7 @@ public class CircleInformation extends AppCompatActivity {
     private Circle circle;
     private LinearLayout noPermissionToViewMembers;
     private User user;
+    private ImageButton back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class CircleInformation extends AppCompatActivity {
         circleDescription = findViewById(R.id.circle_info_circle_description);
         membersDisplay = findViewById(R.id.circle_info_members_display);
         noPermissionToViewMembers = findViewById(R.id.circle_info_members_not_available);
+        back = findViewById(R.id.bck_circle_information);
 
         creatorName.setText(circle.getCreatorName());
         circleName.setText(circle.getName());
@@ -80,16 +85,30 @@ public class CircleInformation extends AppCompatActivity {
                     .into(logo);
         }
 
+        //back button
+        back.setOnClickListener(view -> {
+            int indexValue = getIntent().getIntExtra("exploreIndex", -1);
+            if (indexValue == -1) {
+                startActivity(new Intent(CircleInformation.this, CircleWall.class));
+                finish();
+            } else {
+                Intent intent = new Intent(CircleInformation.this, ExploreTabbedActivity.class);
+                intent.putExtra("exploreIndex", indexValue);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         //setting circle banner
         setBannerBackground(circle.getCategory());
 
 
         //setting members display
-        if(circle.getAcceptanceType().equalsIgnoreCase("review"))
+        if (circle.getAcceptanceType().equalsIgnoreCase("review"))
             noPermissionToViewMembers.setVisibility(View.VISIBLE);
 
-        if(circle.getMembersList() != null) {
-            if(circle.getMembersList().keySet().contains(user.getUserId()))
+        if (circle.getMembersList() != null) {
+            if (circle.getMembersList().keySet().contains(user.getUserId()))
                 noPermissionToViewMembers.setVisibility(View.GONE);
 
             loadMembersList();

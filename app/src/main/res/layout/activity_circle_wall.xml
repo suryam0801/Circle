@@ -12,8 +12,8 @@
         android:id="@+id/circle_wall_empty_display"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:background="#20000000"
+        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -30,9 +30,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="50dp"
+            android:orientation="horizontal"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
-            android:orientation="horizontal"
             android:weightSum="99">
 
             <TextView
@@ -103,7 +103,17 @@
                 android:fontFamily="@font/roboto_regular"
                 android:text="Circle Board"
                 android:textColor="#000000"
-                android:textSize="16dp"></TextView>
+                android:textSize="18dp"></TextView>
+
+            <ImageButton
+                android:id="@+id/applicants_display_creator"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="52dp"
+                android:visibility="gone"
+                android:background="@drawable/baseline_group_black_18dp"></ImageButton>
 
             <ImageButton
                 android:id="@+id/circle_wall_more_options"

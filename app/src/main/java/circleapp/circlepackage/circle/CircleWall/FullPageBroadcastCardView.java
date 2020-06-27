@@ -38,6 +38,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 
 public class FullPageBroadcastCardView extends AppCompatActivity {
@@ -48,7 +49,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
     TextView banner;
     ImageButton back;
     private LinearLayout parentLayout;
-    private ImageButton moreOptions;
+    private ImageButton moreOptions, viewApplicants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         back = findViewById(R.id.bck_fullpage_broadcast);
         parentLayout = findViewById(R.id.full_page_broadcast_parent_layout);
         moreOptions = findViewById(R.id.full_page_broadcast_more_options);
+        viewApplicants = findViewById(R.id.full_page_broadcast_applicants_display_creator);
 
         broadcastList = SessionStorage.getBroadcastList(this);
         circle = SessionStorage.getCircle(this);
@@ -72,6 +74,16 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
             finish();
         });
+
+        //set applicants button visible
+        if (circle.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+            viewApplicants.setVisibility(View.VISIBLE);
+
+        viewApplicants.setOnClickListener(view -> {
+            startActivity(new Intent(this, PersonelDisplay.class));
+            finish();
+        });
+
 
         moreOptions.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(this, moreOptions);
@@ -128,6 +140,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
                     banner.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3));
                     break;
                 case "bg4":
@@ -137,30 +150,35 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
                     banner.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5));
                     break;
                 case "bg6":
                     banner.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6));
                     break;
                 case "bg7":
                     banner.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7));
                     break;
                 case "bg8":
                     banner.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8));
                     break;
                 case "bg9":
                     banner.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":

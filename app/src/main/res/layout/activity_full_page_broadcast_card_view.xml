@@ -39,6 +39,16 @@
             android:textSize="16dp"></TextView>
 
         <ImageButton
+            android:id="@+id/full_page_broadcast_applicants_display_creator"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="52dp"
+            android:visibility="gone"
+            android:background="@drawable/baseline_group_black_18dp"></ImageButton>
+
+        <ImageButton
             android:id="@+id/full_page_broadcast_more_options"
             android:layout_width="25dp"
             android:layout_height="25dp"

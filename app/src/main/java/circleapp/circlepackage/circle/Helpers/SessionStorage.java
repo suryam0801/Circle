@@ -128,9 +128,25 @@ public class SessionStorage {
     public static String getCircleWallBgImage(Activity activity) {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
         String string = sharedPref.getString("bgImageName", "1234");
-        if(string.equals("1234"))
+        if (string.equals("1234"))
             return null;
 
         return string;
+    }
+
+    public static void tempIndexStore(Activity activity, int index) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("tempIndexStore", index);
+        editor.apply();
+    }
+
+    public static int getTempIndexStore(Activity activity) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        int index = sharedPref.getInt("tempIndexStore", -1);
+        if (index == -1)
+            return 0;
+
+        return index;
     }
 }
