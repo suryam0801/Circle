@@ -257,8 +257,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
                     break;
                 case "Report Abuse":
-                    HelperMethods.showReportAbusePopup(reportAbuseDialog, CircleWall.this, "circle", circle.getId(), circle.getCreatorID(), user.getUserId());
-                    break;
+                    HelperMethods.showReportAbusePopup(reportAbuseDialog,CircleWall.this,circle.getId(),"", "" , circle.getCreatorID(), user.getUserId());                    break;
                 case "Exit circle":
                     showExitDialog();
                     break;
