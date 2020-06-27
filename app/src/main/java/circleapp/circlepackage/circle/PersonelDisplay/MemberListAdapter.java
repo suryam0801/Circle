@@ -1,102 +1,86 @@
 package circleapp.circlepackage.circle.PersonelDisplay;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
+
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.google.rpc.Help;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.ViewHolder> {
+public class MemberListAdapter extends BaseAdapter {
+
     private Context mContext;
     private List<Subscriber> memberList;
     String TAG = "APPLICANT_LIST_ADAPTER";
-    private  int propic;
-    int myImageList;
-//    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-//            R.drawable.avatar2, R.drawable.avatar5};
-
+    TextView name, timeElapsed;
+    CircleImageView profPic;
+    LinearLayout container;
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList) {
-        Log.d(TAG, "SIZE: " + memberList.size());
         this.mContext = mContext;
         this.memberList = memberList;
     }
-
-    @NonNull
     @Override
-    public MemberListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.member_cell_item, parent, false);
-        return new MemberListAdapter.ViewHolder(view);
+    public int getCount() {
+        return memberList.size();
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-
-        final Subscriber member = memberList.get(position);
-
-
-        if (member.getPhotoURI().length() > 10) {
-            Glide.with(mContext)
-                    .load(member.getPhotoURI())
-                    .into(holder.profPic);
-        } else {
-            propic = Integer.parseInt(member.getPhotoURI());
-            myImageList = propic;
-            Glide.with(mContext)
-                    .load(propic)
-                    .placeholder(ContextCompat.getDrawable(mContext, myImageList))
-                    .into(holder.profPic);
-        }
-
-        //Set text for TextView
-        final String nameDisplay = member.getName();
-        holder.name.setText(nameDisplay);
-
-        long createdTime =member.getTimestamp();
-        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        String dateString = formatter.format(new Date(createdTime));
-        holder.timeElapsed.setText("Member since " + dateString);
-
-        holder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.item_animation_fall_down));
+    public Object getItem(int position) {
+        return memberList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return 0;
     }
 
     @Override
-    public int getItemCount() {
-        return memberList.size();
-    }
+    public View getView(int position, View view, ViewGroup parent) {
+        final View pview = View.inflate(mContext, R.layout.member_cell_item, null);
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, timeElapsed;
-        CircleImageView profPic;
-        LinearLayout container;
+        container = pview.findViewById(R.id.member_cell_container);
+        name = pview.findViewById(R.id.member_name);
+        timeElapsed = pview.findViewById(R.id.member_since_display);
+        profPic = pview.findViewById(R.id.member_profile_picture);
 
-        public ViewHolder(View view) {
-            super(view);
-            container = view.findViewById(R.id.member_cell_container);
-            name = view.findViewById(R.id.member_name);
-            timeElapsed = view.findViewById(R.id.member_since_display);
-            profPic = view.findViewById(R.id.member_profile_picture);
-        }
+        final Subscriber member = memberList.get(position);
+
+        User user = SessionStorage.getUser((Activity) mContext);
+
+        HelperMethods.setUserProfileImage(user, mContext, profPic);
+
+        //Set text for TextView
+        final String nameDisplay = member.getName();
+        name.setText(nameDisplay);
+
+        long createdTime =member.getTimestamp();
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+        String dateString = formatter.format(new Date(createdTime));
+        timeElapsed.setText("Member since " + dateString);
+
+        return pview;
     }
 }

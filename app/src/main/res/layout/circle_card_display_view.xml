@@ -11,6 +11,7 @@
     android:background="@drawable/skills_adder_background"
     android:elevation="12dp"
     android:gravity="center"
+    android:id="@id/container"
     android:orientation="vertical"
     android:scaleType="fitXY">
 
@@ -46,7 +47,6 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

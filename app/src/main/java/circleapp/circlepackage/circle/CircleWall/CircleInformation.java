@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +31,7 @@ import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
 
@@ -37,12 +39,13 @@ public class CircleInformation extends AppCompatActivity {
 
     private ImageView banner, logo;
     private TextView creatorName, circleName, circleDescription;
-    private RecyclerView membersDisplay;
+    private ListView membersDisplay;
     private FirebaseDatabase database;
     private DatabaseReference circlesPersonelDB;
     private List<Subscriber> memberList;
     private Circle circle;
     private LinearLayout noPermissionToViewMembers;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class CircleInformation extends AppCompatActivity {
         setContentView(R.layout.activity_circle_information);
 
         circle = SessionStorage.getCircle(CircleInformation.this);
+        user = SessionStorage.getUser(CircleInformation.this);
 
         database = FirebaseDatabase.getInstance();
         circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId()); //circle.getId()
@@ -81,17 +85,21 @@ public class CircleInformation extends AppCompatActivity {
 
 
         //setting members display
-        if (!circle.getMembersList().keySet().contains(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        if(circle.getAcceptanceType().equalsIgnoreCase("review"))
             noPermissionToViewMembers.setVisibility(View.VISIBLE);
-        else if (circle.getMembersList() != null && circle.getMembersList().containsKey(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+
+        if(circle.getMembersList() != null) {
+            if(circle.getMembersList().keySet().contains(user.getUserId()))
+                noPermissionToViewMembers.setVisibility(View.GONE);
+
             loadMembersList();
 
+        }
     }
 
     private void loadMembersList() {
-        membersDisplay.setLayoutManager(new LinearLayoutManager(this));
         memberList = new ArrayList<>(); //initialize membersList
-        final RecyclerView.Adapter adapter = new MemberListAdapter(this, memberList);
+        final MemberListAdapter adapter = new MemberListAdapter(this, memberList);
         membersDisplay.setAdapter(adapter);
 
         circlesPersonelDB.child("members").addChildEventListener(new ChildEventListener() {
@@ -100,6 +108,7 @@ public class CircleInformation extends AppCompatActivity {
                 Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
                 memberList.add(subscriber);
                 adapter.notifyDataSetChanged();
+                HelperMethods.setListViewHeightBasedOnChildren(membersDisplay);
             }
 
             @Override
@@ -108,12 +117,6 @@ public class CircleInformation extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                List<Subscriber> tempList = new ArrayList<>(memberList);
-                int position = HelperMethods.returnIndexOfSubscriber(tempList, subscriber);
-                //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                memberList.remove(position);
-                adapter.notifyItemRemoved(position);
             }
 
             @Override

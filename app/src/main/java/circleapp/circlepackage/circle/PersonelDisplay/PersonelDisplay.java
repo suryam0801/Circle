@@ -17,7 +17,6 @@ public class PersonelDisplay extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabItem newRequests, membersDisplay;
-    public PersonelTabAdapter pagerAdapter;
     private ImageButton back;
     String userState;
 
@@ -32,9 +31,6 @@ public class PersonelDisplay extends AppCompatActivity {
         //membersDisplay = findViewById(R.id.main_workbench_tab);
         viewPager = findViewById(R.id.personel_viewpager);
         userState = getIntent().getStringExtra("userState");
-
-        pagerAdapter = new PersonelTabAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),userState);
-        viewPager.setAdapter(pagerAdapter);
 
         back.setOnClickListener(view -> {
             startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
