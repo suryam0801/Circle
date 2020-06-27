@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -79,6 +80,7 @@ public class OtpActivity extends AppCompatActivity {
     String doc_id;
     ProgressDialog progressDialog;
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +103,7 @@ public class OtpActivity extends AppCompatActivity {
         verifyfail = new AlertDialog.Builder(this);
         progressDialog.setTitle("Please wait...");
         progressDialog.show();
+        progressDialog.setCancelable(false);
 
 
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
@@ -113,6 +116,8 @@ public class OtpActivity extends AppCompatActivity {
         mVerifyBtn = findViewById(R.id.verify_btn);
         mVerifyBtn.setEnabled(false);
         mVerifyBtn.setClickable(false);
+        mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
+        mVerifyBtn.setTextColor(R.color.black);
 
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
@@ -132,6 +137,7 @@ public class OtpActivity extends AppCompatActivity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
                         intent.putExtra("ward", ward);
                         intent.putExtra("district", district);
@@ -174,6 +180,7 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
                                 progressDialog.dismiss();
                                 mOtpText.requestFocus();
                                 mAuthVerificationId = s;
@@ -348,6 +355,7 @@ public class OtpActivity extends AppCompatActivity {
         Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
         finish();
     }
@@ -360,6 +368,7 @@ public class OtpActivity extends AppCompatActivity {
         homeIntent.putExtra("phn", phn_number);
         homeIntent.putExtra("ward",ward);
         homeIntent.putExtra("district",district);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
         Log.d("OtpActivity",ward+"::"+district);
         finish();
