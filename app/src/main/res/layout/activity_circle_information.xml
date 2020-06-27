@@ -144,6 +144,34 @@
             android:textSize="12dp" />
 
         <LinearLayout
+            android:id="@+id/circle_info_empty_membersList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/empty_member_list_indicator"></ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="30dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Looks like nobody has joined this circle yet! Be the first to join and get the ball rolling"
+                android:textAlignment="center"
+                android:textColor="#D1D1D1"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/circle_info_members_not_available"
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -179,5 +207,6 @@
             android:dividerHeight="0dp"></ListView>
 
     </LinearLayout>
+    
 
 </ScrollView>
