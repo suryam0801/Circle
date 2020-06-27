@@ -351,8 +351,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(null);
-//        getItemPosition(broadcastid);
-//        recyclerView.scrollToPosition(broadcastPos);
 
         broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override

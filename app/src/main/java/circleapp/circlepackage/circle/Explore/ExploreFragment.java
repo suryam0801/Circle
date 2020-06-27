@@ -232,6 +232,7 @@ public class ExploreFragment extends Fragment {
 
         chip.setOnCloseIconClickListener(view -> {
             listOfFilters.remove(chip.getText());
+            SessionStorage.saveFilters(getActivity(), listOfFilters);
             filterDisplay.removeView(chip);
             exploreCircleList.clear();
             adapter.notifyDataSetChanged();

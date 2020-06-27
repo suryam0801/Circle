@@ -16,6 +16,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -38,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -348,41 +351,10 @@ public class HelperMethods {
             reportAbuseDialog.dismiss();
         });
 
+        reportAbuseDialog.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, context.getResources().getDimensionPixelSize(R.dimen.popup_height)); //width,height
+        reportAbuseDialog.getWindow().setGravity(Gravity.CENTER);
         reportAbuseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         reportAbuseDialog.show();
-    }
-    public static void showAdapterReportAbusePopup(Context context, View view, String circleID, String broadcastID, String commentID, String creatorID, String userID) {
-        View popupView = LayoutInflater.from(context ).inflate(R.layout.report_abuse_popup, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView,  WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-        LayoutInflater li = LayoutInflater.from(context);
-        Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
-        Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
-        CheckBox spam_check = (CheckBox) popupView.findViewById(R.id.report_spam);
-        CheckBox violent_check = (CheckBox) popupView.findViewById(R.id.report_violent);
-        CheckBox sex_check = (CheckBox) popupView.findViewById(R.id.report_sex);
-
-        reportConfirmButton.setOnClickListener(v -> {
-            String reportType = "";
-            if(spam_check.isChecked())
-                reportType = reportType +"spam";
-            if(violent_check.isChecked())
-                reportType = reportType +"violence";
-            if(sex_check.isChecked())
-                reportType = reportType +"sex";
-            HelperMethods.createReportAbuse(context,circleID, broadcastID,commentID,creatorID,userID,reportType);
-            Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
-            popupWindow.dismiss();
-        });
-
-        btnDismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        popupWindow.showAsDropDown(popupView, 0, 0);
     }
 
     public static String uuidGet() {
@@ -569,4 +541,15 @@ public class HelperMethods {
         }
 
     }
+
+    public static void vibrate(Context context) {
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(40);
+        }
+    }
+
 }

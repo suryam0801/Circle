@@ -125,6 +125,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     new ExploreFragment()).commit();
         } else if (getIntent().getIntExtra("exploreIndex", -1) != -1) {
             SessionStorage.tempIndexStore(this, getIntent().getIntExtra("exploreIndex", -1));
+            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ExploreFragment()).commit();
         } else {

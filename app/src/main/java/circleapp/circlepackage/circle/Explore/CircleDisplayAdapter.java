@@ -98,7 +98,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         boolean isApplicant = HelperMethods.ifUserApplied(currentCircle, user.getUserId());
         if (isApplicant) {
-            viewHolder.join.setText("Pending Request");
+            viewHolder.join.setText("Pending Approval");
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
             viewHolder.join.setTextColor(Color.parseColor("#828282"));
         }
@@ -110,11 +110,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
-
-        viewHolder.container.setOnLongClickListener(v -> {
-            HelperMethods.showAdapterReportAbusePopup(context, v, currentCircle.getId(), "", "", currentCircle.getCreatorID(), user.getUserId());
-            return false;
-        });
 
         //onclick for join and share
         viewHolder.join.setOnClickListener(view -> {
@@ -148,7 +143,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         setBannerBackground(circleCategory, viewHolder);
     }
 
-    private void setBannerBackground(String circleCategory, ViewHolder viewHolder){
+    private void setBannerBackground(String circleCategory, ViewHolder viewHolder) {
         switch (circleCategory) {
             case "Events":
                 Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.banner_events)).centerCrop().into(viewHolder.bannerImage);
@@ -196,7 +191,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
         private LinearLayout container, shareLayout;
         private ImageView bannerImage;
-        private ImageButton shareButton, reportAbuseBroadcast;;
+        private ImageButton shareButton, reportAbuseBroadcast;
+        ;
         private Button join;
         CircleImageView circleLogo;
 

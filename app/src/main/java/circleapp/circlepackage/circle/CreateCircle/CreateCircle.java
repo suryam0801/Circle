@@ -20,8 +20,11 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -83,7 +87,7 @@ public class CreateCircle extends AppCompatActivity {
     private RelativeLayout addLogo;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadUri;
-    private LinearLayout circleVisibilityDisplay;
+    private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int REQUEST_IMAGE_CAPTURE = 102;
@@ -124,6 +128,7 @@ public class CreateCircle extends AppCompatActivity {
         backgroundPic = findViewById(R.id.background_image);
         addLogo = findViewById(R.id.backgroundPreview);
         circleVisibilityDisplay = findViewById(R.id.circle_visibility_display);
+        circleAcceptanceDisplay = findViewById(R.id.acceptanceDisplayView);
         categoryName = findViewById(R.id.category_name);
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
@@ -198,7 +203,9 @@ public class CreateCircle extends AppCompatActivity {
             }
 
         } else {
-
+            Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
+            acceptanceGroup.startAnimation(animShake);
+            HelperMethods.vibrate(this);
         }
     }
 
