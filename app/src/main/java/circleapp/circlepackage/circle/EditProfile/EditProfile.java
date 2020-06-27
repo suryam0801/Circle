@@ -83,7 +83,7 @@ public class EditProfile extends AppCompatActivity {
 
     private CircleImageView profileImageView;
     private TextView userName, userNumber, createdCircles, workingCircles;
-    private Button editProfPic, logout;
+    private Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
     private Dialog editUserNamedialogue, editUserProfiledialogue;
@@ -136,6 +136,8 @@ public class EditProfile extends AppCompatActivity {
         editName = findViewById(R.id.editName);
         logout = findViewById(R.id.profile_logout);
         back = findViewById(R.id.bck_view_edit_profile);
+        finalizeChanges = findViewById(R.id.profile_finalize_changes);
+
         currentUser = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -156,6 +158,9 @@ public class EditProfile extends AppCompatActivity {
 
         editProfPic.setOnClickListener(view -> {
             editprofile(user.getProfileImageLink());
+        });
+        editName.setOnClickListener(v->{
+            edituserNamedialogue();
         });
 
         logout.setOnClickListener(view -> {
@@ -217,6 +222,18 @@ public class EditProfile extends AppCompatActivity {
                     selectImage();
                 editUserProfiledialogue.dismiss();
             }
+        });
+        finalizeChanges.setOnClickListener(view -> {
+            if (downloadUri != null)
+                user.setProfileImageLink(downloadUri.toString());
+
+            userDB.child(user.getUserId()).setValue(user);
+            SessionStorage.saveUser(EditProfile.this, user);
+            finalizeChange = true;
+            finalizeChanges.setVisibility(View.GONE);
+
+            /*startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
+            finish();*/
         });
         //listener for button to add the profilepic
         avatar1.setOnClickListener(new View.OnClickListener() {
@@ -521,6 +538,7 @@ public class EditProfile extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         progressDialog.dismiss();
                         //and displaying a success toast
+                        finalizeChanges.setVisibility(View.VISIBLE);
                         downloadUri = uri;
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
@@ -587,6 +605,7 @@ public class EditProfile extends AppCompatActivity {
                         //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                         progressDialog.dismiss();
+                        finalizeChanges.setVisibility(View.VISIBLE);
                         //and displaying a success toast
                         downloadUri = uri;
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
