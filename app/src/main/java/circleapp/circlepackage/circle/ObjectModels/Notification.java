@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Notification implements Parcelable {
-    private String circleName, circleId, from,notify_to, state, date,broadcastId,circleIcon;
+    private String circleName, circleId, from,notify_to, state, date,broadcastId,circleIcon,type;
     private Long timestamp;
 
     public Notification () {
@@ -22,10 +22,11 @@ public class Notification implements Parcelable {
                 ", timestamp='" + timestamp + '\'' +
                 ", date='" + date + '\'' +
                 ", broadcastId='" + broadcastId + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 
-    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date,String broadcastId,String circleIcon) {
+    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date,String broadcastId,String circleIcon,String type) {
         this.circleName = circleName;
         this.circleId = circleId;
         this.from = from;
@@ -35,6 +36,15 @@ public class Notification implements Parcelable {
         this.notify_to = notify_to;
         this.broadcastId = broadcastId;
         this.circleIcon = circleIcon;
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCircleIcon() {
