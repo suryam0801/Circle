@@ -41,6 +41,7 @@
         android:text="@string/report_popup"
         android:textColor="#828282"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:textSize="15sp"
         android:fontFamily="@font/roboto_regular"></TextView>
 

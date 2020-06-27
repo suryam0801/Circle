@@ -112,7 +112,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.tv_createdDate.setText(date);
 
         viewHolder.reportAbuseBroadcast.setOnClickListener(view->{
-            HelperMethods.showAdapterReportAbusePopup(context, view, currentCircle.getId(), "", "", currentCircle.getCreatorID(), user.getUserId(), "");
+            HelperMethods.showAdapterReportAbusePopup(context, view, currentCircle.getId(), "", "", currentCircle.getCreatorID(), user.getUserId());
         });
 
         //onclick for join and share

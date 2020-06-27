@@ -312,12 +312,22 @@ public class HelperMethods {
         ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID , creatorID, userID, reportType);
         reportAbuseDB.child(id).setValue(reportAbuse);
     }
-    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType){
+    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID){
         reportAbuseDialog.setContentView(R.layout.report_abuse_popup);
         final Button reportButton = reportAbuseDialog.findViewById(R.id.report_abuse_confirm_button);
         final Button cancel = reportAbuseDialog.findViewById(R.id.report_abuse_cancel_button);
+        CheckBox spam_check = (CheckBox) reportAbuseDialog.findViewById(R.id.report_spam);
+        CheckBox violent_check = (CheckBox) reportAbuseDialog.findViewById(R.id.report_violent);
+        CheckBox sex_check = (CheckBox) reportAbuseDialog.findViewById(R.id.report_sex);
 
         reportButton.setOnClickListener(view -> {
+            String reportType = "";
+            if(spam_check.isChecked())
+                reportType = reportType +"spam";
+            if(violent_check.isChecked())
+                reportType = reportType +"violence";
+            if(sex_check.isChecked())
+                reportType = reportType +"sex";
             reportAbuseDialog.dismiss();
             HelperMethods.createReportAbuse(circleID,broadcastID,commentID,creatorID,userID,reportType);
             Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
@@ -330,9 +340,10 @@ public class HelperMethods {
         reportAbuseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         reportAbuseDialog.show();
     }
-    public static void showAdapterReportAbusePopup(Context context, View view, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
+    public static void showAdapterReportAbusePopup(Context context, View view, String circleID, String broadcastID, String commentID, String creatorID, String userID) {
         View popupView = LayoutInflater.from(context ).inflate(R.layout.report_abuse_popup, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView,  WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        final PopupWindow popupWindow = new PopupWindow(popupView,  WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         LayoutInflater li = LayoutInflater.from(context);
         Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
         Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
@@ -340,12 +351,16 @@ public class HelperMethods {
         CheckBox violent_check = (CheckBox) popupView.findViewById(R.id.report_violent);
         CheckBox sex_check = (CheckBox) popupView.findViewById(R.id.report_sex);
 
-
-
-
         reportConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String reportType = "";
+                if(spam_check.isChecked())
+                    reportType = reportType +"spam";
+                if(violent_check.isChecked())
+                    reportType = reportType +"violence";
+                if(sex_check.isChecked())
+                    reportType = reportType +"sex";
                 HelperMethods.createReportAbuse(circleID, broadcastID,commentID,creatorID,userID,reportType);
                 Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
                 popupWindow.dismiss();
