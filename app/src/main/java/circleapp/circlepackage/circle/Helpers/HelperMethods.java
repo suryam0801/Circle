@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -335,6 +336,12 @@ public class HelperMethods {
         LayoutInflater li = LayoutInflater.from(context);
         Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
         Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
+        CheckBox spam_check = (CheckBox) popupView.findViewById(R.id.report_spam);
+        CheckBox violent_check = (CheckBox) popupView.findViewById(R.id.report_violent);
+        CheckBox sex_check = (CheckBox) popupView.findViewById(R.id.report_sex);
+
+
+
 
         reportConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override

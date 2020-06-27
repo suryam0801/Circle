@@ -18,7 +18,7 @@
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:background="@drawable/ic_report_abuse_broadcast">
+            android:background="@drawable/report_abuse">
         </ImageView>
 
         <TextView
@@ -29,7 +29,7 @@
             android:textSize="16dp"
             android:layout_marginLeft="15.5dp"
             android:textColor="@color/black"
-            android:text="Are you sure?">
+            android:text="Report Content">
         </TextView>
 
     </LinearLayout>
@@ -38,10 +38,33 @@
         android:id="@+id/remove_dialog_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Are you sure this content violates circle policies?"
+        android:text="@string/report_popup"
         android:textColor="#828282"
         android:layout_marginTop="20dp"
+        android:textSize="15sp"
         android:fontFamily="@font/roboto_regular"></TextView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <CheckBox
+            android:id="@+id/report_spam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Spam or Scam"/>
+        <CheckBox
+            android:id="@+id/report_violent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Violent and harmful use of language"/>
+        <CheckBox
+            android:id="@+id/report_sex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sexually explicit content"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,11 +99,11 @@
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/remove_button"
+            android:background="@drawable/report_submit_button"
             android:fontFamily="@font/roboto_medium"
-            android:text="Report"
+            android:text="Submit"
             android:textAllCaps="false"
-            android:textColor="@color/white"></Button>
+            android:textColor="#F30000"></Button>
 
     </LinearLayout>
 
