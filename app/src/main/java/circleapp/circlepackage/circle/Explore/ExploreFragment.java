@@ -242,4 +242,9 @@ public class ExploreFragment extends Fragment {
         filterDisplay.addView(chip);
     }
 
+    @Override
+    public void onDestroy() {
+        SessionStorage.tempIndexStore(getActivity(), 0);
+        super.onDestroy();
+    }
 }

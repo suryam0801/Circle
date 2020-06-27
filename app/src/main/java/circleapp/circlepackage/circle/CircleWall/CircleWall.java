@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -58,6 +59,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,9 +178,20 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         setParentBgImage();
         circleBannerName.setText(circle.getName());
 
+        if (circle.getApplicantsList() != null) {
+            new Tooltip.Builder(viewApplicants)
+                    .setText("You have pending applicants")
+                    .setTextColor(Color.BLACK)
+                    .setBackgroundColor(Color.WHITE)
+                    .setGravity(Gravity.BOTTOM)
+                    .setCornerRadius(20f)
+                    .setDismissOnClick(true)
+                    .show();
+        }
+
+
         if (circle.getNoOfBroadcasts() == 0)
             emptyDisplay.setVisibility(View.VISIBLE);
-
 
         back.setOnClickListener(view -> {
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
@@ -221,7 +234,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         loadCircleBroadcasts();
     }
 
-    public void makeMenuPopup(){
+    public void makeMenuPopup() {
         PopupMenu popup = new PopupMenu(this, moreOptions);
         popup.getMenuInflater()
                 .inflate(R.menu.circle_wall_menu, popup.getMenu());
