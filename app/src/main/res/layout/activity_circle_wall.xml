@@ -112,8 +112,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="52dp"
-                android:visibility="gone"
-                android:background="@drawable/baseline_group_black_18dp"></ImageButton>
+                android:background="@drawable/baseline_group_black_18dp"
+                android:visibility="gone"></ImageButton>
 
             <ImageButton
                 android:id="@+id/circle_wall_more_options"

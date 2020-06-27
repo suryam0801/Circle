@@ -262,13 +262,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/visibility_prompt_create_circle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="15dp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Do you want everybody in coimbatore to see your circle?"
+                android:text="Visibility Prompt"
                 android:textColor="#9D9D9D"
                 android:textSize="12dp"></TextView>
 
@@ -319,7 +320,6 @@
             android:textColor="#35C80B"
             android:textFontWeight="10"
             android:textSize="15dp"></Button>
-
 
     </LinearLayout>
 

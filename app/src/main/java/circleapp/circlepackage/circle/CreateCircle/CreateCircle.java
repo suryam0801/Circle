@@ -6,11 +6,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -70,7 +73,7 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView typePrompt, logoHelp, backgroundText;
+    private TextView visibilityPrompt, logoHelp, backgroundText;
     private Button btn_createCircle;
     private ImageButton back;
     private RadioGroup acceptanceGroup, visibilityGroup;
@@ -115,7 +118,7 @@ public class CreateCircle extends AppCompatActivity {
         visibilityGroup = findViewById(R.id.visibilityRadioGroup);
         btn_createCircle = findViewById(R.id.create_circle_submit);
         back = findViewById(R.id.bck_create);
-        typePrompt = findViewById(R.id.circle_type_tip_prompt);
+        visibilityPrompt = findViewById(R.id.visibility_prompt_create_circle);
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         backgroundPic = findViewById(R.id.background_image);
@@ -134,6 +137,8 @@ public class CreateCircle extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users").child(user.getUserId());
+
+        visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
 
         btn_createCircle.setOnClickListener(view -> {
             String cName = circleNameEntry.getText().toString().trim();
@@ -191,6 +196,7 @@ public class CreateCircle extends AppCompatActivity {
                 else
                     createCircle(name, description, "Private", "OnlyShare");
             }
+
         } else {
 
         }
@@ -235,10 +241,19 @@ public class CreateCircle extends AppCompatActivity {
         userDB.child("createdCircles").setValue(currentCreatedNo);
 
         //navigate back to explore. new circle will be available in workbench
-        Intent intent = new Intent(CreateCircle.this, CircleWall.class);
-        intent.putExtra("fromCreateCircle", true);
-        startActivity(intent);
-        finish();
+        SharedPreferences prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
+        if (prefs.getBoolean("firstWall", true)) {
+            Intent intent = new Intent(this, CircleWallBackgroundPicker.class);
+            intent.putExtra("fromCreateCircle", true);
+            startActivity(intent);
+            finish();
+            prefs.edit().putBoolean("firstWall", false).commit();
+        } else {
+            Intent intent = new Intent(this, CircleWall.class);
+            intent.putExtra("fromCreateCircle", true);
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void selectFile() {
