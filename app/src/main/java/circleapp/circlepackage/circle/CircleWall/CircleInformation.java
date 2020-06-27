@@ -47,7 +47,7 @@ public class CircleInformation extends AppCompatActivity {
     private DatabaseReference circlesPersonelDB;
     private List<Subscriber> memberList;
     private Circle circle;
-    private LinearLayout noPermissionToViewMembers;
+    private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
     private ImageButton back;
 
@@ -69,6 +69,7 @@ public class CircleInformation extends AppCompatActivity {
         circleDescription = findViewById(R.id.circle_info_circle_description);
         membersDisplay = findViewById(R.id.circle_info_members_display);
         noPermissionToViewMembers = findViewById(R.id.circle_info_members_not_available);
+        noMembersDisplay = findViewById(R.id.circle_info_empty_membersList);
         back = findViewById(R.id.bck_circle_information);
 
         creatorName.setText(circle.getCreatorName());
@@ -113,6 +114,8 @@ public class CircleInformation extends AppCompatActivity {
 
             loadMembersList();
 
+        } else {
+            noMembersDisplay.setVisibility(View.VISIBLE);
         }
     }
 
