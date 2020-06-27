@@ -113,7 +113,6 @@ public class PhoneLogin extends AppCompatActivity {
         ccp.setSelection(pos);
         mCountryCode.setText(mCountryDialCode);
         mGenerateBtn.setEnabled(true);
-        mLoginProgress.setVisibility(View.INVISIBLE);
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -162,7 +161,6 @@ public class PhoneLogin extends AppCompatActivity {
 
                         if (failcount != "1") {
 
-                            mLoginProgress.setVisibility(View.VISIBLE);
                             mGenerateBtn.setEnabled(false);
 
                             confirmation.setMessage("Are you sure is this your number " + complete_phone_number)
@@ -263,7 +261,6 @@ public class PhoneLogin extends AppCompatActivity {
         super.onResume();
 
         mGenerateBtn.setEnabled(true);
-        mLoginProgress.setVisibility(View.INVISIBLE);
 
     }
 
@@ -272,6 +269,5 @@ public class PhoneLogin extends AppCompatActivity {
         super.onRestart();
 
         mGenerateBtn.setEnabled(true);
-        mLoginProgress.setVisibility(View.INVISIBLE);
     }
 }
