@@ -160,7 +160,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         circleBannerName = findViewById(R.id.circleBannerName);
         back = findViewById(R.id.bck_Circlewall);
         emptyDisplay = findViewById(R.id.circle_wall_empty_display);
-        emptyDisplay.setVisibility(View.VISIBLE);
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
         imagePost = findViewById(R.id.image_creation_FAB);
@@ -173,29 +172,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         photo = 0;
         setParentBgImage();
-/*
-        if (circle.getCreatorID().equals(user.getUserId()))
-            exitOrDeleteButton.setBackground(getResources().getDrawable(R.drawable.ic_delete_forever_black_24dp));
-*/
-
         circleBannerName.setText(circle.getName());
 
+        if(circle.getNoOfBroadcasts() == 0)
+            emptyDisplay.setVisibility(View.VISIBLE);
 
-/*
-        exitOrDeleteButton.setOnClickListener(view -> {
-            if (circle.getCreatorID().equals(user.getUserId()))
-                showDeleteDialog();
-            else
-                showExitDialog();
-        });
-
-        viewPersonelButton.setOnClickListener(view -> {
-            Intent intent = new Intent(CircleWall.this, PersonelDisplay.class);
-            intent.putExtra("userState", usersState);
-            startActivity(intent);
-            finish();
-        });
-*/
 
         back.setOnClickListener(view -> {
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
@@ -206,7 +187,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             analyticsLogEvents.logEvents(CircleWall.this, "new_poll", "pressed_button", "circle_wall");
             showCreateBroadcastDialog("poll");
             floatingActionMenu.close(true);
-
         });
         newPost.setOnClickListener(view -> {
             analyticsLogEvents.logEvents(CircleWall.this, "add_message", "pressed_button", "circle_wall");
@@ -224,6 +204,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             PopupMenu popup = new PopupMenu(this, moreOptions);
             popup.getMenuInflater()
                     .inflate(R.menu.circle_wall_menu, popup.getMenu());
+            if (circle.getCreatorID().equals(user.getUserId()))
+                popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
+            else
+                popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
+
             //registering popup with OnMenuItemClickListener
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getTitle().toString()) {
@@ -232,16 +217,20 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         finish();
                         break;
                     case "Invite a friend":
-                        HelperMethods.showShareCirclePopup(circle, CircleWall.this);
+                        InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+                        bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
                         break;
                     case "Report Abuse":
                         HelperMethods.showReportAbusePopup(reportAbuseDialog,CircleWall.this,"circle",circle.getId(), circle.getCreatorID(), user.getUserId());
                         break;
                     case "Exit circle":
+                        showExitDialog();
                         break;
                     case "Delete circle":
+                        showDeleteDialog();
                         break;
                     case "Circle Information":
+                        startActivity(new Intent(CircleWall.this, CircleInformation.class));
                         break;
                 }
                 return true;
@@ -339,7 +328,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 adapter.notifyItemInserted(0);
                 recyclerView.setAdapter(adapter);
                 recyclerView.scrollToPosition(broadcastPos);
-                emptyDisplay.setVisibility(View.GONE);
                 initializeNewCommentsAlertTimestamp(broadcast);
 
                 //coming back from image display
@@ -439,10 +427,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         analyticsLogEvents.logEvents(CircleWall.this, "circle_exit", "exit_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
-    }
-
-    private void showCreateNormalBroadcastDialog() {
-
     }
 
     private void showCreateBroadcastDialog(String flag) {

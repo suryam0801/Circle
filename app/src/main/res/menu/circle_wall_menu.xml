@@ -30,7 +30,8 @@
 
     <item
         android:id="@+id/exitCircleMenuBar"
-        android:title="Exit circle">
+        android:title="Exit circle"
+        android:visible="false">
 
     </item>
     <item

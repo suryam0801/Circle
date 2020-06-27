@@ -49,7 +49,7 @@
         android:fontFamily="@font/roboto_regular"
         android:layout_marginTop="5dp"
         android:gravity="center"
-        android:text="This will your wallpaper for all circles"
+        android:text="This will be your wallpaper for all circles"
         android:textSize="14dp"></TextView>
 
     <ScrollView

@@ -24,11 +24,13 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
+import circleapp.circlepackage.circle.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -80,6 +82,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Circle currentCircle = circleList.get(i);
         String circleCategory;
         Log.d("efljknwefwe", currentCircle.toString());
+
         if (!currentCircle.getBackgroundImageLink().equals("default")) {
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
         }else {
@@ -97,12 +100,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         if (isApplicant) {
             viewHolder.join.setText("Pending Request");
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
+            viewHolder.join.setTextColor(Color.parseColor("#828282"));
         }
-
-        viewHolder.reportAbuseBroadcast.setOnClickListener(view ->{
-            HelperMethods.showAdapterReportAbusePopup(context,view,"circle",currentCircle.getId(),currentCircle.getCreatorID(),user.getUserId());
-        });
-
 
         //set the details of each circle to its respective card.
         viewHolder.tv_circleName.setText(currentCircle.getName());
@@ -129,6 +128,11 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             SessionStorage.saveCircle((Activity) context, currentCircle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
+        });
+
+        viewHolder.container.setOnClickListener(view -> {
+            SessionStorage.saveCircle((Activity) context, currentCircle);
+            context.startActivity(new Intent(context, CircleInformation.class));
         });
 
         viewHolder.categoryDisplay.setText(currentCircle.getCategory());
