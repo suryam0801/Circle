@@ -6,11 +6,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,11 +20,15 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -30,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,6 +55,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
@@ -69,17 +77,17 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView typePrompt, logoHelp, backgroundText;
+    private TextView visibilityPrompt, logoHelp, backgroundText;
     private Button btn_createCircle;
     private ImageButton back;
-    private RadioGroup acceptanceGroup;
-    private RadioButton acceptanceButton;
-    private Button typeInfoButton;
+    private RadioGroup acceptanceGroup, visibilityGroup;
+    private RadioButton acceptanceButton, visibilityButton;
     private User user;
     private TextView categoryName;
     private RelativeLayout addLogo;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadUri;
+    private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int REQUEST_IMAGE_CAPTURE = 102;
@@ -111,14 +119,16 @@ public class CreateCircle extends AppCompatActivity {
         circleNameEntry = findViewById(R.id.create_circle_Name);
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         acceptanceGroup = findViewById(R.id.acceptanceRadioGroup);
+        visibilityGroup = findViewById(R.id.visibilityRadioGroup);
         btn_createCircle = findViewById(R.id.create_circle_submit);
         back = findViewById(R.id.bck_create);
-        typeInfoButton = findViewById(R.id.circle_type_info_button);
-        typePrompt = findViewById(R.id.circle_type_tip_prompt);
+        visibilityPrompt = findViewById(R.id.visibility_prompt_create_circle);
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         backgroundPic = findViewById(R.id.background_image);
         addLogo = findViewById(R.id.backgroundPreview);
+        circleVisibilityDisplay = findViewById(R.id.circle_visibility_display);
+        circleAcceptanceDisplay = findViewById(R.id.acceptanceDisplayView);
         categoryName = findViewById(R.id.category_name);
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
@@ -127,21 +137,23 @@ public class CreateCircle extends AppCompatActivity {
         runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle","on_button_click");
+        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle", "on_button_click");
 
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users").child(user.getUserId());
 
+        visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
+
         btn_createCircle.setOnClickListener(view -> {
             String cName = circleNameEntry.getText().toString().trim();
             String cDescription = circleDescriptionEntry.getText().toString().trim();
-                if (!cName.isEmpty() && !cDescription.isEmpty()) {
-                    analyticsLogEvents.logEvents(CreateCircle.this, "created_circle", "new_circle_created","on_button_click");
-                    createCircle(cName, cDescription);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
-                }
+            if (!cName.isEmpty() && !cDescription.isEmpty()) {
+                analyticsLogEvents.logEvents(CreateCircle.this, "created_circle", "new_circle_created", "on_button_click");
+                radioButtonCheck(cName, cDescription);
+            } else {
+                Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
+            }
         });
 
         back.setOnClickListener(view -> {
@@ -149,8 +161,7 @@ public class CreateCircle extends AppCompatActivity {
             finish();
         });
 
-        typeInfoButton.setOnClickListener(view -> typePrompt.setVisibility(View.VISIBLE));
-        addLogo.setOnClickListener(v->{
+        addLogo.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(CreateCircle.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -158,42 +169,75 @@ public class CreateCircle extends AppCompatActivity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         STORAGE_PERMISSION_CODE);
             }
-            if(photo==0)
+            if (photo == 0)
                 selectImage();
+        });
+
+        acceptanceGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton checkButton = findViewById(i);
+                if (checkButton.getText().equals("Anyone can join"))
+                    circleVisibilityDisplay.setVisibility(View.GONE);
+                else
+                    circleVisibilityDisplay.setVisibility(View.VISIBLE);
+
+            }
         });
     }
 
-    public void createCircle(String cName, String cDescription) {
+    public void radioButtonCheck(String name, String description) {
+        int radioId = acceptanceGroup.getCheckedRadioButtonId();
+        acceptanceButton = findViewById(radioId);
+        int visibilityId = visibilityGroup.getCheckedRadioButtonId();
+        visibilityButton = findViewById(visibilityId);
+        if (radioId != -1) {
+            if (acceptanceButton.getText().equals("Anyone can join"))
+                createCircle(name, description, "Public", "Everybody");
+            else{
+                String visibility = (String) visibilityButton.getText();
+                if(visibility.equals("Yes"))
+                    createCircle(name, description, "Private", "Everybody");
+                else
+                    createCircle(name, description, "Private", "OnlyShare");
+            }
+
+        } else {
+            Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
+            acceptanceGroup.startAnimation(animShake);
+            HelperMethods.vibrate(this);
+        }
+    }
+
+    public void createCircle(String cName, String cDescription, String acceptanceType, String visibilty) {
 
         User user = SessionStorage.getUser(CreateCircle.this);
         circleDB = database.getReference("Circles");
         currentUser = FirebaseAuth.getInstance();
-        int radioId = acceptanceGroup.getCheckedRadioButtonId();
-        acceptanceButton = findViewById(radioId);
 
         String category = getIntent().getStringExtra("category_name");
 
         String myCircleID = circleDB.push().getKey();
         String creatorUserID = currentUser.getCurrentUser().getUid();
-        String acceptanceType = acceptanceButton.getText().toString();
-        if(acceptanceType.equals("Public"))
+
+        if (acceptanceType.equals("Public"))
             acceptanceType = "Automatic";
-        else if(acceptanceType.equals("Private"))
+        else if (acceptanceType.equals("Private"))
             acceptanceType = "Review";
 
         String creatorName = currentUser.getCurrentUser().getDisplayName();
 
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
-        if(downloadUri!=null)
+        if (downloadUri != null)
             backgroundImageLink = downloadUri.toString();
         else
             backgroundImageLink = "default";
 
         //updating circles
-        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, creatorUserID, creatorName,
-                category,backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
-                System.currentTimeMillis(),0, 0);
+        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilty, creatorUserID, creatorName,
+                category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
+                System.currentTimeMillis(), 0, 0);
 
         circleDB.child(myCircleID).setValue(circle);
 
@@ -204,71 +248,79 @@ public class CreateCircle extends AppCompatActivity {
         userDB.child("createdCircles").setValue(currentCreatedNo);
 
         //navigate back to explore. new circle will be available in workbench
-        Intent intent = new Intent(CreateCircle.this, CircleWall.class);
-        intent.putExtra("fromCreateCircle", true);
-        startActivity(intent);
-        finish();
+        SharedPreferences prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
+        if (prefs.getBoolean("firstWall", true)) {
+            Intent intent = new Intent(this, CircleWallBackgroundPicker.class);
+            intent.putExtra("fromCreateCircle", true);
+            startActivity(intent);
+            finish();
+            prefs.edit().putBoolean("firstWall", false).commit();
+        } else {
+            Intent intent = new Intent(this, CircleWall.class);
+            intent.putExtra("fromCreateCircle", true);
+            startActivity(intent);
+            finish();
+        }
     }
-        public void selectFile(){
 
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
-        }
-        public void takePhoto(){
-            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            StrictMode.setVmPolicy(builder.build());
-            Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            downloadUri = HelperMethods.getImageUri();
-            m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
-            startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
-        }
-        private void selectImage() {
-            final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
-            AlertDialog.Builder builder = new AlertDialog.Builder(CreateCircle.this);
-            builder.setTitle("Add Photo!");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (options[item].equals("Take Photo"))
-                    {
-                        photo = 1;
-                        if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
-                            runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
-                        }
-                        if (runtimePermissionHelper.isPermissionAvailable(CAMERA)&&runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
-                            takePhoto();
-                        }
-                        else{
-                            runtimePermissionHelper.askPermission(CAMERA);
-                        }
-                    }
-                    else if (options[item].equals("Choose from Gallery"))
-                    {
-                        if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                            selectFile();
-                        } else {
-                            runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
-                        }
+    public void selectFile() {
 
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
+    }
+
+    public void takePhoto() {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        downloadUri = HelperMethods.getImageUri();
+        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
+        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(CreateCircle.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo")) {
+                    photo = 1;
+                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+                        runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
                     }
-                    else if (options[item].equals("Cancel")) {
-                        dialog.dismiss();
+                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+                        takePhoto();
+                    } else {
+                        runtimePermissionHelper.askPermission(CAMERA);
                     }
+                } else if (options[item].equals("Choose from Gallery")) {
+                    if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+                        selectFile();
+                    } else {
+                        runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
+                    }
+
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
                 }
-            });
-            if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
-                builder.show();
             }
+        });
+        if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
+            builder.show();
         }
+    }
+
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if(photo==1)
+            if (photo == 1)
                 takePhoto();
             else
                 selectImage();
@@ -279,7 +331,7 @@ public class CreateCircle extends AppCompatActivity {
                     Toast.LENGTH_SHORT)
                     .show();
         }
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //code for upload the image
@@ -354,8 +406,7 @@ public class CreateCircle extends AppCompatActivity {
                         });
             }
 
-        }
-        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
             //check the path for the image
             //if the image path is notnull the uploading process will start
@@ -402,7 +453,7 @@ public class CreateCircle extends AppCompatActivity {
                         downloadUri = uri;
                         backgroundText.setVisibility(View.GONE);
                         logoHelp.setVisibility(View.GONE);
-                        Log.d("test1",""+downloadUri);
+                        Log.d("test1", "" + downloadUri);
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
@@ -425,10 +476,11 @@ public class CreateCircle extends AppCompatActivity {
 
         }
     }
+
     @Override
     public void onBackPressed() {
         Intent about_intent = new Intent(CreateCircle.this, ExploreTabbedActivity.class);
-        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle_bounce","on_back_press");
+        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle_bounce", "on_back_press");
         startActivity(about_intent);
         finish();
     }

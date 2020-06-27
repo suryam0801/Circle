@@ -257,7 +257,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
                     break;
                 case "Report Abuse":
-                    HelperMethods.showReportAbusePopup(reportAbuseDialog,CircleWall.this,circle.getId(),"", "" , circle.getCreatorID(), user.getUserId());                    
+                    HelperMethods.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Exit circle":
                     showExitDialog();
@@ -330,7 +330,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":
-                    circleBannerName.setTextColor(Color.WHITE);
+                    circleBannerName.setTextColor(Color.BLACK);
                     parentLayout.setBackgroundColor(Color.WHITE);
                     break;
             }
@@ -351,8 +351,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(null);
-//        getItemPosition(broadcastid);
-//        recyclerView.scrollToPosition(broadcastPos);
 
         broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
             @Override

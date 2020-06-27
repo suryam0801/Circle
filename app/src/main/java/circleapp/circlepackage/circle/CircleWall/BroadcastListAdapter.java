@@ -58,7 +58,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Context context;
     private Circle circle;
     private FirebaseAuth currentUser;
-    private Vibrator v;
     private User user;
 
     //contructor to set latestCircleList and context for Adapter
@@ -68,7 +67,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) context);
-        v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
     @Override
@@ -81,8 +80,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public void onBindViewHolder(final BroadcastListAdapter.ViewHolder viewHolder, int i) {
 
         final Broadcast broadcast = broadcastList.get(i);
-
-        final Poll poll;
 
         if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
             Glide.with((Activity) context)
@@ -125,9 +122,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
-        viewHolder.reportAbuseBroadcast.setOnClickListener(view ->{
-            HelperMethods.showAdapterReportAbusePopup(context,view,circle.getId(),broadcast.getId(),"",broadcast.getCreatorID(),user.getUserId());
-        });
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
@@ -152,83 +146,92 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.broadcastMessageDisplay.setVisibility(View.VISIBLE);
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
         }
-        if (broadcast.isImageExists() == true) {
 
-            viewHolder.imageDisplayHolder.setVisibility(View.VISIBLE);
-            viewHolder.imageDisplay.setVisibility(View.VISIBLE);
+        if (broadcast.isImageExists() == true)
+            ifImageExistsAction(viewHolder, broadcast, i);
 
-            //setting imageview
-            Glide.with((Activity) context)
-                    .load(broadcast.getAttachmentURI())
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            viewHolder.imageLoadProgressBar.setVisibility(View.GONE);
-                            return false;
-                        }
+        if (broadcast.isPollExists() == true)
+            ifPollExistsAction(viewHolder, broadcast);
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            viewHolder.imageLoadProgressBar.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
-                    .into(viewHolder.imageDisplay);
+    }
 
-            //navigate to full screen photo display when clicked
-            viewHolder.imageDisplay.setOnClickListener(view -> {
-                Intent intent = new Intent(context, FullPageImageDisplay.class);
-                intent.putExtra("uri", broadcast.getAttachmentURI());
-                intent.putExtra("indexOfBroadcast", i);
-                context.startActivity(intent);
-                ((Activity) context).finish();
+    public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position){
+        viewHolder.imageDisplayHolder.setVisibility(View.VISIBLE);
+        viewHolder.imageDisplay.setVisibility(View.VISIBLE);
+
+        //setting imageview
+        Glide.with((Activity) context)
+                .load(broadcast.getAttachmentURI())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        viewHolder.imageLoadProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        viewHolder.imageLoadProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(viewHolder.imageDisplay);
+
+        //navigate to full screen photo display when clicked
+        viewHolder.imageDisplay.setOnClickListener(view -> {
+            Intent intent = new Intent(context, FullPageImageDisplay.class);
+            intent.putExtra("uri", broadcast.getAttachmentURI());
+            intent.putExtra("indexOfBroadcast", position);
+            context.startActivity(intent);
+            ((Activity) context).finish();
+        });
+
+    }
+
+    public void ifPollExistsAction(ViewHolder viewHolder, Broadcast broadcast){
+        final Poll poll;
+        poll = broadcast.getPoll();
+        viewHolder.pollDisplay.setVisibility(View.VISIBLE);
+        viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+        viewHolder.broadcastTitle.setText(poll.getQuestion());
+        HashMap<String, Integer> pollOptions = poll.getOptions();
+
+        //Option Percentage Calculation
+        int totalValue = 0;
+        for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+            totalValue += entry.getValue();
+        }
+
+        //clear option display each time to avoid repeating options
+        if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
+            viewHolder.pollOptionsDisplayGroup.removeAllViews();
+
+        if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(currentUser.getCurrentUser().getUid()))
+            viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(currentUser.getCurrentUser().getUid()));
+
+        for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+
+            int percentage = 0;
+            if (totalValue != 0)
+                percentage = (int) (((double) entry.getValue() / totalValue) * 100);
+
+            RadioButton button = HelperMethods.generateRadioButton(context, entry.getKey(), percentage);
+            LinearLayout layout = HelperMethods.generateLayoutPollOptionBackground(context, button, percentage);
+
+            if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
+                button.setChecked(true);
+
+            button.setOnClickListener(view -> {
+                HelperMethods.vibrate(context);
+                Bundle params1 = new Bundle();
+                params1.putString("PollInteracted", "Radio button");
+
+                String option = button.getText().toString();
+                updatePollAnswer(option, viewHolder, poll, broadcast);
             });
+            viewHolder.pollOptionsDisplayGroup.addView(layout);
+            button.setPressed(true);
         }
-        if (broadcast.isPollExists() == true) {
-            poll = broadcast.getPoll();
-            viewHolder.pollDisplay.setVisibility(View.VISIBLE);
-            viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
-            viewHolder.broadcastTitle.setText(poll.getQuestion());
-            HashMap<String, Integer> pollOptions = poll.getOptions();
-
-            //Option Percentage Calculation
-            int totalValue = 0;
-            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
-                totalValue += entry.getValue();
-            }
-
-            //clear option display each time to avoid repeating options
-            if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
-                viewHolder.pollOptionsDisplayGroup.removeAllViews();
-
-            if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(currentUser.getCurrentUser().getUid()))
-                viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(currentUser.getCurrentUser().getUid()));
-
-            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
-
-                int percentage = 0;
-                if (totalValue != 0)
-                    percentage = (int) (((double) entry.getValue() / totalValue) * 100);
-
-                RadioButton button = HelperMethods.generateRadioButton(context, entry.getKey(), percentage);
-                LinearLayout layout = HelperMethods.generateLayoutPollOptionBackground(context, button, percentage);
-
-                if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
-                    button.setChecked(true);
-
-                button.setOnClickListener(view -> {
-                    vibrate();
-                    Bundle params1 = new Bundle();
-                    params1.putString("PollInteracted", "Radio button");
-
-                    String option = button.getText().toString();
-                    updatePollAnswer(option, viewHolder, poll, broadcast);
-                });
-                viewHolder.pollOptionsDisplayGroup.addView(layout);
-                button.setPressed(true);
-            }
-        }
-
     }
 
     public void updatePollAnswer(String option, ViewHolder viewHolder, Poll poll, Broadcast broadcast) {
@@ -284,15 +287,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         return position;
     }
 
-    public void vibrate() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            //deprecated in API 26
-            v.vibrate(50);
-        }
-    }
-
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
@@ -303,7 +297,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
         private Button viewPollAnswers;
-        private ImageButton reportAbuseBroadcast;
         private PhotoView imageDisplay;
         private RelativeLayout imageDisplayHolder;
         private ProgressBar imageLoadProgressBar;
@@ -325,7 +318,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             imageDisplay = view.findViewById(R.id.uploaded_image_display_broadcast);
             imageDisplayHolder = view.findViewById(R.id.image_display_holder);
             imageLoadProgressBar = view.findViewById(R.id.image_progress);
-            reportAbuseBroadcast = view.findViewById(R.id.broadcast_report_abuse_button);
 
         }
 

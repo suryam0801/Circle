@@ -16,6 +16,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -38,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,12 +73,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HelperMethods {
 
     public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
-        int position = 0;
+        int counter = 0;
+        int position = -1;
         for (Circle c : circleList) {
             if (c.getId().equals(circle.getId()))
-                return position;
+                position = counter;
 
-            position++;
+            counter++;
         }
         return position;
     }
@@ -91,10 +95,10 @@ public class HelperMethods {
         return position;
     }
 
-    public static int returnIndexOfSubscriber(List<Subscriber> subscriberList, Subscriber subscriber){
+    public static int returnIndexOfSubscriber(List<Subscriber> subscriberList, Subscriber subscriber) {
         int position = 0;
-        for(Subscriber s : subscriberList){
-            if(subscriber.getId().equals(s.getId()))
+        for (Subscriber s : subscriberList) {
+            if (subscriber.getId().equals(s.getId()))
                 return position;
             position++;
         }
@@ -236,48 +240,51 @@ public class HelperMethods {
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
     }
 
-    public static void addDistrict(String district){
+    public static void addDistrict(String district) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference locationsDB;
         locationsDB = database.getReference("Locations");
         locationsDB.child(district).setValue(true);
     }
-    public static String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
+
+    public static String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference broadcastsDB;
         broadcastsDB = database.getReference("Broadcasts");
         String id = uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, "AdminId",false, true, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
     }
-    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, String downloadUri, int noOfComments, String circleId){
-            FirebaseDatabase database;
-            database = FirebaseDatabase.getInstance();
-            DatabaseReference broadcastsDB;
-            broadcastsDB = database.getReference("Broadcasts");
-            String id = uuidGet();
-            Broadcast broadcast;
-            Poll poll = new Poll(text, pollOptions, null);
-            if(downloadUri!=null)
-                broadcast = new Broadcast(id, null, null, downloadUri, creatorName,"AdminId",true,true, System.currentTimeMillis()+offsetTimeStamp, poll, "default",0, noOfComments);
-            else
-                broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId",true, false, System.currentTimeMillis()+offsetTimeStamp, poll, "default", 0, noOfComments);
-            broadcastsDB.child(circleId).child(id).setValue(broadcast);
-            return id;
-        }
-        public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId){
-            FirebaseDatabase database;
-            database = FirebaseDatabase.getInstance();
-            DatabaseReference broadcastsDB;
-            broadcastsDB = database.getReference("Broadcasts");
-            String id = uuidGet();
-            Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId",false,false, System.currentTimeMillis()+offsetTimeStamp, null, "default", 0, noOfComments);
-            broadcastsDB.child(circleId).child(id).setValue(broadcast);
-            return id;
-        }
+
+    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, String downloadUri, int noOfComments, String circleId) {
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        String id = uuidGet();
+        Broadcast broadcast;
+        Poll poll = new Poll(text, pollOptions, null);
+        if (downloadUri != null)
+            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
+        else
+            broadcast = new Broadcast(id, null, null, null, creatorName, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
+        broadcastsDB.child(circleId).child(id).setValue(broadcast);
+        return id;
+    }
+
+    public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        String id = uuidGet();
+        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
+        broadcastsDB.child(circleId).child(id).setValue(broadcast);
+        return id;
+    }
 
     public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
         FirebaseDatabase database;
@@ -287,7 +294,7 @@ public class HelperMethods {
         HashMap<String, Boolean> circleIntTags = new HashMap<>();
         circleIntTags.put("sample", true);
         String id = uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         circlesDB.child(id).setValue(circle);
         return id;
     }
@@ -310,19 +317,16 @@ public class HelperMethods {
         DatabaseReference reportAbuseDB;
         reportAbuseDB = database.getReference("ReportAbuse");
         String id = uuidGet();
-        ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID , creatorID, userID, reportType);
-        if (currentuser.getCurrentUser().getUid() == creatorID)
-        {
-            Toast.makeText(context,"Stop Reporting your own Content",Toast.LENGTH_SHORT).show();
-        }
-        else
-            {
+        ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID, creatorID, userID, reportType);
+        if (currentuser.getCurrentUser().getUid() == creatorID) {
+            Toast.makeText(context, "Stop Reporting your own Content", Toast.LENGTH_SHORT).show();
+        } else {
 
-                reportAbuseDB.child(id).setValue(reportAbuse);
-            }
+            reportAbuseDB.child(id).setValue(reportAbuse);
+        }
     }
 
-    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID){
+    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID) {
         reportAbuseDialog.setContentView(R.layout.report_abuse_popup);
         final Button reportButton = reportAbuseDialog.findViewById(R.id.report_abuse_confirm_button);
         final Button cancel = reportAbuseDialog.findViewById(R.id.report_abuse_cancel_button);
@@ -332,56 +336,30 @@ public class HelperMethods {
 
         reportButton.setOnClickListener(view -> {
             String reportType = "";
-            if(spam_check.isChecked())
-                reportType = reportType +"spam";
-            if(violent_check.isChecked())
-                reportType = reportType +"violence";
-            if(sex_check.isChecked())
-                reportType = reportType +"sex";
-            reportAbuseDialog.dismiss();
-            HelperMethods.createReportAbuse(context,circleID,broadcastID,commentID,creatorID,userID,reportType);
-            Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
+            if (spam_check.isChecked())
+                reportType = "spam";
+            if (violent_check.isChecked())
+                reportType = "violence";
+            if (sex_check.isChecked())
+                reportType = "sex";
+
+            if(!reportType.equals("")){
+                reportAbuseDialog.dismiss();
+                createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
+                Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Please choose the reason", Toast.LENGTH_SHORT).show();
+            }
         });
 
         cancel.setOnClickListener(view -> {
             reportAbuseDialog.dismiss();
         });
 
+        reportAbuseDialog.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, context.getResources().getDimensionPixelSize(R.dimen.popup_height)); //width,height
+        reportAbuseDialog.getWindow().setGravity(Gravity.CENTER);
         reportAbuseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         reportAbuseDialog.show();
-    }
-    public static void showAdapterReportAbusePopup(Context context, View view, String circleID, String broadcastID, String commentID, String creatorID, String userID) {
-        View popupView = LayoutInflater.from(context ).inflate(R.layout.report_abuse_popup, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView,  WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-        LayoutInflater li = LayoutInflater.from(context);
-        Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
-        Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
-        CheckBox spam_check = (CheckBox) popupView.findViewById(R.id.report_spam);
-        CheckBox violent_check = (CheckBox) popupView.findViewById(R.id.report_violent);
-        CheckBox sex_check = (CheckBox) popupView.findViewById(R.id.report_sex);
-
-        reportConfirmButton.setOnClickListener(v -> {
-            String reportType = "";
-            if(spam_check.isChecked())
-                reportType = reportType +"spam";
-            if(violent_check.isChecked())
-                reportType = reportType +"violence";
-            if(sex_check.isChecked())
-                reportType = reportType +"sex";
-            HelperMethods.createReportAbuse(context,circleID, broadcastID,commentID,creatorID,userID,reportType);
-            Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
-            popupWindow.dismiss();
-        });
-
-        btnDismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-        popupWindow.showAsDropDown(popupView, 0, 0);
     }
 
     public static String uuidGet() {
@@ -395,9 +373,9 @@ public class HelperMethods {
                 .into(profilePic);
     }
 
-    public static boolean circleFitsWithinFilterContraints(List<String> filters, Circle circle){
+    public static boolean circleFitsWithinFilterContraints(List<String> filters, Circle circle) {
         boolean circleFits = false;
-        if(filters != null && filters.contains(circle.getCategory()))
+        if (filters != null && filters.contains(circle.getCategory()))
             circleFits = true;
 
         return circleFits;
@@ -550,7 +528,7 @@ public class HelperMethods {
         });
     }
 
-    public static void setUserProfileImage(User user, Context context, CircleImageView profileImageView){
+    public static void setUserProfileImage(User user, Context context, CircleImageView profileImageView) {
         if (user.getProfileImageLink().length() > 10) {
             Glide.with(context)
                     .load(user.getProfileImageLink())
@@ -568,4 +546,15 @@ public class HelperMethods {
         }
 
     }
+
+    public static void vibrate(Context context) {
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(40);
+        }
+    }
+
 }

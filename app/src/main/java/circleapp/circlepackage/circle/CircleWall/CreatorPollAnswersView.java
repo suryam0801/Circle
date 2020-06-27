@@ -77,6 +77,9 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
             totalValue += entry.getValue();
 
+
+        if(totalValue == 0)
+            totalValue = 1;
         pieChart.setUsePercentValues(true);
         pieChart.setDescription(null);
         List<PieEntry> pollValues = new ArrayList<>();

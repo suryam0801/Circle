@@ -40,7 +40,7 @@ public class NotificationAdapter extends BaseAdapter {
     private AppCompatImageView foregroundIcon;
     CircleImageView profilePic;
 
-    public NotificationAdapter(Context mContext, List<Notification> NotificationList){
+    public NotificationAdapter(Context mContext, List<Notification> NotificationList) {
         this.mContext = mContext;
         this.NotificationList = NotificationList;
     }
@@ -82,15 +82,15 @@ public class NotificationAdapter extends BaseAdapter {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
 
-        if(seconds < 60) {
+        if (seconds < 60) {
             timeElapsedTextView.setText(seconds + "s ago");
-        } else if (minutes > 1 && minutes < 60){
+        } else if (minutes > 1 && minutes < 60) {
             timeElapsedTextView.setText(minutes + "m ago");
         } else if (hours > 1 && hours < 24) {
             timeElapsedTextView.setText(hours + "h ago");
-        } else if (days > 1 && days < 365 ) {
-            if(days > 7)
-                timeElapsedTextView.setText((days/7) + "w ago");
+        } else if (days > 1 && days < 365) {
+            if (days > 7)
+                timeElapsedTextView.setText((days / 7) + "w ago");
             else
                 timeElapsedTextView.setText(days + "d ago");
         }
@@ -99,14 +99,14 @@ public class NotificationAdapter extends BaseAdapter {
         gd.setShape(GradientDrawable.OVAL);
         gd.setCornerRadius(15.0f); // border corner radius
 
-        SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join "  + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
-        SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join "  + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
+        SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
+        SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
         SpannableStringBuilder newBroadCast = new SpannableStringBuilder("New BroadCast has been added to " + notif.getCircleName()); //start index: 32
         SpannableStringBuilder newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
         SpannableStringBuilder new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
-        SpannableStringBuilder report_result_accepted = new SpannableStringBuilder("The "+notif.getType()+" you reported has been removed. Thanks for keeping the platform safe!");
-        SpannableStringBuilder report_result_rejected = new SpannableStringBuilder("The "+notif.getType()+" you reported has been reviewed and found not to violate community guidelines. Thanks for keeping the platform safe!");
-        SpannableStringBuilder creator_report = new SpannableStringBuilder("The "+notif.getType()+" has been reviewed and found to violate community guidelines. Please refrain from posting such content in the future. Thanks for understanding!");
+        SpannableStringBuilder report_result_accepted = new SpannableStringBuilder("The " + notif.getType() + " you reported has been removed. Thanks for keeping the platform safe!");
+        SpannableStringBuilder report_result_rejected = new SpannableStringBuilder("The " + notif.getType() + " you reported has been reviewed and found not to violate community guidelines. Thanks for keeping the platform safe!");
+        SpannableStringBuilder creator_report = new SpannableStringBuilder("The " + notif.getType() + " has been reviewed and found to violate community guidelines. Please refrain from posting such content in the future. Thanks for understanding!");
 
         ForegroundColorSpan fcsSkyBlue = new ForegroundColorSpan(Color.parseColor("#6CACFF"));
 
@@ -117,7 +117,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Application Accepted");
                 acceptText.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(acceptText);
-                analyticsLogEvents.logEvents(mContext, "accepted_notification","accepted_to_circle","notification");
+                analyticsLogEvents.logEvents(mContext, "accepted_notification", "accepted_to_circle", "notification");
                 break;
             case "Rejected":
                 gd.setColor(Color.parseColor("#FF6161"));
@@ -126,23 +126,20 @@ public class NotificationAdapter extends BaseAdapter {
                 foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_cancel_black_24dp));
                 rejectText.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(rejectText);
-                analyticsLogEvents.logEvents(mContext, "rejected_notification","rejectedto_circle","notification");
+                analyticsLogEvents.logEvents(mContext, "rejected_notification", "rejectedto_circle", "notification");
                 break;
             case "broadcast_added":
                 notificationTitle.setText("New BroadCast Added");
-                if (notif.getCircleId() == "308be3ec-9b1d-4a05-b1ca-e8d71cd0662e")
-                {
+                if (notif.getCircleId() == "308be3ec-9b1d-4a05-b1ca-e8d71cd0662e") {
                     setLogo("");
+                } else {
+                    setLogo(notif.getCircleIcon());
                 }
-                else
-                    {
-                        setLogo(notif.getCircleIcon());
-                    }
                 foregroundIcon.setVisibility(View.GONE);
                 profilePic.setVisibility(View.VISIBLE);
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
-                analyticsLogEvents.logEvents(mContext, "broadcast_added","broadcast_added_new","notification");
+                analyticsLogEvents.logEvents(mContext, "broadcast_added", "broadcast_added_new", "notification");
                 break;
             case "new_user":
                 notificationTitle.setText("Welcome to CIRCLE");
@@ -155,7 +152,7 @@ public class NotificationAdapter extends BaseAdapter {
                 //foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_person_add_black_24dp));
                 new_applicant.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(new_applicant);
-                analyticsLogEvents.logEvents(mContext, "new_applicant","new_applicant_to_circle","notification");
+                analyticsLogEvents.logEvents(mContext, "new_applicant", "new_applicant_to_circle", "notification");
                 break;
             case "report_result_accepted":
                 gd.setColor(Color.parseColor("#D856FF"));
@@ -163,7 +160,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Reported Content Removed!");
                 report_result_accepted.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(report_result_accepted);
-                analyticsLogEvents.logEvents(mContext, "report_accepted","report_accepted_notif","notification");
+                analyticsLogEvents.logEvents(mContext, "report_accepted", "report_accepted_notif", "notification");
                 break;
             case "report_result_rejected":
                 gd.setColor(Color.parseColor("#FF6161"));
@@ -171,7 +168,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Reported Content Not Removed");
                 report_result_rejected.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(report_result_rejected);
-                analyticsLogEvents.logEvents(mContext, "report_rejected","report_rejected_notif","notification");
+                analyticsLogEvents.logEvents(mContext, "report_rejected", "report_rejected_notif", "notification");
                 break;
             case "creator_report":
                 setLogo(notif.getCircleIcon());
@@ -180,7 +177,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Your Circle Violated Our Policies");
                 creator_report.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(creator_report);
-                analyticsLogEvents.logEvents(mContext, "creator_report","creator_report_notif","notification");
+                analyticsLogEvents.logEvents(mContext, "creator_report", "creator_report_notif", "notification");
                 break;
         }
 
@@ -188,8 +185,7 @@ public class NotificationAdapter extends BaseAdapter {
 
     }
 
-    public void  setLogo(String circleIcon)
-    {
+    public void setLogo(String circleIcon) {
         if (circleIcon.length() > 10) {
             Glide.with(mContext)
                     .load(circleIcon)

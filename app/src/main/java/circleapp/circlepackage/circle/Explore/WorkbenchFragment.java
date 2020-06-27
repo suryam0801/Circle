@@ -43,7 +43,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
  * Use the {@link WorkbenchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkbenchFragment extends Fragment{
+public class WorkbenchFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -56,7 +56,6 @@ public class WorkbenchFragment extends Fragment{
     private DatabaseReference circlesDB, userDB;
     private User user;
     private LinearLayout emptyDisplay;
-
 
     public WorkbenchFragment() {
         // Required empty public constructor
@@ -98,24 +97,18 @@ public class WorkbenchFragment extends Fragment{
         ImageButton create = view.findViewById(R.id.placeholder_create_circle_layout);
 
         //remove placeholder
-        if(user.getActiveCircles()==0&&user.getCreatedCircles()==0){
+        if (user.getActiveCircles() == 0 && user.getCreatedCircles() == 0) {
             emptyDisplay.setVisibility(View.VISIBLE);
         }
 
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
-                getActivity().finish();
-            }
+        create.setOnClickListener(view12 -> {
+            startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
+            getActivity().finish();
         });
 
-        explore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ExploreFragment()).commit();
-            }
+        explore.setOnClickListener(view1 -> {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new ExploreFragment()).commit();
         });
 
         setWorkbenchTabs(view);
@@ -160,7 +153,7 @@ public class WorkbenchFragment extends Fragment{
                 boolean containsCircle = HelperMethods.listContainsCircle(workbenchCircleList, circle);
 
                 if (containsCircle) {
-                    workbenchCircleList.set(position,circle);
+                    workbenchCircleList.set(position, circle);
                     wbadapter.notifyItemChanged(position);
                 }
             }

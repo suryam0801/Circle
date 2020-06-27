@@ -105,13 +105,12 @@ public class CircleInformation extends AppCompatActivity {
 
 
         //setting members display
-        if (circle.getAcceptanceType().equalsIgnoreCase("review"))
+        if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
+            noMembersDisplay.setVisibility(View.GONE);
             noPermissionToViewMembers.setVisibility(View.VISIBLE);
-
-        if (circle.getMembersList() != null) {
+        } else if (circle.getMembersList() != null) {
             if (circle.getMembersList().keySet().contains(user.getUserId()))
                 noPermissionToViewMembers.setVisibility(View.GONE);
-
             loadMembersList();
 
         } else {
