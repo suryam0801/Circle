@@ -191,7 +191,6 @@
                     android:textColorHint="#D1D1D1"
                     android:textSize="16dp"></EditText>
 
-
             </LinearLayout>
 
         </LinearLayout>
@@ -199,30 +198,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="10dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Circle Type"
-                    android:textColor="#C3BDBD"
-                    android:textSize="12dp"></TextView>
-
-                <Button
-                    android:id="@+id/circle_type_info_button"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:background="@drawable/ic_info_outline_black_24dp"></Button>
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="How do you want people to join?"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
 
             <TextView
                 android:id="@+id/circle_type_tip_prompt"
@@ -251,8 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="50"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Public"
-                    android:checked="true"
+                    android:text="Anyone can join"
                     android:textColor="@color/black"
                     android:theme="@style/MyRadioButtonTwo"></RadioButton>
 
@@ -262,7 +248,56 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="50"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Private"
+                    android:text="They have to apply"
+                    android:textColor="@color/black"
+                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/circle_visibility_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Do you want everybody in coimbatore to see your circle?"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <RadioGroup
+                android:id="@+id/visibilityRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/visibleToAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Yes"
+                    android:checked="true"
+                    android:textColor="@color/black"
+                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
+
+                <RadioButton
+                    android:id="@+id/visibleByOnlyShareLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="No"
                     android:textColor="@color/black"
                     android:theme="@style/MyRadioButtonTwo"></RadioButton>
             </RadioGroup>

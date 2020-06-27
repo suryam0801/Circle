@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Circle {
-    private String id, name, description, acceptanceType, creatorID, creatorName, circleDistrict, circleWard, category,backgroundImageLink;
+    private String id, name, description, acceptanceType, visibility, creatorID, creatorName, circleDistrict, circleWard, category,backgroundImageLink;
     private HashMap<String, Boolean> membersList, applicantsList;
     private long timestamp;
     private int noOfBroadcasts, noOfNewDiscussions;
@@ -13,7 +13,7 @@ public class Circle {
 
     }
 
-    public Circle(String id, String name, String description, String acceptanceType, String creatorID,
+    public Circle(String id, String name, String description, String acceptanceType, String visibility, String creatorID,
                   String creatorName, String category, String backgroundImageLink,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
                   String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, int noOfNewDiscussions) {
@@ -22,6 +22,7 @@ public class Circle {
         this.description = description;
         this.backgroundImageLink = backgroundImageLink;
         this.acceptanceType = acceptanceType;
+        this.visibility = visibility;
         this.creatorID = creatorID;
         this.creatorName = creatorName;
         this.category = category;
@@ -149,6 +150,13 @@ public class Circle {
 
     public void setBackgroundImageLink(String backgroundImageLink) { this.backgroundImageLink = backgroundImageLink; }
 
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
 
     @Override
     public String toString() {
@@ -157,12 +165,13 @@ public class Circle {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", acceptanceType='" + acceptanceType + '\'' +
+                ", visibility='" + visibility + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorName='" + creatorName + '\'' +
-                ", category='" + category + '\'' +
-                ", backgroundImageLink='" + backgroundImageLink + '\'' +
                 ", circleDistrict='" + circleDistrict + '\'' +
                 ", circleWard='" + circleWard + '\'' +
+                ", category='" + category + '\'' +
+                ", backgroundImageLink='" + backgroundImageLink + '\'' +
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +
                 ", timestamp=" + timestamp +

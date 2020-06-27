@@ -156,7 +156,7 @@ public class ExploreFragment extends Fragment {
                 boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
                 boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
 
-                if (!isMember) {
+                if (!isMember && circle.getVisibility().equals("Everybody")) {
 
                     if (circle.getCreatorName().equals("The Circle Team")) {
                         exploreCircleList.add(0, circle);
@@ -193,7 +193,6 @@ public class ExploreFragment extends Fragment {
                         exploreCircleList.set(position, circle);
                         adapter.notifyItemChanged(position);
                     }
-
                 }
             }
 
