@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Login;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -8,7 +9,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Trace;
 import android.util.Log;
@@ -31,6 +35,7 @@ public class EntryPage extends AppCompatActivity{
     AnalyticsLogEvents analyticsLogEvents;
     Trace myTrace;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -6,12 +6,18 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     AnalyticsLogEvents analyticsLogEvents;
     private NotificationManagerCompat notificationManager;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +60,17 @@ public class MainActivity extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(this);
 
         database = FirebaseDatabase.getInstance();
+
+        //Intimate the user for his low internet speed
+        ConnectivityManager connectivityManager = (ConnectivityManager)this.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        int downSpeed = nc.getLinkDownstreamBandwidthKbps();
+        int upSpeed = nc.getLinkUpstreamBandwidthKbps();
+        Log.d(TAG,"Intenet Speed ::"+ downSpeed);
+        if (downSpeed <10240)
+        {
+            Toast.makeText(this,"Your Internet speed is very Low",Toast.LENGTH_SHORT).show();
+        }
 
         SharedPreferences persistenceCheckPrefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
         if (persistenceCheckPrefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {

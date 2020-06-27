@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -80,6 +84,7 @@ public class OtpActivity extends AppCompatActivity {
     String doc_id;
     ProgressDialog progressDialog;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +123,16 @@ public class OtpActivity extends AppCompatActivity {
         mVerifyBtn.setClickable(false);
         mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
         mVerifyBtn.setTextColor(R.color.black);
-
+//Intimate the user for his low internet speed
+        ConnectivityManager connectivityManager = (ConnectivityManager)this.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        int downSpeed = nc.getLinkDownstreamBandwidthKbps();
+        int upSpeed = nc.getLinkUpstreamBandwidthKbps();
+        Log.d("OtpActivity","Intenet Speed ::"+ downSpeed);
+        if (downSpeed <10240)
+        {
+            Toast.makeText(this,"Your Internet speed is very Low",Toast.LENGTH_SHORT).show();
+        }
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
@@ -180,6 +194,30 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                new CountDownTimer(900000, 1000) {
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+                                        resendTextView.setText("Resend OTP in: " + counter);
+                                        counter--;
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        resendTextView.setText("Click here to resend OTP");
+                                        resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+                                        resendTextView.setClickable(true);
+                                        resendTextView.setOnClickListener(view -> {
+                                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                    phn_number,
+                                                    15,
+                                                    TimeUnit.SECONDS,
+                                                    OtpActivity.this,
+                                                    mCallbacksresend
+                                            );
+                                            resendTextView.setVisibility(View.GONE);
+                                        });
+                                    }
+                                }.start();
                                 mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
                                 progressDialog.dismiss();
                                 mOtpText.requestFocus();
@@ -194,32 +232,6 @@ public class OtpActivity extends AppCompatActivity {
             }
         };
 
-
-
-                new CountDownTimer(900000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                resendTextView.setText("Resend OTP in: " + counter);
-                counter--;
-            }
-
-            @Override
-            public void onFinish() {
-                resendTextView.setText("Click here to resend OTP");
-                resendTextView.setTextColor(Color.parseColor("#6CACFF"));
-                resendTextView.setClickable(true);
-                resendTextView.setOnClickListener(view -> {
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            phn_number,
-                            15,
-                            TimeUnit.SECONDS,
-                            OtpActivity.this,
-                            mCallbacksresend
-                    );
-                    resendTextView.setVisibility(View.GONE);
-                });
-            }
-        }.start();
 
         mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override

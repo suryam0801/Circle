@@ -62,7 +62,7 @@ public class NotificationAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        View v = View.inflate(mContext, R.layout.notification_object, null);
+        View v = View.inflate(this.mContext, R.layout.notification_object, null);
 
         Notification notif = NotificationList.get(position);
         analyticsLogEvents = new AnalyticsLogEvents();
@@ -130,7 +130,14 @@ public class NotificationAdapter extends BaseAdapter {
                 break;
             case "broadcast_added":
                 notificationTitle.setText("New BroadCast Added");
-                setLogo(notif.getCircleIcon());
+                if (notif.getCircleId() == "308be3ec-9b1d-4a05-b1ca-e8d71cd0662e")
+                {
+                    setLogo("");
+                }
+                else
+                    {
+                        setLogo(notif.getCircleIcon());
+                    }
                 foregroundIcon.setVisibility(View.GONE);
                 profilePic.setVisibility(View.VISIBLE);
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -183,9 +190,23 @@ public class NotificationAdapter extends BaseAdapter {
 
     public void  setLogo(String circleIcon)
     {
-        Glide.with(mContext)
-                .load(circleIcon)
-                .into(profilePic);
+        if (circleIcon.length() > 10) {
+            Glide.with(mContext)
+                    .load(circleIcon)
+                    .into(profilePic);
+        } else if (circleIcon.equals("default")) {
+            int profile = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
+            Glide.with(mContext)
+                    .load(ContextCompat.getDrawable(mContext, profile))
+                    .into(profilePic);
+        } else {
+
+            Glide.with(mContext)
+                    .load(circleIcon)
+                    .into(profilePic);
+        }
+
+
     }
 
 
