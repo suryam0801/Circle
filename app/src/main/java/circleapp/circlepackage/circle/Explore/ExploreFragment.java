@@ -135,14 +135,14 @@ public class ExploreFragment extends Fragment {
 
         if (listOfFilters != null) {
             for(String f : listOfFilters)
-                setFilterChips(f, view);
+                setFilterChips(f);
         }
 
-        setCircleTabs(view);
+        setCircleTabs();
         return view;
     }
 
-    private void setCircleTabs(View view) {
+    private void setCircleTabs() {
 
         int index = SessionStorage.getTempIndexStore(getActivity());
 
@@ -200,7 +200,7 @@ public class ExploreFragment extends Fragment {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
                 int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                if (!exploreCircleList.isEmpty()) {
+                if (position != -1) {
                     exploreCircleList.remove(position);
                     adapter.notifyItemRemoved(position);
                 }
@@ -218,7 +218,7 @@ public class ExploreFragment extends Fragment {
         });
     }
 
-    private void setFilterChips(final String name, View viewFragment) {
+    private void setFilterChips(final String name) {
         final Chip chip = new Chip(getContext());
 
         chip.setCloseIcon(getResources().getDrawable(R.drawable.ic_clear_blue_24dp));
@@ -235,7 +235,7 @@ public class ExploreFragment extends Fragment {
             filterDisplay.removeView(chip);
             exploreCircleList.clear();
             adapter.notifyDataSetChanged();
-            setCircleTabs(viewFragment);
+            setCircleTabs();
         });
 
         filterDisplay.addView(chip);

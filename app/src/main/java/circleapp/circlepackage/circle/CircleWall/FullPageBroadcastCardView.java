@@ -182,7 +182,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":
-                    banner.setTextColor(Color.WHITE);
+                    banner.setTextColor(Color.BLACK);
                     parentLayout.setBackgroundColor(Color.WHITE);
                     break;
             }

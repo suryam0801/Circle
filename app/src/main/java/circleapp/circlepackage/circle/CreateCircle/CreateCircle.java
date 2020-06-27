@@ -179,11 +179,18 @@ public class CreateCircle extends AppCompatActivity {
     public void radioButtonCheck(String name, String description) {
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
+        int visibilityId = visibilityGroup.getCheckedRadioButtonId();
+        visibilityButton = findViewById(visibilityId);
         if (radioId != -1) {
             if (acceptanceButton.getText().equals("Anyone can join"))
                 createCircle(name, description, "Public", "Everybody");
-            else
-                createCircle(name, description, "Private", "OnlyShare");
+            else{
+                String visibility = (String) visibilityButton.getText();
+                if(visibility.equals("Yes"))
+                    createCircle(name, description, "Private", "Everybody");
+                else
+                    createCircle(name, description, "Private", "OnlyShare");
+            }
         } else {
 
         }

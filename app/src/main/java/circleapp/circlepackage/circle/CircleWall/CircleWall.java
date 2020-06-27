@@ -330,7 +330,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":
-                    circleBannerName.setTextColor(Color.WHITE);
+                    circleBannerName.setTextColor(Color.BLACK);
                     parentLayout.setBackgroundColor(Color.WHITE);
                     break;
             }

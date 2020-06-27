@@ -70,12 +70,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HelperMethods {
 
     public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
-        int position = 0;
+        int counter = 0;
+        int position = -1;
         for (Circle c : circleList) {
             if (c.getId().equals(circle.getId()))
-                return position;
+                position = counter;
 
-            position++;
+            counter++;
         }
         return position;
     }
