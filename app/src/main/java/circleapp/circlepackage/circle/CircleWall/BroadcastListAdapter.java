@@ -3,6 +3,8 @@ package circleapp.circlepackage.circle.CircleWall;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,13 +14,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -119,6 +125,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
+        viewHolder.reportAbuseBroadcast.setOnClickListener(view ->{
+            HelperMethods.showAdapterReportAbusePopup(context,view,"broadcast",broadcast.getId(),broadcast.getCreatorID(),user.getUserId());
+        });
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
@@ -257,6 +266,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
     }
 
+
     @Override
     public int getItemCount() {
         return broadcastList.size();
@@ -291,6 +301,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private FirebaseDatabase database;
         private DatabaseReference broadcastDB;
         private Button viewPollAnswers;
+        private ImageButton reportAbuseBroadcast;
         private PhotoView imageDisplay;
         private RelativeLayout imageDisplayHolder;
         private ProgressBar imageLoadProgressBar;
@@ -312,6 +323,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             imageDisplay = view.findViewById(R.id.uploaded_image_display_broadcast);
             imageDisplayHolder = view.findViewById(R.id.image_display_holder);
             imageLoadProgressBar = view.findViewById(R.id.image_progress);
+            reportAbuseBroadcast = view.findViewById(R.id.broadcast_report_abuse_button);
+
         }
 
         public String getCurrentUserPollOption() {

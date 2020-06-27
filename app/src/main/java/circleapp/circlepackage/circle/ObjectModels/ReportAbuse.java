@@ -1,8 +1,21 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class ReportAbuse {
-    String reportAbuseID, contentType, creatorID, userID;
+    String reportAbuseID, contentType, contentID, creatorID, userID;
 
+    public ReportAbuse() {
+    }
+
+    public ReportAbuse(String reportAbuseId, String contentType, String contentID, String creatorID, String userID){
+        this.reportAbuseID = reportAbuseId;
+        this.contentType = contentType;
+        this.contentID = contentID;
+        this.creatorID = creatorID;
+        this.userID = userID;
+    }
+    public String getContentID() { return contentID; }
+
+    public void setContentID(String contentID) { this.contentID = contentID; }
     public String getReportAbuseId() {
         return reportAbuseID;
     }
@@ -10,14 +23,6 @@ public class ReportAbuse {
     public void setReportAbuseId(String reportAbuseId) {
         this.reportAbuseID = reportAbuseId;
     }
-
-    public ReportAbuse(String reportAbuseId, String contentType, String creatorID, String userID){
-        this.reportAbuseID = reportAbuseId;
-        this.contentType = contentType;
-        this.creatorID = creatorID;
-        this.userID = userID;
-    }
-
     public String getUserID() {
         return userID;
     }
@@ -32,14 +37,6 @@ public class ReportAbuse {
 
     public void setCreatorID(String creatorID) {
         this.creatorID = creatorID;
-    }
-
-    public String getReportAbuseID() {
-        return reportAbuseID;
-    }
-
-    public void setReportAbuseID(String reportAbuseID) {
-        this.reportAbuseID = reportAbuseID;
     }
 
     public String getContentType() {

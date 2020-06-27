@@ -113,7 +113,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay, imageCreateView, pollImageUploadInitiation;
     private TextView circleBannerName, broadcastHeader, addPhotoText, pollAddPhotoText;
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
-    private Dialog createBroadcastPopup, confirmationDialog;
+    private Dialog createBroadcastPopup, confirmationDialog, reportAbuseDialog;
     private ImageView addPhoto, pollAddPhoto;
     private RelativeLayout photoUploadButtonView, pollUploadButtonView, parentLayout;
     FloatingActionMenu floatingActionMenu;
@@ -133,6 +133,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
         confirmationDialog = new Dialog(CircleWall.this);
+        reportAbuseDialog = new Dialog(CircleWall.this);
         user = SessionStorage.getUser(CircleWall.this);
         circle = SessionStorage.getCircle(CircleWall.this);
 
@@ -234,6 +235,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         HelperMethods.showShareCirclePopup(circle, CircleWall.this);
                         break;
                     case "Report Abuse":
+                        HelperMethods.showReportAbusePopup(reportAbuseDialog,CircleWall.this,"circle",circle.getId(), circle.getCreatorName(), user.getUserId());
                         break;
                     case "Exit circle":
                         break;
