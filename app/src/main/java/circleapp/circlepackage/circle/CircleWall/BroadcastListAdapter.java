@@ -126,7 +126,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             //null value for get new timestamp comments for particular broadcast
         }
         viewHolder.reportAbuseBroadcast.setOnClickListener(view ->{
-            HelperMethods.showAdapterReportAbusePopup(context,view,"broadcast",broadcast.getId(),broadcast.getCreatorID(),user.getUserId());
+            HelperMethods.showAdapterReportAbusePopup(context,view,circle.getId(),broadcast.getId(),"",broadcast.getCreatorID(),user.getUserId(),"");
         });
 
         //view discussion onclick

@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -301,23 +302,23 @@ public class HelperMethods {
         commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
 
-    public static void createReportAbuse(String contentType, String contentID, String creatorID, String userID) {
+    public static void createReportAbuse(String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference reportAbuseDB;
         reportAbuseDB = database.getReference("ReportAbuse");
         String id = uuidGet();
-        ReportAbuse reportAbuse = new ReportAbuse(id, contentType, contentID, creatorID, userID);
+        ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID , creatorID, userID, reportType);
         reportAbuseDB.child(id).setValue(reportAbuse);
     }
-    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String contentType, String contentID, String creatorID, String userID){
+    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType){
         reportAbuseDialog.setContentView(R.layout.report_abuse_popup);
         final Button reportButton = reportAbuseDialog.findViewById(R.id.report_abuse_confirm_button);
         final Button cancel = reportAbuseDialog.findViewById(R.id.report_abuse_cancel_button);
 
         reportButton.setOnClickListener(view -> {
             reportAbuseDialog.dismiss();
-            HelperMethods.createReportAbuse(contentType,contentID,creatorID,userID);
+            HelperMethods.createReportAbuse(circleID,broadcastID,commentID,creatorID,userID,reportType);
             Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
         });
 
@@ -328,16 +329,17 @@ public class HelperMethods {
         reportAbuseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         reportAbuseDialog.show();
     }
-    public static void showAdapterReportAbusePopup(Context context, View view, String contentType, String contentId, String creatorID, String userID) {
+    public static void showAdapterReportAbusePopup(Context context, View view, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
         View popupView = LayoutInflater.from(context ).inflate(R.layout.report_abuse_popup, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        final PopupWindow popupWindow = new PopupWindow(popupView,  WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        LayoutInflater li = LayoutInflater.from(context);
         Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
         Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
 
         reportConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HelperMethods.createReportAbuse(contentType,contentId,creatorID,userID);
+                HelperMethods.createReportAbuse(circleID, broadcastID,commentID,creatorID,userID,reportType);
                 Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
                 popupWindow.dismiss();
             }
