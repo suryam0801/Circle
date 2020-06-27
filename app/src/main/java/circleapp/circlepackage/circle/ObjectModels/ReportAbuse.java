@@ -1,8 +1,21 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class ReportAbuse {
-    String reportAbuseID, circleID, creatorID, userID;
+    String reportAbuseID, contentType, contentID, creatorID, userID;
 
+    public ReportAbuse() {
+    }
+
+    public ReportAbuse(String reportAbuseId, String contentType, String contentID, String creatorID, String userID){
+        this.reportAbuseID = reportAbuseId;
+        this.contentType = contentType;
+        this.contentID = contentID;
+        this.creatorID = creatorID;
+        this.userID = userID;
+    }
+    public String getContentID() { return contentID; }
+
+    public void setContentID(String contentID) { this.contentID = contentID; }
     public String getReportAbuseId() {
         return reportAbuseID;
     }
@@ -10,14 +23,6 @@ public class ReportAbuse {
     public void setReportAbuseId(String reportAbuseId) {
         this.reportAbuseID = reportAbuseId;
     }
-
-    public ReportAbuse(String reportAbuseId, String circleId, String creatorID, String userID){
-        this.reportAbuseID = reportAbuseId;
-        this.circleID = circleId;
-        this.creatorID = creatorID;
-        this.userID = userID;
-    }
-
     public String getUserID() {
         return userID;
     }
@@ -34,18 +39,19 @@ public class ReportAbuse {
         this.creatorID = creatorID;
     }
 
-    public String getCircleId() {
-        return circleID;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setCircleId(String circleId) {
-        this.circleID = circleId;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
+
     @Override
     public String toString() {
         return "ReportAbuse{" +
                 "reportAbuseID='" + reportAbuseID + '\'' +
-                ", circleID='" + circleID + '\'' +
+                ", contentType='" + contentType + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", userID='" + userID + '\'' +
                 '}';

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    android:background="@drawable/create_broadcast_popup_background"
+    android:paddingTop="27dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@drawable/ic_report_abuse_broadcast">
+        </ImageView>
+
+        <TextView
+            android:id="@+id/remove_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="16dp"
+            android:layout_marginLeft="15.5dp"
+            android:textColor="@color/black"
+            android:text="Are you sure?">
+        </TextView>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/remove_dialog_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Are you sure this content violates circle policies?"
+        android:textColor="#828282"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/roboto_regular"></TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_weight="90">
+        </View>
+
+        <Button
+            android:layout_width="92dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            android:background="@drawable/unpressable_button"
+            android:textColor="#6CACFF"
+            android:fontFamily="@font/roboto_medium"
+            android:layout_marginRight="12dp"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:id="@+id/report_abuse_cancel_button"
+            android:layout_marginBottom="20dp">
+        </Button>
+
+        <Button
+            android:id="@+id/report_abuse_confirm_button"
+            android:layout_width="92dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/remove_button"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Report"
+            android:textAllCaps="false"
+            android:textColor="@color/white"></Button>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -627,7 +627,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(i);
             Log.d(TAG, "Intent lines are executed...");
-//            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
+            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
 //            sendnotify();
             db.collection("Users")
                     .document(userId)

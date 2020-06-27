@@ -1,14 +1,5 @@
 import com.google.gms.googleservices.GoogleServicesPlugin
 
-buildscript {
-    repositories {
-        maven { url 'https://plugins.gradle.org/m2/'}
-    }
-    dependencies {
-        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.6, 0.99.99]'
-    }
-}
-apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 
 repositories {
     maven { url 'https://maven.google.com' }
@@ -119,7 +110,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth-api-phone:17.0.0'
 
 
-    implementation 'com.onesignal:OneSignal:[3.13.0, 3.99.99]'
 
     //camera
     implementation 'com.karumi:dexter:5.0.0'

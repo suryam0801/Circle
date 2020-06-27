@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Helpers;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
@@ -11,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -18,14 +20,18 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -295,14 +301,56 @@ public class HelperMethods {
         commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
 
-    public static void createReportAbuse(String circleId, String creatorId, String userId) {
+    public static void createReportAbuse(String contentType, String contentID, String creatorID, String userID) {
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         DatabaseReference reportAbuseDB;
         reportAbuseDB = database.getReference("ReportAbuse");
         String id = uuidGet();
-        ReportAbuse reportAbuse = new ReportAbuse(id, circleId, creatorId, userId);
+        ReportAbuse reportAbuse = new ReportAbuse(id, contentType, contentID, creatorID, userID);
         reportAbuseDB.child(id).setValue(reportAbuse);
+    }
+    public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String contentType, String contentID, String creatorID, String userID){
+        reportAbuseDialog.setContentView(R.layout.report_abuse_popup);
+        final Button reportButton = reportAbuseDialog.findViewById(R.id.report_abuse_confirm_button);
+        final Button cancel = reportAbuseDialog.findViewById(R.id.report_abuse_cancel_button);
+
+        reportButton.setOnClickListener(view -> {
+            reportAbuseDialog.dismiss();
+            HelperMethods.createReportAbuse(contentType,contentID,creatorID,userID);
+            Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
+        });
+
+        cancel.setOnClickListener(view -> {
+            reportAbuseDialog.dismiss();
+        });
+
+        reportAbuseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        reportAbuseDialog.show();
+    }
+    public static void showAdapterReportAbusePopup(Context context, View view, String contentType, String contentId, String creatorID, String userID) {
+        View popupView = LayoutInflater.from(context ).inflate(R.layout.report_abuse_popup, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
+        Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
+
+        reportConfirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HelperMethods.createReportAbuse(contentType,contentId,creatorID,userID);
+                Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
+                popupWindow.dismiss();
+            }
+        });
+
+        btnDismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        popupWindow.showAsDropDown(popupView, 0, 0);
     }
 
     public static String uuidGet() {

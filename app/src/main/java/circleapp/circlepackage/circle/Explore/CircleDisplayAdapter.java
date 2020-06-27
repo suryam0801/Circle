@@ -189,7 +189,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
         private LinearLayout container, shareLayout;
         private ImageView bannerImage;
-        private ImageButton shareButton;
+        private ImageButton shareButton, reportAbuseBroadcast;;
         private Button join;
         CircleImageView circleLogo;
 
@@ -206,6 +206,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             categoryDisplay = view.findViewById(R.id.circle_category);
             circleLogo = view.findViewById(R.id.explore_circle_logo);
             bannerImage = view.findViewById(R.id.circle_banner_image);
+            reportAbuseBroadcast = view.findViewById(R.id.explore_adapter_report_abuse_button);
         }
     }
 

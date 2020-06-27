@@ -14,7 +14,6 @@
     android:id="@id/container"
     android:orientation="vertical"
     android:scaleType="fitXY">
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="156dp">
@@ -22,7 +21,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+            <RelativeLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/explore_adapter_report_abuse_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/ic_report_abuse_red"></ImageButton></RelativeLayout>
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
