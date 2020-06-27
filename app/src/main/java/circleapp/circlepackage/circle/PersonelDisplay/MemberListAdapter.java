@@ -70,7 +70,7 @@ public class MemberListAdapter extends BaseAdapter {
 
         User user = SessionStorage.getUser((Activity) mContext);
 
-        HelperMethods.setUserProfileImage(user, mContext, profPic);
+        HelperMethods.setUserProfileImage(user, mContext.getApplicationContext(), profPic);
 
         //Set text for TextView
         final String nameDisplay = member.getName();
