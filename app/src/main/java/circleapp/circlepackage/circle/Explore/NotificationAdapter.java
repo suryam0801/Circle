@@ -129,8 +129,8 @@ public class NotificationAdapter extends BaseAdapter {
                 analyticsLogEvents.logEvents(mContext, "rejected_notification","rejectedto_circle","notification");
                 break;
             case "broadcast_added":
-                setLogo(notif.getCircleIcon());
                 notificationTitle.setText("New BroadCast Added");
+                setLogo(notif.getCircleIcon());
                 foregroundIcon.setVisibility(View.GONE);
                 profilePic.setVisibility(View.VISIBLE);
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -154,23 +154,24 @@ public class NotificationAdapter extends BaseAdapter {
                 gd.setColor(Color.parseColor("#D856FF"));
                 backgroundColor.setBackground(gd);
                 notificationTitle.setText("Reported Content Removed!");
-                report_result_accepted.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                report_result_accepted.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(report_result_accepted);
                 analyticsLogEvents.logEvents(mContext, "report_accepted","report_accepted_notif","notification");
                 break;
             case "report_result_rejected":
-                gd.setColor(Color.parseColor("#D856FF"));
+                gd.setColor(Color.parseColor("#FF6161"));
                 backgroundColor.setBackground(gd);
                 notificationTitle.setText("Reported Content Not Removed");
-                report_result_rejected.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                report_result_rejected.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(report_result_rejected);
                 analyticsLogEvents.logEvents(mContext, "report_rejected","report_rejected_notif","notification");
                 break;
             case "creator_report":
-                gd.setColor(Color.parseColor("#D856FF"));
-                backgroundColor.setBackground(gd);
+                setLogo(notif.getCircleIcon());
+                foregroundIcon.setVisibility(View.GONE);
+                profilePic.setVisibility(View.VISIBLE);
                 notificationTitle.setText("Your Circle Violated Our Policies");
-                creator_report.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                creator_report.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(creator_report);
                 analyticsLogEvents.logEvents(mContext, "creator_report","creator_report_notif","notification");
                 break;
