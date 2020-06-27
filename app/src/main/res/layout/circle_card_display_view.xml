@@ -24,25 +24,27 @@
             android:orientation="horizontal">
             <RelativeLayout android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-            <ImageButton
-                android:id="@+id/explore_adapter_report_abuse_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/ic_report_abuse_red"></ImageButton></RelativeLayout>
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:cardCornerRadius="8dp"
-                android:elevation="10dp">
-                <ImageView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
-                    android:id="@+id/circle_banner_image">
-                </ImageView>
-            </androidx.cardview.widget.CardView>
+                    android:layout_height="match_parent"
+                    app:cardCornerRadius="8dp"
+                    android:elevation="10dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:id="@+id/circle_banner_image">
+                    </ImageView>
+                    <ImageButton
+                        android:id="@+id/explore_adapter_report_abuse_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="350dp"
+                        android:background="@drawable/ic_report_abuse_red"></ImageButton>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
         </LinearLayout>
 
         <de.hdodenhof.circleimageview.CircleImageView
