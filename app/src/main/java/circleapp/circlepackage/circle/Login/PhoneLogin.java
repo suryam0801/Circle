@@ -4,22 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -27,28 +19,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.mikepenz.fastadapter.listeners.OnClickListener;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
@@ -138,6 +122,7 @@ public class PhoneLogin extends AppCompatActivity {
         });
 
         mGenerateBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
@@ -146,6 +131,8 @@ public class PhoneLogin extends AppCompatActivity {
                 String country_code = mCountryCode.getText().toString();
                 String phone_number = mPhoneNumber.getText().toString();
 
+                mGenerateBtn.setBackgroundResource(R.drawable.unpressable_button);
+                mGenerateBtn.setTextColor(R.color.black);
 
                 //combining the country code and mobile number
                 complete_phone_number = country_code + phone_number;
@@ -261,6 +248,7 @@ public class PhoneLogin extends AppCompatActivity {
         super.onResume();
 
         mGenerateBtn.setEnabled(true);
+        mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
 
     }
 
@@ -269,5 +257,6 @@ public class PhoneLogin extends AppCompatActivity {
         super.onRestart();
 
         mGenerateBtn.setEnabled(true);
+        mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
     }
 }
