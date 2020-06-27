@@ -172,18 +172,6 @@ public class CreateCircle extends AppCompatActivity {
             if (photo == 0)
                 selectImage();
         });
-
-        acceptanceGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                RadioButton checkButton = findViewById(i);
-                if (checkButton.getText().equals("Anyone can join"))
-                    circleVisibilityDisplay.setVisibility(View.GONE);
-                else
-                    circleVisibilityDisplay.setVisibility(View.VISIBLE);
-
-            }
-        });
     }
 
     public void radioButtonCheck(String name, String description) {
@@ -191,17 +179,20 @@ public class CreateCircle extends AppCompatActivity {
         acceptanceButton = findViewById(radioId);
         int visibilityId = visibilityGroup.getCheckedRadioButtonId();
         visibilityButton = findViewById(visibilityId);
-        if (radioId != -1) {
-            if (acceptanceButton.getText().equals("Anyone can join"))
-                createCircle(name, description, "Public", "Everybody");
-            else{
+        if (radioId != -1 && visibilityId != -1) {
+            if (acceptanceButton.getText().equals("Anyone can join")) {
                 String visibility = (String) visibilityButton.getText();
-                if(visibility.equals("Yes"))
+                if (visibility.equals("Yes"))
+                    createCircle(name, description, "Public", "Everybody");
+                else
+                    createCircle(name, description, "Public", "OnlyShare");
+            } else {
+                String visibility = (String) visibilityButton.getText();
+                if (visibility.equals("Yes"))
                     createCircle(name, description, "Private", "Everybody");
                 else
                     createCircle(name, description, "Private", "OnlyShare");
             }
-
         } else {
             Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
             acceptanceGroup.startAnimation(animShake);

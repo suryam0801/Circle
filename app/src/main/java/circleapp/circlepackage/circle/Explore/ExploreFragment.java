@@ -175,6 +175,7 @@ public class ExploreFragment extends Fragment {
                     }
                     exploreRecyclerView.scrollToPosition(index);
                 }
+
             }
 
             @Override

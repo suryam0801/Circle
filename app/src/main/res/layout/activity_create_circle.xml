@@ -43,10 +43,10 @@
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/roboto_regular"
                     android:paddingLeft="20dp"
-                    android:text="Create Your Circle"
-                    android:textColor="@color/black"
-                    android:textAlignment="center"
                     android:paddingRight="70dp"
+                    android:text="Create Your Circle"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
                     android:textSize="20dp"></TextView>
             </LinearLayout>
 
@@ -59,10 +59,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -72,10 +74,11 @@
                         android:text="Category: "
                         android:textColor="#DEDADA"
                         android:textSize="12dp"></TextView>
+
                     <TextView
+                        android:id="@+id/category_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/category_name"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Category Name"
@@ -91,24 +94,25 @@
                     android:layout_marginTop="18dp"
                     android:text="Circle Logo"
                     android:textColor="@color/grey"></TextView>
+
                 <TextView
                     android:id="@+id/logo_help"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_marginLeft="23dp"
+                    android:layout_marginTop="5dp"
                     android:text="Adding a logo will help people identify your Circle."
                     android:textColor="#DEDADA"
-                    android:visibility="visible"
-                    ></TextView>
+                    android:visibility="visible"></TextView>
+
                 <RelativeLayout
                     android:id="@+id/backgroundPreview"
                     android:layout_width="90dp"
                     android:layout_height="110dp"
-                    android:layout_marginStart="25dp"
                     android:layout_gravity="left"
-                    android:orientation="horizontal"
-                    android:clickable="true">
+                    android:layout_marginStart="25dp"
+                    android:clickable="true"
+                    android:orientation="horizontal">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/background_image"
@@ -129,16 +133,17 @@
 
                     <Button
                         android:id="@+id/profilePicSetterImage"
+                        style="?android:attr/borderlessButtonStyle"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:layout_alignBottom="@+id/background_image"
                         android:layout_alignRight="@+id/background_image"
+                        android:layout_alignBottom="@+id/background_image"
                         android:layout_marginRight="2dp"
                         android:background="@drawable/edit_project_button_background"
                         android:foreground="@drawable/ic_add_white_24dp"
-                        style="?android:attr/borderlessButtonStyle"
                         android:foregroundGravity="center" />
                 </RelativeLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -151,16 +156,16 @@
 
                 <EditText
                     android:id="@+id/create_circle_Name"
-                    android:inputType="textCapSentences"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:backgroundTint="#EEEEEE"
+                    android:focusable="true"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Enter circle name here"
+                    android:inputType="textCapSentences"
                     android:textColor="@color/black"
-                    android:focusable="true"
                     android:textColorHint="#D1D1D1"
                     android:textSize="16dp"></EditText>
 
@@ -184,9 +189,9 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="#EEEEEE"
-                    android:inputType="textCapSentences"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Enter circle description here"
+                    android:inputType="textCapSentences"
                     android:textColor="@color/black"
                     android:textColorHint="#D1D1D1"
                     android:textSize="16dp"></EditText>
@@ -196,10 +201,59 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/circle_visibility_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/visibility_prompt_create_circle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Visibility Prompt"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <RadioGroup
+                android:id="@+id/visibilityRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/visibleToAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Yes"
+                    android:textColor="@color/black"
+                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
+
+                <RadioButton
+                    android:id="@+id/visibleByOnlyShareLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="No"
+                    android:textColor="@color/black"
+                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/acceptanceDisplayView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:clickable="true"
             android:orientation="vertical">
 
@@ -234,6 +288,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:orientation="horizontal">
+
                 <RadioButton
                     android:id="@+id/acceptanceTypeAutomatic"
                     android:layout_width="wrap_content"
@@ -256,65 +311,15 @@
             </RadioGroup>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/circle_visibility_display"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/visibility_prompt_create_circle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="15dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Visibility Prompt"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
-            <RadioGroup
-                android:id="@+id/visibilityRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:id="@+id/visibleToAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Yes"
-                    android:checked="true"
-                    android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
-
-                <RadioButton
-                    android:id="@+id/visibleByOnlyShareLink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="No"
-                    android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
-            </RadioGroup>
-        </LinearLayout>
-
         <Button
             android:id="@+id/create_circle_submit"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="15dp"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentBottom="true"
             android:background="@drawable/green_border_button"
             android:fontFamily="@font/roboto_regular"
             android:text="Create Circle"
