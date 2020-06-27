@@ -24,5 +24,4 @@
         android:id="@+id/search_bottom_nav_item"
         android:icon="@drawable/like"
         android:title="Feedback" />
-
 </menu>
