@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -58,6 +59,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,10 +117,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Button btnAddPollOption, btnUploadBroadcast, cancelButton;
     private Dialog createBroadcastPopup, confirmationDialog, reportAbuseDialog;
     private ImageView addPhoto, pollAddPhoto;
+    private ImageButton viewApplicants;
     private RelativeLayout photoUploadButtonView, pollUploadButtonView, parentLayout;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
-    String usersState, broadcastid;
+    String broadcastid;
     int broadcastPos;
     int photo;
 
@@ -169,14 +172,26 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         floatingActionMenu = findViewById(R.id.menu);
         moreOptions = findViewById(R.id.circle_wall_more_options);
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
+        viewApplicants = findViewById(R.id.applicants_display_creator);
 
         photo = 0;
         setParentBgImage();
         circleBannerName.setText(circle.getName());
 
-        if(circle.getNoOfBroadcasts() == 0)
-            emptyDisplay.setVisibility(View.VISIBLE);
+        if (circle.getApplicantsList() != null) {
+            new Tooltip.Builder(viewApplicants)
+                    .setText("You have pending applicants")
+                    .setTextColor(Color.BLACK)
+                    .setBackgroundColor(Color.WHITE)
+                    .setGravity(Gravity.BOTTOM)
+                    .setCornerRadius(20f)
+                    .setDismissOnClick(true)
+                    .show();
+        }
 
+
+        if (circle.getNoOfBroadcasts() == 0)
+            emptyDisplay.setVisibility(View.VISIBLE);
 
         back.setOnClickListener(view -> {
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
@@ -197,53 +212,64 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             analyticsLogEvents.logEvents(CircleWall.this, "new_photo", "pressed_button", "circle_wall");
             showCreateBroadcastDialog("image");
             floatingActionMenu.close(true);
+        });
 
+        //set applicants button visible
+        if (circle.getCreatorID().equals(user.getUserId()))
+            viewApplicants.setVisibility(View.VISIBLE);
+
+        viewApplicants.setOnClickListener(view -> {
+            startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
+            finish();
         });
 
         moreOptions.setOnClickListener(view -> {
-            PopupMenu popup = new PopupMenu(this, moreOptions);
-            popup.getMenuInflater()
-                    .inflate(R.menu.circle_wall_menu, popup.getMenu());
-            if (circle.getCreatorID().equals(user.getUserId()))
-                popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
-            else
-                popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
-
-            //registering popup with OnMenuItemClickListener
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getTitle().toString()) {
-                    case "Change wallpaper":
-                        startActivity(new Intent(CircleWall.this, CircleWallBackgroundPicker.class));
-                        finish();
-                        break;
-                    case "Invite a friend":
-                        InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-                        bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
-                        break;
-                    case "Report Abuse":
-                        HelperMethods.showReportAbusePopup(reportAbuseDialog,CircleWall.this,circle.getId(),"", "" , circle.getCreatorID(), user.getUserId(),"");
-                        break;
-                    case "Exit circle":
-                        showExitDialog();
-                        break;
-                    case "Delete circle":
-                        showDeleteDialog();
-                        break;
-                    case "Circle Information":
-                        startActivity(new Intent(CircleWall.this, CircleInformation.class));
-                        break;
-                }
-                return true;
-            });
-            popup.show();
+            makeMenuPopup();
         });
 
         getStartedPhoto.setOnClickListener(view -> showCreateBroadcastDialog("image"));
         getStartedPoll.setOnClickListener(view -> showCreateBroadcastDialog("poll"));
         getStartedBroadcast.setOnClickListener(view -> showCreateBroadcastDialog("message"));
 
-//        getItemPosition(broadcastid);
         loadCircleBroadcasts();
+    }
+
+    public void makeMenuPopup() {
+        PopupMenu popup = new PopupMenu(this, moreOptions);
+        popup.getMenuInflater()
+                .inflate(R.menu.circle_wall_menu, popup.getMenu());
+        if (circle.getCreatorID().equals(user.getUserId()))
+            popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
+        else
+            popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getTitle().toString()) {
+                case "Change wallpaper":
+                    startActivity(new Intent(CircleWall.this, CircleWallBackgroundPicker.class));
+                    finish();
+                    break;
+                case "Invite a friend":
+                    InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+                    bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
+                    break;
+                case "Report Abuse":
+                    HelperMethods.showReportAbusePopup(reportAbuseDialog, CircleWall.this, "circle", circle.getId(), circle.getCreatorID(), user.getUserId());
+                    break;
+                case "Exit circle":
+                    showExitDialog();
+                    break;
+                case "Delete circle":
+                    showDeleteDialog();
+                    break;
+                case "Circle Information":
+                    startActivity(new Intent(CircleWall.this, CircleInformation.class));
+                    break;
+            }
+            return true;
+        });
+        popup.show();
     }
 
     public void setParentBgImage() {
@@ -260,6 +286,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3));
                     break;
                 case "bg4":
@@ -269,30 +296,35 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5));
                     break;
                 case "bg6":
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6));
                     break;
                 case "bg7":
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7));
                     break;
                 case "bg8":
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8));
                     break;
                 case "bg9":
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
+                    viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":

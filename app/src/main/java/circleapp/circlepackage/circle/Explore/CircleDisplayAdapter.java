@@ -85,7 +85,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         if (!currentCircle.getBackgroundImageLink().equals("default")) {
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
-        }else {
+        } else {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
             Glide.with(context)
                     .load(ContextCompat.getDrawable(context, profilePic))
@@ -136,7 +136,9 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         viewHolder.container.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, currentCircle);
-            context.startActivity(new Intent(context, CircleInformation.class));
+            Intent intent = new Intent(context, CircleInformation.class);
+            intent.putExtra("exploreIndex", i);
+            context.startActivity(intent);
         });
 
         viewHolder.categoryDisplay.setText(currentCircle.getCategory());

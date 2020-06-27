@@ -4,76 +4,78 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".PersonelDisplay.PersonelDisplay">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/personel_bck_btn"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
+            android:id="@+id/bck_applicants_display"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/transparent"
             android:scaleX=".8"
             android:scaleY=".8"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_chevron_left_black_24dp">
-        </ImageButton>
+            android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
 
         <TextView
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingLeft="20dp"
+            android:paddingRight="70dp"
+            android:text="Applicants"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20dp"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/applicants_empty_display"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="167dp"
+            android:layout_height="160dp"
+            android:background="@drawable/no_applicants_place_holder"></ImageView>
+
+        <TextView
+            android:layout_width="248dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_regular"
-            android:paddingRight="25dp"
-            android:gravity="center"
-            android:text="Circle Members"
-            android:textColor="@color/black"
-            android:textSize="20dp">
-        </TextView>
+            android:lineSpacingExtra="5dp"
+            android:paddingTop="43dp"
+            android:text="There are no applicants yet. We will notify you once someone has applied."
+            android:textAlignment="center"
+            android:textColor="#828282"
+            android:textSize="12dp"></TextView>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="18.5dp"
-        android:background="#EEEEEE"></View>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/personel_tab_layout"
-        android:layout_width="match_parent"
-        app:tabIndicatorColor="#6CACFF"
-        app:tabIndicatorFullWidth="true"
-        app:tabSelectedTextColor="#6CACFF"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp"
-        app:tabTextAppearance="@style/MineCustomTabText"
-        app:tabTextColor="#D1D1D1"
-        android:layout_height="32dp">
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/personel_all_members"
-            android:text="All Members">
-        </com.google.android.material.tabs.TabItem>
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/personel_new_requests"
-            android:text="New Requests">
-        </com.google.android.material.tabs.TabItem>
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/personel_viewpager"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="15dp"></androidx.viewpager.widget.ViewPager>
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/allApplicants_RV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10dp">
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 
 </LinearLayout>
