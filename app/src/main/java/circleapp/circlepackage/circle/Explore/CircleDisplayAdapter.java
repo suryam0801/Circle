@@ -111,8 +111,9 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
 
-        viewHolder.reportAbuseBroadcast.setOnClickListener(view->{
-            HelperMethods.showAdapterReportAbusePopup(context, view, currentCircle.getId(), "", "", currentCircle.getCreatorID(), user.getUserId(), "");
+        viewHolder.container.setOnLongClickListener(v -> {
+            HelperMethods.showAdapterReportAbusePopup(context, v, currentCircle.getId(), "", "", currentCircle.getCreatorID(), user.getUserId());
+            return false;
         });
 
         //onclick for join and share
@@ -212,7 +213,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             categoryDisplay = view.findViewById(R.id.circle_category);
             circleLogo = view.findViewById(R.id.explore_circle_logo);
             bannerImage = view.findViewById(R.id.circle_banner_image);
-            reportAbuseBroadcast = view.findViewById(R.id.explore_adapter_report_abuse_button);
         }
     }
 

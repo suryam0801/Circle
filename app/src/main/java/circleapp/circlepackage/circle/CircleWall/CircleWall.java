@@ -224,7 +224,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         moreOptions.setOnClickListener(view -> {
+
             makeMenuPopup();
+
         });
 
         getStartedPhoto.setOnClickListener(view -> showCreateBroadcastDialog("image"));
