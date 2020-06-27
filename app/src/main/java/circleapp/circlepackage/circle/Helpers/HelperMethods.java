@@ -318,7 +318,7 @@ public class HelperMethods {
     }
     public static void showAdapterReportAbusePopup(Context context, View view, String contentType, String contentId, String creatorID, String userID) {
         View popupView = LayoutInflater.from(context ).inflate(R.layout.report_abuse_popup, null);
-        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         Button btnDismiss = (Button) popupView.findViewById(R.id.report_abuse_cancel_button);
         Button reportConfirmButton = (Button) popupView.findViewById(R.id.report_abuse_confirm_button);
 
