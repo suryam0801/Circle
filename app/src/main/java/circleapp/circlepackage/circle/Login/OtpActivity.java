@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -103,10 +106,10 @@ public class OtpActivity extends AppCompatActivity {
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
-        mOtpText.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mOtpText, InputMethodManager.SHOW_IMPLICIT);
+//        mOtpText.requestFocus();
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(mOtpText, InputMethodManager.SHOW_IMPLICIT);
         mVerifyBtn = findViewById(R.id.verify_btn);
         mVerifyBtn.setEnabled(false);
         mVerifyBtn.setClickable(false);
@@ -172,6 +175,7 @@ public class OtpActivity extends AppCompatActivity {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
                                 progressDialog.dismiss();
+                                mOtpText.requestFocus();
                                 mAuthVerificationId = s;
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);

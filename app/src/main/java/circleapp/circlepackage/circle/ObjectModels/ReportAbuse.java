@@ -1,21 +1,22 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 public class ReportAbuse {
-    String reportAbuseID, contentType, contentID, creatorID, userID;
+    String reportAbuseID ,circleID,broadcastID, commentID, creatorID, userID, reportType;
 
     public ReportAbuse() {
     }
 
-    public ReportAbuse(String reportAbuseId, String contentType, String contentID, String creatorID, String userID){
+
+    public ReportAbuse(String reportAbuseId, String circleID, String broadCastID , String commentID, String creatorID, String userID, String reportType){
         this.reportAbuseID = reportAbuseId;
-        this.contentType = contentType;
-        this.contentID = contentID;
+        this.circleID = circleID;
+        this.broadcastID = broadCastID;
+        this.commentID = commentID;
         this.creatorID = creatorID;
         this.userID = userID;
+        this.reportType = reportType;
     }
-    public String getContentID() { return contentID; }
 
-    public void setContentID(String contentID) { this.contentID = contentID; }
     public String getReportAbuseId() {
         return reportAbuseID;
     }
@@ -23,6 +24,7 @@ public class ReportAbuse {
     public void setReportAbuseId(String reportAbuseId) {
         this.reportAbuseID = reportAbuseId;
     }
+
     public String getUserID() {
         return userID;
     }
@@ -39,19 +41,29 @@ public class ReportAbuse {
         this.creatorID = creatorID;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
+    public String getCircleID() { return circleID; }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
+    public void setCircleID(String circleID) { this.circleID = circleID; }
+
+    public String getBroadcastID() { return broadcastID; }
+
+    public void setBroadcastID(String broadcastID) { this.broadcastID = broadcastID; }
+
+    public String getCommentID() { return commentID; }
+
+    public void setCommentID(String commentID) { this.commentID = commentID; }
+
+    public String getReportType() { return reportType; }
+
+    public void setReportType(String reportType) { this.reportType = reportType; }
 
     @Override
     public String toString() {
         return "ReportAbuse{" +
                 "reportAbuseID='" + reportAbuseID + '\'' +
-                ", contentType='" + contentType + '\'' +
+                ", circleID='" + circleID + '\'' +
+                ", broadcastID='" + broadcastID + '\'' +
+                ", commentID='" + commentID + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", userID='" + userID + '\'' +
                 '}';
