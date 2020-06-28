@@ -8,7 +8,8 @@
     <TextView
         android:id="@+id/skip_get_started"
         android:layout_width="50dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="3dp"
         android:layout_height="30dp"
         android:fontFamily="@font/roboto_medium"
         android:text="Skip"
@@ -56,11 +57,10 @@
             android:layout_marginEnd="50dp"
             android:background="@drawable/gradient_button"
             android:fontFamily="@font/roboto_black"
-            android:gravity="start|center"
+            android:layout_gravity="bottom"
             android:paddingLeft="19dp"
             android:paddingRight="19dp"
             android:text="Get started"
-            android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#FFFFFFFF"
             android:textSize="19dp" />

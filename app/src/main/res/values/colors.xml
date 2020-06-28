@@ -21,6 +21,7 @@
     <color name="light_grey">#EEEEEE</color>
     <color name="white_transparent">#99FFFFFF</color>
     <color name="lightGray">#F2F2F2</color>
+    <color name="background_light">#ffffffff</color>
 
     <!--workbench adapter color codes-->
     <color name="request_alert_color">#FF6161</color>

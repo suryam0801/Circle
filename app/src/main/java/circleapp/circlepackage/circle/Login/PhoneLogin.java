@@ -172,6 +172,9 @@ public class PhoneLogin extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
+                                            mGenerateBtn.setEnabled(true);
+                                            mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
+                                            mGenerateBtn.setTextColor(R.color.white);
                                             mPhoneNumber.requestFocus();
                                         }
                                     });
@@ -180,38 +183,40 @@ public class PhoneLogin extends AppCompatActivity {
                             alertDialog.show();
                         }
                         else
-                            {
-                                confirmation.setMessage("If you enter a wrong number this time have to reopen the Application so check twice :: "+complete_phone_number)
-                                        .setCancelable(false)
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
+                        {
+                            confirmation.setMessage("If you enter a wrong number this time have to reopen the Application so check twice :: "+complete_phone_number)
+                                    .setCancelable(false)
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                                Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
-                                                otpIntent.putExtra("phn_num", complete_phone_number);
-                                                otpIntent.putExtra("ward", ward);
-                                                otpIntent.putExtra("district", district);
-                                                startActivity(otpIntent);
-                                            }
-                                        })
-                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.cancel();
-                                                mPhoneNumber.requestFocus();
-                                            }
-                                        });
-                                AlertDialog alertDialog = confirmation.create();
-                                alertDialog.setTitle("Confirmation");
-                                alertDialog.show();
-                            }
+                                            Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
+                                            otpIntent.putExtra("phn_num", complete_phone_number);
+                                            otpIntent.putExtra("ward", ward);
+                                            otpIntent.putExtra("district", district);
+                                            startActivity(otpIntent);
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            mPhoneNumber.requestFocus();
+                                        }
+                                    });
+                            AlertDialog alertDialog = confirmation.create();
+                            alertDialog.setTitle("Confirmation");
+                            alertDialog.show();
+                        }
                     }
                     else
-                        {
-                            Toast.makeText(getApplicationContext(), "Enter a Valid 10-digit Number", Toast.LENGTH_SHORT).show();
+                    {
+                        Toast.makeText(getApplicationContext(), "Enter a Valid 10-digit Number", Toast.LENGTH_SHORT).show();
+                        mGenerateBtn.setEnabled(true);
+                        mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
 //                            mLoginFeedbackText.setText("Enter the 10 digit Number");
 //                            mLoginFeedbackText.setVisibility(View.VISIBLE);
-                        }
+                    }
 
                 }
             }
