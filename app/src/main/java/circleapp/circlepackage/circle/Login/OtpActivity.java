@@ -106,7 +106,7 @@ public class OtpActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(OtpActivity.this);
         confirmation = new AlertDialog.Builder(this);
         verifyfail = new AlertDialog.Builder(this);
-        progressDialog.setTitle("Please wait...");
+        progressDialog.setTitle("Verifying your Number...");
         progressDialog.show();
         progressDialog.setCancelable(false);
 
@@ -179,11 +179,11 @@ public class OtpActivity extends AppCompatActivity {
                     alertDialog.show();
                 }
                 else
-                    {
-                        AlertDialog dialog = verifyfail.create();
-                        dialog.setTitle("Alert");
-                        dialog.show();
-                    }
+                {
+                    AlertDialog dialog = verifyfail.create();
+                    dialog.setTitle("Alert");
+                    dialog.show();
+                }
 
             }
 
@@ -225,7 +225,7 @@ public class OtpActivity extends AppCompatActivity {
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);
                                 Log.d("OtpActivity",s);
-                                Toast.makeText(getApplicationContext(), "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                             }
                         },
                         5000);
@@ -346,12 +346,12 @@ public class OtpActivity extends AppCompatActivity {
         super.onStart();
         phn_number = getIntent().getStringExtra("phn_num");
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            phn_number,
-                            60,
-                            TimeUnit.SECONDS,
-                            OtpActivity.this,
-                            mCallbacks
-                    );
+                phn_number,
+                60,
+                TimeUnit.SECONDS,
+                OtpActivity.this,
+                mCallbacks
+        );
 //        to check the user and change the BUtton text based on the user
         if (mCurrentUser != null) {
             //old user
@@ -380,7 +380,7 @@ public class OtpActivity extends AppCompatActivity {
         homeIntent.putExtra("phn", phn_number);
         homeIntent.putExtra("ward",ward);
         homeIntent.putExtra("district",district);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
         Log.d("OtpActivity",ward+"::"+district);
         finish();
