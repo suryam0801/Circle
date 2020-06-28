@@ -108,16 +108,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
 
-        //read for new disscussions
-        int readDisussions = HelperMethods.returnNumberOfReadCommentsForCircle(user, circle);
-        if(readDisussions < circle.getNoOfNewDiscussions()){
-            GradientDrawable itemBackgroundDiscussion = HelperMethods.gradientRectangleDrawableSetter(80);
-            itemBackgroundDiscussion.setColor(context.getResources().getColor(R.color.comment_alert_color));
-            holder.newDiscussionDisplay.setText((circle.getNoOfNewDiscussions() - readDisussions)+"");
-            holder.newDiscussionDisplay.setBackground(itemBackgroundDiscussion);
-            holder.newDiscussionDisplay.setVisibility(View.VISIBLE);
-        }
-
         holder.container.setOnClickListener(view -> {
             if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 

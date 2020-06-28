@@ -105,32 +105,36 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        viewHolder.container.setOnClickListener(view -> {
-            SessionStorage.saveBroadcastList((Activity) context, broadcastList);
-            Intent intent = new Intent(context, FullPageBroadcastCardView.class);
-            intent.putExtra("position", i);
-            context.startActivity(intent);
-            ((Activity) context).finish();
-        });
 
         //new comments setter
-        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
+        String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
+        viewHolder.viewComments.setText(commentsDisplayText);
 
         try {
             if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
-                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
+                viewHolder.viewComments.setText(commentsDisplayText + " (new)");
+                viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
             }
+
+            int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
+            if (noOfUserUnread > 0) {
+                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
+                viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
+            }
+
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
-            Intent intent = new Intent((Activity) context, BroadcastComments.class);
-            intent.putExtra("indexOfBroadcast", i);
-            context.startActivity(intent);
-            ((Activity) context).finish();
+            intentToDiscussionActivity(broadcast, i);
+        });
+        viewHolder.container.setOnClickListener(view -> {
+            intentToDiscussionActivity(broadcast, i);
+        });
+        viewHolder.newCommentsTopNotifContainer.setOnClickListener(view -> {
+            intentToDiscussionActivity(broadcast, i);
         });
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
@@ -156,7 +160,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
 
-    public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position){
+    public void intentToDiscussionActivity(Broadcast broadcast, int position) {
+        SessionStorage.saveBroadcast((Activity) context, broadcast);
+        Intent intent = new Intent((Activity) context, BroadcastComments.class);
+        intent.putExtra("indexOfBroadcast", position);
+        context.startActivity(intent);
+        ((Activity) context).finish();
+    }
+
+    public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position) {
         viewHolder.imageDisplayHolder.setVisibility(View.VISIBLE);
         viewHolder.imageDisplay.setVisibility(View.VISIBLE);
 
@@ -189,7 +201,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
 
-    public void ifPollExistsAction(ViewHolder viewHolder, Broadcast broadcast){
+    public void ifPollExistsAction(ViewHolder viewHolder, Broadcast broadcast) {
         final Poll poll;
         poll = broadcast.getPoll();
         viewHolder.pollDisplay.setVisibility(View.VISIBLE);
