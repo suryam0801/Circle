@@ -114,12 +114,21 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         });
 
         //new comments setter
-        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
+        String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
+        viewHolder.viewComments.setText(commentsDisplayText);
 
         try {
             if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
-                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
+                viewHolder.viewComments.setText(commentsDisplayText + " (new)");
+                viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
             }
+
+            int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
+            if (noOfUserUnread > 0) {
+                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
+                viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
+            }
+
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
@@ -156,7 +165,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
 
-    public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position){
+    public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position) {
         viewHolder.imageDisplayHolder.setVisibility(View.VISIBLE);
         viewHolder.imageDisplay.setVisibility(View.VISIBLE);
 
@@ -189,7 +198,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
 
-    public void ifPollExistsAction(ViewHolder viewHolder, Broadcast broadcast){
+    public void ifPollExistsAction(ViewHolder viewHolder, Broadcast broadcast) {
         final Poll poll;
         poll = broadcast.getPoll();
         viewHolder.pollDisplay.setVisibility(View.VISIBLE);
