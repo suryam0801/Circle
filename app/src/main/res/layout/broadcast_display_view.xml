@@ -1,170 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/broadcast_display_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="25dp"
-    android:layout_marginTop="12dp"
-    android:layout_marginRight="25dp"
-    android:layout_marginBottom="5dp"
-    android:background="@drawable/broadcast_cards"
     android:elevation="3dp"
-    android:orientation="vertical"
-    android:paddingLeft="8dp"
-    android:paddingTop="13dp"
-    android:paddingRight="15dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:orientation="horizontal">
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/broadcast_cards"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingTop="13dp"
+        android:paddingRight="15dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/broadcasttWall_profilePicture"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/ic_account_circle_black_24dp"></de.hdodenhof.circleimageview.CircleImageView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/broadcasttWall_profilePicture"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_account_circle_black_24dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+            <TextView
+                android:id="@+id/broadcastWall_ownerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Name"
+                android:textColor="#000000"
+                android:textSize="15dp"></TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:id="@+id/broadcastWall_Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineSpacingExtra="4dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="Title"
+                    android:textColor="#000000"
+                    android:textSize="14dp"></TextView>
+
+                <Button
+                    android:id="@+id/view_poll_answers"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/ic_insert_chart_blue_24dp"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"></Button>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/image_display_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/image_progress"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="75dp"
+                    android:visibility="visible" />
+
+                <com.github.chrisbanes.photoview.PhotoView
+                    android:id="@+id/uploaded_image_display_broadcast"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/broadcastWall_Message"
+                android:layout_width="wrap_content"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:lineSpacingExtra="4dp"
+                android:text="Message"
+                android:textColor="#9D9D9D"
+                android:textSize="14dp"
+                android:visibility="gone"></TextView>
+
+
+            <ScrollView
+                android:id="@+id/broadcastWall_poll_display_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="100"
+                android:orientation="horizontal"
+                android:scrollbarSize="0dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/poll_options_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"></LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="17dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/message"></ImageView>
+
+                <TextView
+                    android:id="@+id/broadcastWall_object_viewComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="99"
+                    android:fontFamily="@font/roboto_condensed"
+                    android:text="16 messages"
+                    android:textColor="#000000"
+                    android:textSize="13dp"></TextView>
+
+                <TextView
+                    android:id="@+id/broadcastWall_object_postedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time Elapsed"
+                    android:textColor="#9D9D9D"
+                    android:textSize="12dp"></TextView>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/broadcast_adapter_comments_alert_display"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/edit_project_button_background"
+        android:gravity="center"
+        android:visibility="gone">
 
         <TextView
-            android:id="@+id/broadcastWall_ownerName"
+            android:id="@+id/broadcast_adapter_no_of_comments_display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="Name"
-            android:textColor="#000000"
-            android:textSize="15dp"></TextView>
-
+            android:text="1"
+            android:textColor="@color/white"></TextView>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <TextView
-                android:id="@+id/broadcastWall_Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:layout_weight="99"
-                android:fontFamily="@font/roboto_regular"
-                android:lineSpacingExtra="4dp"
-                android:text="Title"
-                android:textColor="#000000"
-                android:textSize="14dp"></TextView>
-
-            <Button
-                android:id="@+id/view_poll_answers"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:background="@drawable/ic_insert_chart_blue_24dp"
-                android:gravity="center_vertical"
-                android:visibility="gone"></Button>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/image_display_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/image_progress"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="75dp"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:visibility="visible" />
-
-            <com.github.chrisbanes.photoview.PhotoView
-                android:id="@+id/uploaded_image_display_broadcast"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:visibility="gone" />
-
-        </RelativeLayout>
-        <TextView
-            android:id="@+id/broadcastWall_Message"
-            android:layout_width="wrap_content"
-            android:layout_height="65dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/roboto_regular"
-            android:lineSpacingExtra="4dp"
-            android:text="Message"
-            android:visibility="gone"
-            android:textColor="#9D9D9D"
-            android:textSize="14dp"></TextView>
-
-
-        <ScrollView
-            android:id="@+id/broadcastWall_poll_display_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_weight="100"
-            android:orientation="horizontal"
-            android:scrollbarSize="0dp"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:id="@+id/poll_options_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
-        </ScrollView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="17dp"
-                android:layout_gravity="center"
-                android:background="@drawable/message"></ImageView>
-
-            <TextView
-                android:id="@+id/broadcastWall_object_viewComments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="2dp"
-                android:layout_weight="99"
-                android:fontFamily="@font/roboto_condensed"
-                android:text="16 messages"
-                android:textColor="#000000"
-                android:textSize="13dp"></TextView>
-
-            <TextView
-                android:id="@+id/broadcastWall_object_postedTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time Elapsed"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
