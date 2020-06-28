@@ -117,8 +117,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
 
         try {
-            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-                viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
+            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
+                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
+            }
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
@@ -289,9 +290,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newCommentsTopTv;
         private CircleImageView profPicDisplay;
-        private LinearLayout pollOptionsDisplayGroup, container;
+        private LinearLayout pollOptionsDisplayGroup, newCommentsTopNotifContainer;
+        private RelativeLayout container;
         private ScrollView pollDisplay;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
@@ -318,6 +320,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             imageDisplay = view.findViewById(R.id.uploaded_image_display_broadcast);
             imageDisplayHolder = view.findViewById(R.id.image_display_holder);
             imageLoadProgressBar = view.findViewById(R.id.image_progress);
+            newCommentsTopNotifContainer = view.findViewById(R.id.broadcast_adapter_comments_alert_display);
+            newCommentsTopTv = view.findViewById(R.id.broadcast_adapter_no_of_comments_display);
 
         }
 
