@@ -178,7 +178,7 @@
                 android:textColor="#000000"
                 android:textSize="16dp"></TextView>
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/full_page_broadcast_comments_display"
                 android:layout_width="match_parent"
                 android:layout_weight="99"
@@ -186,7 +186,7 @@
                 android:layout_marginBottom="10dp"
                 android:dividerHeight="0dp"
                 android:layout_height="match_parent">
-            </ListView>
+            </androidx.recyclerview.widget.RecyclerView>
 
         </LinearLayout>
     </LinearLayout>

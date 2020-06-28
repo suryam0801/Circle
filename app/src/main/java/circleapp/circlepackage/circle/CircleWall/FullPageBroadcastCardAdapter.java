@@ -98,9 +98,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                holder.commentListView.setSelection(holder.commentListView.getAdapter().getCount() - 1);
+                holder.commentListView.scrollToPosition(holder.commentListView.getAdapter().getItemCount() - 1);
 
-                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
+//                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
                 if (commentsList.size() == currentBroadcast.getNumberOfComments())
                     updateUserFields(commentsList, currentBroadcast);
             }
@@ -305,7 +305,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ListView commentListView;
+        RecyclerView commentListView;
         private ScrollView container;
         private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
         private CircleImageView profPicDisplay;

@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class BroadcastComments extends AppCompatActivity {
 
-    private ListView commentsListView;
+    private RecyclerView commentsListView;
     private List<Comment> commentsList = new ArrayList<>();
     private CommentAdapter commentAdapter;
     private EditText commentEditText;
@@ -106,7 +107,8 @@ public class BroadcastComments extends AppCompatActivity {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
+                commentsListView.scrollToPosition(commentsListView.getAdapter().getItemCount()-1);
+//                commentsListView.set
                 emptyHolder.setVisibility(View.GONE);
 
                 //call view activity only after all comments have been populated
