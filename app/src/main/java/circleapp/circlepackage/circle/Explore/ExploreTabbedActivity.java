@@ -70,6 +70,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     Boolean circleExists = false;
     AnalyticsLogEvents analyticsLogEvents;
     View decorView;
+    private FloatingActionButton btnAddCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +92,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             processUrl(url);
         }
 
+
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
         bottomNav = findViewById(R.id.bottom_navigation);
+        btnAddCircle = findViewById(R.id.add_circle_button);
 
         locationDisplay.setText(user.getDistrict());
 
@@ -119,6 +122,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             finish();
         });
 
+        btnAddCircle.setOnClickListener(v -> {
+            startActivity(new Intent(this, CreateCircleCategoryPicker.class));
+            finish();
+        });
+
+
         if (getIntent().getBooleanExtra("fromFilters", false)) {
             bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -133,12 +142,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     new WorkbenchFragment()).commit();
         }
 
-        setViewPageAdapter();
-    }
 
-    private void setViewPageAdapter() {
+
+        //set view pager adapter
         bottomNav.setOnNavigationItemSelectedListener(navListener);
     }
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         Fragment selectedFragment = null;
@@ -151,8 +160,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
             case R.id.create_circle_nav_bar:
                 selectedFragment = new WorkbenchFragment();
-                startActivity(new Intent(ExploreTabbedActivity.this, CreateCircleCategoryPicker.class));
-                finish();
                 break;
             case R.id.notifications_bottom_nav_item:
                 selectedFragment = new NotificationFragment();

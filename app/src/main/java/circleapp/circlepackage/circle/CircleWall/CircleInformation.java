@@ -37,10 +37,12 @@ import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleInformation extends AppCompatActivity {
 
-    private ImageView banner, logo;
+    private ImageView banner;
+    private CircleImageView logo;
     private TextView creatorName, circleName, circleDescription;
     private ListView membersDisplay;
     private FirebaseDatabase database;

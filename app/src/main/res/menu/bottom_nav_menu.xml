@@ -3,7 +3,7 @@
     <item
         android:id="@+id/workbench_bottom_nav_item"
         android:icon="@drawable/workbench_icon"
-        android:title="My Cirlces" />
+        android:title="Home" />
     
     <item
         android:id="@+id/explore_bottom_nav_item"
@@ -12,8 +12,7 @@
 
     <item
         android:id="@+id/create_circle_nav_bar"
-        android:icon="@drawable/ic_baseline_add_box_24"
-        android:title="New Circle" />
+        android:title="" />
 
     <item
         android:id="@+id/notifications_bottom_nav_item"
@@ -22,6 +21,6 @@
 
     <item
         android:id="@+id/search_bottom_nav_item"
-        android:icon="@drawable/like"
+        android:icon="@drawable/feedback_icon_notif"
         android:title="Feedback" />
 </menu>
