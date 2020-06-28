@@ -138,7 +138,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList = new ImageView[8];
         storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
-        HelperMethods.increaseTouchArea(name, 50, 50, 50, 50);
         locationsDB = database.getReference("Locations");
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
@@ -164,7 +163,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
-        HelperMethods.increaseTouchArea(setProfile, 30, 30, 30, 30);
 
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
