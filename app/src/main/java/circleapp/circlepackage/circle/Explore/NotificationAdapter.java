@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -77,23 +78,7 @@ public class NotificationAdapter extends BaseAdapter {
 
         long createdTime = notif.getTimestamp();
         long currentTime = System.currentTimeMillis();
-        long days = TimeUnit.MILLISECONDS.toDays(currentTime - createdTime);
-        long hours = TimeUnit.MILLISECONDS.toHours(currentTime - createdTime);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(currentTime - createdTime);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(currentTime - createdTime);
-
-        if (seconds < 60) {
-            timeElapsedTextView.setText(seconds + "s ago");
-        } else if (minutes > 1 && minutes < 60) {
-            timeElapsedTextView.setText(minutes + "m ago");
-        } else if (hours > 1 && hours < 24) {
-            timeElapsedTextView.setText(hours + "h ago");
-        } else if (days > 1 && days < 365) {
-            if (days > 7)
-                timeElapsedTextView.setText((days / 7) + "w ago");
-            else
-                timeElapsedTextView.setText(days + "d ago");
-        }
+        timeElapsedTextView.setText(HelperMethods.getTimeElapsed(currentTime,createdTime));
 
         GradientDrawable gd = new GradientDrawable();
         gd.setShape(GradientDrawable.OVAL);

@@ -134,7 +134,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
             Glide.with((Activity) context)
-                    .load(user.getProfileImageLink())
+                    .load(broadcast.getCreatorPhotoURI())
                     .into(viewHolder.profPicDisplay);
         } else if (broadcast.getCreatorPhotoURI().equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));

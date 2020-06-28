@@ -39,13 +39,17 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,12 +60,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Explore.NotificationAdapter;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -69,6 +77,8 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static java.security.AccessController.getContext;
 
 public class HelperMethods {
 
@@ -362,6 +372,81 @@ public class HelperMethods {
         reportAbuseDialog.show();
     }
 
+    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
+    {
+        String currentTimeStamp = getCurrentTimeStamp();
+
+        Scanner scan = new Scanner(currentTimeStamp);
+        scan.useDelimiter("-");
+        int currentDay = Integer.parseInt(scan.next());
+        int currentMonth = Integer.parseInt(scan.next());
+
+        String date = notification.getDate();
+        scan = new Scanner(date);
+        scan.useDelimiter("-");
+        int notificationDay = Integer.parseInt(scan.next());
+        int notificationMonth = Integer.parseInt(scan.next());
+
+        if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
+            previousNotifs.add(0, notification);
+        else
+            thisWeekNotifs.add(0, notification);
+
+        if (previousNotifs.size() == 0) {
+            prevnotify.setVisibility(View.INVISIBLE);
+        } else {
+            prevnotify.setVisibility(View.VISIBLE);
+        }
+
+        adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
+        adapterPrevious = new NotificationAdapter(context, previousNotifs);
+
+        previousListView.setAdapter(adapterPrevious);
+        thisWeekListView.setAdapter(adapterThisWeek);
+
+    }
+
+    public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference circlesDB;
+        AnalyticsLogEvents analyticsLogEvents;
+        analyticsLogEvents = new AnalyticsLogEvents();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        circlesDB = database.getReference("Circles");
+        String circleid = curent.getCircleId();
+        circlesDB.child(circleid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Circle circle = dataSnapshot.getValue(Circle.class);
+                if (circle != null) {
+
+                    Log.d("Notification Fragment", "Circle list :: " + circle.toString());
+                    if (circle.getMembersList().containsKey(firebaseAuth.getCurrentUser().getUid())) {
+                        analyticsLogEvents.logEvents(context, "notification_clicked_wall", "to_circle_wall", "notification");
+                        SessionStorage.saveCircle((Activity) context, circle);
+                        Intent intent = new Intent(context, CircleWall.class);
+                        intent.putExtra("broadcastPos", position);
+                        intent.putExtra("broadcastId", broadcastId);
+                        context.startActivity(intent);
+                        ((Activity) context).finish();
+                    } else {
+                        analyticsLogEvents.logEvents(context, "notification_clicked_invalid_user", "not_part_of_circle", "notification");
+                        Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    analyticsLogEvents.logEvents(context, "notification_clicked_invalid_user", "not_part_of_circle", "notification");
+                    Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     public static String uuidGet() {
         return UUID.randomUUID().toString();
     }
@@ -554,6 +639,19 @@ public class HelperMethods {
         } else {
             //deprecated in API 26
             v.vibrate(40);
+        }
+    }
+    public static String getCurrentTimeStamp() {
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
         }
     }
 
