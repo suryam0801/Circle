@@ -3,10 +3,12 @@ import com.google.gms.googleservices.GoogleServicesPlugin
 
 repositories {
     maven { url 'https://maven.google.com' }
+    mavenCentral()
 }
 
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
@@ -114,6 +116,9 @@ dependencies {
 
     //camera
     implementation 'com.karumi:dexter:5.0.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 
