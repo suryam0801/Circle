@@ -100,10 +100,8 @@ public class NotificationFragment extends Fragment {
 
         loadNotifications();
 
-
         return view;
     }
-
 
     private void loadNotifications() {
         notifyDb.orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -113,101 +111,19 @@ public class NotificationFragment extends Fragment {
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
 
                         Notification notification = snapshot.getValue(Notification.class);
-                        String currentTimeStamp = getCurrentTimeStamp();
-                        Scanner scan = new Scanner(currentTimeStamp);
-                        scan.useDelimiter("-");
-                        int currentDay = Integer.parseInt(scan.next());
-                        int currentMonth = Integer.parseInt(scan.next());
-
-                        String date = notification.getDate();
-                        scan = new Scanner(date);
-                        scan.useDelimiter("-");
-                        int notificationDay = Integer.parseInt(scan.next());
-                        int notificationMonth = Integer.parseInt(scan.next());
-
-                        if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
-                            previousNotifs.add(0, notification);
-                        else
-                            thisWeekNotifs.add(0, notification);
-
-                        if (previousNotifs.size() == 0) {
-                            prevnotify.setVisibility(View.INVISIBLE);
-                        } else {
-                            prevnotify.setVisibility(View.VISIBLE);
-                        }
-
-                        adapterThisWeek = new NotificationAdapter(getContext(), thisWeekNotifs);
-                        adapterPrevious = new NotificationAdapter(getContext(), previousNotifs);
-
-                        previousListView.setAdapter(adapterPrevious);
-                        thisWeekListView.setAdapter(adapterThisWeek);
+                        HelperMethods.OrderNotification(getContext(),prevnotify,notification,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
 
                         HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
                         HelperMethods.setListViewHeightBasedOnChildren(previousListView);
 
                         thisWeekListView.setOnItemClickListener((parent, view, position, id) -> {
                             Notification curent = thisWeekNotifs.get(position);
-                            Log.d("Notification Fragment", "Notification list :: " + curent.toString());
-                            String circleid = curent.getCircleId();
-                            circlesDB.child(circleid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot12) {
-                                    Circle circle = dataSnapshot12.getValue(Circle.class);
-                                    if (circle != null) {
-
-                                        Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                                        if (circle.getMembersList().containsKey(currentUser.getCurrentUser().getUid())) {
-                                            analyticsLogEvents.logEvents(getContext(), "notification_clicked_wall", "to_circle_wall", "notification");
-                                            SessionStorage.saveCircle((Activity) getContext(), circle);
-                                            Intent intent = new Intent(getContext(), CircleWall.class);
-                                            intent.putExtra("broadcastPos", position);
-                                            intent.putExtra("broadcastId", thisWeekNotifs.get(position).getBroadcastId());
-                                            startActivity(intent);
-                                            ((Activity) getContext()).finish();
-                                        } else {
-                                            analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user", "not_part_of_circle", "notification");
-                                            Toast.makeText(getContext(), "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        analyticsLogEvents.logEvents(getContext(), "notification_clicked_invalid_user", "not_part_of_circle", "notification");
-                                        Toast.makeText(getContext(), "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
+                            HelperMethods.NotifyOnclickListener(getContext(),curent,position,thisWeekNotifs.get(position).getBroadcastId());
                         });
 
                         previousListView.setOnItemClickListener((parent, view, position, id) -> {
-                            Notification curent = thisWeekNotifs.get(position);
-                            String circleid = curent.getCircleId();
-                            circlesDB.child(circleid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
-                                    Circle circle = dataSnapshot1.getValue(Circle.class);
-                                    String state = curent.getState();
-                                    if (state.equalsIgnoreCase("Accepted") || state.equalsIgnoreCase("Rejected")) {
-                                        SessionStorage.saveCircle((Activity) getContext(), circle);
-                                        startActivity(new Intent(getContext(), CircleWall.class));
-                                        ((Activity) getContext()).finish();
-                                    } else if (state.equalsIgnoreCase("broadcast_added")) {
-                                        SessionStorage.saveCircle((Activity) getContext(), circle);
-                                        startActivity(new Intent(getContext(), CircleWall.class));
-                                        ((Activity) getContext()).finish();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
+                            Notification curent = previousNotifs.get(position);
+                            HelperMethods.NotifyOnclickListener(getContext(),curent,position,previousNotifs.get(position).getBroadcastId());
                         });
 
                     }
@@ -220,21 +136,6 @@ public class NotificationFragment extends Fragment {
             }
         });
     }
-
-    public static String getCurrentTimeStamp() {
-        try {
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            String currentDateTime = dateFormat.format(new Date()); // Find todays date
-
-            return currentDateTime;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
