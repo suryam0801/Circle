@@ -686,7 +686,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //quarantine circle
         String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
-        quarantineCircleId = HelperMethods.createCircle("Quarantine Talks" + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
+        quarantineCircleId = HelperMethods.createCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
                 "Automatic", "Vijay Ram", district, 2, 0, "Community Discussion");
 
         quarantineNormalBroadcastId = HelperMethods.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
