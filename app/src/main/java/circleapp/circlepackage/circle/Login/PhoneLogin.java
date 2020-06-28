@@ -201,6 +201,9 @@ public class PhoneLogin extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
+                                            mGenerateBtn.setEnabled(true);
+                                            mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
+                                            mGenerateBtn.setTextColor(R.color.white);
                                             mPhoneNumber.requestFocus();
                                         }
                                     });
