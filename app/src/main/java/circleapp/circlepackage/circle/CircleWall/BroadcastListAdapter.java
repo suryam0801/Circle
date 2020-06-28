@@ -105,13 +105,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        viewHolder.container.setOnClickListener(view -> {
-            SessionStorage.saveBroadcastList((Activity) context, broadcastList);
-            Intent intent = new Intent(context, FullPageBroadcastCardView.class);
-            intent.putExtra("position", i);
-            context.startActivity(intent);
-            ((Activity) context).finish();
-        });
 
         //new comments setter
         String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
@@ -135,11 +128,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> {
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
-            Intent intent = new Intent((Activity) context, BroadcastComments.class);
-            intent.putExtra("indexOfBroadcast", i);
-            context.startActivity(intent);
-            ((Activity) context).finish();
+            intentToDiscussionActivity(broadcast, i);
+        });
+        viewHolder.container.setOnClickListener(view -> {
+            intentToDiscussionActivity(broadcast, i);
+        });
+        viewHolder.newCommentsTopNotifContainer.setOnClickListener(view -> {
+            intentToDiscussionActivity(broadcast, i);
         });
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
@@ -163,6 +158,14 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcast.isPollExists() == true)
             ifPollExistsAction(viewHolder, broadcast);
 
+    }
+
+    public void intentToDiscussionActivity(Broadcast broadcast, int position) {
+        SessionStorage.saveBroadcast((Activity) context, broadcast);
+        Intent intent = new Intent((Activity) context, BroadcastComments.class);
+        intent.putExtra("indexOfBroadcast", position);
+        context.startActivity(intent);
+        ((Activity) context).finish();
     }
 
     public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position) {
