@@ -231,7 +231,7 @@
                     android:id="@+id/visibleToAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="50"
+                    android:layout_weight="43"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Yes"
                     android:textColor="@color/black"
