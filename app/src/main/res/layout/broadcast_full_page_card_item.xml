@@ -159,7 +159,7 @@
             android:background="#EEEEEE">
         </View>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="100"
@@ -182,13 +182,14 @@
                 android:id="@+id/full_page_broadcast_comments_display"
                 android:layout_width="match_parent"
                 android:layout_weight="99"
+                android:layout_marginTop="35dp"
                 android:divider="@null"
                 android:layout_marginBottom="10dp"
                 android:dividerHeight="0dp"
                 android:layout_height="match_parent">
             </androidx.recyclerview.widget.RecyclerView>
 
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>

@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -52,6 +53,7 @@ public class BroadcastComments extends AppCompatActivity {
     private User user;
     private LinearLayout emptyHolder;
     private int indexOfParentBroadcast = 0;
+    LinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,10 @@ public class BroadcastComments extends AppCompatActivity {
         commentsList = new ArrayList<>();
         emptyHolder = findViewById(R.id.commentWall_empty_display);
         emptyHolder.setVisibility(View.VISIBLE);
+
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setStackFromEnd(true);
+        commentsListView.setLayoutManager(mLinearLayoutManager);
 
         commentAdapter= new CommentAdapter(BroadcastComments.this, commentsList);
         commentsListView.setAdapter(commentAdapter);
@@ -107,7 +113,8 @@ public class BroadcastComments extends AppCompatActivity {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                commentsListView.scrollToPosition(commentsListView.getAdapter().getItemCount()-1);
+                commentsListView.scrollToPosition(commentsList.size()-1);
+
 //                commentsListView.set
                 emptyHolder.setVisibility(View.GONE);
 

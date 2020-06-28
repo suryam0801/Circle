@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.CircleWall;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -44,7 +43,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @NonNull
     @Override
     public CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View pview = LayoutInflater.from(parent.getContext()).inflate( R.layout.comment_display_card,parent,false);
+        View pview = View.inflate(mContext, R.layout.comment_display_card, null);
         return new CommentAdapter.ViewHolder(pview);
     }
 

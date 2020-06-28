@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -90,6 +91,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         commentAdapter = new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
 
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
+        mLinearLayoutManager.setStackFromEnd(true);
+        holder.commentListView.setLayoutManager(mLinearLayoutManager);
+        holder.commentListView.scrollToPosition(commentsList.size()-1);
+
+
         setBroadcastInfo(mContext, holder, currentBroadcast);
 
         broadcastCommentsDB.child(circle.getId()).child(currentBroadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
@@ -98,7 +105,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                holder.commentListView.scrollToPosition(holder.commentListView.getAdapter().getItemCount() - 1);
+                holder.commentListView.scrollToPosition(commentsList.size()- 1);
 
 //                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
                 if (commentsList.size() == currentBroadcast.getNumberOfComments())
