@@ -163,11 +163,11 @@ public class HelperMethods {
         return counter;
     }
 
-    public static int returnNumberOfReadCommentsForCircle(User user, Circle circle) {
+    public static int returnNumberOfReadCommentsForBroadcast(User user, Broadcast broadcast) {
         int commentNumberReturnVal = 0;
-        if (user.getNoOfReadDiscussions() != null && user.getNoOfReadDiscussions().containsKey(circle.getId())) {
-            commentNumberReturnVal = user.getNoOfReadDiscussions().get(circle.getId());
-        }
+        if (user.getNoOfReadDiscussions() != null && user.getNoOfReadDiscussions().containsKey(broadcast.getId()))
+            commentNumberReturnVal = user.getNoOfReadDiscussions().get(broadcast.getId());
+
         return commentNumberReturnVal;
     }
 
@@ -343,7 +343,7 @@ public class HelperMethods {
             if (sex_check.isChecked())
                 reportType = "sex";
 
-            if(!reportType.equals("")){
+            if (!reportType.equals("")) {
                 reportAbuseDialog.dismiss();
                 createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
                 Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();

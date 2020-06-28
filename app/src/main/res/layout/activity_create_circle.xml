@@ -191,7 +191,8 @@
                     android:backgroundTint="#EEEEEE"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Enter circle description here"
-                    android:inputType="textCapSentences"
+                    android:inputType="text|textCapSentences|textMultiLine"
+                    android:singleLine="false"
                     android:textColor="@color/black"
                     android:textColorHint="#D1D1D1"
                     android:textSize="16dp"></EditText>

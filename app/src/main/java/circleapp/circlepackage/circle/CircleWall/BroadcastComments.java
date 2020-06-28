@@ -180,19 +180,19 @@ public class BroadcastComments extends AppCompatActivity {
             case "create":
                 //updating userReadDiscussions after creating the comment
                 int updateDiscussionInt;
-                if(tempNoOfDiscussion.containsKey(circle.getId()))
-                    updateDiscussionInt = tempNoOfDiscussion.get(circle.getId());
+                if(tempNoOfDiscussion.containsKey(broadcast.getId()))
+                    updateDiscussionInt = tempNoOfDiscussion.get(broadcast.getId());
                 else
                     updateDiscussionInt = 0;
-                tempNoOfDiscussion.put(circle.getId(), updateDiscussionInt + 1);
+                tempNoOfDiscussion.put(broadcast.getId(), updateDiscussionInt + 1);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
                 break;
 
             case "view":
                 int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
-                int currentRead = HelperMethods.returnNumberOfReadCommentsForCircle(user, circle);
-                tempNoOfDiscussion.put(circle.getId(), currentRead + numberOfUnreadComments);
+                int currentRead = HelperMethods.returnNumberOfReadCommentsForBroadcast(user, broadcast  );
+                tempNoOfDiscussion.put(broadcast.getId(), currentRead + numberOfUnreadComments);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
                 break;
