@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -59,6 +60,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Circle circle;
     private FirebaseAuth currentUser;
     private User user;
+    private Dialog deleteBroadcastConfirmation;
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
@@ -157,6 +159,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         if (broadcast.isPollExists() == true)
             ifPollExistsAction(viewHolder, broadcast);
+        deleteBroadcastConfirmation = new Dialog(context);
+        viewHolder.container.setOnLongClickListener(v->{
+            if(broadcast.getCreatorID().equals(user.getUserId())){
+                showDeleteBroadcastDialog(broadcast.getId());
+            }
+            else
+                HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation,context,circle.getId(), broadcast.getId(),"", broadcast.getCreatorID(), user.getUserId());
+            return true;
+        });
 
     }
 
@@ -283,6 +294,23 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
     }
+    public void showDeleteBroadcastDialog(String broadcastId) {
+        deleteBroadcastConfirmation.setContentView(R.layout.delete_broadcast_popup);
+        final Button closeDialogButton = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_confirm_btn);
+        final Button cancel = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_cancel_btn);
+        
+
+        closeDialogButton.setOnClickListener(view -> {
+            HelperMethods.deleteBroadcast(circle.getId(), broadcastId);
+            deleteBroadcastConfirmation.dismiss();
+            Toast.makeText(context, "Post Deleted!",Toast.LENGTH_SHORT).show();
+        });
+
+        cancel.setOnClickListener(view -> deleteBroadcastConfirmation.dismiss());
+
+        deleteBroadcastConfirmation.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        deleteBroadcastConfirmation.show();
+    }
 
 
     @Override
@@ -334,7 +362,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             imageLoadProgressBar = view.findViewById(R.id.image_progress);
             newCommentsTopNotifContainer = view.findViewById(R.id.broadcast_adapter_comments_alert_display);
             newCommentsTopTv = view.findViewById(R.id.broadcast_adapter_no_of_comments_display);
-
         }
 
         public String getCurrentUserPollOption() {

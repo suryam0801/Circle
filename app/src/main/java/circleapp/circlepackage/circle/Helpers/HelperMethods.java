@@ -406,13 +406,18 @@ public class HelperMethods {
         thisWeekListView.setAdapter(adapterThisWeek);
 
     }
+    public static void deleteBroadcast(String circleId, String broadcastId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        broadcastsDB.child(circleId).child(broadcastId).removeValue();
+    }
 
     public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference circlesDB;
-        AnalyticsLogEvents analyticsLogEvents;
-        analyticsLogEvents = new AnalyticsLogEvents();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         circlesDB = database.getReference("Circles");
         String circleid = curent.getCircleId();
@@ -424,7 +429,6 @@ public class HelperMethods {
 
                     Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                     if (circle.getMembersList().containsKey(firebaseAuth.getCurrentUser().getUid())) {
-                        analyticsLogEvents.logEvents(context, "notification_clicked_wall", "to_circle_wall", "notification");
                         SessionStorage.saveCircle((Activity) context, circle);
                         Intent intent = new Intent(context, CircleWall.class);
                         intent.putExtra("broadcastPos", position);
@@ -432,11 +436,9 @@ public class HelperMethods {
                         context.startActivity(intent);
                         ((Activity) context).finish();
                     } else {
-                        analyticsLogEvents.logEvents(context, "notification_clicked_invalid_user", "not_part_of_circle", "notification");
                         Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    analyticsLogEvents.logEvents(context, "notification_clicked_invalid_user", "not_part_of_circle", "notification");
                     Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
                 }
             }

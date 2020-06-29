@@ -22,8 +22,6 @@ import com.mikepenz.materialize.color.Material;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
@@ -34,7 +32,6 @@ public class NotificationAdapter extends BaseAdapter {
     private Context mContext;
     private List<Notification> NotificationList;
     private FirebaseFirestore db;
-    AnalyticsLogEvents analyticsLogEvents;
     private String TAG = "NOTIFICATION_LIST_ADAPTER";
     private TextView notificationTitle, notificationDescription, timeElapsedTextView;
     private LinearLayout backgroundColor;
@@ -66,7 +63,6 @@ public class NotificationAdapter extends BaseAdapter {
         View v = View.inflate(this.mContext, R.layout.notification_object, null);
 
         Notification notif = NotificationList.get(position);
-        analyticsLogEvents = new AnalyticsLogEvents();
 
         notificationTitle = v.findViewById(R.id.notification_object_title);
         notificationDescription = v.findViewById(R.id.notification_object_description);
@@ -102,7 +98,6 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Application Accepted");
                 acceptText.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(acceptText);
-                analyticsLogEvents.logEvents(mContext, "accepted_notification", "accepted_to_circle", "notification");
                 break;
             case "Rejected":
                 gd.setColor(Color.parseColor("#FF6161"));
@@ -111,7 +106,6 @@ public class NotificationAdapter extends BaseAdapter {
                 foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_cancel_black_24dp));
                 rejectText.setSpan(fcsSkyBlue, 21, 21 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(rejectText);
-                analyticsLogEvents.logEvents(mContext, "rejected_notification", "rejectedto_circle", "notification");
                 break;
             case "broadcast_added":
                 notificationTitle.setText("New BroadCast Added");
@@ -124,7 +118,6 @@ public class NotificationAdapter extends BaseAdapter {
                 profilePic.setVisibility(View.VISIBLE);
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
-                analyticsLogEvents.logEvents(mContext, "broadcast_added", "broadcast_added_new", "notification");
                 break;
             case "new_user":
                 notificationTitle.setText("Welcome to CIRCLE");
@@ -137,7 +130,6 @@ public class NotificationAdapter extends BaseAdapter {
                 //foregroundIcon.setBackground(v.getContext().getResources().getDrawable(R.drawable.ic_person_add_black_24dp));
                 new_applicant.setSpan(fcsSkyBlue, 29, 29 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(new_applicant);
-                analyticsLogEvents.logEvents(mContext, "new_applicant", "new_applicant_to_circle", "notification");
                 break;
             case "report_result_accepted":
                 gd.setColor(Color.parseColor("#D856FF"));
@@ -145,7 +137,6 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Reported Content Removed!");
                 report_result_accepted.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(report_result_accepted);
-                analyticsLogEvents.logEvents(mContext, "report_accepted", "report_accepted_notif", "notification");
                 break;
             case "report_result_rejected":
                 gd.setColor(Color.parseColor("#FF6161"));
@@ -153,7 +144,6 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Reported Content Not Removed");
                 report_result_rejected.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(report_result_rejected);
-                analyticsLogEvents.logEvents(mContext, "report_rejected", "report_rejected_notif", "notification");
                 break;
             case "creator_report":
                 setLogo(notif.getCircleIcon());
@@ -162,7 +152,6 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationTitle.setText("Your Circle Violated Our Policies");
                 creator_report.setSpan(fcsSkyBlue, 4, 4 + notif.getType().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(creator_report);
-                analyticsLogEvents.logEvents(mContext, "creator_report", "creator_report_notif", "notification");
                 break;
         }
 

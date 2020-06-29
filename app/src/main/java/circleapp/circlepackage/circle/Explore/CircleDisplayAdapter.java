@@ -33,7 +33,6 @@ import java.util.List;
 import circleapp.circlepackage.circle.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -50,7 +49,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private DatabaseReference circlesDB, usersDB;
     private Dialog circleJoinDialog;
     private User user;
-    AnalyticsLogEvents analyticsLogEvents;
 
     public CircleDisplayAdapter() {
     }
@@ -66,8 +64,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         user = SessionStorage.getUser((Activity) context);
         circlesDB = database.getReference("Circles");
         usersDB = database.getReference().child("Users").child(user.getUserId());
-
-        analyticsLogEvents = new AnalyticsLogEvents();
     }
 
     @Override
@@ -226,14 +222,12 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-            analyticsLogEvents.logEvents(context, "circle_apply", "apply_explore", "on_button_click");
             //adding userID to applicants list
             circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
             SendNotification.sendnotification("new_applicant", circle.getId(), circle.getName(), circle.getCreatorID());
         } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
             database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             //adding userID to members list in circlesReference
-            analyticsLogEvents.logEvents(context, "circle_join", "open_circle", "on_button_click");
             circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
             int nowActive = user.getActiveCircles() + 1;
             usersDB.child("activeCircles").setValue((nowActive));

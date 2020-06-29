@@ -58,19 +58,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Login.EntryPage;
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -112,8 +105,6 @@ public class EditProfile extends AppCompatActivity {
     private Boolean finalizeChange = false;
 
     //UI elements for location tag selector popup and interest tag selector popup
-    AnalyticsLogEvents analyticsLogEvents;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,7 +135,6 @@ public class EditProfile extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users");
-        analyticsLogEvents = new AnalyticsLogEvents();
         userName.setText(user.getName());
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
@@ -164,7 +154,6 @@ public class EditProfile extends AppCompatActivity {
         });
 
         logout.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(EditProfile.this, "change_dp", "logout", "edit_profile");
             currentUser.signOut();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
@@ -204,7 +193,6 @@ public class EditProfile extends AppCompatActivity {
         Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
         Glide.with(EditProfile.this).load(uri).into(profilePic);
         profilepicButton.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(EditProfile.this, "change_dp_start", "profile_pic", "edit_profile");
             if (ContextCompat.checkSelfPermission(EditProfile.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -455,7 +443,6 @@ public class EditProfile extends AppCompatActivity {
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
-                        analyticsLogEvents.logEvents(EditProfile.this, "storage_off", "asked_permission", "edit_profile");
                         runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                     }
 
@@ -479,7 +466,6 @@ public class EditProfile extends AppCompatActivity {
                 takePhoto();
             else
                 selectImage();
-            analyticsLogEvents.logEvents(EditProfile.this, "storage_granted", "permission_granted", "edit_profile");
         } else {
             photo = 0;
             Toast.makeText(EditProfile.this,
@@ -497,142 +483,73 @@ public class EditProfile extends AppCompatActivity {
         photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
-
-            //check the path for the image
-            //if the image path is notnull the uploading process will start
-            if (filePath != null) {
-
-                //Creating an  custom dialog to show the uploading status
-                final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
-
-                //generating random id to store the profliepic
-                String id = UUID.randomUUID().toString();
-                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
-
-                //storing  the pic
-                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                        //displaying percentage in progress dialog
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                })
-                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-
-                                // Continue with the task to get the download URL
-                                return profileRef.getDownloadUrl();
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        progressDialog.dismiss();
-                        //and displaying a success toast
-                        finalizeChanges.setVisibility(View.VISIBLE);
-                        downloadUri = uri;
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(uri)
-                                .build();
-                        currentUser.getCurrentUser().updateProfile(profileUpdates);
-                        Glide.with(EditProfile.this).load(filePath).into(profileImageView);
-
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                //if the upload is not successfull
-                                //hiding the progress dialog
-                                progressDialog.dismiss();
-
-                                //and displaying error message
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            filePath = downloadUri;
-            //check the path for the image
-            //if the image path is notnull the uploading process will start
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
-            if (filePath != null) {
-
-
-                //Creating an  custom dialog to show the uploading status
-                final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
-
-                //generating random id to store the profliepic
-                String id = UUID.randomUUID().toString();
-                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
-
-                //storing  the pic
-                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                        //displaying percentage in progress dialog
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                })
-                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-
-                                // Continue with the task to get the download URL
-                                return profileRef.getDownloadUrl();
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        progressDialog.dismiss();
-                        //and displaying a success toast
-//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                        progressDialog.dismiss();
-                        finalizeChanges.setVisibility(View.VISIBLE);
-                        //and displaying a success toast
-                        downloadUri = uri;
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(uri)
-                                .build();
-                        currentUser.getCurrentUser().updateProfile(profileUpdates);
-                        Glide.with(EditProfile.this).load(filePath).into(profileImageView);
-                        for (int i = 0; i < 8; i++) {
-                            avatarBgList[i].setVisibility(View.INVISIBLE);
-                        }
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                //if the upload is not successfull
-                                //hiding the progress dialog
-                                progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(EditProfile.this, "pic_capture_fail", "device_error", "edit_profile");
-
-                                //and displaying error message
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
-
         }
+        else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            filePath = downloadUri;
+        }
+
+            //check the path for the image
+            //if the image path is notnull the uploading process will start
+            if (filePath != null) {
+                ContentResolver resolver = getContentResolver();
+                HelperMethods.compressImage(resolver, filePath);
+                //Creating an  custom dialog to show the uploading status
+                final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+                progressDialog.setTitle("Uploading");
+                progressDialog.show();
+
+                //generating random id to store the profliepic
+                String id = UUID.randomUUID().toString();
+                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+
+                //storing  the pic
+                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                        //displaying percentage in progress dialog
+                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                    }
+                })
+                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+
+                                // Continue with the task to get the download URL
+                                return profileRef.getDownloadUrl();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        progressDialog.dismiss();
+                        //and displaying a success toast
+                        finalizeChanges.setVisibility(View.VISIBLE);
+                        downloadUri = uri;
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setPhotoUri(uri)
+                                .build();
+                        currentUser.getCurrentUser().updateProfile(profileUpdates);
+                        Glide.with(EditProfile.this).load(filePath).into(profileImageView);
+                        filePath = null;
+
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                //if the upload is not successfull
+                                //hiding the progress dialog
+                                progressDialog.dismiss();
+
+                                //and displaying error message
+                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        });
+            }
     }
 
     @Override

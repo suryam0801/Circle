@@ -33,8 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.R;
 
@@ -58,8 +56,6 @@ public class PhoneLogin extends AppCompatActivity {
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
-    AnalyticsLogEvents analyticsLogEvents;
-
     AlertDialog.Builder confirmation;
 
     public PhoneAuthProvider.ForceResendingToken resendingToken;
@@ -79,7 +75,6 @@ public class PhoneLogin extends AppCompatActivity {
         mLoginProgress = findViewById(R.id.login_progress_bar);
         mLoginFeedbackText = findViewById(R.id.login_form_feedback);
         ccp = findViewById(R.id.ccp);
-        analyticsLogEvents = new AnalyticsLogEvents();
 
         confirmation = new AlertDialog.Builder(this);
 
@@ -100,7 +95,6 @@ public class PhoneLogin extends AppCompatActivity {
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                analyticsLogEvents.logEvents(PhoneLogin.this,"select_county","location_different","phone_login");
                 String code = getCountryCode(ccp.getSelectedItem().toString());
                 String contryDialCode = null;
                 String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
