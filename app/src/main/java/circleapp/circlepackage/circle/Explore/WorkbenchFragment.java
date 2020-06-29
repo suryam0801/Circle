@@ -32,6 +32,7 @@ import java.util.List;
 
 import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
+import circleapp.circlepackage.circle.Helpers.FirebaseUtils;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -53,8 +54,8 @@ public class WorkbenchFragment extends Fragment {
     private List<Circle> workbenchCircleList = new ArrayList<>();
     private FirebaseDatabase database;
     private FirebaseAuth currentUser;
-    private DatabaseReference circlesDB, userDB;
-    private User user;
+    private static DatabaseReference circlesDB, userDB;
+    private static User user;
     private LinearLayout emptyDisplay;
 
     public WorkbenchFragment() {
@@ -129,57 +130,11 @@ public class WorkbenchFragment extends Fragment {
         //single value listener for Circles Collection
         //loads all the data for offline use the very first time the user loads the app
         //only reloads new data objects or modifications to existing objects on each call
-
-        circlesDB.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                wbrecyclerView.setAdapter(wbadapter);
-                Circle circle = dataSnapshot.getValue(Circle.class);
-
-                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
-
-                if (circle.getCreatorID().equals(currentUser.getUid()) || isMember) {
-                    workbenchCircleList.add(circle);
-                    wbadapter.notifyDataSetChanged();
-                    emptyDisplay.setVisibility(View.GONE);
-                    initializeNewCount(circle);
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-                int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
-                boolean containsCircle = HelperMethods.listContainsCircle(workbenchCircleList, circle);
-
-                if (containsCircle) {
-                    workbenchCircleList.set(position, circle);
-                    wbadapter.notifyItemChanged(position);
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-                int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
-                workbenchCircleList.remove(position);
-                wbadapter.notifyItemChanged(position);
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        FirebaseUtils.WorkbenchSetTabs(user,wbrecyclerView,wbadapter,workbenchCircleList,emptyDisplay);
 
     }
 
-    public void initializeNewCount(Circle c) {
+    public static void initializeNewCount(Circle c) {
         if (user.getNotificationsAlert() != null && !user.getNotificationsAlert().containsKey(c.getId())) {
             HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
             newNotifs.put(c.getId(), 0);
