@@ -385,13 +385,17 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
+            downloadUri = filePath;
+        }
+        else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            filePath = downloadUri;
+        }
             //check the path for the image
             //if the image path is notnull the uploading process will start
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
 
             if (filePath != null) {
-
+                ContentResolver resolver = getContentResolver();
+                HelperMethods.compressImage(resolver, filePath);
                 //Creating an  custom dialog to show the uploading status
                 final ProgressDialog progressDialog = new ProgressDialog(GatherUserDetails.this);
                 progressDialog.setTitle("Uploading");
@@ -434,6 +438,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
+                        filePath = null;
                         for (int i = 0; i < 8; i++) {
                             avatarBgList[i].setVisibility(View.INVISIBLE);
                         }
@@ -453,79 +458,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                             }
                         });
             }
-
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            filePath = downloadUri;
-            //check the path for the image
-            //if the image path is notnull the uploading process will start
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
-            if (filePath != null) {
-
-
-                //Creating an  custom dialog to show the uploading status
-                final ProgressDialog progressDialog = new ProgressDialog(GatherUserDetails.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
-
-                //generating random id to store the profliepic
-                String id = UUID.randomUUID().toString();
-                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
-
-                //storing  the pic
-                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                        //displaying percentage in progress dialog
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                })
-                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-
-                                // Continue with the task to get the download URL
-                                return profileRef.getDownloadUrl();
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        progressDialog.dismiss();
-                        //and displaying a success toast
-//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                        downloadUri = uri;
-                        Log.d("test1", "" + downloadUri);
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(uri)
-                                .build();
-                        firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
-                        Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
-                        for (int i = 0; i < 8; i++) {
-                            avatarBgList[i].setVisibility(View.INVISIBLE);
-                        }
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                //if the upload is not successfull
-                                //hiding the progress dialog
-                                progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(GatherUserDetails.this, "pic_capture_fail", "device_error", "gather_user_details");
-
-                                //and displaying error message
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
-
-        }
     }
 
     @Override
