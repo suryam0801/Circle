@@ -409,9 +409,11 @@ public class HelperMethods {
     public static void deleteBroadcast(String circleId, String broadcastId){
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
+        DatabaseReference broadcastsDB, commentsDB;
+        commentsDB = database.getReference("BroadcastComments");
         broadcastsDB = database.getReference("Broadcasts");
         broadcastsDB.child(circleId).child(broadcastId).removeValue();
+        commentsDB.child(circleId).child(broadcastId).removeValue();
     }
 
     public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId)
