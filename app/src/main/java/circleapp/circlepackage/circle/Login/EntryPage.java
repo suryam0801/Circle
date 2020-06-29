@@ -20,8 +20,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
@@ -32,7 +30,6 @@ public class EntryPage extends AppCompatActivity{
 
     private static final String TAG = EntryPage.class.getSimpleName();
     private Button agreeContinue;
-    AnalyticsLogEvents analyticsLogEvents;
     Trace myTrace;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -40,7 +37,6 @@ public class EntryPage extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_page);
-        analyticsLogEvents = new AnalyticsLogEvents();
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
@@ -52,16 +48,13 @@ public class EntryPage extends AppCompatActivity{
                 @SuppressLint("MissingPermission")
                 Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null){
-                    analyticsLogEvents.logEvents(EntryPage.this, "get_last_location", "lastLocationExists","Entry_page");
                     locationHelper.getAddress(location);
                 }
                 else{
-                    analyticsLogEvents.logEvents(EntryPage.this, "get_current_location", "lastLocationEmpty","Entry_page");
                     locationHelper.getLocation();
 
                 }
             } else {
-                analyticsLogEvents.logEvents(EntryPage.this, "location_permission", "location_off","app_open");
                 runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
             }
         });

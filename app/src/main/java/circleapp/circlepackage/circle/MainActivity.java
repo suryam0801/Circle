@@ -31,12 +31,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.get_started_first_page;
-import circleapp.circlepackage.circle.Login.get_started_second_page;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
 import static circleapp.circlepackage.circle.Helpers.InAppNotificationHelper.CHANNEL_1_ID;
@@ -46,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
     private FirebaseDatabase database;
     private DatabaseReference usersDB, notificationDB;
-    AnalyticsLogEvents analyticsLogEvents;
     private NotificationManagerCompat notificationManager;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -56,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
-        analyticsLogEvents = new AnalyticsLogEvents();
         notificationManager = NotificationManagerCompat.from(this);
 
         database = FirebaseDatabase.getInstance();
@@ -87,11 +82,9 @@ public class MainActivity extends AppCompatActivity {
                     if(dataSnapshot.exists()){
                         User user = dataSnapshot.getValue(User.class);
                         SessionStorage.saveUser(MainActivity.this, user);
-                        analyticsLogEvents.logEvents(MainActivity.this, user.getUserId(), "existing_user","app_open");
                         startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
                         finish();
                     } else {
-                        analyticsLogEvents.logEvents(MainActivity.this, "null_user", "logged_out_user","app_open");
                         startActivity(new Intent(MainActivity.this, EntryPage.class));
                         finish();
                     }
@@ -105,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            analyticsLogEvents.logEvents(MainActivity.this, "null_user", "new_user","app_open");
             startActivity(new Intent(MainActivity.this, get_started_first_page.class));
             finish();
         }
@@ -158,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                analyticsLogEvents.logCrash("Notification_error","Main_activity");
             }
         });
     }
@@ -208,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
                 .setContentIntent(contentIntent)
                 .build();
         notificationManager.notify(1, notification);
-        analyticsLogEvents.logEvents(MainActivity.this, "notification_sent", "success", "main_activity");
     }
 
     @Override

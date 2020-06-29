@@ -66,13 +66,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -129,7 +126,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
-    AnalyticsLogEvents analyticsLogEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +148,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         commentsDB = database.getReference("BroadcastComments");
         broadcastsDB.keepSynced(true);
         currentUser = FirebaseAuth.getInstance();
-        analyticsLogEvents = new AnalyticsLogEvents();
         storageReference = FirebaseStorage.getInstance().getReference();
 
         if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
@@ -199,17 +194,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         poll.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(CircleWall.this, "new_poll", "pressed_button", "circle_wall");
             showCreatePollBroadcastDialog();
             floatingActionMenu.close(true);
         });
         newPost.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(CircleWall.this, "add_message", "pressed_button", "circle_wall");
             showCreateNormalBroadcastDialog();
             floatingActionMenu.close(true);
         });
         imagePost.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(CircleWall.this, "new_photo", "pressed_button", "circle_wall");
             showCreatePhotoBroadcastDialog();
             floatingActionMenu.close(true);
         });
@@ -444,7 +436,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         broadcastsDB.child(circle.getId()).removeValue();
         commentsDB.child(circle.getId()).removeValue();
         SessionStorage.saveUser(CircleWall.this, user);
-        analyticsLogEvents.logEvents(CircleWall.this, "circle_delete", "delete_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
     }
@@ -457,7 +448,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         user.setActiveCircles(currentActiveCount);
         usersDB.child("activeCircles").setValue(currentActiveCount);
         SessionStorage.saveUser(CircleWall.this, user);
-        analyticsLogEvents.logEvents(CircleWall.this, "circle_exit", "exit_button", "circle_wall");
         startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         finish();
     }
@@ -572,7 +562,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         btnAddPollOption.setOnClickListener(view -> {
-            analyticsLogEvents.logEvents(CircleWall.this, "add_poll", "pressed_button", "circle_wall");
 
             String option = setPollOptionET.getText().toString();
 
@@ -758,7 +747,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
-                        analyticsLogEvents.logEvents(CircleWall.this, "storage_off", "asked_permission", "gather_user_details");
                         runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                     }
 
@@ -782,7 +770,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 takePhoto();
             else
                 selectImage();
-            analyticsLogEvents.logEvents(CircleWall.this, "storage_granted", "permission_granted", "circle_wall");
         } else {
             photo = 0;
             Toast.makeText(CircleWall.this,
@@ -874,8 +861,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(CircleWall.this, "pic_upload_fail", "device_error", "circle_wall");
-
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                             }

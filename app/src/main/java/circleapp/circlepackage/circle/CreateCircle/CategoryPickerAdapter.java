@@ -18,13 +18,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.List;
 
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.R;
 
 public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAdapter.ViewHolder> {
