@@ -109,7 +109,7 @@
             android:paddingRight="45dp"
             android:paddingLeft="16dp"
             android:textSize="12dp"
-            android:inputType="textCapSentences"
+            android:inputType="textCapSentences|textImeMultiLine|textMultiLine"
             android:textColor="@color/black"
             android:textColorHint="#D1D1D1"
             android:hint="Type your comment..."
