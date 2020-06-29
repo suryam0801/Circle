@@ -406,7 +406,6 @@ public class HelperMethods {
         thisWeekListView.setAdapter(adapterThisWeek);
 
     }
-
     public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
