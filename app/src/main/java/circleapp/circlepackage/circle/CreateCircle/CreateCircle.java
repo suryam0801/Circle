@@ -56,12 +56,9 @@ import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
-import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
-import circleapp.circlepackage.circle.Login.GatherUserDetails;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -101,8 +98,6 @@ public class CreateCircle extends AppCompatActivity {
     private FirebaseAuth currentUser;
     private String backgroundImageLink;
 
-    AnalyticsLogEvents analyticsLogEvents;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +105,6 @@ public class CreateCircle extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
 
-        analyticsLogEvents = new AnalyticsLogEvents();
         user = SessionStorage.getUser(CreateCircle.this);
         photo = 0;
         backgroundImageLink = "";
@@ -137,8 +131,6 @@ public class CreateCircle extends AppCompatActivity {
         runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle", "on_button_click");
-
         database = FirebaseDatabase.getInstance();
         tags = database.getReference("Tags");
         userDB = database.getReference("Users").child(user.getUserId());
@@ -149,7 +141,6 @@ public class CreateCircle extends AppCompatActivity {
             String cName = circleNameEntry.getText().toString().trim();
             String cDescription = circleDescriptionEntry.getText().toString().trim();
             if (!cName.isEmpty() && !cDescription.isEmpty()) {
-                analyticsLogEvents.logEvents(CreateCircle.this, "created_circle", "new_circle_created", "on_button_click");
                 radioButtonCheck(cName, cDescription);
             } else {
                 Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
@@ -406,7 +397,6 @@ public class CreateCircle extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent about_intent = new Intent(CreateCircle.this, ExploreTabbedActivity.class);
-        analyticsLogEvents.logEvents(CreateCircle.this, "create_circle", "new_circle_bounce", "on_back_press");
         startActivity(about_intent);
         finish();
     }

@@ -32,7 +32,6 @@ import java.util.List;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -46,7 +45,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     private Context context;
     private FirebaseDatabase database;
     private DatabaseReference userDB;
-    AnalyticsLogEvents analyticsLogEvents;
 
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
@@ -70,7 +68,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
-        analyticsLogEvents = new AnalyticsLogEvents();
 
         if(!circle.getBackgroundImageLink().equals("default"))
             Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
@@ -115,8 +112,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
                 user.setNotificationsAlert(tempUserNotifStore);
 
-                analyticsLogEvents.logEvents(context,"unread_tag", "view_posts_clicked","circle_wall");
-
             } else { //first time when a user is opening any circle
 
                 HashMap<String, Integer> newUserNotifStore = new HashMap<>();
@@ -125,8 +120,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             }
 
             userDB.child("notificationsAlert").child(circle.getId()).setValue(circle.getNoOfBroadcasts());
-
-            analyticsLogEvents.logEvents(context,"organic_view", "view_posts_clicked","circle_wall");
 
             SessionStorage.saveCircle((Activity) context, circle);
             SessionStorage.saveUser((Activity) context, user);

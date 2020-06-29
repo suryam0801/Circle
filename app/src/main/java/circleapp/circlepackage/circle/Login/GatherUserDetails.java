@@ -75,9 +75,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -114,7 +112,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     Button register;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    AnalyticsLogEvents analyticsLogEvents;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
@@ -172,7 +169,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        analyticsLogEvents = new AnalyticsLogEvents();
 
         //listener for button to add the profilepic
         avatar1.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +264,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    analyticsLogEvents.logEvents(GatherUserDetails.this, "entered_name", "name_success", "gather_user_details");
                     Name = name.getText().toString();
                     Name = Name.replaceAll("\\s+", " ");
                     contact = pref.getString("key_name5", null);
@@ -277,9 +272,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     //The function to register the Users with their appropriate details
                     progressDialog.show();
-                    analyticsLogEvents.logEvents(GatherUserDetails.this, "registration_success", "user_registered", "gather_user_details");
                     UserReg();
-                    analyticsLogEvents.logEvents(GatherUserDetails.this, ward.trim(), district.trim(), "gather_user_details");
 
                 }
             }
@@ -343,7 +336,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
                         selectFile();
                     } else {
-                        analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_off", "asked_permission", "gather_user_details");
                         runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
                     }
 
@@ -368,7 +360,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 takePhoto();
             else
                 selectImage();
-            analyticsLogEvents.logEvents(GatherUserDetails.this, "storage_granted", "permission_granted", "gather_user_details");
         } else {
             Toast.makeText(GatherUserDetails.this,
                     "Permission Denied",
@@ -451,7 +442,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                                 //if the upload is not successfull
                                 //hiding the progress dialog
                                 progressDialog.dismiss();
-                                analyticsLogEvents.logEvents(GatherUserDetails.this, "pic_upload_fail", "device_error", "gather_user_details");
 
                                 //and displaying error message
                                 Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
