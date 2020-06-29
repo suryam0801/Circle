@@ -191,10 +191,19 @@
                     android:backgroundTint="#EEEEEE"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Enter circle description here"
-                    android:inputType="text|textCapSentences|textMultiLine"
-                    android:singleLine="false"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:textColor="@color/black"
                     android:textColorHint="#D1D1D1"
+                    android:minLines="1"
+                    android:ems="10"
+                    android:imeOptions="flagNoExtractUi"
+                    android:maxLines="25"
+                    android:scrollHorizontally="false"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    android:gravity="start|top"
+                    android:overScrollMode="always"
                     android:textSize="16dp"></EditText>
 
             </LinearLayout>

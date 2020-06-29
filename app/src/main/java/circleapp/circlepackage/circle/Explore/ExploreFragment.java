@@ -36,6 +36,7 @@ import com.google.rpc.Help;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Helpers.FirebaseUtils;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -143,80 +144,7 @@ public class ExploreFragment extends Fragment {
     }
 
     private void setCircleTabs() {
-
-        int index = SessionStorage.getTempIndexStore(getActivity());
-
-        //loads all the data for offline use the very first time the user loads the app
-        //only reloads new data objects or modifications to existing objects on each call
-        circlesDB.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-
-                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
-                boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
-
-                if (!isMember && circle.getVisibility().equals("Everybody")) {
-
-                    if (circle.getCreatorName().equals("The Circle Team")) {
-                        exploreCircleList.add(0, circle);
-                        adapter.notifyItemInserted(0);
-                    }
-
-                    if (isInLocation) {
-                        boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-                        if (listOfFilters == null || listOfFilters.isEmpty()) {
-                            exploreCircleList.add(adapter.getItemCount(), circle);
-                            adapter.notifyItemInserted(adapter.getItemCount());
-                        } else if (circleMatchesFilter) {
-                            exploreCircleList.add(adapter.getItemCount(), circle);
-                            adapter.notifyItemInserted(adapter.getItemCount());
-                        }
-                    }
-                    exploreRecyclerView.scrollToPosition(index);
-                }
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-
-                int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
-                boolean containsCircle = HelperMethods.listContainsCircle(exploreCircleList, circle);
-
-                if (containsCircle) {
-                    if (isMember) {
-                        exploreCircleList.remove(position);
-                        adapter.notifyItemRemoved(position);
-                    } else {
-                        exploreCircleList.set(position, circle);
-                        adapter.notifyItemChanged(position);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-                int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                if (position != -1) {
-                    exploreCircleList.remove(position);
-                    adapter.notifyItemRemoved(position);
-                }
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        FirebaseUtils.ExploreSetTabs(getActivity(),user,exploreCircleList,adapter,listOfFilters,exploreRecyclerView);
     }
 
     private void setFilterChips(final String name) {

@@ -94,7 +94,7 @@ public class NotificationFragment extends Fragment {
 
 
         NotifyUIObject notifyUIObject = new NotifyUIObject(type,getContext(),view,prevnotify,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
-        FirebaseUtils.FBNotificationsRetrieve(notifyUIObject);
+        FirebaseUtils.FbsingleValueEvent(notifyUIObject);
         return view;
     }
 

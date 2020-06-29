@@ -18,7 +18,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.renderscript.ScriptGroup;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -97,6 +100,7 @@ public class CreateCircle extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference tags, circleDB, userDB;
     private FirebaseAuth currentUser;
+    private boolean isReached = false;
     private String backgroundImageLink;
 
     @Override
@@ -119,7 +123,7 @@ public class CreateCircle extends AppCompatActivity {
         back = findViewById(R.id.bck_create);
         visibilityPrompt = findViewById(R.id.visibility_prompt_create_circle);
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE );
         backgroundPic = findViewById(R.id.background_image);
         addLogo = findViewById(R.id.backgroundPreview);
         circleVisibilityDisplay = findViewById(R.id.circle_visibility_display);
