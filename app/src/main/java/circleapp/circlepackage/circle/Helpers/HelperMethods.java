@@ -406,6 +406,13 @@ public class HelperMethods {
         thisWeekListView.setAdapter(adapterThisWeek);
 
     }
+    public static void deleteBroadcast(String circleId, String broadcastId){
+        FirebaseDatabase database;
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference broadcastsDB;
+        broadcastsDB = database.getReference("Broadcasts");
+        broadcastsDB.child(circleId).child(broadcastId).removeValue();
+    }
 
     public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId)
     {
