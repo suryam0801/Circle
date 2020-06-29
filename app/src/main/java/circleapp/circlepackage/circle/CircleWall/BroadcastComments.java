@@ -199,9 +199,7 @@ public class BroadcastComments extends AppCompatActivity {
                 break;
 
             case "view":
-                int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
-                int currentRead = HelperMethods.returnNumberOfReadCommentsForBroadcast(user, broadcast  );
-                tempNoOfDiscussion.put(broadcast.getId(), currentRead + numberOfUnreadComments);
+                tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
                 break;

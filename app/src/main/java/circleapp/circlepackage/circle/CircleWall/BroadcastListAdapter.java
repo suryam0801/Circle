@@ -41,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.circle = circle;
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) context);
-
     }
 
     @Override
@@ -107,23 +107,26 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
+        if (user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(broadcast.getId()))
+            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
 
         //new comments setter
         String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
-        try {
-            if (user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
-                viewHolder.viewComments.setText(commentsDisplayText + " (new)");
-                viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
-            }
-
+        boolean listeningToBroadcast = user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(broadcast.getId());
+        if (listeningToBroadcast) {
             int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
             if (noOfUserUnread > 0) {
                 viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
                 viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
             }
+        }
 
+        try {
+            if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
+                viewHolder.viewComments.setText(commentsDisplayText + " (new)");
+            }
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
         }
@@ -160,13 +163,38 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcast.isPollExists() == true)
             ifPollExistsAction(viewHolder, broadcast);
         deleteBroadcastConfirmation = new Dialog(context);
+
         viewHolder.container.setOnLongClickListener(v->{
             if(broadcast.getCreatorID().equals(user.getUserId())){
                 showDeleteBroadcastDialog(broadcast.getId(), circle.getNoOfBroadcasts());
             }
             else
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation,context,circle.getId(), broadcast.getId(),"", broadcast.getCreatorID(), user.getUserId());
+
             return true;
+        });
+
+        viewHolder.broadcastListenerToggle.setOnClickListener(view -> {
+
+            List<String> listenTemp;
+            if (user.getListeningBroadcasts() != null)
+                listenTemp = new ArrayList<>(user.getListeningBroadcasts());
+            else
+                listenTemp = new ArrayList<>();
+
+            if (listenTemp.contains(broadcast.getId())) {
+                viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+                HelperMethods.vibrate(context);
+                listenTemp.remove(broadcast.getId());
+            } else {
+                viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
+                HelperMethods.vibrate(context);
+                listenTemp.add(broadcast.getId());
+            }
+
+            user.setListeningBroadcasts(listenTemp);
+            SessionStorage.saveUser((Activity) context, user);
+            viewHolder.usersDB.child("listeningBroadcasts").setValue(listenTemp);
         });
 
     }
@@ -294,6 +322,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
     }
+
     public void showDeleteBroadcastDialog(String broadcastId, int noOfBroadcasts) {
         deleteBroadcastConfirmation.setContentView(R.layout.delete_broadcast_popup);
         final Button closeDialogButton = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_confirm_btn);
@@ -302,7 +331,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         closeDialogButton.setOnClickListener(view -> {
             HelperMethods.deleteBroadcast(circle.getId(), broadcastId, noOfBroadcasts);
             deleteBroadcastConfirmation.dismiss();
-            Toast.makeText(context, "Post Deleted!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Post Deleted!", Toast.LENGTH_SHORT).show();
         });
 
         cancel.setOnClickListener(view -> deleteBroadcastConfirmation.dismiss());
@@ -310,7 +339,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         deleteBroadcastConfirmation.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         deleteBroadcastConfirmation.show();
     }
-
 
     @Override
     public int getItemCount() {
@@ -336,16 +364,18 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private ScrollView pollDisplay;
         private String currentUserPollOption = null;
         private FirebaseDatabase database;
-        private DatabaseReference broadcastDB;
+        private DatabaseReference broadcastDB, usersDB;
         private Button viewPollAnswers;
         private PhotoView imageDisplay;
         private RelativeLayout imageDisplayHolder;
         private ProgressBar imageLoadProgressBar;
+        private ImageButton broadcastListenerToggle;
 
         public ViewHolder(View view) {
             super(view);
             database = FirebaseDatabase.getInstance();
             broadcastDB = database.getReference("Broadcasts");
+            usersDB = database.getReference("Users").child(user.getUserId());
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.broadcastWall_Message);
             timeElapsedDisplay = view.findViewById(R.id.broadcastWall_object_postedTime);
@@ -361,6 +391,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             imageLoadProgressBar = view.findViewById(R.id.image_progress);
             newCommentsTopNotifContainer = view.findViewById(R.id.broadcast_adapter_comments_alert_display);
             newCommentsTopTv = view.findViewById(R.id.broadcast_adapter_no_of_comments_display);
+            broadcastListenerToggle = view.findViewById(R.id.broadcast_listener_on_off_toggle);
         }
 
         public String getCurrentUserPollOption() {

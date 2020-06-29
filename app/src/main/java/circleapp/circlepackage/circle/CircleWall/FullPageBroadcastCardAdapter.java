@@ -297,9 +297,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         User user = SessionStorage.getUser((Activity) mContext);
 
         HashMap<String, Integer> tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
-        int numberOfUnreadComments = HelperMethods.returnNoOfCommentsPostTimestamp(commentsList, user.getNewTimeStampsComments().get(broadcast.getId()));
-        int currentRead = HelperMethods.returnNumberOfReadCommentsForBroadcast(user, broadcast);
-        tempNoOfDiscussion.put(broadcast.getId(), currentRead + numberOfUnreadComments);
+
+        //updating number of read comments for each broadcast
+        tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
         user.setNoOfReadDiscussions(tempNoOfDiscussion);
         userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
 

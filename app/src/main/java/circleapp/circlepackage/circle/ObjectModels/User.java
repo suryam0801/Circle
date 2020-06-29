@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class User  {
 
@@ -9,6 +10,7 @@ public class User  {
     private HashMap<String, Integer> notificationsAlert;
     private HashMap<String, Integer> noOfReadDiscussions;
     private HashMap<String, Long> newTimeStampsComments;
+    private List<String> listeningBroadcasts;
     private int createdCircles, activeCircles, completedProjects;
 
 
@@ -20,7 +22,7 @@ public class User  {
                 String profileImageLink, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
-                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments) {
+                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> listeningBroadcasts) {
         this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
@@ -34,6 +36,7 @@ public class User  {
         this.notificationsAlert = notificationsAlert;
         this.newTimeStampsComments = newDiscussionAlert;
         this.noOfReadDiscussions = noOfNewComments;
+        this.listeningBroadcasts = listeningBroadcasts;
     }
 
     public void setCreatedCircles(int createdCircles) {
@@ -139,6 +142,14 @@ public class User  {
         this.noOfReadDiscussions = noOfReadDiscussions;
     }
 
+    public List<String> getListeningBroadcasts() {
+        return listeningBroadcasts;
+    }
+
+    public void setListeningBroadcasts(List<String> listeningBroadcasts) {
+        this.listeningBroadcasts = listeningBroadcasts;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -150,11 +161,12 @@ public class User  {
                 ", district='" + district + '\'' +
                 ", ward='" + ward + '\'' +
                 ", notificationsAlert=" + notificationsAlert +
-                ", newDiscussionAlert=" + newTimeStampsComments +
+                ", noOfReadDiscussions=" + noOfReadDiscussions +
+                ", newTimeStampsComments=" + newTimeStampsComments +
+                ", listeningBroadcasts=" + listeningBroadcasts +
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +
                 ", completedProjects=" + completedProjects +
-                ", noOfNewComments=" + noOfReadDiscussions +
                 '}';
     }
 }

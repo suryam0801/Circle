@@ -65,7 +65,6 @@ public class NotificationFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     public static NotificationFragment newInstance(String param1, String param2) {
         NotificationFragment fragment = new NotificationFragment();
         Bundle args = new Bundle();
