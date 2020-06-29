@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="circleapp.circlepackage.circle">
+    package="circleapp.circlepackage.circle" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -23,8 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".CircleWall.CircleInformation"></activity>
+        android:usesCleartextTraffic="true" >
+        <activity android:name=".CircleWall.CircleInformation" />
         <activity android:name=".CircleWall.CircleWallBackgroundPicker" />
         <activity android:name=".Explore.ExploreCategoryFilter" />
         <activity android:name=".CircleWall.FullPageImageDisplay" />
@@ -41,7 +41,7 @@
         <activity android:name=".CircleWall.CreatorPollAnswersView" />
         <activity
             android:name=".Explore.ExploreTabbedActivity"
-            android:noHistory="true">
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -84,7 +84,7 @@
         <activity android:name=".CircleWall.CircleWall" />
         <activity
             android:name=".MainActivity"
-            android:noHistory="true">
+            android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -99,7 +99,7 @@
         <service
             android:name=".Helpers.FireBaseInstanceIDService"
             android:directBootAware="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

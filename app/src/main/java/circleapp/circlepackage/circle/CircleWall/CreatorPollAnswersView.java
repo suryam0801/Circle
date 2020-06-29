@@ -63,7 +63,11 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         Broadcast broadcast = SessionStorage.getBroadcast(CreatorPollAnswersView.this);
 
         Poll poll = broadcast.getPoll();
-        HashMap<String, String> userResponse = poll.getUserResponse();
+        HashMap<String, String> userResponse;
+        if(poll.getUserResponse()!=null)
+            userResponse = poll.getUserResponse();
+        else
+            userResponse = new HashMap<>();
 
         database = FirebaseDatabase.getInstance();
         circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId()); //circle.getId()
@@ -73,7 +77,6 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
             totalValue += entry.getValue();
 
-
         if(totalValue == 0)
             totalValue = 1;
         pieChart.setUsePercentValues(true);
@@ -81,7 +84,6 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         List<PieEntry> pollValues = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
             pollValues.add(new PieEntry((entry.getValue() * 100) / totalValue, entry.getKey()));
-
 
         PieDataSet pieDataSet = new PieDataSet(pollValues, "Poll Results");
         pieDataSet.setValueTextSize(15f);

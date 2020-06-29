@@ -365,6 +365,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
                     .show();
+            photo = 0;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -525,14 +526,17 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             Log.d(TAG, "DownloadURI ::" + downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
-            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward, district, null, null, null);
+            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward,
+                    district, null, null, null, null);
         } else if (!avatar.equals("")) {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
             Log.d(TAG, "Avatar :: " + avatar);
-            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district, null, null, null);
+            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district,
+                    null, null, null, null);
         } else {
-            user = new User(Name, contact, "default", userId, 0, 0, 0, token_id, ward, district, null, null, null);
+            user = new User(Name, contact, "default", userId, 0, 0, 0,
+                    token_id, ward, district, null, null, null, null);
         }
         //storing user as a json in file locally
         String string = new Gson().toJson(user);
