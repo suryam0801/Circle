@@ -298,6 +298,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         deleteBroadcastConfirmation.setContentView(R.layout.delete_broadcast_popup);
         final Button closeDialogButton = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_confirm_btn);
         final Button cancel = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_cancel_btn);
+        
 
         closeDialogButton.setOnClickListener(view -> {
             HelperMethods.deleteBroadcast(circle.getId(), broadcastId);
