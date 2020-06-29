@@ -42,7 +42,6 @@ import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -68,7 +67,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private TextView locationDisplay;
     private BottomNavigationView bottomNav;
     Boolean circleExists = false;
-    AnalyticsLogEvents analyticsLogEvents;
     View decorView;
     private FloatingActionButton btnAddCircle;
 
@@ -79,7 +77,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         location = findViewById(R.id.explore_district_name_display);
         user = SessionStorage.getUser(this);
         location.setText(user.getDistrict());
-        analyticsLogEvents = new AnalyticsLogEvents();
         intentUri = getIntent().getData();
 
         //to hide the status and nav bar
@@ -87,7 +84,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         //recieve ur request on opening
         if (intentUri != null) {
-            analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "invite_link", "used_link", "read_external_link");
             url = getIntent().getData().toString();
             processUrl(url);
         }
@@ -341,7 +337,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     }
                 }
                 if (circleExists == false) {
-                    analyticsLogEvents.logEvents(ExploreTabbedActivity.this, "_expired_invite_link", "incorrect_link", "read_external_link");
                     Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
                 }
             }

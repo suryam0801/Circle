@@ -50,7 +50,6 @@ import java.io.OutputStreamWriter;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.AnalyticsLogEvents;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -79,7 +78,6 @@ public class OtpActivity extends AppCompatActivity {
     AlertDialog.Builder confirmation,verifyfail;
 
     private User userldb;
-    AnalyticsLogEvents analyticsLogEvents;
     //    private AppDatabase lDb;
     String doc_id;
     ProgressDialog progressDialog;
@@ -90,7 +88,6 @@ public class OtpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
-        analyticsLogEvents = new AnalyticsLogEvents();
 
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
@@ -251,7 +248,6 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 mAuthVerificationId = s;
-                                analyticsLogEvents.logEvents(OtpActivity.this,"resent_otp","button_pressed","otp_activity");
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
                                 Toast.makeText(getApplicationContext(), "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
                             }
@@ -265,7 +261,6 @@ public class OtpActivity extends AppCompatActivity {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
             if (otp.isEmpty()) {
-                analyticsLogEvents.logEvents(OtpActivity.this,"empty_otp","otp_text_empty","otp_activity");
                 mOtpFeedback.setVisibility(View.VISIBLE);
                 mOtpFeedback.setText("Please fill in the form and try again.");
 
@@ -300,13 +295,11 @@ public class OtpActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
-                                        analyticsLogEvents.logEvents(OtpActivity.this,"otp_success","existing_user","otp_activity");
                                         User user = dataSnapshot.getValue(User.class);
                                         String string = new Gson().toJson(user);
                                         SessionStorage.saveUser(OtpActivity.this, user);
                                         storeUserFile(string, getApplicationContext());
                                     } else {
-                                        analyticsLogEvents.logEvents(OtpActivity.this,"otp_success_new_user","new_user","otp_activity");
                                         senduserToReg();
                                     }
                                 }
@@ -319,7 +312,6 @@ public class OtpActivity extends AppCompatActivity {
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 // The verification code entered was invalid
-                                analyticsLogEvents.logEvents(OtpActivity.this,"invalid_otp","wrong_otp","otp_activity");
                                 mOtpFeedback.setVisibility(View.VISIBLE);
                                 mOtpFeedback.setText("There was an error verifying OTP");
                             }
