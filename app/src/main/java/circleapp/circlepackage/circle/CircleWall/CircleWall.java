@@ -112,10 +112,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     //create broadcast popup ui elements
     private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
-    private LinearLayout pollCreateView, pollOptionsDisplay, broadcastDisplay, imageCreateView, pollImageUploadInitiation;
+    private LinearLayout pollOptionsDisplay, pollImageUploadInitiation;
     private TextView circleBannerName, broadcastHeader, addPhotoText, pollAddPhotoText;
     private Button btnAddPollOption, btnUploadNormalBroadcast, cancelNormalButton, btnUploadPollBroadcast, cancelPollButton, btnUploadPhotoBroadcast, cancelPhotoButton;
-    private Dialog createNormalBroadcastPopup, createPhotoBroadcastPopup, createPollBroadcastPopup, createBroadcastPopup, confirmationDialog, reportAbuseDialog;
+    private Dialog createNormalBroadcastPopup, createPhotoBroadcastPopup, createPollBroadcastPopup, confirmationDialog, reportAbuseDialog;
     private ImageView addPhoto, pollAddPhoto;
     private ImageButton viewApplicants;
     private RelativeLayout photoUploadButtonView, pollUploadButtonView, parentLayout;
