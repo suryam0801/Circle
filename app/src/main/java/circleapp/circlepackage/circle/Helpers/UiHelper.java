@@ -31,6 +31,5 @@ public class UiHelper {
             HelperMethods.NotifyOnclickListener(context,curent,position,previousNotifs.get(position).getBroadcastId());
         });
 
-
     }
 }

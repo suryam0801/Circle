@@ -63,6 +63,7 @@ import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -227,6 +228,8 @@ public class CreateCircle extends AppCompatActivity {
 
         circleDB.child(myCircleID).setValue(circle);
 
+        addCreatingUserToPersonel(circle);
+
         int currentCreatedNo = user.getCreatedCircles() + 1;
         user.setCreatedCircles(currentCreatedNo);
         SessionStorage.saveUser(CreateCircle.this, user);
@@ -247,6 +250,12 @@ public class CreateCircle extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    public void addCreatingUserToPersonel(Circle circle){
+        Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
+                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
+        database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
     }
 
     public void selectFile() {

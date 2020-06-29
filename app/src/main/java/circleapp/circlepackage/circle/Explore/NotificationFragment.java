@@ -90,6 +90,9 @@ public class NotificationFragment extends Fragment {
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
         String type = "notify";
+
+
+
         NotifyUIObject notifyUIObject = new NotifyUIObject(type,getContext(),view,prevnotify,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
         FirebaseUtils.FbsingleValueEvent(notifyUIObject);
         return view;

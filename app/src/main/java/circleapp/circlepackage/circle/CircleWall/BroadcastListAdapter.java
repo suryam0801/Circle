@@ -150,7 +150,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
 
-
         //setting the main view
         if (broadcast.getMessage() != null) {
             viewHolder.broadcastMessageDisplay.setVisibility(View.VISIBLE);
@@ -164,12 +163,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             ifPollExistsAction(viewHolder, broadcast);
         deleteBroadcastConfirmation = new Dialog(context);
 
-        viewHolder.container.setOnLongClickListener(v->{
-            if(broadcast.getCreatorID().equals(user.getUserId())){
+        viewHolder.container.setOnLongClickListener(v -> {
+            if (broadcast.getCreatorID().equals(user.getUserId())) {
                 showDeleteBroadcastDialog(broadcast.getId(), circle.getNoOfBroadcasts());
-            }
-            else
-                HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation,context,circle.getId(), broadcast.getId(),"", broadcast.getCreatorID(), user.getUserId());
+            } else
+                HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
             return true;
         });

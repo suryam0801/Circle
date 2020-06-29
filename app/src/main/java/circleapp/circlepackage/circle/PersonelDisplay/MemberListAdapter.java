@@ -33,7 +33,6 @@ public class MemberListAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Subscriber> memberList;
-    String TAG = "APPLICANT_LIST_ADAPTER";
     TextView name, timeElapsed;
     CircleImageView profPic;
     LinearLayout container;
