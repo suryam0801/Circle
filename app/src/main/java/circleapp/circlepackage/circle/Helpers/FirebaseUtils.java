@@ -7,9 +7,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
@@ -28,7 +30,13 @@ public class FirebaseUtils {
     }
 
     private static void FbsingleValueEvent(NotifyUIObject notifyUIObject) {
-        notifyUIObject.getNotifyDb().orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference notifyDb;
+        FirebaseAuth currentUser;
+        currentUser = FirebaseAuth.getInstance();
+        notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
+        notifyDb.orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){

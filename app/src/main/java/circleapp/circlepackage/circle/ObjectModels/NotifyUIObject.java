@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,14 +14,14 @@ import circleapp.circlepackage.circle.Explore.NotificationAdapter;
 public class NotifyUIObject {
     String type;
     Context context;
-    DatabaseReference notifyDb;
+    View notifyDb;
     TextView prevnotify;
     List<Notification> previousNotifs, thisWeekNotifs;
     NotificationAdapter adapterPrevious;
     circleapp.circlepackage.circle.Explore.NotificationAdapter adapterThisWeek;
     ListView previousListView, thisWeekListView;
 
-    public NotifyUIObject(String type, Context context, DatabaseReference notifyDb, TextView prevnotify, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView) {
+    public NotifyUIObject(String type, Context context, View notifyDb, TextView prevnotify, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView) {
         this.type = type;
         this.context = context;
         this.notifyDb = notifyDb;
@@ -49,11 +50,11 @@ public class NotifyUIObject {
         this.context = context;
     }
 
-    public DatabaseReference getNotifyDb() {
+    public View getNotifyDb() {
         return notifyDb;
     }
 
-    public void setNotifyDb(DatabaseReference notifyDb) {
+    public void setNotifyDb(View notifyDb) {
         this.notifyDb = notifyDb;
     }
 

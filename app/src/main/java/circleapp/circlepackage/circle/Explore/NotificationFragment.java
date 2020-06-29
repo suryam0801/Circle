@@ -56,10 +56,6 @@ public class NotificationFragment extends Fragment {
     //    private NotificationAdapter adapterThisWeek, adapterPrevious;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-    private DatabaseReference notifyDb, circlesDB;
-    private FirebaseAuth currentUser;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -93,19 +89,12 @@ public class NotificationFragment extends Fragment {
         prevnotify = view.findViewById(R.id.prevnotifytext);
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
-        currentUser = FirebaseAuth.getInstance();
-        notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
-        circlesDB = database.getReference("Circles");
-        loadNotifications();
-
+        String type = "notify";
+        NotifyUIObject notifyUIObject = new NotifyUIObject(type,getContext(),view,prevnotify,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
+        FirebaseUtils.FBUtils(notifyUIObject);
         return view;
     }
 
-    private void loadNotifications() {
-        String type = "notify";
-        NotifyUIObject notifyUIObject = new NotifyUIObject(type,getContext(),notifyDb,prevnotify,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
-        FirebaseUtils.FBUtils(notifyUIObject);
-    }
     @Override
     public void onDestroy() {
         super.onDestroy();
