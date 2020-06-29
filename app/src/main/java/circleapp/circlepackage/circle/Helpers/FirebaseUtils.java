@@ -5,9 +5,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,21 +24,11 @@ import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.NotifyUIObject;
 
 public class FirebaseUtils {
-    public static void FBUtils(NotifyUIObject notifyUIObject) {
-        switch (notifyUIObject.getType())
-        {
-            case "notify":
-                FbsingleValueEvent(notifyUIObject);
-        }
-    }
+    static FirebaseDatabase database = FirebaseDatabase.getInstance();
+    static FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-    private static void FbsingleValueEvent(NotifyUIObject notifyUIObject) {
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference notifyDb;
-        FirebaseAuth currentUser;
-        currentUser = FirebaseAuth.getInstance();
-        notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
+    public static void FBNotificationsRetrieve(NotifyUIObject notifyUIObject) {
+        DatabaseReference notifyDb = database.getReference("Notifications").child(currentUser.getUid());
         notifyDb.orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -46,6 +39,36 @@ public class FirebaseUtils {
                     }
                 }
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static void FBCirclesRetrieval(){
+        DatabaseReference circlesDB = database.getReference("Circles");
+        circlesDB.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
