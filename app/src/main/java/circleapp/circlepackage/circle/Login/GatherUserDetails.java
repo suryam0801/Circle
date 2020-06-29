@@ -365,6 +365,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
                     .show();
+            photo = 0;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
