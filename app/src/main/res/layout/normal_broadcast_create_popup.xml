@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="20dp"
+    android:background="@drawable/create_broadcast_popup_background"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/create_broadcast_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/broadcast_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="99"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Create New Broadcast"
+                android:textColor="#3B3B3B"
+                android:textSize="16dp"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Title"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <EditText
+                android:id="@+id/broadcastTitleEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#D1D1D1"
+                android:inputType="textCapSentences"
+                android:textColor="@color/black"
+                android:textSize="12dp"></EditText>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Description"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
+
+            <EditText
+                android:id="@+id/broadcastDescriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/unpressable_button"
+                android:inputType="textCapSentences"
+                android:padding="20dp"
+                android:textColor="@color/black"
+                android:textSize="12dp"></EditText>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/create_normal_broadcast_cancel_btn"
+                android:layout_width="110dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/unpressable_button"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="#828282"></Button>
+
+            <Button
+                android:id="@+id/upload_normal_broadcast_btn"
+                android:layout_width="170dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/blue_border_background"
+                android:text="Post"
+                android:textAllCaps="false"
+                android:textColor="@color/color_blue"></Button>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
