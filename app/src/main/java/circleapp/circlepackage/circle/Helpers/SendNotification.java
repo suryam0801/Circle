@@ -23,7 +23,7 @@ import java.util.Set;
 public class SendNotification {
     private static String TAG = SendNotification.class.getSimpleName();
 //    Circle circle = SessionStorage.getCircle(SendNotification.class.getCon);
-    public static void sendCommentInfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon){
+    public static void sendCommentInfo(String userID, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userNotify;
         FirebaseAuth currentUser =FirebaseAuth.getInstance();
@@ -51,6 +51,7 @@ public class SendNotification {
         applicationStatus.put("timestamp", System.currentTimeMillis());
 
         Set<String> member;
+        listenersList.remove(userID);
 
         if(listenersList!=null) {
             member = listenersList.keySet();
