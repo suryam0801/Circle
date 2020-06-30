@@ -83,6 +83,7 @@ public class NotificationAdapter extends BaseAdapter {
         SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
         SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
         SpannableStringBuilder newBroadCast = new SpannableStringBuilder("New BroadCast has been added to " + notif.getCircleName()); //start index: 32
+        SpannableStringBuilder newComment = new SpannableStringBuilder("New Comment has been added to " + notif.getCircleName()+ " in a Post you are listening to."); //start index: 32
         SpannableStringBuilder newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
         SpannableStringBuilder new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
         SpannableStringBuilder report_result_accepted = new SpannableStringBuilder("The " + notif.getType() + " you reported has been removed. Thanks for keeping the platform safe!");
@@ -118,6 +119,18 @@ public class NotificationAdapter extends BaseAdapter {
                 profilePic.setVisibility(View.VISIBLE);
                 newBroadCast.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newBroadCast);
+                break;
+            case "comment_added":
+                notificationTitle.setText("New Comment Added");
+                if (notif.getCircleId() == "308be3ec-9b1d-4a05-b1ca-e8d71cd0662e") {
+                    setLogo("");
+                } else {
+                    setLogo(notif.getCircleIcon());
+                }
+                foregroundIcon.setVisibility(View.GONE);
+                profilePic.setVisibility(View.VISIBLE);
+                newComment.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                notificationDescription.setText(newComment);
                 break;
             case "new_user":
                 notificationTitle.setText("Welcome to CIRCLE");

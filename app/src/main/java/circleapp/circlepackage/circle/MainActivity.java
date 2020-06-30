@@ -179,6 +179,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent_broadcast = new Intent(this, ExploreTabbedActivity.class);
                 contentIntent = PendingIntent.getActivity(this, 0, intent_broadcast, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
+            case "comment_added":
+                name = "New Comment Added";
+                description = "New Comment in: " + notif.getCircleName();
+                Intent intent_comment = new Intent(this, ExploreTabbedActivity.class);
+                contentIntent = PendingIntent.getActivity(this, 0, intent_comment, PendingIntent.FLAG_UPDATE_CURRENT);
+                break;
             case "new_applicant":
                 name = "New Applicant";
                 description = "New Applicant in: " + notif.getCircleName();

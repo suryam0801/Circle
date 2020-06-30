@@ -1,11 +1,14 @@
 package circleapp.circlepackage.circle.ObjectModels;
 
+import java.util.HashMap;
+
 public class Broadcast {
     private String id, title, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
     private boolean pollExists, imageExists;
     private long timeStamp, latestCommentTimestamp;
     private int numberOfComments;
     private Poll poll;
+    HashMap<String, Boolean> listenersList;
 
     public boolean isImageExists() {
         return imageExists;
@@ -15,13 +18,22 @@ public class Broadcast {
         this.imageExists = imageExists;
     }
 
-    public Broadcast(String id, String title, String message, String attachmentURI, String creatorName,
+    public HashMap<String, Boolean> getListenersList() {
+        return listenersList;
+    }
+
+    public void setListenersList(HashMap<String, Boolean> listenersList) {
+        this.listenersList = listenersList;
+    }
+
+    public Broadcast(String id, String title, String message, String attachmentURI, String creatorName, HashMap<String, Boolean> listenersList,
                      String creatorID, boolean pollExists, boolean imageExists, long timeStamp, Poll poll, String creatorPhotoURI,
                      long latestCommentTimestamp, int numberOfComments) {
         this.id = id;
         this.title = title;
         this.message = message;
         this.attachmentURI = attachmentURI;
+        this.listenersList = listenersList;
         this.creatorName = creatorName;
         this.creatorID = creatorID;
         this.pollExists = pollExists;
@@ -140,6 +152,7 @@ public class Broadcast {
                 ", title='" + title + '\'' +
                 ", message='" + message + '\'' +
                 ", attachmentURI='" + attachmentURI + '\'' +
+                ", listenersList=" + listenersList  +
                 ", creatorName='" + creatorName + '\'' +
                 ", creatorID='" + creatorID + '\'' +
                 ", creatorPhotoURI='" + creatorPhotoURI + '\'' +
