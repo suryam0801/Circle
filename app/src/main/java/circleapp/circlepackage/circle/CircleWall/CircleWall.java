@@ -116,6 +116,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private ImageView addPhoto, pollAddPhoto;
     private ImageButton viewApplicants;
     private RelativeLayout photoUploadButtonView, pollUploadButtonView, parentLayout;
+    private RecyclerView recyclerView;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
     String broadcastid;
@@ -168,6 +169,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         moreOptions = findViewById(R.id.circle_wall_more_options);
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
         viewApplicants = findViewById(R.id.applicants_display_creator);
+        recyclerView = findViewById(R.id.broadcastViewRecyclerView);
 
         photo = 0;
         setParentBgImage();
@@ -332,7 +334,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void loadCircleBroadcasts() {
 
         //initialize recylcerview
-        RecyclerView recyclerView = findViewById(R.id.broadcastViewRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);

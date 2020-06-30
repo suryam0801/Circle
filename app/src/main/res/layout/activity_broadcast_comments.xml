@@ -5,130 +5,134 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context=".CircleWall.BroadcastComments">
 
     <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="75dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/circle_wall_header"
-        android:orientation="vertical">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/bck_broadcastComments"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="12dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="21dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Discussion"
-                android:textColor="#000000"
-                android:textSize="20dp"></TextView>
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#EEEEEE"></View>
 
         <LinearLayout
-            android:id="@+id/commentWall_empty_display"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginTop="150dp"
-            android:visibility="gone">
+            android:id="@+id/circle_wall_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="167dp"
-                android:layout_height="160dp"
-                android:background="@drawable/empty_comments_placeholder"></ImageView>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="248dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:lineSpacingExtra="5dp"
-                android:paddingTop="43dp"
-                android:text="There are current no documents in this project. Click the button to upload and share a new document."
-                android:textAlignment="center"
-                android:textColor="#828282"
-                android:textSize="12dp"></TextView>
+                <ImageButton
+                    android:id="@+id/bck_broadcastComments"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="21dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Discussion"
+                    android:textColor="#000000"
+                    android:textSize="20dp"></TextView>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#EEEEEE"></View>
+
+            <LinearLayout
+                android:id="@+id/commentWall_empty_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="150dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="167dp"
+                    android:layout_height="160dp"
+                    android:background="@drawable/empty_comments_placeholder"></ImageView>
+
+                <TextView
+                    android:layout_width="248dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineSpacingExtra="5dp"
+                    android:paddingTop="43dp"
+                    android:text="There are current no documents in this project. Click the button to upload and share a new document."
+                    android:textAlignment="center"
+                    android:textColor="#828282"
+                    android:textSize="12dp"></TextView>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_weight="3"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:id="@+id/comments_listView"
-        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comments_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_weight="3"
+            android:divider="@null"
+            android:dividerHeight="0dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
-    <RelativeLayout
+
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_alignParentBottom="true">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/unpressable_button"
+        android:orientation="horizontal"
+        android:weightSum="100">
 
         <EditText
             android:id="@+id/comment_type_editText"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="25dp"
-            android:paddingRight="45dp"
-            android:paddingLeft="16dp"
-            android:textSize="12dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="99"
+            android:backgroundTint="@color/white"
+            android:hint="Type your comment..."
+            android:imeOptions="actionSend|flagNoEnterAction"
             android:inputType="textCapSentences|textImeMultiLine|textMultiLine"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:textColor="@color/black"
             android:textColorHint="#D1D1D1"
-            android:hint="Type your comment..."
-            android:paddingBottom="8dp"
-            android:imeOptions="actionSend|flagNoEnterAction"
-            android:background="@drawable/blue_border_background">
-        </EditText>
+            android:textSize="12dp"></EditText>
 
         <Button
             android:id="@+id/comment_send_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="31dp"
             android:layout_height="26dp"
-            android:background="@drawable/ic_send_black_24dp"
             android:layout_alignParentEnd="true"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="25dp"
-            android:paddingBottom="10dp">
-        </Button>
-    </RelativeLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/ic_send_black_24dp"></Button>
+    </LinearLayout>
 
 </RelativeLayout>

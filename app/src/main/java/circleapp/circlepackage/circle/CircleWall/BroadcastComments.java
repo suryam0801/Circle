@@ -74,7 +74,7 @@ public class BroadcastComments extends AppCompatActivity {
 
         commentsListView = findViewById(R.id.comments_listView);
         commentEditText = findViewById(R.id.comment_type_editText);
-        commentEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE );
+        commentEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         commentSend = findViewById(R.id.comment_send_button);
         back = findViewById(R.id.bck_broadcastComments);
         commentsList = new ArrayList<>();
@@ -85,7 +85,7 @@ public class BroadcastComments extends AppCompatActivity {
         mLinearLayoutManager.setStackFromEnd(true);
         commentsListView.setLayoutManager(mLinearLayoutManager);
 
-        commentAdapter= new CommentAdapter(BroadcastComments.this, commentsList);
+        commentAdapter = new CommentAdapter(BroadcastComments.this, commentsList);
         commentsListView.setAdapter(commentAdapter);
 
         commentEditText.clearFocus();
@@ -113,13 +113,13 @@ public class BroadcastComments extends AppCompatActivity {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                commentsListView.scrollToPosition(commentsList.size()-1);
+                commentsListView.scrollToPosition(commentsList.size() - 1);
 
 //                commentsListView.set
                 emptyHolder.setVisibility(View.GONE);
 
                 //call view activity only after all comments have been populated
-                if(commentsList.size() == broadcast.getNumberOfComments())
+                if (commentsList.size() == broadcast.getNumberOfComments())
                     updateUserFields("view");
             }
 
@@ -162,7 +162,7 @@ public class BroadcastComments extends AppCompatActivity {
         updateUserFields("create");
     }
 
-    public void updateCommentNumbersPostCreate(long timetamp){
+    public void updateCommentNumbersPostCreate(long timetamp) {
         //updating broadCastTimeStamp after creating the comment
         int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
         broadcastDB.child("latestCommentTimestamp").setValue(timetamp);
@@ -178,18 +178,18 @@ public class BroadcastComments extends AppCompatActivity {
         SessionStorage.saveCircle(BroadcastComments.this, circle);
     }
 
-    public void updateUserFields(String navFrom){
+    public void updateUserFields(String navFrom) {
         HashMap<String, Integer> tempNoOfDiscussion;
-        if(user.getNoOfReadDiscussions()!=null)
+        if (user.getNoOfReadDiscussions() != null)
             tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
         else
             tempNoOfDiscussion = new HashMap<>();
 
-        switch (navFrom){
+        switch (navFrom) {
             case "create":
                 //updating userReadDiscussions after creating the comment
                 int updateDiscussionInt;
-                if(tempNoOfDiscussion.containsKey(broadcast.getId()))
+                if (tempNoOfDiscussion.containsKey(broadcast.getId()))
                     updateDiscussionInt = tempNoOfDiscussion.get(broadcast.getId());
                 else
                     updateDiscussionInt = 0;
