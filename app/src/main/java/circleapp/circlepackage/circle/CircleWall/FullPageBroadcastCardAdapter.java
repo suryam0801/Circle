@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Vibrator v;
     private FirebaseAuth currentUser;
     private User user;
-    private int initialIndex, position = 0;
+    private int initialIndex;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -83,6 +84,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     @Override
     public FullPageBroadcastCardAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.broadcast_full_page_card_item, parent, false);
+/*        int width = view.findViewById(R.id.full_page_broadcast_parent).getWidth();
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = (int)(width * 0.8);
+        view.setLayoutParams(params);*/
         return new FullPageBroadcastCardAdapter.ViewHolder(view);
     }
 
@@ -126,11 +131,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
 
+                Log.d("kewjfnwe", initialIndex+" "+position);
+
                 if (position == initialIndex)
                     HelperMethods.collapse(holder.broadcst_container);
 
                 if (commentsList.size() == currentBroadcast.getNumberOfComments())
                     updateUserFields(currentBroadcast, "view");
+
             }
 
             @Override
