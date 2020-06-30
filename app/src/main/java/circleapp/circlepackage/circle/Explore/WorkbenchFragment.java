@@ -128,7 +128,7 @@ public class WorkbenchFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsCircleLiveData();
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 
         liveData.observe(this, dataSnapshot -> {
             if (dataSnapshot != null) ;
@@ -139,27 +139,19 @@ public class WorkbenchFragment extends Fragment {
     }
 
     private void setWorkbenchTabs(DataSnapshot dataSnapshot) {
+        Circle circle = dataSnapshot.getValue(Circle.class);
 
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Circle circle = snapshot.getValue(Circle.class);
-
-            //if circle is already in the list
-            boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
-            if (exists) {
-                int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
-                workbenchCircleList.remove(index);
-                wbadapter.notifyItemRemoved(index);
-            }
-
-            boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
-
-            if (circle.getCreatorID().equals(currentUser.getUid()) || isMember) {
-                Log.d("wefk", circle.getName());
-                workbenchCircleList.add(circle);
-                wbadapter.notifyDataSetChanged();
-                initializeNewCount(circle);
-            }
+        //if circle is already in the list
+        boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
+        if (exists) {
+            int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+            workbenchCircleList.remove(index);
+            wbadapter.notifyItemRemoved(index);
         }
+
+        workbenchCircleList.add(circle);
+        wbadapter.notifyDataSetChanged();
+        initializeNewCount(circle);
 
     }
 

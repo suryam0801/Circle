@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
@@ -57,7 +56,6 @@ public class ExploreFragment extends Fragment {
     private TextView filter;
     private DataSnapshot dbSnapShot;
     private int setIndex = 0;
-
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -125,7 +123,7 @@ public class ExploreFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsCircleLiveData();
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
         liveData.observe(this, dataSnapshot -> {
             if (dataSnapshot != null)
@@ -137,40 +135,35 @@ public class ExploreFragment extends Fragment {
 
     private void setCircleTabs(DataSnapshot dataSnapshot) {
 
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Circle circle = snapshot.getValue(Circle.class);
+        Circle circle = dataSnapshot.getValue(Circle.class);
 
-            //if circle is already in the list
-            boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
-            if (exists) {
-                int index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                exploreCircleList.remove(index);
-                adapter.notifyItemRemoved(index);
+        //if circle is already in the list
+        boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
+        if (exists) {
+            int index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+            exploreCircleList.remove(index);
+            adapter.notifyItemRemoved(index);
+        }
+
+        boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+
+        if (!isMember && circle.getVisibility().equals("Everybody")) {
+
+            if (circle.getCreatorName().equals("The Circle Team")) {
+                exploreCircleList.add(0, circle);
+                adapter.notifyItemInserted(0);
             }
 
-            boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
-            boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
-
-            if (!isMember && circle.getVisibility().equals("Everybody")) {
-
-                if (circle.getCreatorName().equals("The Circle Team")) {
-                    exploreCircleList.add(0, circle);
-                    adapter.notifyItemInserted(0);
-                }
-
-                if (isInLocation) {
-                    boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-                    if (listOfFilters == null || listOfFilters.isEmpty()) {
-                        exploreCircleList.add(adapter.getItemCount(), circle);
-                        adapter.notifyItemInserted(adapter.getItemCount());
-                    } else if (circleMatchesFilter) {
-                        exploreCircleList.add(adapter.getItemCount(), circle);
-                        adapter.notifyItemInserted(adapter.getItemCount());
-                    }
-                }
-                exploreRecyclerView.scrollToPosition(setIndex);
+            boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+            if (listOfFilters == null || listOfFilters.isEmpty()) {
+                exploreCircleList.add(adapter.getItemCount(), circle);
+                adapter.notifyItemInserted(adapter.getItemCount());
+            } else if (circleMatchesFilter) {
+                exploreCircleList.add(adapter.getItemCount(), circle);
+                adapter.notifyItemInserted(adapter.getItemCount());
             }
 
+            exploreRecyclerView.scrollToPosition(setIndex);
         }
     }
 

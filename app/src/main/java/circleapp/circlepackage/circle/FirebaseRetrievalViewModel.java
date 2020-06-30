@@ -9,13 +9,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseRetrievalViewModel extends ViewModel {
-    private static final DatabaseReference CIRCLES_REF =
-            FirebaseDatabase.getInstance().getReference("/Circles");
 
-    private final FirebaseQueryLiveData liveCircleData = new FirebaseQueryLiveData(CIRCLES_REF);
+    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private static final DatabaseReference CIRCLES_REF = database.getReference("/Circles");
 
     @NonNull
-    public LiveData<DataSnapshot> getDataSnapsCircleLiveData() {
-        return liveCircleData;
+    public LiveData<DataSnapshot> getDataSnapsExploreCircleLiveData(String location) {
+        FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(CIRCLES_REF.orderByChild("circleDistrict").equalTo(location));
+        return liveExploreCircleData;
+    }
+
+    public LiveData<DataSnapshot> getDataSnapsWorkbenchCircleLiveData(String userId) {
+        String childQueryPath = "membersList/" + userId;
+        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(CIRCLES_REF.orderByChild(childQueryPath).equalTo(true));
+        return liveWorkBenchCircleData;
     }
 }
