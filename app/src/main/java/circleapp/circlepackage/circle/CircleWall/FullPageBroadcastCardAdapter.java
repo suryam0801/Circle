@@ -61,12 +61,13 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Vibrator v;
     private FirebaseAuth currentUser;
     private User user;
+    private int initialIndex, position = 0;
 
-    public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle) {
+    public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
         this.broadcastList = broadcastList;
         this.circle = circle;
-
+        this.initialIndex = initialIndex;
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -115,6 +116,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         setBroadcastInfo(mContext, holder, currentBroadcast);
 
+
         broadcastCommentsDB.child(circle.getId()).child(currentBroadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -122,7 +124,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
 
-//                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
+                if (position == initialIndex)
+                    HelperMethods.collapse(holder.broadcst_container);
+
                 if (commentsList.size() == currentBroadcast.getNumberOfComments())
                     updateUserFields(currentBroadcast, "view");
             }

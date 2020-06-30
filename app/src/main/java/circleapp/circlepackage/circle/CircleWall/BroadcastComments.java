@@ -112,15 +112,16 @@ public class BroadcastComments extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
-                commentAdapter.notifyDataSetChanged();
-                commentsListView.scrollToPosition(commentsList.size() - 1);
 
 //                commentsListView.set
                 emptyHolder.setVisibility(View.GONE);
 
                 //call view activity only after all comments have been populated
-                if (commentsList.size() == broadcast.getNumberOfComments())
+                if (commentsList.size() == broadcast.getNumberOfComments()) {
+                    commentAdapter.notifyDataSetChanged();
+                    commentsListView.scrollToPosition(commentsList.size() - 1);
                     updateUserFields("view");
+                }
             }
 
             @Override

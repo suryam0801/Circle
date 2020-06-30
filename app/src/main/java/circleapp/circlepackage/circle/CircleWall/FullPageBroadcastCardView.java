@@ -118,7 +118,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle);
+        final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition);
         recyclerView.setAdapter(adapter);
 
         snapHelper.attachToRecyclerView(recyclerView);
