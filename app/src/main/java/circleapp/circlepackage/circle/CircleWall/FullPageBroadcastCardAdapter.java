@@ -182,20 +182,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        //new comments setter
-/*
-        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
-        if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-            viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
-*/
-
-
         //view discussion onclick
-        viewHolder.viewComments.setOnClickListener(view -> {
-            context.startActivity(new Intent((Activity) context, BroadcastComments.class));
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
-            ((Activity) context).finish();
-        });
+        viewHolder.viewComments.setOnClickListener(view -> HelperMethods.collapse(viewHolder.broadcst_container));
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());

@@ -73,9 +73,6 @@
         <activity android:name=".Login.get_started_first_page" />
         <activity android:name=".Login.get_started_second_page" />
         <activity android:name=".Login.get_started_third_page" />
-        <activity
-            android:name=".CircleWall.BroadcastComments"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".EditProfile.EditProfile" />
         <activity android:name=".PersonelDisplay.PersonelDisplay" />
         <activity android:name=".Login.GatherUserDetails" />
