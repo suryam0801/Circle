@@ -132,19 +132,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         }
 
         //view discussion onclick
-        viewHolder.viewComments.setOnClickListener(view -> {
-            intentToDiscussionActivity(broadcast, i);
-        });
-        viewHolder.newCommentsTopNotifContainer.setOnClickListener(view -> {
-            intentToDiscussionActivity(broadcast, i);
-        });
-
-        viewHolder.container.setOnClickListener(view -> {
-            SessionStorage.saveBroadcastList((Activity) context, broadcastList);
-            Intent intent = new Intent((Activity) context, FullPageBroadcastCardView.class);
-            context.startActivity(intent);
-            ((Activity) context).finish();
-        });
+        viewHolder.viewComments.setOnClickListener(view -> intentToDiscussionActivity(i));
+        viewHolder.newCommentsTopNotifContainer.setOnClickListener(view -> intentToDiscussionActivity(i));
+        viewHolder.container.setOnClickListener(view -> intentToDiscussionActivity(i));
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
             SessionStorage.saveBroadcast((Activity) context, broadcast);
@@ -201,10 +191,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
 
-    public void intentToDiscussionActivity(Broadcast broadcast, int position) {
-        SessionStorage.saveBroadcast((Activity) context, broadcast);
-        Intent intent = new Intent((Activity) context, BroadcastComments.class);
-        intent.putExtra("indexOfBroadcast", position);
+    public void intentToDiscussionActivity(int position) {
+        SessionStorage.saveBroadcastList((Activity) context, broadcastList);
+        Intent intent = new Intent(context, FullPageBroadcastCardView.class);
+        intent.putExtra("broadcastPosition", position);
         context.startActivity(intent);
         ((Activity) context).finish();
     }

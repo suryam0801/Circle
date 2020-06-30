@@ -61,17 +61,18 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Vibrator v;
     private FirebaseAuth currentUser;
     private User user;
+    private int initialIndex, position = 0;
 
-    public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle) {
+    public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
         this.broadcastList = broadcastList;
         this.circle = circle;
-
+        this.initialIndex = initialIndex;
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         circlesDB = database.getReference("Circle").child(circle.getId());
-        broadcastDB = database.getReference("Broadcasts");
+        broadcastDB = database.getReference("Broadcasts").child(circle.getId());
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) mContext);
         v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -88,12 +89,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
-        holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
-
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         Broadcast currentBroadcast = broadcastList.get(position);
+
+        holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
+        holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
 
         commentAdapter = new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
@@ -101,7 +102,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
         mLinearLayoutManager.setStackFromEnd(true);
         holder.commentListView.setLayoutManager(mLinearLayoutManager);
-        holder.commentListView.scrollToPosition(commentsList.size() - 1);
 
         holder.addCommentButton.setOnClickListener(view -> {
             String commentMessage = holder.addCommentEditText.getText().toString().trim();
@@ -110,7 +110,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             holder.addCommentEditText.setText("");
         });
 
+
+        String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
+        holder.viewComments.setText(commentsDisplayText);
+
         setBroadcastInfo(mContext, holder, currentBroadcast);
+
 
         broadcastCommentsDB.child(circle.getId()).child(currentBroadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
             @Override
@@ -118,9 +123,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                holder.commentListView.scrollToPosition(commentsList.size() - 1);
 
-//                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
+                if (position == initialIndex)
+                    HelperMethods.collapse(holder.broadcst_container);
+
                 if (commentsList.size() == currentBroadcast.getNumberOfComments())
                     updateUserFields(currentBroadcast, "view");
             }
@@ -176,20 +182,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        //new comments setter
-/*
-        viewHolder.viewComments.setText(broadcast.getNumberOfComments() + " messages");
-        if(user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp())
-            viewHolder.viewComments.setTextColor(context.getResources().getColor(R.color.color_blue));
-*/
-
-
         //view discussion onclick
-        viewHolder.viewComments.setOnClickListener(view -> {
-            context.startActivity(new Intent((Activity) context, BroadcastComments.class));
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
-            ((Activity) context).finish();
-        });
+        viewHolder.viewComments.setOnClickListener(view -> HelperMethods.collapse(viewHolder.broadcst_container));
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
@@ -374,9 +368,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         SessionStorage.saveCircle((Activity) mContext, circle);
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-        RecyclerView commentListView;
+        private RecyclerView commentListView;
         private RelativeLayout broadcst_container;
         private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
         private CircleImageView profPicDisplay;
