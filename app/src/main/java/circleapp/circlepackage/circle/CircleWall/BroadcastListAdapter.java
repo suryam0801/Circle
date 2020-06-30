@@ -178,10 +178,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
                 HelperMethods.vibrate(context);
                 listenTemp.remove(broadcast.getId());
+                HelperMethods.broadcastListenerList(1, user.getUserId(),circle.getId(),broadcast.getId());
             } else {
                 viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
                 HelperMethods.vibrate(context);
                 listenTemp.add(broadcast.getId());
+                HelperMethods.broadcastListenerList(0, user.getUserId(),circle.getId(),broadcast.getId());
             }
 
             user.setListeningBroadcasts(listenTemp);

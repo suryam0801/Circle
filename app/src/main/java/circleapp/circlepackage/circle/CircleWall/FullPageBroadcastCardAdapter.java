@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -71,7 +72,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         database = FirebaseDatabase.getInstance();
         broadcastCommentsDB = database.getReference("BroadcastComments");
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        circlesDB = database.getReference("Circle").child(circle.getId());
+        circlesDB = database.getReference("Circles").child(circle.getId());
         broadcastDB = database.getReference("Broadcasts").child(circle.getId());
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) mContext);
@@ -105,8 +106,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         holder.addCommentButton.setOnClickListener(view -> {
             String commentMessage = holder.addCommentEditText.getText().toString().trim();
-            if (!commentMessage.equals(""))
+            if (!commentMessage.equals("")){
                 makeCommentEntry(commentMessage, currentBroadcast);
+            }
             holder.addCommentEditText.setText("");
         });
 
@@ -302,6 +304,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         map.put("commentorName", SessionStorage.getUser((Activity) mContext).getName().trim());
 
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
+        SendNotification.sendCommentInfo(broadcast.getId(),circle.getName(),circle.getId(),user.getName(),broadcast.getListenersList(),circle.getBackgroundImageLink());
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
         updateUserFields(broadcast, "create");

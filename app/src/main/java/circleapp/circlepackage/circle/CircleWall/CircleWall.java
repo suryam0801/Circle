@@ -611,7 +611,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink());
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), setMessageET.getText().toString(), null,
-                currentUserName, currentUserId, false, false, System.currentTimeMillis(), null,
+                currentUserName,null, currentUserId, false, false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), 0, 0);
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
@@ -638,7 +638,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink());
         if (imageExists) {
-            photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadUri.toString(), currentUserName, currentUserId, false, true,
+            photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadUri.toString(), currentUserName,null, currentUserId, false, true,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
         }
         //updating number of broadcasts in circle
@@ -675,10 +675,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             Poll poll = new Poll(pollQuestion, options, null);
             if (imageExists) {
-                pollBroadcast = new Broadcast(broadcastId, null, null, downloadUri.toString(), currentUserName, currentUserId, true, true,
+                pollBroadcast = new Broadcast(broadcastId, null, null, downloadUri.toString(), currentUserName, null, currentUserId, true, true,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
             } else
-                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, currentUserId, true, false,
+                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, null, currentUserId, true, false,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0);
         }
         //updating number of broadcasts in circle
