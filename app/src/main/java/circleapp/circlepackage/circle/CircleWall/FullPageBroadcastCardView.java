@@ -67,6 +67,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         circle = SessionStorage.getCircle(this);
         initialBroadcastPosition = getIntent().getIntExtra("broadcastPosition", 0);
 
+
         setParentBgImage();
 
         banner.setText(circle.getName());
