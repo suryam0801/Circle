@@ -84,10 +84,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     @Override
     public FullPageBroadcastCardAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.broadcast_full_page_card_item, parent, false);
-/*        int width = view.findViewById(R.id.full_page_broadcast_parent).getWidth();
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.width = (int)(width * 0.8);
-        view.setLayoutParams(params);*/
         return new FullPageBroadcastCardAdapter.ViewHolder(view);
     }
 
@@ -106,7 +102,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.commentListView.setAdapter(commentAdapter);
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
-        mLinearLayoutManager.setStackFromEnd(true);
         holder.commentListView.setLayoutManager(mLinearLayoutManager);
 
         holder.addCommentButton.setOnClickListener(view -> {

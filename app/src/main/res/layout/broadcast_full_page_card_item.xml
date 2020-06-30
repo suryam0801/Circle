@@ -154,7 +154,7 @@
         <Button
             android:id="@+id/clickToViewComments"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
@@ -181,7 +181,7 @@
         <Button
             android:id="@+id/clickToViewBroadcastFullPage"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:clickable="true"
