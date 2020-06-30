@@ -135,11 +135,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.viewComments.setOnClickListener(view -> {
             intentToDiscussionActivity(broadcast, i);
         });
-        viewHolder.container.setOnClickListener(view -> {
-            intentToDiscussionActivity(broadcast, i);
-        });
         viewHolder.newCommentsTopNotifContainer.setOnClickListener(view -> {
             intentToDiscussionActivity(broadcast, i);
+        });
+
+        viewHolder.container.setOnClickListener(view -> {
+            SessionStorage.saveBroadcastList((Activity) context, broadcastList);
+            Intent intent = new Intent((Activity) context, FullPageBroadcastCardView.class);
+            context.startActivity(intent);
+            ((Activity) context).finish();
         });
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
