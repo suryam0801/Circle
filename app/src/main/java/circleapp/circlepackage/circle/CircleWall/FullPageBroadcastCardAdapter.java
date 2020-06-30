@@ -88,12 +88,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
-        holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
-
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         Broadcast currentBroadcast = broadcastList.get(position);
+
+        holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
+        holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
 
         commentAdapter = new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
@@ -101,7 +101,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
         mLinearLayoutManager.setStackFromEnd(true);
         holder.commentListView.setLayoutManager(mLinearLayoutManager);
-        holder.commentListView.scrollToPosition(commentsList.size() - 1);
 
         holder.addCommentButton.setOnClickListener(view -> {
             String commentMessage = holder.addCommentEditText.getText().toString().trim();
@@ -122,7 +121,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 Comment tempComment = dataSnapshot.getValue(Comment.class);
                 commentsList.add(tempComment); //to store timestamp values descendingly
                 commentAdapter.notifyDataSetChanged();
-                holder.commentListView.scrollToPosition(commentsList.size() - 1);
 
 //                HelperMethods.setListViewHeightBasedOnChildren(holder.commentListView);
                 if (commentsList.size() == currentBroadcast.getNumberOfComments())
@@ -379,7 +377,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        RecyclerView commentListView;
+        private RecyclerView commentListView;
         private RelativeLayout broadcst_container;
         private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
         private CircleImageView profPicDisplay;
