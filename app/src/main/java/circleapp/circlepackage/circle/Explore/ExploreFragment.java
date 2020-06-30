@@ -36,6 +36,7 @@ import com.google.rpc.Help;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Helpers.ExploreFButils;
 import circleapp.circlepackage.circle.Helpers.FirebaseUtils;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -144,7 +145,8 @@ public class ExploreFragment extends Fragment {
     }
 
     private void setCircleTabs() {
-        FirebaseUtils.ExploreSetTabs(getActivity(),user,exploreCircleList,adapter,listOfFilters,exploreRecyclerView);
+//        FirebaseUtils.ExploreSetTabs(getActivity(),user,exploreCircleList,adapter,listOfFilters,exploreRecyclerView);
+        ExploreFButils.ExploreSetTabs(getActivity(),user,exploreCircleList,adapter,listOfFilters,exploreRecyclerView);
     }
 
     private void setFilterChips(final String name) {

@@ -1,15 +1,17 @@
 package circleapp.circlepackage.circle.Helpers;
 
-import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,27 +20,39 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-import circleapp.circlepackage.circle.Explore.NotificationAdapter;
 import circleapp.circlepackage.circle.Explore.WorkbenchFragment;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.NotifyUIObject;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
-public class FirebaseUtils {
+public class FirebaseUtils extends ViewModel {
     static FirebaseDatabase database = FirebaseDatabase.getInstance();
-    static DatabaseReference notifyDb,circlesDB;
-    static FirebaseAuth currentUser = FirebaseAuth.getInstance();;
+    static FirebaseAuth currentUser = FirebaseAuth.getInstance();
+    static DatabaseReference notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
+    static DatabaseReference circlesDB = database.getReference("Circles");
+
+
+
+    FirebaseQueryLiveData notifyliveData = new FirebaseQueryLiveData(notifyDb);
+    FirebaseQueryLiveData circleliveData = new FirebaseQueryLiveData(circlesDB);
+
+    @NonNull
+    public LiveData<DataSnapshot> getDataSnapshotLiveData() {
+        return notifyliveData;
+    }
+
+
     public static void FbsingleValueEvent(NotifyUIObject notifyUIObject) {
-        currentUser = FirebaseAuth.getInstance();
-        notifyDb = database.getReference("Notifications").child(currentUser.getCurrentUser().getUid());
-        notifyDb.orderByChild("timestamp").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseUtils viewModel = ViewModelProviders.of((FragmentActivity) notifyUIObject.getContext()).get(FirebaseUtils.class);
+        LiveData<DataSnapshot> notifyliveData = viewModel.getDataSnapshotLiveData();
+
+        notifyliveData.observe((LifecycleOwner) notifyUIObject.getContext(), new Observer<DataSnapshot>(){
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChanged(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Notification notification = snapshot.getValue(Notification.class);
@@ -46,15 +60,12 @@ public class FirebaseUtils {
                     }
                 }
             }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
         });
     }
 
     public static void WorkbenchSetTabs(User user, RecyclerView wbrecyclerView, RecyclerView.Adapter wbadapter, List<Circle> workbenchCircleList, LinearLayout emptyDisplay)
     {
+
         circlesDB = database.getReference("Circles");
         circlesDB.keepSynced(true);
         circlesDB.addChildEventListener(new ChildEventListener() {
@@ -71,6 +82,7 @@ public class FirebaseUtils {
                     emptyDisplay.setVisibility(View.GONE);
                     WorkbenchFragment.initializeNewCount(circle);
                 }
+
             }
 
             @Override
@@ -117,7 +129,7 @@ public class FirebaseUtils {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Circle circle = dataSnapshot.getValue(Circle.class);
-
+                Log.d("ExploreFButils",circle.toString());
                 boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
                 boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
 

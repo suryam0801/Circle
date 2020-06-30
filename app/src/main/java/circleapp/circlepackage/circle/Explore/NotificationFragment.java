@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Explore;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,6 +57,7 @@ public class NotificationFragment extends Fragment {
     //    private NotificationAdapter adapterThisWeek, adapterPrevious;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
+    ProgressDialog progressDialog;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -90,11 +92,12 @@ public class NotificationFragment extends Fragment {
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
         String type = "notify";
-
-
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Please wait");
+        progressDialog.show();
         NotifyUIObject notifyUIObject = new NotifyUIObject(type,getContext(),view,prevnotify,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
         FirebaseUtils.FbsingleValueEvent(notifyUIObject);
+        progressDialog.dismiss();
         return view;
     }
 
