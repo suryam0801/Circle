@@ -85,7 +85,6 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             finish();
         });
 
-
         moreOptions.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(this, moreOptions);
             popup.getMenuInflater()
