@@ -65,7 +65,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
 
         broadcastList = SessionStorage.getBroadcastList(this);
         circle = SessionStorage.getCircle(this);
-        initialBroadcastPosition = getIntent().getIntExtra("position", 0);
+        initialBroadcastPosition = getIntent().getIntExtra("broadcastPosition", 0);
 
         setParentBgImage();
 
@@ -123,7 +123,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
 
         snapHelper.attachToRecyclerView(recyclerView);
 
-        recyclerView.scrollToPosition(initialBroadcastPosition);
+        recyclerView.smoothScrollToPosition(initialBroadcastPosition);
     }
 
     public void setParentBgImage() {

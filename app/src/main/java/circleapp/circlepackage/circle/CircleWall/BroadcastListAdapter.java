@@ -141,7 +141,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.container.setOnClickListener(view -> {
             SessionStorage.saveBroadcastList((Activity) context, broadcastList);
-            Intent intent = new Intent((Activity) context, FullPageBroadcastCardView.class);
+            Intent intent = new Intent(context, FullPageBroadcastCardView.class);
+            intent.putExtra("broadcastPosition", i);
             context.startActivity(intent);
             ((Activity) context).finish();
         });

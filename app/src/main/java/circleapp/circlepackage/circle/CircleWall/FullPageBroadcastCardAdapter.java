@@ -71,7 +71,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         broadcastCommentsDB = database.getReference("BroadcastComments");
         userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         circlesDB = database.getReference("Circle").child(circle.getId());
-        broadcastDB = database.getReference("Broadcasts");
+        broadcastDB = database.getReference("Broadcasts").child(circle.getId());
         currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) mContext);
         v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -109,6 +109,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 makeCommentEntry(commentMessage, currentBroadcast);
             holder.addCommentEditText.setText("");
         });
+
+
+        String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
+        holder.viewComments.setText(commentsDisplayText);
 
         setBroadcastInfo(mContext, holder, currentBroadcast);
 
@@ -373,7 +377,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
         SessionStorage.saveCircle((Activity) mContext, circle);
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         RecyclerView commentListView;
