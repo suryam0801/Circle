@@ -51,9 +51,8 @@ public class SendNotification {
         applicationStatus.put("timestamp", System.currentTimeMillis());
 
         Set<String> member;
-        listenersList.remove(userID);
-
         if(listenersList!=null) {
+            listenersList.remove(userID);
             member = listenersList.keySet();
             for (String i : member) {
 
