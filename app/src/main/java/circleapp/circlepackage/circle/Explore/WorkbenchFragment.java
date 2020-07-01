@@ -138,12 +138,14 @@ public class WorkbenchFragment extends Fragment {
                 int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
                 workbenchCircleList.remove(index);
                 wbadapter.notifyItemRemoved(index);
+                workbenchCircleList.add(index, circle);
+                wbadapter.notifyItemInserted(index);
+            } else {
+                workbenchCircleList.add(circle);
+                wbadapter.notifyDataSetChanged();
+                initializeNewCount(circle);
+
             }
-
-            workbenchCircleList.add(circle);
-            wbadapter.notifyDataSetChanged();
-            initializeNewCount(circle);
-
         }
     }
 
