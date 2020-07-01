@@ -307,7 +307,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         map.put("commentorName", SessionStorage.getUser((Activity) mContext).getName().trim());
 
         broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
-        SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(),circle.getName(),circle.getId(),user.getName(),broadcast.getListenersList(),circle.getBackgroundImageLink());
+        SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(),circle.getName(),circle.getId(),user.getName(),broadcast.getListenersList(),circle.getBackgroundImageLink(), commentMessage);
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
         updateUserFields(broadcast, "create");

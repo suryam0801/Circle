@@ -23,7 +23,7 @@ import java.util.Set;
 public class SendNotification {
     private static String TAG = SendNotification.class.getSimpleName();
 //    Circle circle = SessionStorage.getCircle(SendNotification.class.getCon);
-    public static void sendCommentInfo(String userID, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon){
+    public static void sendCommentInfo(String userID, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon, String message){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userNotify;
         FirebaseAuth currentUser =FirebaseAuth.getInstance();
@@ -44,11 +44,12 @@ public class SendNotification {
         applicationStatus.put("circleId", circleId);
         applicationStatus.put("circleIcon", circleIcon);
         applicationStatus.put("broadcastId", broadcastId);
-        applicationStatus.put("creatorName", creatorName);
+        applicationStatus.put("from", creatorName);
         applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
         applicationStatus.put("notificationId", notificationId);
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
+        applicationStatus.put("message", message);
 
         Set<String> member;
         if(listenersList!=null) {
@@ -82,7 +83,7 @@ public class SendNotification {
 
     }
 
-    public static void sendBCinfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList,String circleIcon)
+    public static void sendBCinfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList,String circleIcon, String message)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userNotify;
@@ -104,11 +105,12 @@ public class SendNotification {
         applicationStatus.put("circleId", circleId);
         applicationStatus.put("circleIcon", circleIcon);
         applicationStatus.put("broadcastId", broadcastId);
-        applicationStatus.put("creatorName", creatorName);
+        applicationStatus.put("from", creatorName);
         applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
         applicationStatus.put("notificationId", notificationId);
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
+        applicationStatus.put("message",message);
 
         Set<String> member;
 
