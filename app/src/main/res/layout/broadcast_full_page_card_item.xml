@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="340dp"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/full_page_broadcast_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_marginLeft="5dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginRight="5dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     android:layout_marginBottom="10dp"
     android:background="@drawable/broadcast_cards"
     android:gravity="center"
@@ -15,146 +15,153 @@
     android:paddingTop="13dp"
     android:paddingRight="15dp">
 
+
     <RelativeLayout
         android:id="@+id/full_page_broadcast_container"
         android:layout_width="match_parent"
-        android:layout_marginTop="5dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
+            android:layout_height="match_parent">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/full_page_broadcast_profilePicture"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/ic_account_circle_black_24dp"></de.hdodenhof.circleimageview.CircleImageView>
-
-                <TextView
-                    android:id="@+id/full_page_broadcast_ownerName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:fontFamily="@font/roboto_bold"
-                    android:text="Name"
-                    android:textColor="#000000"
-                    android:textSize="15dp"></TextView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
+                    android:orientation="horizontal">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/full_page_broadcast_profilePicture"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/ic_account_circle_black_24dp"></de.hdodenhof.circleimageview.CircleImageView>
 
                     <TextView
-                        android:id="@+id/full_page_broadcast_Title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="99"
-                        android:fontFamily="@font/roboto_regular"
-                        android:lineSpacingExtra="4dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:text="Title"
-                        android:textColor="#000000"
-                        android:textSize="14dp"></TextView>
-
-                    <Button
-                        android:id="@+id/full_page_broadcast_view_poll_answers"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/ic_insert_chart_blue_24dp"
-                        android:gravity="center_vertical"
-                        android:visibility="gone"></Button>
-                </LinearLayout>
-
-                <com.github.chrisbanes.photoview.PhotoView
-                    android:id="@+id/uploaded_image_display_broadcast_full_page"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/full_page_broadcast_Message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="65dp"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:lineSpacingExtra="4dp"
-                    android:text="Message"
-                    android:textColor="#9D9D9D"
-                    android:textSize="14dp"></TextView>
-
-                <LinearLayout
-                    android:id="@+id/full_page_broadcast_poll_options_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"></LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="17dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/message"></ImageView>
-
-                    <TextView
-                        android:id="@+id/full_page_broadcast_viewComments"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_weight="99"
-                        android:fontFamily="@font/roboto_condensed"
-                        android:text="16 messages"
-                        android:textColor="#000000"
-                        android:textSize="13dp"></TextView>
-
-                    <TextView
-                        android:id="@+id/full_page_broadcast_postedTime"
+                        android:id="@+id/full_page_broadcast_ownerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Time Elapsed"
-                        android:textColor="#9D9D9D"
-                        android:textSize="12dp"></TextView>
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="Name"
+                        android:textColor="#000000"
+                        android:textSize="15dp"></TextView>
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="100">
+
+                        <TextView
+                            android:id="@+id/full_page_broadcast_Title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="99"
+                            android:fontFamily="@font/roboto_regular"
+                            android:lineSpacingExtra="4dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="Title"
+                            android:textColor="#000000"
+                            android:textSize="14dp"></TextView>
+
+                        <Button
+                            android:id="@+id/full_page_broadcast_view_poll_answers"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_insert_chart_blue_24dp"
+                            android:gravity="center_vertical"
+                            android:visibility="gone"></Button>
+                    </LinearLayout>
+
+                    <com.github.chrisbanes.photoview.PhotoView
+                        android:id="@+id/uploaded_image_display_broadcast_full_page"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/full_page_broadcast_Message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="65dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Message"
+                        android:textColor="#9D9D9D"
+                        android:textSize="14dp"></TextView>
+
+                    <LinearLayout
+                        android:id="@+id/full_page_broadcast_poll_options_radio_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="horizontal"
+                        android:weightSum="100">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="17dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/message"></ImageView>
+
+                        <TextView
+                            android:id="@+id/full_page_broadcast_viewComments"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="99"
+                            android:fontFamily="@font/roboto_condensed"
+                            android:text="16 messages"
+                            android:textColor="#000000"
+                            android:textSize="13dp"></TextView>
+
+                        <TextView
+                            android:id="@+id/full_page_broadcast_postedTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Time Elapsed"
+                            android:textColor="#9D9D9D"
+                            android:textSize="12dp"></TextView>
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
+        </ScrollView>
 
-        </LinearLayout>
+
 
         <Button
             android:id="@+id/clickToViewComments"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
@@ -173,15 +180,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
         android:visibility="visible"
-        android:layout_marginBottom="10dp"
         android:weightSum="100">
 
         <Button
             android:id="@+id/clickToViewBroadcastFullPage"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:clickable="true"

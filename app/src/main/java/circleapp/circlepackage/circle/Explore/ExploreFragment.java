@@ -1,43 +1,29 @@
 package circleapp.circlepackage.circle.Explore;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Helpers.ExploreFButils;
-import circleapp.circlepackage.circle.Helpers.FirebaseUtils;
+import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -58,10 +44,6 @@ public class ExploreFragment extends Fragment {
     private String mParam2;
 
     private List<Circle> exploreCircleList = new ArrayList<>();
-    private FirebaseAuth currentUser;
-
-    private FirebaseDatabase database;
-    private DatabaseReference circlesDB;
 
     private ChipGroup filterDisplay;
     private RecyclerView.Adapter adapter;
@@ -72,7 +54,8 @@ public class ExploreFragment extends Fragment {
     private List<String> listOfFilters = new ArrayList<>();
 
     private TextView filter;
-
+    private DataSnapshot dbSnapShot;
+    private int setIndex = 0;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -103,17 +86,15 @@ public class ExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
-        currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
-        database = FirebaseDatabase.getInstance();
-        circlesDB = database.getReference("Circles");
-        circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
 
         listOfFilters = SessionStorage.getFilters(getActivity());
 
         filter = view.findViewById(R.id.explore_filter_btn);
         filterDisplay = view.findViewById(R.id.filter_display_chip_group);
         exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
+
+        setIndex = getActivity().getIntent().getIntExtra("exploreIndex", 0);
 
         //initialize recylcerview
         exploreRecyclerView.setHasFixedSize(true);
@@ -136,17 +117,54 @@ public class ExploreFragment extends Fragment {
         });
 
         if (listOfFilters != null) {
-            for(String f : listOfFilters)
+            for (String f : listOfFilters)
                 setFilterChips(f);
         }
 
-        setCircleTabs();
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
+
+        liveData.observe(this, dataSnapshot -> {
+            if (dataSnapshot != null)
+                dbSnapShot = dataSnapshot;
+                setCircleTabs(dataSnapshot);
+        });
         return view;
     }
 
-    private void setCircleTabs() {
-//        FirebaseUtils.ExploreSetTabs(getActivity(),user,exploreCircleList,adapter,listOfFilters,exploreRecyclerView);
-        ExploreFButils.ExploreSetTabs(getActivity(),user,exploreCircleList,adapter,listOfFilters,exploreRecyclerView);
+    private void setCircleTabs(DataSnapshot dataSnapshot) {
+
+        Circle circle = dataSnapshot.getValue(Circle.class);
+
+        //if circle is already in the list
+        boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
+        if (exists) {
+            int index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+            exploreCircleList.remove(index);
+            adapter.notifyItemRemoved(index);
+        }
+
+        boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+
+        if (!isMember && circle.getVisibility().equals("Everybody")) {
+
+            if (circle.getCreatorName().equals("The Circle Team")) {
+                exploreCircleList.add(0, circle);
+                adapter.notifyItemInserted(0);
+            }
+
+            boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+            if (listOfFilters == null || listOfFilters.isEmpty()) {
+                exploreCircleList.add(adapter.getItemCount(), circle);
+                adapter.notifyItemInserted(adapter.getItemCount());
+            } else if (circleMatchesFilter) {
+                exploreCircleList.add(adapter.getItemCount(), circle);
+                adapter.notifyItemInserted(adapter.getItemCount());
+            }
+
+            exploreRecyclerView.scrollToPosition(setIndex);
+        }
     }
 
     private void setFilterChips(final String name) {
@@ -167,7 +185,7 @@ public class ExploreFragment extends Fragment {
             filterDisplay.removeView(chip);
             exploreCircleList.clear();
             adapter.notifyDataSetChanged();
-            setCircleTabs();
+            setCircleTabs(dbSnapShot);
         });
 
         filterDisplay.addView(chip);

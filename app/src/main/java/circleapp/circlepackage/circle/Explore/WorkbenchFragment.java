@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +34,7 @@ import java.util.List;
 
 import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
+import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.FirebaseUtils;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -57,6 +60,7 @@ public class WorkbenchFragment extends Fragment {
     private static DatabaseReference circlesDB, userDB;
     private static User user;
     private LinearLayout emptyDisplay;
+    private RecyclerView.Adapter wbadapter;
 
     public WorkbenchFragment() {
         // Required empty public constructor
@@ -97,6 +101,16 @@ public class WorkbenchFragment extends Fragment {
         ImageButton explore = view.findViewById(R.id.placeholder_explore_circle_layout);
         ImageButton create = view.findViewById(R.id.placeholder_create_circle_layout);
 
+        //initialize  workbench recylcerview
+        RecyclerView wbrecyclerView = view.findViewById(R.id.wbRecyclerView);
+        wbrecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        wbrecyclerView.setLayoutManager(wblayoutManager);
+        //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
+        //adapter adds all items from the circle list and displays them in individual circles in the recycler view
+        wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
+        wbrecyclerView.setAdapter(wbadapter);
+
         //remove placeholder
         if (user.getActiveCircles() == 0 && user.getCreatedCircles() == 0) {
             emptyDisplay.setVisibility(View.VISIBLE);
@@ -112,25 +126,32 @@ public class WorkbenchFragment extends Fragment {
                     new ExploreFragment()).commit();
         });
 
-        setWorkbenchTabs(view);
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+
+        liveData.observe(this, dataSnapshot -> {
+            if (dataSnapshot != null) ;
+            setWorkbenchTabs(dataSnapshot);
+        });
 
         return view;
     }
 
-    private void setWorkbenchTabs(View view) {
-        //initialize  workbench recylcerview
-        RecyclerView wbrecyclerView = view.findViewById(R.id.wbRecyclerView);
-        wbrecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        wbrecyclerView.setLayoutManager(wblayoutManager);
-        //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
-        //adapter adds all items from the circle list and displays them in individual circles in the recycler view
-        final RecyclerView.Adapter wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
+    private void setWorkbenchTabs(DataSnapshot dataSnapshot) {
+        Circle circle = dataSnapshot.getValue(Circle.class);
 
-        //single value listener for Circles Collection
-        //loads all the data for offline use the very first time the user loads the app
-        //only reloads new data objects or modifications to existing objects on each call
-        FirebaseUtils.WorkbenchSetTabs(user,wbrecyclerView,wbadapter,workbenchCircleList,emptyDisplay);
+        //if circle is already in the list
+        boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
+        if (exists) {
+            int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+            workbenchCircleList.remove(index);
+            wbadapter.notifyItemRemoved(index);
+        }
+
+        workbenchCircleList.add(circle);
+        wbadapter.notifyDataSetChanged();
+        initializeNewCount(circle);
 
     }
 

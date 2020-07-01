@@ -186,7 +186,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     .show();
         }
 
-
         if (circle.getNoOfBroadcasts() == 0)
             emptyDisplay.setVisibility(View.VISIBLE);
 

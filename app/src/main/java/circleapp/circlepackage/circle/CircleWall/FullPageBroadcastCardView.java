@@ -67,6 +67,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         circle = SessionStorage.getCircle(this);
         initialBroadcastPosition = getIntent().getIntExtra("broadcastPosition", 0);
 
+
         setParentBgImage();
 
         banner.setText(circle.getName());
@@ -83,7 +84,6 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             startActivity(new Intent(this, PersonelDisplay.class));
             finish();
         });
-
 
         moreOptions.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(this, moreOptions);
