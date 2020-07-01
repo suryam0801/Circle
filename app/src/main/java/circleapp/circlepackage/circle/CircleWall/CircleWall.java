@@ -607,11 +607,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
         Broadcast normalBroadcast;
-
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink());
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), setMessageET.getText().toString(), null,
                 currentUserName, null, currentUserId, false, false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), 0, 0);
+        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
@@ -635,11 +634,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserId = currentUser.getCurrentUser().getUid();
         Broadcast photoBroadcast = new Broadcast();
 
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink());
         if (imageExists) {
             photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadUri.toString(), currentUserName, null, currentUserId, false, true,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
         }
+
+        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
@@ -662,7 +662,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = currentUser.getCurrentUser().getDisplayName();
         String currentUserId = currentUser.getCurrentUser().getUid();
 
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink());
+        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
         //creating poll options hashmap
         HashMap<String, Integer> options = new HashMap<>();
         if (!pollAnswerOptionsList.isEmpty()) {

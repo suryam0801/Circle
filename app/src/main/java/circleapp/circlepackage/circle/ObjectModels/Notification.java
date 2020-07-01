@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Notification implements Parcelable {
-    private String circleName, circleId, from,notify_to, state, date,broadcastId,circleIcon,type;
+    private String circleName, circleId, from,notify_to, state, date,broadcastId,circleIcon,type, message;
     private Long timestamp;
 
     public Notification () {
@@ -26,7 +26,8 @@ public class Notification implements Parcelable {
                 '}';
     }
 
-    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date,String broadcastId,String circleIcon,String type) {
+
+    public Notification(String circleName, String circleId, String from, String notify_to, String state, Long timestamp, String date, String broadcastId, String circleIcon, String type, String message) {
         this.circleName = circleName;
         this.circleId = circleId;
         this.from = from;
@@ -37,6 +38,7 @@ public class Notification implements Parcelable {
         this.broadcastId = broadcastId;
         this.circleIcon = circleIcon;
         this.type = type;
+        this.message = message;
     }
 
     public String getType() {
@@ -117,6 +119,14 @@ public class Notification implements Parcelable {
 
     public void setBroadcastId(String broadcastId) {
         this.broadcastId = broadcastId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
