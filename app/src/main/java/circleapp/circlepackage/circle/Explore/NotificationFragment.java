@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Explore;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -33,7 +35,7 @@ public class NotificationFragment extends Fragment {
     private String mParam2;
 
     private ListView thisWeekListView, previousListView;
-    private List<Notification> thisWeekNotifs, previousNotifs;
+    private List<Notification> thisWeekNotifs, previousNotifs, notifs = new ArrayList<Notification>();;
     //    private NotificationAdapter adapterThisWeek, adapterPrevious;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
@@ -83,17 +85,20 @@ public class NotificationFragment extends Fragment {
             if (dataSnapshot != null) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Notification notification = snapshot.getValue(Notification.class);
-                    setNotifsView(notification);
+                    //setNotifsView(notification);
+                    if(!notifs.contains(notification))
+                        notifs.add(notification);
                     Log.d("wflkn", (startTime - System.currentTimeMillis())+"");
                 }
+                setNotifsView(notifs);
             }
         });
 
         return view;
     }
 
-    private void setNotifsView(Notification notification){
-        HelperMethods.OrderNotification(getContext(),prevnotify,notification,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
+    private void setNotifsView(List<Notification> notifs){
+        HelperMethods.OrderNotification(getContext(),prevnotify,notifs,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
 
         HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
         HelperMethods.setListViewHeightBasedOnChildren(previousListView);
