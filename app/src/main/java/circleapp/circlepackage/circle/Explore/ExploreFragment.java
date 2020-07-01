@@ -145,30 +145,32 @@ public class ExploreFragment extends Fragment {
             if (exists) {
                 index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
                 exploreCircleList.remove(index);
-                adapter.notifyItemRemoved(index);
-            }
+                exploreCircleList.add(index, circle);
+                adapter.notifyItemChanged(index);
 
-            boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+            } else {
+                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
 
-            if (!isMember && circle.getVisibility().equals("Everybody")) {
+                if (!isMember && circle.getVisibility().equals("Everybody")) {
 
-                if (circle.getCreatorName().equals("The Circle Team")) {
-                    exploreCircleList.add(0, circle);
-                    adapter.notifyItemInserted(0);
+                    if (circle.getCreatorName().equals("The Circle Team")) {
+                        exploreCircleList.add(0, circle);
+                        adapter.notifyItemInserted(0);
+                    }
+
+                    boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+                    if (listOfFilters == null || listOfFilters.isEmpty()) {
+                        exploreCircleList.add(index, circle);
+                        adapter.notifyItemInserted(index);
+                        exploreRecyclerView.scrollToPosition(index);
+                    } else if (circleMatchesFilter) {
+                        exploreCircleList.add(index, circle);
+                        adapter.notifyItemInserted(index);
+                        exploreRecyclerView.scrollToPosition(index);
+                    }
+
+                    exploreRecyclerView.scrollToPosition(setIndex);
                 }
-
-                boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-                if (listOfFilters == null || listOfFilters.isEmpty()) {
-                    exploreCircleList.add(index, circle);
-                    adapter.notifyItemInserted(index);
-                    exploreRecyclerView.scrollToPosition(index);
-                } else if (circleMatchesFilter) {
-                    exploreCircleList.add(index, circle);
-                    adapter.notifyItemInserted(index);
-                    exploreRecyclerView.scrollToPosition(index);
-                }
-
-                exploreRecyclerView.scrollToPosition(setIndex);
             }
         }
 
