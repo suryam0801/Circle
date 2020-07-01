@@ -391,7 +391,7 @@ public class HelperMethods {
     public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
     {
         String currentTimeStamp = getCurrentTimeStamp();
-
+        Log.d("Notifi-delay","delay2");
         Scanner scan = new Scanner(currentTimeStamp);
         scan.useDelimiter("-");
         int currentDay = Integer.parseInt(scan.next());
@@ -402,7 +402,7 @@ public class HelperMethods {
         scan.useDelimiter("-");
         int notificationDay = Integer.parseInt(scan.next());
         int notificationMonth = Integer.parseInt(scan.next());
-
+        Log.d("Notifi-delay","delay3");
         if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
             previousNotifs.add(0, notification);
         else
@@ -413,13 +413,13 @@ public class HelperMethods {
         } else {
             prevnotify.setVisibility(View.VISIBLE);
         }
-
+        Log.d("Notifi-delay","delay4");
         adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
         adapterPrevious = new NotificationAdapter(context, previousNotifs);
 
         previousListView.setAdapter(adapterPrevious);
         thisWeekListView.setAdapter(adapterThisWeek);
-
+        Log.d("Notifi-delay","delay5");
     }
 
     public static void deleteBroadcast(String circleId, String broadcastId, int noOfBroadcasts){

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,6 +130,8 @@ public class ExploreFragment extends Fragment {
         liveData.observe(this, dataSnapshot -> {
             if (dataSnapshot != null)
                 dbSnapShot = dataSnapshot;
+
+            Log.d("Explore-db",dbSnapShot.toString());
             setCircleTabs(dataSnapshot);
         });
         return view;
@@ -136,9 +139,8 @@ public class ExploreFragment extends Fragment {
 
     private void setCircleTabs(DataSnapshot dataSnapshot) {
 
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Circle circle = snapshot.getValue(Circle.class);
-
+            Circle circle = dataSnapshot.getValue(Circle.class);
+            Log.d("Explore",circle.toString());
             //if circle is already in the list
             int index = 0;
             boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
@@ -170,7 +172,7 @@ public class ExploreFragment extends Fragment {
 
                 exploreRecyclerView.scrollToPosition(setIndex);
             }
-        }
+
 
     }
 

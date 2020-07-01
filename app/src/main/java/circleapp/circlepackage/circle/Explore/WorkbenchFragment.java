@@ -121,17 +121,19 @@ public class WorkbenchFragment extends Fragment {
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 
         liveData.observe(this, dataSnapshot -> {
-            if (dataSnapshot != null) ;
-            setWorkbenchTabs(dataSnapshot);
+            if (dataSnapshot != null) {
+                setWorkbenchTabs(dataSnapshot);
+                }
+
         });
 
         return view;
     }
 
     private void setWorkbenchTabs(DataSnapshot dataSnapshot) {
-        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-            Circle circle = snapshot.getValue(Circle.class);
 
+            Circle circle = dataSnapshot.getValue(Circle.class);
+//            Circle circle = new Circle(snapshot.getValue(String.class));
             //if circle is already in the list
             boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
             if (exists) {
@@ -144,7 +146,7 @@ public class WorkbenchFragment extends Fragment {
             wbadapter.notifyDataSetChanged();
             initializeNewCount(circle);
 
-        }
+
     }
 
     public static void initializeNewCount(Circle c) {

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Notification implements Parcelable {
-    private String circleName, circleId, from,notify_to, state, date,broadcastId,circleIcon,type;
+    private String circleName,circleId,from,notify_to,state,date,broadcastId,circleIcon,type,creatorId,creatorName,notificationId;
     private Long timestamp;
 
     public Notification () {
@@ -14,8 +14,8 @@ public class Notification implements Parcelable {
     @Override
     public String toString() {
         return "Notification{" +
-                "projectName='" + circleName + '\'' +
-                ", projectId='" + circleId + '\'' +
+                "circleName='" + circleName + '\'' +
+                ", circleId='" + circleId + '\'' +
                 ", from='" + from + '\'' +
                 ", notify_to='" + notify_to + '\'' +
                 ", state='" + state + '\'' +
@@ -26,7 +26,7 @@ public class Notification implements Parcelable {
                 '}';
     }
 
-    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date,String broadcastId,String circleIcon,String type) {
+    public Notification(String circleName, String circleId, String from,String notify_to, String state, Long timestamp, String date,String broadcastId,String circleIcon,String type,String creatorId,String creatorName,String notificationId) {
         this.circleName = circleName;
         this.circleId = circleId;
         this.from = from;
@@ -37,6 +37,33 @@ public class Notification implements Parcelable {
         this.broadcastId = broadcastId;
         this.circleIcon = circleIcon;
         this.type = type;
+        this.notificationId = notificationId;
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(String notificationId) {
+        this.notificationId = notificationId;
     }
 
     public String getType() {

@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Explore;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
@@ -38,6 +40,7 @@ public class NotificationFragment extends Fragment {
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
     private User user;
+    ProgressDialog progressDialog;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -74,29 +77,63 @@ public class NotificationFragment extends Fragment {
         previousNotifs = new ArrayList<>();
         String type = "notify";
         long startTime = System.currentTimeMillis();
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Please wait...");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
 
         liveData.observe(this, dataSnapshot -> {
             if (dataSnapshot != null) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Notification notification = snapshot.getValue(Notification.class);
+                    Notification notification = dataSnapshot.getValue(Notification.class);
                     setNotifsView(notification);
                     Log.d("wflkn", (startTime - System.currentTimeMillis())+"");
-                }
             }
         });
-
+progressDialog.dismiss();
         return view;
     }
 
     private void setNotifsView(Notification notification){
-        HelperMethods.OrderNotification(getContext(),prevnotify,notification,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
+        long startTime = System.currentTimeMillis();
+        Log.d("Notifi-delay","delay1");
+//        HelperMethods.OrderNotification(getContext(),prevnotify,notification,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
+        String currentTimeStamp = HelperMethods.getCurrentTimeStamp();
+        Log.d("Notifi-delay","delay2");
+        Scanner scan = new Scanner(currentTimeStamp);
+        scan.useDelimiter("-");
+        int currentDay = Integer.parseInt(scan.next());
+        int currentMonth = Integer.parseInt(scan.next());
 
+        String date = notification.getDate();
+        scan = new Scanner(date);
+        scan.useDelimiter("-");
+        int notificationDay = Integer.parseInt(scan.next());
+        int notificationMonth = Integer.parseInt(scan.next());
+        Log.d("Notifi-delay","delay3");
+        if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
+            previousNotifs.add(0, notification);
+        else
+            thisWeekNotifs.add(0, notification);
+
+        if (previousNotifs.size() == 0) {
+            prevnotify.setVisibility(View.INVISIBLE);
+        } else {
+            prevnotify.setVisibility(View.VISIBLE);
+        }
+        Log.d("Notifi-delay","delay4");
+        adapterThisWeek = new NotificationAdapter(getContext(), thisWeekNotifs);
+        adapterPrevious = new NotificationAdapter(getContext()
+                , previousNotifs);
+
+        previousListView.setAdapter(adapterPrevious);
+        thisWeekListView.setAdapter(adapterThisWeek);
+        Log.d("Notifi-delay","delay5");
         HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
         HelperMethods.setListViewHeightBasedOnChildren(previousListView);
+        Log.d("Notifi-delay","delay6");
 
         thisWeekListView.setOnItemClickListener((parent, view1, position, id) -> {
             Notification curent = thisWeekNotifs.get(position);
