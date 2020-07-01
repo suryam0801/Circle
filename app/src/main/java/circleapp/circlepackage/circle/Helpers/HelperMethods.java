@@ -131,10 +131,12 @@ public class HelperMethods {
 
     public static boolean listContainsCircle(List<Circle> circleList, Circle circle) {
         boolean containsCircle = false;
+
         for (Circle c : circleList) {
             if (c.getId().equals(circle.getId()))
                 containsCircle = true;
         }
+
         return containsCircle;
     }
 
