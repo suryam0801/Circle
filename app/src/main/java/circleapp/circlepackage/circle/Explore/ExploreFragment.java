@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -128,43 +129,49 @@ public class ExploreFragment extends Fragment {
         liveData.observe(this, dataSnapshot -> {
             if (dataSnapshot != null)
                 dbSnapShot = dataSnapshot;
-                setCircleTabs(dataSnapshot);
+            setCircleTabs(dataSnapshot);
         });
         return view;
     }
 
     private void setCircleTabs(DataSnapshot dataSnapshot) {
 
-        Circle circle = dataSnapshot.getValue(Circle.class);
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            Circle circle = snapshot.getValue(Circle.class);
 
-        //if circle is already in the list
-        boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
-        if (exists) {
-            int index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-            exploreCircleList.remove(index);
-            adapter.notifyItemRemoved(index);
-        }
-
-        boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
-
-        if (!isMember && circle.getVisibility().equals("Everybody")) {
-
-            if (circle.getCreatorName().equals("The Circle Team")) {
-                exploreCircleList.add(0, circle);
-                adapter.notifyItemInserted(0);
+            //if circle is already in the list
+            int index = 0;
+            boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
+            if (exists) {
+                index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+                exploreCircleList.remove(index);
+                adapter.notifyItemRemoved(index);
             }
 
-            boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-            if (listOfFilters == null || listOfFilters.isEmpty()) {
-                exploreCircleList.add(adapter.getItemCount(), circle);
-                adapter.notifyItemInserted(adapter.getItemCount());
-            } else if (circleMatchesFilter) {
-                exploreCircleList.add(adapter.getItemCount(), circle);
-                adapter.notifyItemInserted(adapter.getItemCount());
-            }
+            boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
 
-            exploreRecyclerView.scrollToPosition(setIndex);
+            if (!isMember && circle.getVisibility().equals("Everybody")) {
+
+                if (circle.getCreatorName().equals("The Circle Team")) {
+                    exploreCircleList.add(0, circle);
+                    adapter.notifyItemInserted(0);
+                }
+
+                boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+                if (listOfFilters == null || listOfFilters.isEmpty()) {
+                    exploreCircleList.add(index, circle);
+                    adapter.notifyItemInserted(index);
+                    exploreRecyclerView.scrollToPosition(index);
+                } else if (circleMatchesFilter) {
+                    exploreCircleList.add(index, circle);
+                    adapter.notifyItemInserted(index);
+                    exploreRecyclerView.scrollToPosition(index);
+                }
+
+                exploreRecyclerView.scrollToPosition(setIndex);
+            }
         }
+
     }
 
     private void setFilterChips(final String name) {
