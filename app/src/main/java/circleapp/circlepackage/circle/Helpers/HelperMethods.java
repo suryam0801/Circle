@@ -58,6 +58,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -131,12 +132,10 @@ public class HelperMethods {
 
     public static boolean listContainsCircle(List<Circle> circleList, Circle circle) {
         boolean containsCircle = false;
-
         for (Circle c : circleList) {
             if (c.getId().equals(circle.getId()))
                 containsCircle = true;
         }
-
         return containsCircle;
     }
 
@@ -390,7 +389,7 @@ public class HelperMethods {
         reportAbuseDialog.show();
     }
 
-    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
+    public static void OrderNotification(Context context, TextView prevnotify, List<Notification> notifs, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
     {
         String currentTimeStamp = getCurrentTimeStamp();
 
@@ -398,29 +397,33 @@ public class HelperMethods {
         scan.useDelimiter("-");
         int currentDay = Integer.parseInt(scan.next());
         int currentMonth = Integer.parseInt(scan.next());
+        for(Notification notification : notifs){
+            String date = notification.getDate();
+            scan = new Scanner(date);
+            scan.useDelimiter("-");
+            int notificationDay = Integer.parseInt(scan.next());
+            int notificationMonth = Integer.parseInt(scan.next());
+            if(thisWeekNotifs.contains(notification)||previousNotifs.contains(notification)){
+                break;
+            }
 
-        String date = notification.getDate();
-        scan = new Scanner(date);
-        scan.useDelimiter("-");
-        int notificationDay = Integer.parseInt(scan.next());
-        int notificationMonth = Integer.parseInt(scan.next());
+            if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
+                previousNotifs.add(0, notification);
+            else
+                thisWeekNotifs.add(0, notification);
 
-        if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
-            previousNotifs.add(0, notification);
-        else
-            thisWeekNotifs.add(0, notification);
+            if (previousNotifs.size() == 0) {
+                prevnotify.setVisibility(View.INVISIBLE);
+            } else {
+                prevnotify.setVisibility(View.VISIBLE);
+            }
 
-        if (previousNotifs.size() == 0) {
-            prevnotify.setVisibility(View.INVISIBLE);
-        } else {
-            prevnotify.setVisibility(View.VISIBLE);
+            adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
+            adapterPrevious = new NotificationAdapter(context, previousNotifs);
+
+            previousListView.setAdapter(adapterPrevious);
+            thisWeekListView.setAdapter(adapterThisWeek);
         }
-
-        adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
-        adapterPrevious = new NotificationAdapter(context, previousNotifs);
-
-        previousListView.setAdapter(adapterPrevious);
-        thisWeekListView.setAdapter(adapterThisWeek);
 
     }
 

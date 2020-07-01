@@ -83,7 +83,7 @@ public class NotificationAdapter extends BaseAdapter {
         SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
         SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
         SpannableStringBuilder newBroadCast = new SpannableStringBuilder("New BroadCast has been added to " + notif.getCircleName()); //start index: 32
-        SpannableStringBuilder newComment = new SpannableStringBuilder("New Comment has been added to " + notif.getCircleName()+ " in a Post you are listening to."); //start index: 32
+        SpannableStringBuilder newComment = new SpannableStringBuilder("New Comment has been added to " + notif.getCircleName()+ " in a Post you are listening to."); //start index: 30
         SpannableStringBuilder newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
         SpannableStringBuilder new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
         SpannableStringBuilder report_result_accepted = new SpannableStringBuilder("The " + notif.getType() + " you reported has been removed. Thanks for keeping the platform safe!");
@@ -129,7 +129,7 @@ public class NotificationAdapter extends BaseAdapter {
                 }
                 foregroundIcon.setVisibility(View.GONE);
                 profilePic.setVisibility(View.VISIBLE);
-                newComment.setSpan(fcsSkyBlue, 32, 32 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                newComment.setSpan(fcsSkyBlue, 30, 30 + notif.getCircleName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 notificationDescription.setText(newComment);
                 break;
             case "new_user":
