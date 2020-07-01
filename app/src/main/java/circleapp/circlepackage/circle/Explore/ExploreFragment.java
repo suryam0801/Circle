@@ -168,13 +168,37 @@ public class ExploreFragment extends Fragment {
                         adapter.notifyItemInserted(index);
                         exploreRecyclerView.scrollToPosition(index);
                     }
-
                     exploreRecyclerView.scrollToPosition(setIndex);
                 }
             }
         }
+        checkForRemovedCircles(dataSnapshot);
 
     }
+
+    public void checkForRemovedCircles(DataSnapshot dataSnapshot) {
+        List<String> tempWBCirclesIDList = new ArrayList<>();
+        for (Circle c : exploreCircleList)
+            tempWBCirclesIDList.add(c.getId());
+
+        List<String> tempSnapshotCirclesIDList = new ArrayList<>();
+        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+            Circle circle = snapshot.getValue(Circle.class);
+            tempSnapshotCirclesIDList.add(circle.getId());
+        }
+
+        int missingIndex = -1;
+        for(String s : tempWBCirclesIDList){
+            if(!tempSnapshotCirclesIDList.contains(s))
+                missingIndex = tempWBCirclesIDList.indexOf(s);
+        }
+
+        if(missingIndex != -1) {
+            exploreCircleList.remove(missingIndex);
+            adapter.notifyItemRemoved(missingIndex);
+        }
+    }
+
 
     private void setFilterChips(final String name) {
         final Chip chip = new Chip(getContext());

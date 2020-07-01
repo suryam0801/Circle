@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,7 +130,8 @@ public class WorkbenchFragment extends Fragment {
     }
 
     private void setWorkbenchTabs(DataSnapshot dataSnapshot) {
-        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
             Circle circle = snapshot.getValue(Circle.class);
 
             //if circle is already in the list
@@ -137,15 +139,37 @@ public class WorkbenchFragment extends Fragment {
             if (exists) {
                 int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
                 workbenchCircleList.remove(index);
-                wbadapter.notifyItemRemoved(index);
                 workbenchCircleList.add(index, circle);
-                wbadapter.notifyItemInserted(index);
+                wbadapter.notifyItemChanged(index);
             } else {
                 workbenchCircleList.add(circle);
                 wbadapter.notifyDataSetChanged();
                 initializeNewCount(circle);
-
             }
+        }
+        checkForRemovedCircles(dataSnapshot);
+    }
+
+    public void checkForRemovedCircles(DataSnapshot dataSnapshot) {
+        List<String> tempWBCirclesIDList = new ArrayList<>();
+        for (Circle c : workbenchCircleList)
+            tempWBCirclesIDList.add(c.getId());
+
+        List<String> tempSnapshotCirclesIDList = new ArrayList<>();
+        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+            Circle circle = snapshot.getValue(Circle.class);
+            tempSnapshotCirclesIDList.add(circle.getId());
+        }
+
+        int missingIndex = -1;
+        for(String s : tempWBCirclesIDList){
+            if(!tempSnapshotCirclesIDList.contains(s))
+                missingIndex = tempWBCirclesIDList.indexOf(s);
+        }
+
+        if(missingIndex != -1) {
+            workbenchCircleList.remove(missingIndex);
+            wbadapter.notifyItemRemoved(missingIndex);
         }
     }
 
