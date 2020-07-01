@@ -30,7 +30,7 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
     @Override
     protected void onActive() {
         Log.d(LOG_TAG, "onActive");
-        query.addChildEventListener(listener);
+        query.addValueEventListener(listener);
     }
 
     @Override
@@ -39,34 +39,6 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
         query.removeEventListener(listener);
     }
 
-    private class MyValueEventListener implements ChildEventListener {
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            setValue(dataSnapshot);
-        }
-
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            setValue(dataSnapshot);
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            setValue(dataSnapshot);
-        }
-
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    }
-
-/*
     private class MyValueEventListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -78,5 +50,4 @@ public class FirebaseQueryLiveData extends LiveData<DataSnapshot> {
             Log.e(LOG_TAG, "Can't listen to query " + query, databaseError.toException());
         }
     }
-*/
 }

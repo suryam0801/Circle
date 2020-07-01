@@ -3,39 +3,29 @@ package circleapp.circlepackage.circle.Explore;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.rpc.Help;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
-import circleapp.circlepackage.circle.Helpers.FirebaseUtils;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -139,20 +129,22 @@ public class WorkbenchFragment extends Fragment {
     }
 
     private void setWorkbenchTabs(DataSnapshot dataSnapshot) {
-        Circle circle = dataSnapshot.getValue(Circle.class);
+        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+            Circle circle = snapshot.getValue(Circle.class);
 
-        //if circle is already in the list
-        boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
-        if (exists) {
-            int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
-            workbenchCircleList.remove(index);
-            wbadapter.notifyItemRemoved(index);
+            //if circle is already in the list
+            boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
+            if (exists) {
+                int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+                workbenchCircleList.remove(index);
+                wbadapter.notifyItemRemoved(index);
+            }
+
+            workbenchCircleList.add(circle);
+            wbadapter.notifyDataSetChanged();
+            initializeNewCount(circle);
+
         }
-
-        workbenchCircleList.add(circle);
-        wbadapter.notifyDataSetChanged();
-        initializeNewCount(circle);
-
     }
 
     public static void initializeNewCount(Circle c) {
