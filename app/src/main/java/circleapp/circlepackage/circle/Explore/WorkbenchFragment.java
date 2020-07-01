@@ -137,11 +137,13 @@ public class WorkbenchFragment extends Fragment {
             //if circle is already in the list
             boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
             if (exists) {
+
                 int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
                 workbenchCircleList.remove(index);
                 workbenchCircleList.add(index, circle);
                 wbadapter.notifyItemChanged(index);
             } else {
+                //add new circle to list
                 workbenchCircleList.add(circle);
                 wbadapter.notifyDataSetChanged();
                 initializeNewCount(circle);
@@ -161,16 +163,14 @@ public class WorkbenchFragment extends Fragment {
             tempSnapshotCirclesIDList.add(circle.getId());
         }
 
-        int missingIndex = -1;
         for(String s : tempWBCirclesIDList){
-            if(!tempSnapshotCirclesIDList.contains(s))
-                missingIndex = tempWBCirclesIDList.indexOf(s);
+            if(!tempSnapshotCirclesIDList.contains(s)){
+                int missingIndex = tempWBCirclesIDList.indexOf(s);
+                workbenchCircleList.remove(missingIndex);
+                wbadapter.notifyItemRemoved(missingIndex);
+            }
         }
 
-        if(missingIndex != -1) {
-            workbenchCircleList.remove(missingIndex);
-            wbadapter.notifyItemRemoved(missingIndex);
-        }
     }
 
     public static void initializeNewCount(Circle c) {
