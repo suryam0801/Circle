@@ -143,31 +143,27 @@ public class ExploreFragment extends Fragment {
             int index = 0;
             boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
             if (exists) {
+                //edit existing circle
                 index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
                 exploreCircleList.remove(index);
                 exploreCircleList.add(index, circle);
                 adapter.notifyItemChanged(index);
-
             } else {
+                //add new circle
                 boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
 
                 if (!isMember && circle.getVisibility().equals("Everybody")) {
 
-                    if (circle.getCreatorName().equals("The Circle Team")) {
-                        exploreCircleList.add(0, circle);
-                        adapter.notifyItemInserted(0);
-                    }
+                    if (circle.getCreatorName().equals("The Circle Team"))
+                        makeEntryIntoRecyclerView(circle, 0);
 
                     boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-                    if (listOfFilters == null || listOfFilters.isEmpty()) {
-                        exploreCircleList.add(index, circle);
-                        adapter.notifyItemInserted(index);
-                        exploreRecyclerView.scrollToPosition(index);
-                    } else if (circleMatchesFilter) {
-                        exploreCircleList.add(index, circle);
-                        adapter.notifyItemInserted(index);
-                        exploreRecyclerView.scrollToPosition(index);
-                    }
+
+                    if (listOfFilters == null || listOfFilters.isEmpty())
+                        makeEntryIntoRecyclerView(circle, index);
+                    else if (circleMatchesFilter)
+                        makeEntryIntoRecyclerView(circle, index);
+
                     exploreRecyclerView.scrollToPosition(setIndex);
                 }
             }
@@ -176,27 +172,32 @@ public class ExploreFragment extends Fragment {
 
     }
 
+    public void makeEntryIntoRecyclerView(Circle circle, int index) {
+        exploreCircleList.add(index, circle);
+        adapter.notifyItemInserted(index);
+        exploreRecyclerView.scrollToPosition(index);
+    }
+
     public void checkForRemovedCircles(DataSnapshot dataSnapshot) {
         List<String> tempWBCirclesIDList = new ArrayList<>();
         for (Circle c : exploreCircleList)
             tempWBCirclesIDList.add(c.getId());
 
         List<String> tempSnapshotCirclesIDList = new ArrayList<>();
-        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
             Circle circle = snapshot.getValue(Circle.class);
             tempSnapshotCirclesIDList.add(circle.getId());
         }
 
-        int missingIndex = -1;
-        for(String s : tempWBCirclesIDList){
-            if(!tempSnapshotCirclesIDList.contains(s))
-                missingIndex = tempWBCirclesIDList.indexOf(s);
+        for (String s : tempWBCirclesIDList) {
+            if (!tempSnapshotCirclesIDList.contains(s)) {
+                int missingIndex = tempWBCirclesIDList.indexOf(s);
+                exploreCircleList.remove(missingIndex);
+                adapter.notifyItemRemoved(missingIndex);
+
+            }
         }
 
-        if(missingIndex != -1) {
-            exploreCircleList.remove(missingIndex);
-            adapter.notifyItemRemoved(missingIndex);
-        }
     }
 
 
