@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,8 +129,6 @@ public class ExploreFragment extends Fragment {
         liveData.observe(this, dataSnapshot -> {
             if (dataSnapshot != null)
                 dbSnapShot = dataSnapshot;
-
-            Log.d("Explore-db",dbSnapShot.toString());
             setCircleTabs(dataSnapshot);
         });
         return view;
@@ -139,42 +136,69 @@ public class ExploreFragment extends Fragment {
 
     private void setCircleTabs(DataSnapshot dataSnapshot) {
 
-            Circle circle = dataSnapshot.getValue(Circle.class);
-            Log.d("Explore",circle.toString());
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            Circle circle = snapshot.getValue(Circle.class);
+
             //if circle is already in the list
             int index = 0;
             boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
             if (exists) {
                 index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
                 exploreCircleList.remove(index);
-                adapter.notifyItemRemoved(index);
-            }
+                exploreCircleList.add(index, circle);
+                adapter.notifyItemChanged(index);
 
-            boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+            } else {
+                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
 
-            if (!isMember && circle.getVisibility().equals("Everybody")) {
+                if (!isMember && circle.getVisibility().equals("Everybody")) {
 
-                if (circle.getCreatorName().equals("The Circle Team")) {
-                    exploreCircleList.add(0, circle);
-                    adapter.notifyItemInserted(0);
+                    if (circle.getCreatorName().equals("The Circle Team")) {
+                        exploreCircleList.add(0, circle);
+                        adapter.notifyItemInserted(0);
+                    }
+
+                    boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+                    if (listOfFilters == null || listOfFilters.isEmpty()) {
+                        exploreCircleList.add(index, circle);
+                        adapter.notifyItemInserted(index);
+                        exploreRecyclerView.scrollToPosition(index);
+                    } else if (circleMatchesFilter) {
+                        exploreCircleList.add(index, circle);
+                        adapter.notifyItemInserted(index);
+                        exploreRecyclerView.scrollToPosition(index);
+                    }
+                    exploreRecyclerView.scrollToPosition(setIndex);
                 }
-
-                boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-                if (listOfFilters == null || listOfFilters.isEmpty()) {
-                    exploreCircleList.add(index, circle);
-                    adapter.notifyItemInserted(index);
-                    exploreRecyclerView.scrollToPosition(index);
-                } else if (circleMatchesFilter) {
-                    exploreCircleList.add(index, circle);
-                    adapter.notifyItemInserted(index);
-                    exploreRecyclerView.scrollToPosition(index);
-                }
-
-                exploreRecyclerView.scrollToPosition(setIndex);
             }
-
+        }
+        checkForRemovedCircles(dataSnapshot);
 
     }
+
+    public void checkForRemovedCircles(DataSnapshot dataSnapshot) {
+        List<String> tempWBCirclesIDList = new ArrayList<>();
+        for (Circle c : exploreCircleList)
+            tempWBCirclesIDList.add(c.getId());
+
+        List<String> tempSnapshotCirclesIDList = new ArrayList<>();
+        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+            Circle circle = snapshot.getValue(Circle.class);
+            tempSnapshotCirclesIDList.add(circle.getId());
+        }
+
+        int missingIndex = -1;
+        for(String s : tempWBCirclesIDList){
+            if(!tempSnapshotCirclesIDList.contains(s))
+                missingIndex = tempWBCirclesIDList.indexOf(s);
+        }
+
+        if(missingIndex != -1) {
+            exploreCircleList.remove(missingIndex);
+            adapter.notifyItemRemoved(missingIndex);
+        }
+    }
+
 
     private void setFilterChips(final String name) {
         final Chip chip = new Chip(getContext());
