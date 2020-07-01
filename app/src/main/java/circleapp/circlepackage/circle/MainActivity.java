@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 contentIntent = PendingIntent.getActivity(this, 0, intent_reject, PendingIntent.FLAG_UPDATE_CURRENT);
                 break;
             case "broadcast_added":
-                name = "New BroadCast Added in: " + notif.getCircleName();
+                name = "New Post Added in: " + notif.getCircleName();
                 description = notif.getFrom()+": "+notif.getMessage();
                 Intent intent_broadcast = new Intent(this, ExploreTabbedActivity.class);
                 contentIntent = PendingIntent.getActivity(this, 0, intent_broadcast, PendingIntent.FLAG_UPDATE_CURRENT);

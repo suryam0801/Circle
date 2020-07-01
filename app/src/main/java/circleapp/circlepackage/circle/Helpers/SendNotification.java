@@ -33,8 +33,8 @@ public class SendNotification {
 
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-
         String notificationId = userNotify.child(broadcastId).push().getKey();
+        message = message.substring(0, Math.min(message.length(), 60))+"...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
         String from = firebaseAuth.getCurrentUser().getUid();
@@ -96,6 +96,7 @@ public class SendNotification {
 
 
         String notificationId = userNotify.child(broadcastId).push().getKey();
+        message = message.substring(0, Math.min(message.length(), 60))+"...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
         String from = firebaseAuth.getCurrentUser().getUid();
