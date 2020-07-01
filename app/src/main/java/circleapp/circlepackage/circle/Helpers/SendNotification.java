@@ -35,7 +35,7 @@ public class SendNotification {
 
         String notificationId = userNotify.child(broadcastId).push().getKey();
         message = message.substring(0, Math.min(message.length(), 60));
-        if(message.length()>60)
+        if(message.length()>=60)
             message = message +"...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
@@ -99,7 +99,7 @@ public class SendNotification {
 
         String notificationId = userNotify.child(broadcastId).push().getKey();
         message = message.substring(0, Math.min(message.length(), 60));
-        if(message.length()>60)
+        if(message.length()>=60)
             message = message +"...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
