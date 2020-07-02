@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ public class ExploreFragment extends Fragment {
     private List<String> listOfFilters = new ArrayList<>();
 
     private TextView filter;
-    private DataSnapshot dbSnapShot;
     private int setIndex = 0;
 
     public ExploreFragment() {
