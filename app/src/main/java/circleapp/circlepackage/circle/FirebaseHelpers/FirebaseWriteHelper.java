@@ -6,15 +6,20 @@ import android.content.Intent;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
@@ -27,6 +32,8 @@ public class FirebaseWriteHelper {
     private static final DatabaseReference CIRCLES_PERSONEL_REF = database.getReference("/CirclePersonel");
     private static final DatabaseReference USERS_REF = database.getReference("/Users").child(user.getUid());
     private static final DatabaseReference COMMENTS_REF = database.getReference("BroadcastComments");
+    private static final DatabaseReference LOCATIONS_REF = database.getReference("Locations");
+    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private static final DatabaseReference USER_FEEDBACK_REF = database.getReference("UserFeedback");
 
     public static void deleteCircle(Context context, Circle circle, User user) {
@@ -52,6 +59,25 @@ public class FirebaseWriteHelper {
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
         CIRCLES_REF.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
 
+    }
+    public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount){
+        CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(newCount);
+        BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
+    }
+    public static StorageReference getStorageReference(String dbReference){
+        return storageReference.child(dbReference);
+    }
+    public static void updateUserNewTimeStampComments(String userId, String broadcastId, long latestTimestamp){
+        USERS_REF.child(userId).child("newTimeStampsComments").child(broadcastId).setValue(latestTimestamp);
+    }
+    public static void updateUserNewReadComments(String userId, String broadcastId, long numberOfComments){
+        USERS_REF.child(userId).child("noOfReadDiscussions").child(broadcastId).setValue(numberOfComments);
+    }
+    public static void updateUserCount(String userId, String circleId, long noOfBroadcasts){
+        USERS_REF.child(userId).child("notificationsAlert").child(circleId).setValue(noOfBroadcasts);
+    }
+    public static void updateUserProfilePic(UserProfileChangeRequest profileUpdates){
+        user.updateProfile(profileUpdates);
     }
 
     public static void initializeNewCount(Circle c, User user) {

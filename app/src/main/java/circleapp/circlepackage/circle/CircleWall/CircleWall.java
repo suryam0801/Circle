@@ -29,9 +29,6 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +37,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,14 +47,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -89,11 +78,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
-    private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, commentsDB, circlesPersonelDB, circlesDB, usersDB;
-    private FirebaseAuth currentUser;
     RuntimePermissionHelper runtimePermissionHelper;
-    private StorageReference storageReference;
     private Uri filePath;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
@@ -146,17 +131,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
-
-        database = FirebaseDatabase.getInstance();
         runtimePermissionHelper = new RuntimePermissionHelper(CircleWall.this);
-        broadcastsDB = database.getReference("Broadcasts");
-        circlesPersonelDB = database.getReference("CirclePersonel");
-        circlesDB = database.getReference("Circles");
-        usersDB = database.getReference("Users").child(user.getUserId());
-        commentsDB = database.getReference("BroadcastComments");
-        broadcastsDB.keepSynced(true);
-        currentUser = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
 
         if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
@@ -589,9 +564,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void createNormalBroadcast() {
         String currentCircleId = circle.getId();
-        String broadcastId = broadcastsDB.child(currentCircleId).push().getKey();
-        String currentUserName = currentUser.getCurrentUser().getDisplayName();
-        String currentUserId = currentUser.getCurrentUser().getUid();
+        String broadcastId = HelperMethods.uuidGet();
+        String currentUserName = user.getName();
+        String currentUserId = user.getUserId();
         Broadcast normalBroadcast;
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), setMessageET.getText().toString(), null,
                 currentUserName, null, currentUserId, false, false, System.currentTimeMillis(), null,
@@ -600,13 +575,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
-        circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
         SessionStorage.saveCircle(CircleWall.this, circle);
-
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        broadcastsDB.child(circle.getId()).child(broadcastId).setValue(normalBroadcast);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this,circle.getId(),normalBroadcast, newCount);
         pollExists = false;
         imageExists = false;
 
@@ -615,9 +588,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void createPhotoBroadcast() {
         String currentCircleId = circle.getId();
-        String broadcastId = broadcastsDB.child(currentCircleId).push().getKey();
-        String currentUserName = currentUser.getCurrentUser().getDisplayName();
-        String currentUserId = currentUser.getCurrentUser().getUid();
+        String broadcastId = HelperMethods.uuidGet();
+        String currentUserName = user.getName();
+        String currentUserId = user.getUserId();
         Broadcast photoBroadcast = new Broadcast();
 
         if (imageExists) {
@@ -629,12 +602,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
-        circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
         SessionStorage.saveCircle(CircleWall.this, circle);
 
         updateUserCount(circle);
         //updating broadcast in broadcast db
-        broadcastsDB.child(circle.getId()).child(broadcastId).setValue(photoBroadcast);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this,circle.getId(),photoBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         createPhotoBroadcastPopup.dismiss();
@@ -642,11 +614,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void createPollBroadcast() {
         String currentCircleId = circle.getId();
-        String broadcastId = broadcastsDB.child(currentCircleId).push().getKey();
+        String broadcastId = HelperMethods.uuidGet();
         String pollQuestion = setPollQuestionET.getText().toString();
         Broadcast pollBroadcast = new Broadcast();
-        String currentUserName = currentUser.getCurrentUser().getDisplayName();
-        String currentUserId = currentUser.getCurrentUser().getUid();
+        String currentUserName = user.getName();
+        String currentUserId = user.getUserId();
 
         SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
         //creating poll options hashmap
@@ -669,13 +641,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
-        circlesDB.child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
         SessionStorage.saveCircle(CircleWall.this, circle);
 
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        broadcastsDB.child(circle.getId()).child(broadcastId).setValue(pollBroadcast);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this,circle.getId(),pollBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         pollAnswerOptionsList.clear();
@@ -793,8 +764,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             //generating random id to store the profliepic
             String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
-
+            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
+            //final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
             //storing  the pic
             profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -833,7 +804,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    currentUser.getCurrentUser().updateProfile(profileUpdates);
+                    FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
                     Log.d(TAG, "Profile URL: " + downloadUri.toString());
                     if (pollExists)
                         Glide.with(CircleWall.this).load(filePath).into(pollAddPhoto);
@@ -886,7 +857,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            usersDB.child("newTimeStampsComments").child(b.getId()).setValue(b.getLatestCommentTimestamp());
+            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(),b.getId(),b.getLatestCommentTimestamp());
         } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
@@ -894,7 +865,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            usersDB.child("newTimeStampsComments").child(b.getId()).setValue(b.getLatestCommentTimestamp());
+            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(),b.getId(),b.getLatestCommentTimestamp());
         }
     }
 
@@ -907,7 +878,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNoOfReadDiscussions(userNoReadComments);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            usersDB.child("noOfReadDiscussions").child(b.getId()).setValue(b.getNumberOfComments());
+            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(),b.getId(),b.getNumberOfComments());
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
@@ -915,7 +886,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNoOfReadDiscussions(userNoReadComments);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            usersDB.child("noOfReadDiscussions").child(b.getId()).setValue(b.getNumberOfComments());
+            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(),b.getId(),b.getNumberOfComments());
         }
     }
 
@@ -925,13 +896,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
             user.setNotificationsAlert(newNotifs);
             SessionStorage.saveUser(this, user);
-            usersDB.child("notificationsAlert").child(c.getId()).setValue(circle.getNoOfBroadcasts());
+            FirebaseWriteHelper.updateUserCount(user.getUserId(),c.getId(),circle.getNoOfBroadcasts());
         } else {
             HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
             user.setNotificationsAlert(newNotifs);
             SessionStorage.saveUser(this, user);
-            usersDB.child("notificationsAlert").child(c.getId()).setValue(c.getNoOfBroadcasts());
         }
     }
 }
