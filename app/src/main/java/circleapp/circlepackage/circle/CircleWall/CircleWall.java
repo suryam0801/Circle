@@ -209,6 +209,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPhoto.setOnClickListener(view -> showCreatePhotoBroadcastDialog());
         getStartedPoll.setOnClickListener(view -> showCreatePollBroadcastDialog());
         getStartedBroadcast.setOnClickListener(view -> showCreateNormalBroadcastDialog());
+
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
         LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
@@ -232,7 +233,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void addBroadcast(Broadcast broadcast) {
         boolean exists = HelperMethods.listContainsBroadcast(broadcastList, broadcast);
-        if(!exists){
+        if (!exists) {
             broadcastList.add(0, broadcast); //to store timestamp values descendingly
             adapter.notifyItemInserted(0);
             recyclerView.setAdapter(adapter);
@@ -573,7 +574,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), setMessageET.getText().toString(), null,
                 currentUserName, null, currentUserId, false, false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), 0, 0);
-        SendNotification.sendBCinfo(user.getUserId(),broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
+        SendNotification.sendBCinfo(user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
@@ -581,7 +582,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(CircleWall.this,circle.getId(),normalBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), normalBroadcast, newCount);
         pollExists = false;
         imageExists = false;
 
@@ -608,7 +609,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         updateUserCount(circle);
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(CircleWall.this,circle.getId(),photoBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), photoBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         createPhotoBroadcastPopup.dismiss();
@@ -859,7 +860,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(),b.getId(),b.getLatestCommentTimestamp());
+            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
@@ -867,7 +868,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNewTimeStampsComments(commentTimeStampTemp);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(),b.getId(),b.getLatestCommentTimestamp());
+            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         }
     }
 
@@ -880,7 +881,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNoOfReadDiscussions(userNoReadComments);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(),b.getId(),b.getNumberOfComments());
+            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
@@ -888,7 +889,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             user.setNoOfReadDiscussions(userNoReadComments);
 
             SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(),b.getId(),b.getNumberOfComments());
+            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         }
     }
 
@@ -898,7 +899,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
             user.setNotificationsAlert(newNotifs);
             SessionStorage.saveUser(this, user);
-            FirebaseWriteHelper.updateUserCount(user.getUserId(),c.getId(),circle.getNoOfBroadcasts());
+            FirebaseWriteHelper.updateUserCount(user.getUserId(), c.getId(), circle.getNoOfBroadcasts());
         } else {
             HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
