@@ -46,8 +46,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -60,6 +58,7 @@ import java.util.UUID;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -95,12 +94,6 @@ public class CreateCircle extends AppCompatActivity {
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
     private StorageReference storageReference;
-    private FirebaseAuth firebaseAuth;
-
-    private FirebaseDatabase database;
-    private DatabaseReference tags, circleDB, userDB;
-    private FirebaseAuth currentUser;
-    private boolean isReached = false;
     private String backgroundImageLink;
 
     @Override
@@ -113,7 +106,6 @@ public class CreateCircle extends AppCompatActivity {
         user = SessionStorage.getUser(CreateCircle.this);
         photo = 0;
         backgroundImageLink = "";
-        firebaseAuth = FirebaseAuth.getInstance();
         //Initialize all UI elements in the CreateCircle activity
         circleNameEntry = findViewById(R.id.create_circle_Name);
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
@@ -123,7 +115,7 @@ public class CreateCircle extends AppCompatActivity {
         back = findViewById(R.id.bck_create);
         visibilityPrompt = findViewById(R.id.visibility_prompt_create_circle);
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE );
+        circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         backgroundPic = findViewById(R.id.background_image);
         addLogo = findViewById(R.id.backgroundPreview);
         circleVisibilityDisplay = findViewById(R.id.circle_visibility_display);
@@ -135,10 +127,6 @@ public class CreateCircle extends AppCompatActivity {
         backgroundText = findViewById(R.id.backgroundText);
         runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
         storageReference = FirebaseStorage.getInstance().getReference();
-
-        database = FirebaseDatabase.getInstance();
-        tags = database.getReference("Tags");
-        userDB = database.getReference("Users").child(user.getUserId());
 
         visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
 
@@ -199,20 +187,18 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle(String cName, String cDescription, String acceptanceType, String visibilty) {
 
         User user = SessionStorage.getUser(CreateCircle.this);
-        circleDB = database.getReference("Circles");
-        currentUser = FirebaseAuth.getInstance();
 
         String category = getIntent().getStringExtra("category_name");
 
-        String myCircleID = circleDB.push().getKey();
-        String creatorUserID = currentUser.getCurrentUser().getUid();
+        String myCircleID = HelperMethods.uuidGet();
+        String creatorUserID = user.getUserId();
 
         if (acceptanceType.equals("Public"))
             acceptanceType = "Automatic";
         else if (acceptanceType.equals("Private"))
             acceptanceType = "Review";
 
-        String creatorName = currentUser.getCurrentUser().getDisplayName();
+        String creatorName = user.getName();
 
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
@@ -226,15 +212,16 @@ public class CreateCircle extends AppCompatActivity {
                 category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
                 System.currentTimeMillis(), 0, 0);
 
-        circleDB.child(myCircleID).setValue(circle);
+        Subscriber creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
+                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-        addCreatingUserToPersonel(circle);
+        FirebaseWriteHelper.createUserMadeCircle(circle, creatorSubscriber, user.getUserId());
 
         int currentCreatedNo = user.getCreatedCircles() + 1;
         user.setCreatedCircles(currentCreatedNo);
-        SessionStorage.saveUser(CreateCircle.this, user);
+        FirebaseWriteHelper.updateUser(user, this);
+
         SessionStorage.saveCircle(CreateCircle.this, circle);
-        userDB.child("createdCircles").setValue(currentCreatedNo);
 
         //navigate back to explore. new circle will be available in workbench
         SharedPreferences prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
@@ -250,12 +237,6 @@ public class CreateCircle extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-    }
-
-    public void addCreatingUserToPersonel(Circle circle){
-        Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
-                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
-        database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
     }
 
     public void selectFile() {
@@ -336,76 +317,75 @@ public class CreateCircle extends AppCompatActivity {
         photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-        }
-        else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
         }
-            //check the path for the image
-            //if the image path is notnull the uploading process will start
-            if (filePath != null) {
-                ContentResolver resolver = getContentResolver();
-                HelperMethods.compressImage(resolver, filePath);
+        //check the path for the image
+        //if the image path is notnull the uploading process will start
+        if (filePath != null) {
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
 
-                //Creating an  custom dialog to show the uploading status
-                final ProgressDialog progressDialog = new ProgressDialog(CreateCircle.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
+            //Creating an  custom dialog to show the uploading status
+            final ProgressDialog progressDialog = new ProgressDialog(CreateCircle.this);
+            progressDialog.setTitle("Uploading");
+            progressDialog.show();
 
-                //generating random id to store the backgroundpic
-                String id = UUID.randomUUID().toString();
-                final StorageReference profileRef = storageReference.child("BackgroundPics/" + id);
+            //generating random id to store the backgroundpic
+            String id = UUID.randomUUID().toString();
+            final StorageReference profileRef = storageReference.child("BackgroundPics/" + id);
 
-                //storing  the pic
-                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+            //storing  the pic
+            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                        //displaying percentage in progress dialog
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                })
-                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-
-                                // Continue with the task to get the download URL
-                                return profileRef.getDownloadUrl();
+                    //displaying percentage in progress dialog
+                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                }
+            })
+                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
                             }
-                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        progressDialog.dismiss();
-                        //and displaying a success toast
+
+                            // Continue with the task to get the download URL
+                            return profileRef.getDownloadUrl();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    progressDialog.dismiss();
+                    //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                        downloadUri = uri;
-                        backgroundText.setVisibility(View.GONE);
-                        logoHelp.setVisibility(View.GONE);
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(uri)
-                                .build();
-                        firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
-                        Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(CreateCircle.this).load(filePath).into(backgroundPic);
-                        filePath = null;
+                    downloadUri = uri;
+                    backgroundText.setVisibility(View.GONE);
+                    logoHelp.setVisibility(View.GONE);
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(uri)
+                            .build();
+                    FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
+                    Log.d(TAG, "Profile URL: " + downloadUri.toString());
+                    Glide.with(CreateCircle.this).load(filePath).into(backgroundPic);
+                    filePath = null;
 
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                //if the upload is not successfull
-                                //hiding the progress dialog
-                                progressDialog.dismiss();
-                                //and displaying error message
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            //if the upload is not successfull
+                            //hiding the progress dialog
+                            progressDialog.dismiss();
+                            //and displaying error message
+                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
+    }
 
     @Override
     public void onBackPressed() {

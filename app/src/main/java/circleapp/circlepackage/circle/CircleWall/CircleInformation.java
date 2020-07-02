@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,21 +20,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.Explore.CircleDisplayAdapter;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.MemberListAdapter;
@@ -45,8 +45,6 @@ public class CircleInformation extends AppCompatActivity {
     private CircleImageView logo;
     private TextView creatorName, circleName, circleDescription;
     private ListView membersDisplay;
-    private FirebaseDatabase database;
-    private DatabaseReference circlesPersonelDB;
     private List<Subscriber> memberList;
     private Circle circle;
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
@@ -60,9 +58,6 @@ public class CircleInformation extends AppCompatActivity {
 
         circle = SessionStorage.getCircle(CircleInformation.this);
         user = SessionStorage.getUser(CircleInformation.this);
-
-        database = FirebaseDatabase.getInstance();
-        circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId()); //circle.getId()
 
         banner = findViewById(R.id.circle_info_circle_banner);
         logo = findViewById(R.id.circle_info_circle_logo);
@@ -122,30 +117,16 @@ public class CircleInformation extends AppCompatActivity {
         final MemberListAdapter adapter = new MemberListAdapter(this, memberList);
         membersDisplay.setAdapter(adapter);
 
-        circlesPersonelDB.child("members").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                memberList.add(subscriber);
-                adapter.notifyDataSetChanged();
-                HelperMethods.setListViewHeightBasedOnChildren(membersDisplay);
-            }
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
+        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
+        liveData.observe(this, returnArray -> {
+            Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
+            memberList.add(subscriber);
+            adapter.notifyDataSetChanged();
+            HelperMethods.setListViewHeightBasedOnChildren(membersDisplay);
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
         });
     }
 

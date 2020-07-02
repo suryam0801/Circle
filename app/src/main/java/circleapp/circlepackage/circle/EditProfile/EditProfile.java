@@ -46,9 +46,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Login.EntryPage;
@@ -85,8 +87,6 @@ public class EditProfile extends AppCompatActivity {
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
 
-    private FirebaseDatabase database;
-    private DatabaseReference tags, userDB;
     private FirebaseAuth currentUser;
 
     private Boolean finalizeChange = false;
@@ -119,9 +119,6 @@ public class EditProfile extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        database = FirebaseDatabase.getInstance();
-        tags = database.getReference("Tags");
-        userDB = database.getReference("Users");
         userName.setText(user.getName());
         userNumber.setText(user.getContact());
         createdCircles.setText(user.getCreatedCircles() + "");
@@ -135,7 +132,7 @@ public class EditProfile extends AppCompatActivity {
         editProfPic.setOnClickListener(view -> {
             editprofile(user.getProfileImageLink());
         });
-        editName.setOnClickListener(v->{
+        editName.setOnClickListener(v -> {
             edituserNamedialogue();
         });
 
@@ -201,7 +198,7 @@ public class EditProfile extends AppCompatActivity {
             if (downloadUri != null)
                 user.setProfileImageLink(downloadUri.toString());
 
-            userDB.child(user.getUserId()).setValue(user);
+            FirebaseWriteHelper.updateUser(user, this);
             SessionStorage.saveUser(EditProfile.this, user);
             finalizeChange = true;
             finalizeChanges.setVisibility(View.GONE);
@@ -296,15 +293,12 @@ public class EditProfile extends AppCompatActivity {
                     currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            userDB.child(currentUser.getCurrentUser().getUid()).child("profileImageLink").setValue(downloadUri).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
-                                    HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
-                                    progressDialog.dismiss();
-                                    editUserProfiledialogue.dismiss();
-                                }
-                            });
+                            user.setProfileImageLink(downloadUri.toString());
+                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
+                            Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+                            HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+                            progressDialog.dismiss();
+                            editUserProfiledialogue.dismiss();
                         }
                     });
 
@@ -316,19 +310,17 @@ public class EditProfile extends AppCompatActivity {
                     currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            userDB.child(currentUser.getCurrentUser().getUid()).child("profileImageLink").setValue(avatar).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Glide.with(EditProfile.this)
-                                            .load(Integer.parseInt(avatar))
-                                            .into(profileImageView);
-                                    progressDialog.dismiss();
-                                    user.setProfileImageLink(avatar);
-                                    SessionStorage.saveUser(EditProfile.this, user);
-                                    finalizeChange = true;
-                                    editUserProfiledialogue.dismiss();
-                                }
-                            });
+                            user.setProfileImageLink(avatar);
+                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
+                            Glide.with(EditProfile.this)
+                                    .load(Integer.parseInt(avatar))
+                                    .into(profileImageView);
+                            progressDialog.dismiss();
+                            user.setProfileImageLink(avatar);
+                            SessionStorage.saveUser(EditProfile.this, user);
+                            finalizeChange = true;
+                            editUserProfiledialogue.dismiss();
+
                         }
                     });
                 }
@@ -369,13 +361,8 @@ public class EditProfile extends AppCompatActivity {
                             userName.setText(currentUser.getCurrentUser().getDisplayName());
                             progressDialog.dismiss();
                             editUserNamedialogue.dismiss();
-                            userDB.child(userId).child("name").setValue(name).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "User Name updated:: " + name);
-//                                    editUserNamedialogue.cancel();
-                                }
-                            });
+                            user.setName(name);
+                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
                         }
                     });
 
@@ -469,73 +456,72 @@ public class EditProfile extends AppCompatActivity {
         photo = 0;
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePath = data.getData();
-        }
-        else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
         }
 
-            //check the path for the image
-            //if the image path is notnull the uploading process will start
-            if (filePath != null) {
-                ContentResolver resolver = getContentResolver();
-                HelperMethods.compressImage(resolver, filePath);
-                //Creating an  custom dialog to show the uploading status
-                final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
+        //check the path for the image
+        //if the image path is notnull the uploading process will start
+        if (filePath != null) {
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
+            //Creating an  custom dialog to show the uploading status
+            final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
+            progressDialog.setTitle("Uploading");
+            progressDialog.show();
 
-                //generating random id to store the profliepic
-                String id = UUID.randomUUID().toString();
-                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+            //generating random id to store the profliepic
+            String id = UUID.randomUUID().toString();
+            final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
 
-                //storing  the pic
-                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+            //storing  the pic
+            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                        //displaying percentage in progress dialog
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                })
-                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-
-                                // Continue with the task to get the download URL
-                                return profileRef.getDownloadUrl();
+                    //displaying percentage in progress dialog
+                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                }
+            })
+                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
                             }
-                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        progressDialog.dismiss();
-                        //and displaying a success toast
-                        finalizeChanges.setVisibility(View.VISIBLE);
-                        downloadUri = uri;
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(uri)
-                                .build();
-                        currentUser.getCurrentUser().updateProfile(profileUpdates);
-                        Glide.with(EditProfile.this).load(filePath).into(profileImageView);
-                        filePath = null;
 
-                    }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                //if the upload is not successfull
-                                //hiding the progress dialog
-                                progressDialog.dismiss();
+                            // Continue with the task to get the download URL
+                            return profileRef.getDownloadUrl();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    progressDialog.dismiss();
+                    //and displaying a success toast
+                    finalizeChanges.setVisibility(View.VISIBLE);
+                    downloadUri = uri;
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(uri)
+                            .build();
+                    currentUser.getCurrentUser().updateProfile(profileUpdates);
+                    Glide.with(EditProfile.this).load(filePath).into(profileImageView);
+                    filePath = null;
 
-                                //and displaying error message
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            //if the upload is not successfull
+                            //hiding the progress dialog
+                            progressDialog.dismiss();
+
+                            //and displaying error message
+                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     @Override

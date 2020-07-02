@@ -25,24 +25,24 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -58,10 +58,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Context mContext;
     private List<Broadcast> broadcastList;
     private Circle circle;
-    private FirebaseDatabase database;
-    private DatabaseReference broadcastCommentsDB, broadcastDB, userDB, circlesDB;
-    private Vibrator v;
-    private FirebaseAuth currentUser;
     private User user;
     private int initialIndex;
 
@@ -70,14 +66,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         this.broadcastList = broadcastList;
         this.circle = circle;
         this.initialIndex = initialIndex;
-        database = FirebaseDatabase.getInstance();
-        broadcastCommentsDB = database.getReference("BroadcastComments");
-        userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        circlesDB = database.getReference("Circles").child(circle.getId());
-        broadcastDB = database.getReference("Broadcasts").child(circle.getId());
-        currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) mContext);
-        v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @NonNull
@@ -98,15 +87,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
         holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
 
-        commentAdapter = new CommentAdapter(mContext, commentsList);
-        holder.commentListView.setAdapter(commentAdapter);
-
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
         holder.commentListView.setLayoutManager(mLinearLayoutManager);
 
         holder.addCommentButton.setOnClickListener(view -> {
             String commentMessage = holder.addCommentEditText.getText().toString().trim();
-            if (!commentMessage.equals("")){
+            if (!commentMessage.equals("")) {
                 makeCommentEntry(commentMessage, currentBroadcast);
             }
             holder.addCommentEditText.setText("");
@@ -118,45 +104,26 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         setBroadcastInfo(mContext, holder, currentBroadcast);
 
+        commentAdapter = new CommentAdapter(mContext, commentsList);
+        holder.commentListView.setAdapter(commentAdapter);
 
-        broadcastCommentsDB.child(circle.getId()).child(currentBroadcast.getId()).orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Comment tempComment = dataSnapshot.getValue(Comment.class);
-                commentsList.add(tempComment); //to store timestamp values descendingly
-                commentAdapter.notifyDataSetChanged();
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(FirebaseRetrievalViewModel.class);
+        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
 
-                Log.d("kewjfnwe", initialIndex+" "+position);
+        liveData.observe((LifecycleOwner) mContext, returnArray -> {
+            Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
+            commentsList.add(tempComment); //to store timestamp values descendingly
+            commentAdapter.notifyDataSetChanged();
 
-                if (position == initialIndex)
-                    HelperMethods.collapse(holder.broadcst_container);
+            Log.d("kewjfnwe", initialIndex + " " + position);
 
-                if (commentsList.size() == currentBroadcast.getNumberOfComments())
-                    updateUserFields(currentBroadcast, "view");
+            if (position == initialIndex)
+                HelperMethods.collapse(holder.broadcst_container);
 
-            }
+            if (commentsList.size() == currentBroadcast.getNumberOfComments())
+                updateUserFields(currentBroadcast, "view");
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
         });
-
     }
 
     public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast) {
@@ -237,8 +204,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
                 viewHolder.pollOptionsDisplayGroup.removeAllViews();
 
-            if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(currentUser.getCurrentUser().getUid()))
-                viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(currentUser.getCurrentUser().getUid()));
+            if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(user.getUserId()))
+                viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(user.getUserId()));
 
             for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
 
@@ -278,10 +245,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     HashMap<String, String> userResponseHashmap;
                     if (poll.getUserResponse() != null) {
                         userResponseHashmap = new HashMap<>(poll.getUserResponse());
-                        userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+                        userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
                     } else {
                         userResponseHashmap = new HashMap<>();
-                        userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+                        userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
                     }
 
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
@@ -306,8 +273,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         map.put("commentorPicURL", SessionStorage.getUser((Activity) mContext).getProfileImageLink());
         map.put("commentorName", SessionStorage.getUser((Activity) mContext).getName().trim());
 
-        broadcastCommentsDB.child(circle.getId()).child(broadcast.getId()).push().setValue(map);
-        SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(),circle.getName(),circle.getId(),user.getName(),broadcast.getListenersList(),circle.getBackgroundImageLink(), commentMessage);
+        FirebaseWriteHelper.makeNewComment(map, circle.getId(), broadcast.getId());
+        SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage);
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
         updateUserFields(broadcast, "create");
@@ -340,13 +307,13 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     updateDiscussionInt = 0;
                 tempNoOfDiscussion.put(broadcast.getId(), updateDiscussionInt + 1);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
+                FirebaseWriteHelper.updateUser(user, mContext);
                 break;
 
             case "view":
                 tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                userDB.child("noOfReadDiscussions").setValue(tempNoOfDiscussion);
+                FirebaseWriteHelper.updateUser(user, mContext);
                 break;
         }
 
@@ -354,24 +321,20 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
         tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
         user.setNewTimeStampsComments(tempCommentTimeStamps);
-        SessionStorage.saveUser((Activity) mContext, user);
-        userDB.child("newTimeStampsComments").child(broadcast.getId()).setValue(broadcast.getLatestCommentTimestamp());
+        FirebaseWriteHelper.updateUser(user, mContext);
     }
 
     public void updateCommentNumbersPostCreate(Broadcast broadcast, long timetamp) {
         //updating broadCastTimeStamp after creating the comment
         int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
-        broadcastDB.child(broadcast.getId()).child("latestCommentTimestamp").setValue(timetamp);
-        broadcastDB.child(broadcast.getId()).child("numberOfComments").setValue(broacastNumberOfComments);
         broadcast.setLatestCommentTimestamp(timetamp);
         broadcast.setNumberOfComments(broacastNumberOfComments);
-        SessionStorage.saveBroadcast((Activity) mContext, broadcast);
+        FirebaseWriteHelper.updateBroadcast(broadcast, mContext, circle.getId());
 
         //updating number of discussions in circle
         int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
-        circlesDB.child("noOfNewDiscussions").setValue(circleNewNumberOfDiscussions);
         circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
-        SessionStorage.saveCircle((Activity) mContext, circle);
+        FirebaseWriteHelper.updateCircle(circle, mContext);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
