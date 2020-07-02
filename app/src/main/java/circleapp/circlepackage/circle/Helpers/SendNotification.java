@@ -11,7 +11,7 @@ public class SendNotification {
     private static String TAG = SendNotification.class.getSimpleName();
     public static void sendCommentInfo(String userID, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon, String message){
 
-        String notificationId = HelperMethods.uuidGet();
+        String notificationId = FirebaseWriteHelper.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
         if(message.length()>=60)
             message = message +"...";
@@ -37,7 +37,7 @@ public class SendNotification {
     public static void sendBCinfo(String userId, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList,String circleIcon, String message)
     {
 
-        String notificationId = HelperMethods.uuidGet();
+        String notificationId = FirebaseWriteHelper.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
         if(message.length()>=60)
             message = message +"...";
@@ -61,7 +61,7 @@ public class SendNotification {
     public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
 //        This is the function to store the
 
-        String notificationId = HelperMethods.uuidGet();
+        String notificationId = FirebaseWriteHelper.getNotificationId(toUserId);
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
         applicationStatus.put("state", state);

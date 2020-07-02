@@ -564,7 +564,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void createNormalBroadcast() {
         String currentCircleId = circle.getId();
-        String broadcastId = HelperMethods.uuidGet();
+        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
         Broadcast normalBroadcast;
@@ -588,7 +588,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void createPhotoBroadcast() {
         String currentCircleId = circle.getId();
-        String broadcastId = HelperMethods.uuidGet();
+        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
         Broadcast photoBroadcast = new Broadcast();
@@ -614,7 +614,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void createPollBroadcast() {
         String currentCircleId = circle.getId();
-        String broadcastId = HelperMethods.uuidGet();
+        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
         String pollQuestion = setPollQuestionET.getText().toString();
         Broadcast pollBroadcast = new Broadcast();
         String currentUserName = user.getName();

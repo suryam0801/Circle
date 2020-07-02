@@ -207,4 +207,13 @@ public class FirebaseWriteHelper {
             }
         });
     }
+    public static String getNotificationId(String broadcastId){
+        String notificationId = NOTIFS_REF.child(broadcastId).push().getKey();
+        return notificationId;
+    }
+    public static String getBroadcastId(String circleId){
+        String broadcastId = BROADCASTS_REF.child(circleId).push().getKey();
+        return broadcastId;
+    }
+
 }
