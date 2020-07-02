@@ -551,7 +551,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(i);
             Log.d(TAG, "Intent lines are executed...");
-            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
+//            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
 //            sendnotify();
             db.collection("Users")
                     .document(userId)
@@ -567,7 +567,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             finish();
         });
     }
-
+/*
     private void sendnotify() {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder =
@@ -590,6 +590,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
     }
+ */
 
     private void createInitialCircles() {
 /*

@@ -150,18 +150,6 @@ public class FirebaseWriteHelper {
                     }
                 });
 
-                db.collection("Users/" + i + "/CommentsNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                    }
-
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
-
-
             }
         }
 
@@ -179,19 +167,6 @@ public class FirebaseWriteHelper {
                     public void onComplete(@NonNull Task<Void> task) {
                     }
                 });
-
-                db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                    }
-
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
-
-
             }
         }
     }
@@ -200,17 +175,6 @@ public class FirebaseWriteHelper {
         NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-            }
-        });
-
-        db.collection("Users/" + userId + "/Notifications").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
             }
         });
     }
