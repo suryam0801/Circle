@@ -571,7 +571,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), setMessageET.getText().toString(), null,
                 currentUserName, null, currentUserId, false, false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), 0, 0);
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
+        SendNotification.sendBCinfo(user.getUserId(),broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
@@ -598,7 +598,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0);
         }
 
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
+        SendNotification.sendBCinfo(user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
@@ -620,7 +620,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
 
-        SendNotification.sendBCinfo(broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
+        SendNotification.sendBCinfo(user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
         //creating poll options hashmap
         HashMap<String, Integer> options = new HashMap<>();
         if (!pollAnswerOptionsList.isEmpty()) {
