@@ -105,7 +105,6 @@ public class ExploreFragment extends Fragment {
         adapter = new CircleDisplayAdapter(getContext(), exploreCircleList, user);
         exploreRecyclerView.setAdapter(adapter);
 
-
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(exploreRecyclerView);
 
@@ -120,8 +119,12 @@ public class ExploreFragment extends Fragment {
                 setFilterChips(f);
         }
 
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+        fetchData();
+        return view;
+    }
 
+    public void fetchData(){
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
         LiveData<String[]> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
         liveData.observe(this, returnArray -> {
@@ -139,7 +142,7 @@ public class ExploreFragment extends Fragment {
                     break;
             }
         });
-        return view;
+
     }
 
     public void addCircle(Circle circle) {
@@ -201,7 +204,7 @@ public class ExploreFragment extends Fragment {
             filterDisplay.removeView(chip);
             exploreCircleList.clear();
             adapter.notifyDataSetChanged();
-            //setCircleTabs(dbSnapShot);
+            fetchData();
         });
 
         filterDisplay.addView(chip);
