@@ -567,7 +567,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             finish();
         });
     }
-
+/*
     private void sendnotify() {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder =
@@ -590,6 +590,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
     }
+ */
 
     private void createInitialCircles() {
 /*
