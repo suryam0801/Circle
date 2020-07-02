@@ -15,17 +15,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -45,9 +42,6 @@ public class WorkbenchFragment extends Fragment {
     private String mParam2;
 
     private List<Circle> workbenchCircleList = new ArrayList<>();
-    private FirebaseDatabase database;
-    private FirebaseAuth currentUser;
-    private static DatabaseReference circlesDB, userDB;
     private static User user;
     private LinearLayout emptyDisplay;
     private RecyclerView.Adapter wbadapter;
@@ -118,7 +112,7 @@ public class WorkbenchFragment extends Fragment {
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
             String modifierType = returnArray[1];
-            switch (modifierType){
+            switch (modifierType) {
                 case "added":
                     addCircle(circle);
                     break;
@@ -134,36 +128,23 @@ public class WorkbenchFragment extends Fragment {
         return view;
     }
 
-    public void addCircle(Circle circle){
+    public void addCircle(Circle circle) {
         //add new circle to list
         workbenchCircleList.add(circle);
         wbadapter.notifyDataSetChanged();
-        initializeNewCount(circle);
+        FirebaseWriteHelper.initializeNewCount(circle, user);
     }
-    public void changeCircle(Circle circle){
+
+    public void changeCircle(Circle circle) {
         int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(index);
         workbenchCircleList.add(index, circle);
         wbadapter.notifyItemChanged(index);
     }
 
-    public void removeCircle(Circle circle){
+    public void removeCircle(Circle circle) {
         int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(position);
         wbadapter.notifyItemChanged(position);
-    }
-
-    public static void initializeNewCount(Circle c) {
-        if (user.getNotificationsAlert() != null && !user.getNotificationsAlert().containsKey(c.getId())) {
-            HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
-            newNotifs.put(c.getId(), 0);
-            user.setNotificationsAlert(newNotifs);
-            userDB.child("notificationsAlert").child(c.getId()).setValue(0);
-        } else if (user.getNotificationsAlert() == null) {
-            HashMap<String, Integer> newNotifs = new HashMap<>();
-            newNotifs.put(c.getId(), 0);
-            user.setNotificationsAlert(newNotifs);
-            userDB.child("notificationsAlert").child(c.getId()).setValue(0);
-        }
     }
 }

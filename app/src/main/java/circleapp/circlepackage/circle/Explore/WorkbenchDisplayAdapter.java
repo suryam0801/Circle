@@ -32,6 +32,7 @@ import java.util.List;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -43,8 +44,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     private List<Circle> MycircleList;
     private Context context;
-    private FirebaseDatabase database;
-    private DatabaseReference userDB;
 
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
@@ -65,9 +64,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         Circle circle = MycircleList.get(position);
         User user = SessionStorage.getUser((Activity) context);
-
-        database = FirebaseDatabase.getInstance();
-        userDB = database.getReference("Users").child(user.getUserId());
 
         if(!circle.getBackgroundImageLink().equals("default"))
             Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
@@ -119,7 +115,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 user.setNotificationsAlert(newUserNotifStore);
             }
 
-            userDB.child("notificationsAlert").child(circle.getId()).setValue(circle.getNoOfBroadcasts());
+            FirebaseWriteHelper.updateUser(user);
 
             SessionStorage.saveCircle((Activity) context, circle);
             SessionStorage.saveUser((Activity) context, user);

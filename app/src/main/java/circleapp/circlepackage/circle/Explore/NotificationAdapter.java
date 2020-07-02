@@ -22,6 +22,7 @@ import com.mikepenz.materialize.color.Material;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
@@ -31,8 +32,6 @@ public class NotificationAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Notification> NotificationList;
-    private FirebaseFirestore db;
-    private String TAG = "NOTIFICATION_LIST_ADAPTER";
     private TextView notificationTitle, notificationDescription, timeElapsedTextView;
     private LinearLayout backgroundColor;
     private AppCompatImageView foregroundIcon;
@@ -74,7 +73,7 @@ public class NotificationAdapter extends BaseAdapter {
 
         long createdTime = notif.getTimestamp();
         long currentTime = System.currentTimeMillis();
-        timeElapsedTextView.setText(HelperMethods.getTimeElapsed(currentTime,createdTime));
+        timeElapsedTextView.setText(HelperMethods.getTimeElapsed(currentTime, createdTime));
 
         GradientDrawable gd = new GradientDrawable();
         gd.setShape(GradientDrawable.OVAL);
@@ -82,8 +81,8 @@ public class NotificationAdapter extends BaseAdapter {
 
         SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
         SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
-        SpannableStringBuilder newBroadCast = new SpannableStringBuilder(notif.getFrom()+": "+notif.getMessage()); //start index: 32
-        SpannableStringBuilder newComment = new SpannableStringBuilder(notif.getFrom()+": "+notif.getMessage()); //start index: 30
+        SpannableStringBuilder newBroadCast = new SpannableStringBuilder(notif.getFrom() + ": " + notif.getMessage()); //start index: 32
+        SpannableStringBuilder newComment = new SpannableStringBuilder(notif.getFrom() + ": " + notif.getMessage()); //start index: 30
         SpannableStringBuilder newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
         SpannableStringBuilder new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
         SpannableStringBuilder report_result_accepted = new SpannableStringBuilder("The " + notif.getType() + " you reported has been removed. Thanks for keeping the platform safe!");
@@ -109,7 +108,7 @@ public class NotificationAdapter extends BaseAdapter {
                 notificationDescription.setText(rejectText);
                 break;
             case "broadcast_added":
-                notificationTitle.setText("New Post Added in "+ notif.getCircleName());
+                notificationTitle.setText("New Post Added in " + notif.getCircleName());
                 if (notif.getCircleId() == "308be3ec-9b1d-4a05-b1ca-e8d71cd0662e") {
                     setLogo("");
                 } else {

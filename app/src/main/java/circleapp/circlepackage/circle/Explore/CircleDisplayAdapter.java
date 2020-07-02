@@ -33,6 +33,7 @@ import java.util.List;
 import circleapp.circlepackage.circle.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -45,8 +46,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdapter.ViewHolder> {
     private List<Circle> circleList;
     private Context context;
-    private FirebaseDatabase database;
-    private DatabaseReference circlesDB, usersDB;
     private Dialog circleJoinDialog;
     private User user;
 
@@ -59,11 +58,8 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         this.circleList = circleList;
         this.user = user;
         circleJoinDialog = new Dialog(context);
-        database = FirebaseDatabase.getInstance();
 
         user = SessionStorage.getUser((Activity) context);
-        circlesDB = database.getReference("Circles");
-        usersDB = database.getReference().child("Users").child(user.getUserId());
     }
 
     @Override
@@ -220,19 +216,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-        if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-            database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-            //adding userID to applicants list
-            circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            SendNotification.sendnotification("new_applicant", circle.getId(), circle.getName(), circle.getCreatorID());
-        } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-            database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-            //adding userID to members list in circlesReference
-            circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-            int nowActive = user.getActiveCircles() + 1;
-            usersDB.child("activeCircles").setValue((nowActive));
-        }
-
+        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
 
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");
