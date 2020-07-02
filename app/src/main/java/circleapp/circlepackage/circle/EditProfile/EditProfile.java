@@ -95,7 +95,6 @@ public class EditProfile extends AppCompatActivity {
     RelativeLayout setProfile;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
-    private int propic;
     int photo;
 
     private FirebaseDatabase database;
@@ -141,7 +140,6 @@ public class EditProfile extends AppCompatActivity {
         workingCircles.setText(user.getActiveCircles() + "");
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
-
 
         HelperMethods.setUserProfileImage(user, this, profileImageView);
 
