@@ -76,6 +76,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -515,7 +516,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         usersDB = database.getReference("Users");
 
-        HelperMethods.addDistrict(district);
+        FirebaseWriteHelper.addDistrict(district);
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
 
@@ -613,10 +614,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         //quarantine circle
         String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
-        quarantineCircleId = HelperMethods.createCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
+        quarantineCircleId = FirebaseWriteHelper.createCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
                 "Automatic", "Vijay Ram", district, 2, 0, "Community Discussion");
 
-        quarantineNormalBroadcastId = HelperMethods.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
+        quarantineNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
                         " can help eachother stay safe and clarify any doubts in these uncertain times :)", "Mekkala Nair", 1,
                 0,quarantineCircleId);
 
@@ -624,17 +625,17 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         quarantinePollOptions.put("Lets find out at 8 PM", 0);
         quarantinePollOptions.put("Never :(", 0);
         quarantinePollOptions.put("Soon? Please be soon!", 0);
-        quarantinePollBroadcastId = HelperMethods.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
+        quarantinePollBroadcastId = FirebaseWriteHelper.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
                 2, quarantinePollOptions,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2F4903a0a2-fc75-4c33-b417-98e45a8f6332?alt=media&token=aa71896f-90a9-4e2c-8322-5e04fac8ba56"
                 , 0, quarantineCircleId);
 
         //students circle
         String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
-        studentsCircleId = HelperMethods.createCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
+        studentsCircleId = FirebaseWriteHelper.createCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
                 "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
                 district, 0, 0, "Students & Clubs");
 
-        studentsNormalBroadcastId = HelperMethods.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
+        studentsNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
                 "You have the support of all the students from " + district + " here!", "Srinithi", 1, 0, studentsCircleId);
 
         HashMap<String, Integer> pollOptionsStudentsCircle = new HashMap<>(); //creating poll options
@@ -642,7 +643,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         pollOptionsStudentsCircle.put("im preparing :(", 0);
         pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
 
-        studentsPollBroadcastId = HelperMethods.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
+        studentsPollBroadcastId = FirebaseWriteHelper.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
                 pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2Fe60bebee-7141-47a0-a502-bf018a8fe31c?alt=media&token=be032bf6-511c-4757-8451-8b7c852f3cdb",
                 0, studentsCircleId);
     }

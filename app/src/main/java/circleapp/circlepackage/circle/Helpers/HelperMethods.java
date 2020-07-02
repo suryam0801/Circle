@@ -70,6 +70,7 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Explore.NotificationAdapter;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -263,104 +264,6 @@ public class HelperMethods {
         Toast.makeText(activity.getApplicationContext(), "Share Link Copied", Toast.LENGTH_SHORT).show();
     }
 
-    public static void addDistrict(String district) {
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference locationsDB;
-        locationsDB = database.getReference("Locations");
-        locationsDB.child(district).setValue(true);
-    }
-    public static void broadcastListenerList(int transaction, String userId,String circleId, String broadcastId){
-        //transaction=0 for adding, 1 for removing
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
-        broadcastsDB = database.getReference("Broadcasts");
-        if(transaction==0){
-            broadcastsDB.child(circleId).child(broadcastId).child("listenersList").child(userId).setValue(true);
-        }
-        else {
-            broadcastsDB.child(circleId).child(broadcastId).child("listenersList").child(userId).removeValue();
-        }
-    }
-
-    public static String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
-        broadcastsDB = database.getReference("Broadcasts");
-        String id = uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName,null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
-        broadcastsDB.child(circleId).child(id).setValue(broadcast);
-        return id;
-    }
-
-    public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, String downloadUri, int noOfComments, String circleId) {
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
-        broadcastsDB = database.getReference("Broadcasts");
-        String id = uuidGet();
-        Broadcast broadcast;
-        Poll poll = new Poll(text, pollOptions, null);
-        if (downloadUri != null)
-            broadcast = new Broadcast(id, null, null, downloadUri, creatorName,null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
-        else
-            broadcast = new Broadcast(id, null, null, null, creatorName,null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
-        broadcastsDB.child(circleId).child(id).setValue(broadcast);
-        return id;
-    }
-
-    public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB;
-        broadcastsDB = database.getReference("Broadcasts");
-        String id = uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName,null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
-        broadcastsDB.child(circleId).child(id).setValue(broadcast);
-        return id;
-    }
-
-    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference circlesDB;
-        circlesDB = database.getReference("Circles");
-        HashMap<String, Boolean> circleIntTags = new HashMap<>();
-        circleIntTags.put("sample", true);
-        String id = uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
-        circlesDB.child(id).setValue(circle);
-        return id;
-    }
-
-    public static void createComment(String name, String text, int offsetTimeStamp, String circleId, String broadcastId) {
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference commentsDB;
-        commentsDB = database.getReference("BroadcastComments");
-        String id = uuidGet();
-        Comment comment = new Comment(name, text, id, null, System.currentTimeMillis() + offsetTimeStamp);
-        commentsDB.child(circleId).child(broadcastId).child(id).setValue(comment);
-    }
-
-    public static void createReportAbuse(Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
-        FirebaseDatabase database;
-        FirebaseAuth currentuser;
-        currentuser = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference reportAbuseDB;
-        reportAbuseDB = database.getReference("ReportAbuse");
-        String id = uuidGet();
-        ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID, creatorID, userID, reportType);
-        if (currentuser.getCurrentUser().getUid() == creatorID) {
-            Toast.makeText(context, "Stop Reporting your own Content", Toast.LENGTH_SHORT).show();
-        } else {
-
-            reportAbuseDB.child(id).setValue(reportAbuse);
-        }
-    }
 
     public static void showReportAbusePopup(Dialog reportAbuseDialog, Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID) {
         reportAbuseDialog.setContentView(R.layout.report_abuse_popup);
@@ -381,7 +284,7 @@ public class HelperMethods {
 
             if (!reportType.equals("")) {
                 reportAbuseDialog.dismiss();
-                createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
+                FirebaseWriteHelper.createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
                 Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Please choose the reason", Toast.LENGTH_SHORT).show();
@@ -398,52 +301,39 @@ public class HelperMethods {
         reportAbuseDialog.show();
     }
 
-    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
-    {
+    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView) {
         String currentTimeStamp = getCurrentTimeStamp();
 
         Scanner scan = new Scanner(currentTimeStamp);
         scan.useDelimiter("-");
         int currentDay = Integer.parseInt(scan.next());
         int currentMonth = Integer.parseInt(scan.next());
-            String date = notification.getDate();
-            scan = new Scanner(date);
-            scan.useDelimiter("-");
-            int notificationDay = Integer.parseInt(scan.next());
-            int notificationMonth = Integer.parseInt(scan.next());
+        String date = notification.getDate();
+        scan = new Scanner(date);
+        scan.useDelimiter("-");
+        int notificationDay = Integer.parseInt(scan.next());
+        int notificationMonth = Integer.parseInt(scan.next());
 
-            if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
-                previousNotifs.add(0, notification);
-            else
-                thisWeekNotifs.add(0, notification);
+        if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
+            previousNotifs.add(0, notification);
+        else
+            thisWeekNotifs.add(0, notification);
 
-            if (previousNotifs.size() == 0) {
-                prevnotify.setVisibility(View.INVISIBLE);
-            } else {
-                prevnotify.setVisibility(View.VISIBLE);
-            }
+        if (previousNotifs.size() == 0) {
+            prevnotify.setVisibility(View.INVISIBLE);
+        } else {
+            prevnotify.setVisibility(View.VISIBLE);
+        }
 
-            adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
-            adapterPrevious = new NotificationAdapter(context, previousNotifs);
+        adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
+        adapterPrevious = new NotificationAdapter(context, previousNotifs);
 
-            previousListView.setAdapter(adapterPrevious);
-            thisWeekListView.setAdapter(adapterThisWeek);
+        previousListView.setAdapter(adapterPrevious);
+        thisWeekListView.setAdapter(adapterThisWeek);
 
     }
 
-    public static void deleteBroadcast(String circleId, String broadcastId, int noOfBroadcasts){
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference broadcastsDB, commentsDB, circleDB;
-        commentsDB = database.getReference("BroadcastComments");
-        broadcastsDB = database.getReference("Broadcasts");
-        circleDB = database.getReference("Circles");
-        broadcastsDB.child(circleId).child(broadcastId).removeValue();
-        commentsDB.child(circleId).child(broadcastId).removeValue();
-        circleDB.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts-1);
-    }
-    public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId)
-    {
+    public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference circlesDB;
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -478,6 +368,7 @@ public class HelperMethods {
         });
 
     }
+
     public static String uuidGet() {
         return UUID.randomUUID().toString();
     }
@@ -672,6 +563,7 @@ public class HelperMethods {
             v.vibrate(40);
         }
     }
+
     public static String getCurrentTimeStamp() {
         try {
 
@@ -695,13 +587,12 @@ public class HelperMethods {
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         v.getLayoutParams().height = 1;
         v.setVisibility(View.VISIBLE);
-        Animation a = new Animation()
-        {
+        Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 v.getLayoutParams().height = interpolatedTime == 1
                         ? ViewPager.LayoutParams.WRAP_CONTENT
-                        : (int)(targetHeight * interpolatedTime);
+                        : (int) (targetHeight * interpolatedTime);
                 v.requestLayout();
             }
 
@@ -712,21 +603,20 @@ public class HelperMethods {
         };
 
         // Expansion speed of 1dp/ms
-        a.setDuration((int)(targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 
     public static void collapse(final View v) {
         final int initialHeight = v.getMeasuredHeight();
 
-        Animation a = new Animation()
-        {
+        Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(interpolatedTime == 1){
+                if (interpolatedTime == 1) {
                     v.setVisibility(View.GONE);
-                }else{
-                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                } else {
+                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
                     v.requestLayout();
                 }
             }
@@ -738,7 +628,7 @@ public class HelperMethods {
         };
 
         // Collapse speed of 1dp/ms
-        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 

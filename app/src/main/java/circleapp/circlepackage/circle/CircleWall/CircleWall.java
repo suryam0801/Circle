@@ -246,6 +246,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
         if (indexOfReturnFromFullImage != 0)
             recyclerView.scrollToPosition(indexOfReturnFromFullImage);
+
+        emptyDisplay.setVisibility(View.GONE);
     }
 
     private void changeBroadcast(Broadcast broadcast) {
@@ -767,8 +769,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             //generating random id to store the profliepic
             String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
-            //final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("BroadcastImage/" + id);
             //storing  the pic
             profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -810,9 +811,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
                     Log.d(TAG, "Profile URL: " + downloadUri.toString());
                     if (pollExists)
-                        Glide.with(CircleWall.this).load(filePath).into(pollAddPhoto);
+                        Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollAddPhoto);
                     else
-                        Glide.with(CircleWall.this).load(filePath).into(addPhoto);
+                        Glide.with(CircleWall.this).load(filePath).fitCenter().into(addPhoto);
                     filePath = null;
                 }
             })

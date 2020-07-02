@@ -78,6 +78,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         //set the details of each circle to its respective card.
         //holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         holder.tv_MycircleName.setText(circle.getName());
+        if(circle.getCreatorID().equals(user.getUserId()))
+            holder.tv_circleCreatorName.setText("Me");
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
 
@@ -115,7 +117,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 user.setNotificationsAlert(newUserNotifStore);
             }
 
-            FirebaseWriteHelper.updateUser(user);
+            FirebaseWriteHelper.updateUser(user, context);
 
             SessionStorage.saveCircle((Activity) context, circle);
             SessionStorage.saveUser((Activity) context, user);

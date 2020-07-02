@@ -216,7 +216,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
+        FirebaseWriteHelper.applyOrJoin(context, circle, user, subscriber);
 
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");

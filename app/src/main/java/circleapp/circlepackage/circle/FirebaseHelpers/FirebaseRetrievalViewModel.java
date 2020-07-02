@@ -1,11 +1,16 @@
 package circleapp.circlepackage.circle.FirebaseHelpers;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class FirebaseRetrievalViewModel extends ViewModel {
 
@@ -35,7 +40,7 @@ public class FirebaseRetrievalViewModel extends ViewModel {
 
     @NonNull
     public LiveData<String[]> getDataSnapsSharedLinkCircleLiveData(String circleId) {
-        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(CIRCLES_REF.child(circleId));
+        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(CIRCLES_REF.child(circleId.trim()));
         return liveWorkBenchCircleData;
     }
 

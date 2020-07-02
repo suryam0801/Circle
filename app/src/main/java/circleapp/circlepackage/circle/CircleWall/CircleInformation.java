@@ -105,16 +105,13 @@ public class CircleInformation extends AppCompatActivity {
         //setting circle banner
         setBannerBackground(circle.getCategory());
 
-
         //setting members display
-        if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
+        if (circle.getMembersList() != null && circle.getMembersList().keySet().contains(user.getUserId())) {
+            noPermissionToViewMembers.setVisibility(View.GONE);
+            loadMembersList();
+        } else if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
             noMembersDisplay.setVisibility(View.GONE);
             noPermissionToViewMembers.setVisibility(View.VISIBLE);
-        } else if (circle.getMembersList() != null) {
-            if (circle.getMembersList().keySet().contains(user.getUserId()))
-                noPermissionToViewMembers.setVisibility(View.GONE);
-            loadMembersList();
-
         } else {
             noMembersDisplay.setVisibility(View.VISIBLE);
         }
