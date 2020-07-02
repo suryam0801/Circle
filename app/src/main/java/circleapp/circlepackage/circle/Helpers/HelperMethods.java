@@ -389,7 +389,7 @@ public class HelperMethods {
         reportAbuseDialog.show();
     }
 
-    public static void OrderNotification(Context context, TextView prevnotify, List<Notification> notifs, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
+    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView)
     {
         String currentTimeStamp = getCurrentTimeStamp();
 
@@ -397,15 +397,11 @@ public class HelperMethods {
         scan.useDelimiter("-");
         int currentDay = Integer.parseInt(scan.next());
         int currentMonth = Integer.parseInt(scan.next());
-        for(Notification notification : notifs){
             String date = notification.getDate();
             scan = new Scanner(date);
             scan.useDelimiter("-");
             int notificationDay = Integer.parseInt(scan.next());
             int notificationMonth = Integer.parseInt(scan.next());
-            if(thisWeekNotifs.contains(notification)||previousNotifs.contains(notification)){
-                break;
-            }
 
             if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
                 previousNotifs.add(0, notification);
@@ -423,7 +419,6 @@ public class HelperMethods {
 
             previousListView.setAdapter(adapterPrevious);
             thisWeekListView.setAdapter(adapterThisWeek);
-        }
 
     }
 
