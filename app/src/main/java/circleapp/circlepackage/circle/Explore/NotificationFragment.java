@@ -78,16 +78,13 @@ public class NotificationFragment extends Fragment {
 
         liveData.observe(this, returnArray -> {
             Notification notification = new Gson().fromJson(returnArray[0], Notification.class);
-            //setNotifsView(notification);
-            if(!notifs.contains(notification))
-                notifs.add(notification);
-            setNotifsView(notifs);
+            setNotifsView(notification);
         });
         return view;
     }
 
-    private void setNotifsView(List<Notification> notifs){
-        HelperMethods.OrderNotification(getContext(),prevnotify,notifs,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
+    private void setNotifsView(Notification notification){
+        HelperMethods.OrderNotification(getContext(),prevnotify,notification,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
 
         HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
         HelperMethods.setListViewHeightBasedOnChildren(previousListView);

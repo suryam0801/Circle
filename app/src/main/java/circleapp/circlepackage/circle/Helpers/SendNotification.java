@@ -1,45 +1,23 @@
 package circleapp.circlepackage.circle.Helpers;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
 public class SendNotification {
     private static String TAG = SendNotification.class.getSimpleName();
-//    Circle circle = SessionStorage.getCircle(SendNotification.class.getCon);
     public static void sendCommentInfo(String userID, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon, String message){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userNotify;
-        FirebaseAuth currentUser =FirebaseAuth.getInstance();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        userNotify = database.getReference("Notifications");
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-        String notificationId = userNotify.child(broadcastId).push().getKey();
+        String notificationId = HelperMethods.uuidGet();
         message = message.substring(0, Math.min(message.length(), 60));
         if(message.length()>=60)
             message = message +"...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
-        String from = firebaseAuth.getCurrentUser().getUid();
+        String from = userID;
         String getDate = getCurrentDateStamp();
         applicationStatus.put("state", "comment_added");
         applicationStatus.put("circleName", circleName);
@@ -47,63 +25,25 @@ public class SendNotification {
         applicationStatus.put("circleIcon", circleIcon);
         applicationStatus.put("broadcastId", broadcastId);
         applicationStatus.put("from", creatorName);
-        applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
+        applicationStatus.put("creatorId", userID);
         applicationStatus.put("notificationId", notificationId);
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
         applicationStatus.put("message", message);
-
-        Set<String> member;
-        if(listenersList!=null) {
-            listenersList.remove(userID);
-            member = listenersList.keySet();
-            for (String i : member) {
-
-                userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "Notification Sent Successfully !!!");
-                    }
-                });
-
-                db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Firestore//Broadcast::" + "Notification Sent Successfully !!!");
-                    }
-
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Firestore//Broadcast::" + "Notification Sent Failed !!!" + e.toString());
-                    }
-                });
-
-
-            }
-        }
+        FirebaseWriteHelper.writeCommentNotifications(notificationId,userID,applicationStatus,listenersList);
 
     }
 
-    public static void sendBCinfo(String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList,String circleIcon, String message)
+    public static void sendBCinfo(String userId, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> membersList,String circleIcon, String message)
     {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userNotify;
-        FirebaseAuth currentUser =FirebaseAuth.getInstance();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        userNotify = database.getReference("Notifications");
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-
-        String notificationId = userNotify.child(broadcastId).push().getKey();
+        String notificationId = HelperMethods.uuidGet();
         message = message.substring(0, Math.min(message.length(), 60));
         if(message.length()>=60)
             message = message +"...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
-        String from = firebaseAuth.getCurrentUser().getUid();
+        String from = userId;
         String getDate = getCurrentDateStamp();
         applicationStatus.put("state", "broadcast_added");
         applicationStatus.put("circleName", circleName);
@@ -111,71 +51,22 @@ public class SendNotification {
         applicationStatus.put("circleIcon", circleIcon);
         applicationStatus.put("broadcastId", broadcastId);
         applicationStatus.put("from", creatorName);
-        applicationStatus.put("creatorId", currentUser.getCurrentUser().getUid());
+        applicationStatus.put("creatorId", userId);
         applicationStatus.put("notificationId", notificationId);
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
         applicationStatus.put("message",message);
-
-        Set<String> member;
-
-        if(membersList!=null) {
-            member = membersList.keySet();
-            for (String i :member)
-            {
-
-                userNotify.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Log.d(TAG,"Notification Sended Successfully !!!");
-                }
-            });
-
-                db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Successfully !!!");
-                    }
-
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Failed !!!"+e.toString());
-                    }
-                });
-
-
-            }
-        }
-
-
-
-//        userNotify.child(toUserId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                Log.d(TAG,"Notification Sended Successfully !!!");
-//            }
-//        });
+        FirebaseWriteHelper.writeBroadcastNotifications(notificationId,userId,applicationStatus,membersList);
     }
     public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
 //        This is the function to store the
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userNotify;
-        FirebaseAuth currentUser =FirebaseAuth.getInstance();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        userNotify = database.getReference("Notifications");
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-
-        String notificationId = userNotify.child(toUserId).push().getKey();
+        String notificationId = HelperMethods.uuidGet();
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         Map<String, Object> applicationStatus = new HashMap<>();
         applicationStatus.put("state", state);
         applicationStatus.put("circleId", circleId);
-        String from = firebaseAuth.getCurrentUser().getUid();
+        String from = toUserId;
         String getDate = getCurrentDateStamp();
         applicationStatus.put("from", from);
         applicationStatus.put("notify_to", toUserId);
@@ -183,27 +74,7 @@ public class SendNotification {
         applicationStatus.put("notificationId", notificationId);
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
-
-        userNotify.child(toUserId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d(TAG,"Notification Sended Successfully !!!");
-            }
-        });
-
-        db.collection("Users/" + toUserId + "/Notifications").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Log.d(TAG,"Firestore::"+"Notification Sended Successfully !!!");
-            }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-            }
-        });
-
-
+        FirebaseWriteHelper.writeNormalNotifications(toUserId,notificationId,applicationStatus);
     }
 
     public static String getCurrentDateStamp() {
