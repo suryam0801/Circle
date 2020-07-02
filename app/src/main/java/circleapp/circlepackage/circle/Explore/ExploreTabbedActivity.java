@@ -72,6 +72,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private BottomNavigationView bottomNav;
     Boolean circleExists = false;
     View decorView;
+    boolean shownPopup;
     private FloatingActionButton btnAddCircle;
 
     @Override
@@ -83,6 +84,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         user = SessionStorage.getUser(this);
         location.setText(user.getDistrict());
         intentUri = getIntent().getData();
+        shownPopup = false;
 
         //to hide the status and nav bar
         decorView = getWindow().getDecorView();
@@ -258,6 +260,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 linkCircleDialog.dismiss();
                 applyOrJoin(popupCircle);
             }
+            else{
+                applyOrJoin(popupCircle);
+                linkCircleDialog.dismiss();
+            }
         });
 
         //clearing intent data so popup doesnt show each time
@@ -270,6 +276,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         linkCircleDialog.getWindow().setGravity(Gravity.CENTER);
         linkCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         linkCircleDialog.show();
+        shownPopup = true;
     }
 
     private void applyOrJoin(final Circle circle) {
@@ -280,9 +287,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Button closeDialogButton = circleJoinSuccessDialog.findViewById(R.id.completedDialogeDoneButton);
         TextView title = circleJoinSuccessDialog.findViewById(R.id.applyConfirmationTitle);
         TextView description = circleJoinSuccessDialog.findViewById(R.id.applyConfirmationDescription);
+        circleJoinSuccessDialog.show();
 
         //case for review is preset in XML
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
+            linkCircleDialog.dismiss();
             title.setText("Successfully Joined!");
             description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Click 'Done' to be redirected to this circle's wall.");
         }
@@ -290,6 +299,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         closeDialogButton.setOnClickListener(view -> {
             if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                 SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
+                shownPopup = false;
                 startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
                 finish();
             }
@@ -307,17 +317,16 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<String[]> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
+        LiveData<String[]> liveData = viewModel.getDataSnapsAllCircleLiveData();
 
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
             if (circle.getId().equals(circleID)) {
                 circleExists = true;
                 Circle popupCircle = circle;
-                if (getIntent().getData() != null) {
-                    Log.d("wekfjnwef", popupCircle.toString());
-                    showLinkPopup(popupCircle);
-                }
+                Log.d("wekfjnwef", popupCircle.toString());
+                if(shownPopup == false)
+                showLinkPopup(popupCircle);
             }
         });
     }
