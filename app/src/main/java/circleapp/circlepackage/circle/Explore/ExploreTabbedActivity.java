@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlarmManager;
@@ -37,12 +39,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -61,8 +66,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     TextView location;
     private User user;
     private Uri intentUri;
-    private FirebaseDatabase database;
-    private DatabaseReference circlesDB, usersDB;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
@@ -293,59 +296,28 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             circleJoinSuccessDialog.cancel();
         });
 
-
-        usersDB = database.getReference().child("Users").child(user.getUserId());
-
         Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-        if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
-            database.getReference().child("CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
-            //adding userID to applicants list
-            circlesDB.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            circleJoinSuccessDialog.show();
-
-        } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
-            database.getReference().child("CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
-            //adding userID to members list in circlesReference
-            circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
-            int nowActive = user.getActiveCircles() + 1;
-            usersDB.child("activeCircles").setValue((nowActive));
-            circleJoinSuccessDialog.show();
-        }
-
+        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
     }
 
     public void processUrl(String url) {
         String circleID = HelperMethods.getCircleIdFromShareURL(url);
 
-        database = FirebaseDatabase.getInstance();
-        circlesDB = database.getReference("Circles");
-        circlesDB.keepSynced(true);
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        circlesDB.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Circle circle = snapshot.getValue(Circle.class);
-                    if (circle.getId().equals(circleID)) {
-                        circleExists = true;
-                        Circle popupCircle = circle;
-                        if (getIntent().getData() != null) {
-                            Log.d("wekfjnwef", popupCircle.toString());
-                            showLinkPopup(popupCircle);
-                        }
+        LiveData<String[]> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
-                    }
+        liveData.observe(this, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            if (circle.getId().equals(circleID)) {
+                circleExists = true;
+                Circle popupCircle = circle;
+                if (getIntent().getData() != null) {
+                    Log.d("wekfjnwef", popupCircle.toString());
+                    showLinkPopup(popupCircle);
                 }
-                if (circleExists == false) {
-                    Toast.makeText(ExploreTabbedActivity.this, "The circle shared does not exist anymore", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }

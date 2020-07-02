@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Feedback;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -41,9 +42,9 @@ public class FeedbackFragment extends Fragment {
     private String mParam2;
     private EditText feedbackEditText;
     private Button feedbackSend;
-    private FirebaseDatabase database;
-    private DatabaseReference feedbackDb;
-    public FeedbackFragment(){}
+
+    public FeedbackFragment() {
+    }
 
     public static FeedbackFragment newInstance(String param1, String param2) {
         FeedbackFragment fragment = new FeedbackFragment();
@@ -62,14 +63,12 @@ public class FeedbackFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feedback, container, false);
-
-        database = FirebaseDatabase.getInstance();
-        feedbackDb = database.getReference("UserFeedback");
 
         feedbackEditText = view.findViewById(R.id.feedback_type_editText);
         feedbackSend = view.findViewById(R.id.feedback_send_button);
@@ -95,9 +94,7 @@ public class FeedbackFragment extends Fragment {
         map.put("userId", user.getUserId());
         map.put("userName", user.getName().trim());
 
-        feedbackDb.child(SessionStorage.getUser((Activity) getContext()).getDistrict())
-                .push()
-                .setValue(map);
+        FirebaseWriteHelper.makeFeedbackEntry(getContext(), map);
 
         Toast.makeText(view.getContext(), "Thanks for your feedback :)", Toast.LENGTH_SHORT).show();
     }

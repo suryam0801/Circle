@@ -27,12 +27,19 @@ public class FirebaseRetrievalViewModel extends ViewModel {
         return liveWorkBenchCircleData;
     }
 
+    @NonNull
+    public LiveData<String[]> getDataSnapsSharedLinkCircleLiveData(String circleId) {
+        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(CIRCLES_REF.child(circleId));
+        return liveWorkBenchCircleData;
+    }
 
     @NonNull
     public LiveData<String[]> getDataSnapsBroadcastLiveData(String circleId) {
         FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(BROADCASTS_REF.child(circleId));
         return liveExploreCircleData;
     }
+
+
 
     @NonNull
     public LiveData<String[]> getDataSnapsNotificationsLiveData(String userId) {

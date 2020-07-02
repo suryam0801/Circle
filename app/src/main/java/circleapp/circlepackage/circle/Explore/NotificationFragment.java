@@ -71,8 +71,6 @@ public class NotificationFragment extends Fragment {
         user = SessionStorage.getUser(getActivity());
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
-        String type = "notify";
-        long startTime = System.currentTimeMillis();
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
