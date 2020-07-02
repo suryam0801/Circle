@@ -6,11 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -59,6 +62,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
@@ -67,6 +71,8 @@ import java.util.List;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
@@ -117,6 +123,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private ImageButton viewApplicants;
     private RelativeLayout photoUploadButtonView, pollUploadButtonView, parentLayout;
     private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
     FloatingActionMenu floatingActionMenu;
     FloatingActionButton poll, newPost, imagePost;
     String broadcastid;
@@ -170,6 +177,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
         viewApplicants = findViewById(R.id.applicants_display_creator);
         recyclerView = findViewById(R.id.broadcastViewRecyclerView);
+
+        initializeRecyclerView();
 
         photo = 0;
         setParentBgImage();
@@ -225,8 +234,53 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPhoto.setOnClickListener(view -> showCreatePhotoBroadcastDialog());
         getStartedPoll.setOnClickListener(view -> showCreatePollBroadcastDialog());
         getStartedBroadcast.setOnClickListener(view -> showCreateNormalBroadcastDialog());
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        loadCircleBroadcasts();
+        LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
+
+        liveData.observe(this, returnArray -> {
+            Broadcast broadcast = new Gson().fromJson(returnArray[0], Broadcast.class);
+            String modifierType = returnArray[1];
+            switch (modifierType) {
+                case "added":
+                    addBroadcast(broadcast);
+                    break;
+                case "changed":
+                    changeBroadcast(broadcast);
+                    break;
+                case "removed":
+                    removeBroadcast(broadcast);
+                    break;
+            }
+        });
+
+    }
+
+    private void addBroadcast(Broadcast broadcast) {
+        broadcastList.add(0, broadcast); //to store timestamp values descendingly
+        adapter.notifyItemInserted(0);
+        recyclerView.setAdapter(adapter);
+        recyclerView.scrollToPosition(broadcastPos);
+        initializeNewCommentsAlertTimestamp(broadcast);
+        initializeNewReadComments(broadcast);
+
+        //coming back from image display
+        int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
+        if (indexOfReturnFromFullImage != 0)
+            recyclerView.scrollToPosition(indexOfReturnFromFullImage);
+    }
+
+    private void changeBroadcast(Broadcast broadcast) {
+        int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
+        broadcastList.set(position, broadcast);
+        adapter.notifyItemChanged(position);
+
+    }
+
+    private void removeBroadcast(Broadcast broadcast) {
+        int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
+        broadcastList.remove(position);
+        adapter.notifyItemRemoved(position);
     }
 
     public void makeMenuPopup() {
@@ -330,7 +384,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
     }
 
-    private void loadCircleBroadcasts() {
+    private void initializeRecyclerView() {
 
         //initialize recylcerview
         recyclerView.setHasFixedSize(true);
@@ -340,56 +394,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
-        final RecyclerView.Adapter adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
+        adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(null);
-
-        broadcastsDB.child(circle.getId()).orderByChild("timeStamp").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                broadcastList.add(0, broadcast); //to store timestamp values descendingly
-                adapter.notifyItemInserted(0);
-                recyclerView.setAdapter(adapter);
-                recyclerView.scrollToPosition(broadcastPos);
-                initializeNewCommentsAlertTimestamp(broadcast);
-                initializeNewReadComments(broadcast);
-
-                //coming back from image display
-                int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
-                if (indexOfReturnFromFullImage != 0)
-                    recyclerView.scrollToPosition(indexOfReturnFromFullImage);
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
-                Log.d("wefkj", position + "");
-                broadcastList.set(position, broadcast);
-                adapter.notifyItemChanged(position);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Broadcast broadcast = dataSnapshot.getValue(Broadcast.class);
-                int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
-                broadcastList.remove(position);
-                adapter.notifyItemRemoved(position);
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 
@@ -399,8 +406,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-            exitCircle();
+            FirebaseWriteHelper.exitCircle(this, circle, user);
             confirmationDialog.dismiss();
+            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
+            finish();
         });
 
         cancel.setOnClickListener(view -> confirmationDialog.dismiss());
@@ -416,7 +425,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-            deleteCircle();
+
+            FirebaseWriteHelper.deleteCircle(this, circle, user);
+            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
+            finish();
             confirmationDialog.dismiss();
         });
 
@@ -424,32 +436,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         confirmationDialog.show();
-    }
-
-    private void deleteCircle() {
-        circlesPersonelDB.child(circle.getId()).removeValue();
-        circlesDB.child(circle.getId()).removeValue();
-        //reducing created circle count
-        int currentCreatedCount = user.getCreatedCircles() - 1;
-        user.setCreatedCircles(currentCreatedCount);
-        usersDB.child("createdCircles").setValue(currentCreatedCount);
-        broadcastsDB.child(circle.getId()).removeValue();
-        commentsDB.child(circle.getId()).removeValue();
-        SessionStorage.saveUser(CircleWall.this, user);
-        startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-        finish();
-    }
-
-    private void exitCircle() {
-        circlesPersonelDB.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
-        circlesDB.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
-        //reducing active circle count
-        int currentActiveCount = user.getActiveCircles() - 1;
-        user.setActiveCircles(currentActiveCount);
-        usersDB.child("activeCircles").setValue(currentActiveCount);
-        SessionStorage.saveUser(CircleWall.this, user);
-        startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-        finish();
     }
 
     private void showCreateNormalBroadcastDialog() {
