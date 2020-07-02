@@ -3,6 +3,8 @@ package circleapp.circlepackage.circle.CircleWall;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,12 +28,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
@@ -42,11 +47,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 
 public class CreatorPollAnswersView extends AppCompatActivity {
 
-    private FirebaseDatabase database;
-    private DatabaseReference circlesPersonelDB;
     private HashMap<Subscriber, String> list = new HashMap<>();
-    private String TAG = CreatorPollAnswersView.class.getSimpleName();
-    private int responseCount;
     private ImageButton bckBtn;
 
     @Override
@@ -57,27 +58,23 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         bckBtn = findViewById(R.id.bck_pollresults);
         PieChart pieChart = (PieChart) findViewById(R.id.barchart);
         RecyclerView recyclerView = findViewById(R.id.poll_answers_recycler_view);
-        responseCount = 0;
 
         Circle circle = SessionStorage.getCircle(CreatorPollAnswersView.this);
         Broadcast broadcast = SessionStorage.getBroadcast(CreatorPollAnswersView.this);
 
         Poll poll = broadcast.getPoll();
         HashMap<String, String> userResponse;
-        if(poll.getUserResponse()!=null)
+        if (poll.getUserResponse() != null)
             userResponse = poll.getUserResponse();
         else
             userResponse = new HashMap<>();
-
-        database = FirebaseDatabase.getInstance();
-        circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId()); //circle.getId()
 
         //calculating percentages
         int totalValue = 0;
         for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
             totalValue += entry.getValue();
 
-        if(totalValue == 0)
+        if (totalValue == 0)
             totalValue = 1;
         pieChart.setUsePercentValues(true);
         pieChart.setDescription(null);
@@ -99,42 +96,23 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         final RecyclerView.Adapter adapter = new PollAnswerDisplayAdapter(CreatorPollAnswersView.this, list);
         recyclerView.setAdapter(adapter);
 
-        circlesPersonelDB.child("members").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Subscriber member = dataSnapshot.getValue(Subscriber.class);
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-                if (userResponse != null) {
-                    for (Map.Entry<String, String> entry : userResponse.entrySet()) {
-                        if (entry.getKey().equals(member.getId())) {
-                            list.put(member, entry.getValue());
-                            responseCount++;
-                            adapter.notifyDataSetChanged();
-                        }
+        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+
+        liveData.observe(this, returnArray -> {
+            Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
+
+            if (userResponse != null) {
+                for (Map.Entry<String, String> entry : userResponse.entrySet()) {
+                    if (entry.getKey().equals(member.getId())) {
+                        list.put(member, entry.getValue());
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
         });
+
         bckBtn.setOnClickListener(v -> {
             onBackPressed();
         });

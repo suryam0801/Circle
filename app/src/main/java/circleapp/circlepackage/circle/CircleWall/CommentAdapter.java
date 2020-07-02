@@ -48,9 +48,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
         final Comment comment = CommentList.get(position);
-        final String name=comment.getCommentorName();
-        final String cmnt=comment.getComment();
-        final String profPicURI =comment.getCommentorPicURL();
+        final String name = comment.getCommentorName();
+        final String cmnt = comment.getComment();
+        final String profPicURI = comment.getCommentorPicURL();
 
         final long createdTime = comment.getTimestamp();
         final long currentTime = System.currentTimeMillis();
@@ -60,23 +60,23 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.userName.setText(name);
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
+/*
         if (profPicURI.length() > 10) { //checking if its uploaded image
             Glide.with(mContext.getApplicationContext())
                     .load(profPicURI)
                     .into(holder.profPic);
-        }
-        else if(profPicURI.equals("default")){
+        } else if (profPicURI.equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
             Glide.with(mContext.getApplicationContext())
                     .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
                     .into(holder.profPic);
-        }
-        else { //checking if it is default avatar
+        } else { //checking if it is default avatar
             int profilePic = Integer.parseInt(profPicURI);
             Glide.with(mContext.getApplicationContext())
                     .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
                     .into(holder.profPic);
         }
+*/
     }
 
     @Override
@@ -88,61 +88,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public int getItemCount() {
         return CommentList.size();
     }
+
     @Override
     public int getItemViewType(int position) {
         return position;
     }
 
-/*
-//    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        final View pview = View.inflate(mContext, R.layout.comment_display_card, null);
-
-        Bundle params1 = new Bundle();
-        params1.putString("newCommentsViewed", "noOfComments");
-
-        CircleImageView profPic = pview.findViewById(R.id.comment_profilePicture);
-        TextView userName = pview.findViewById(R.id.comment_object_ownerName);
-        TextView comment = pview.findViewById(R.id.comment_object_comment);
-        TextView timeElapsed = pview.findViewById(R.id.comments_object_postedTime);
-
-        //set text for textview
-        final String name=CommentList.get(position).getCommentorName();
-        final String cmnt=CommentList.get(position).getComment();
-        final String profPicURI = CommentList.get(position).getCommentorPicURL();
-
-        final long createdTime = CommentList.get(position).getTimestamp();
-        final long currentTime = System.currentTimeMillis();
-
-        String timeString = HelperMethods.getTimeElapsed(currentTime, createdTime);
-
-        userName.setText(name);
-        comment.setText(cmnt);
-        timeElapsed.setText(timeString);
-        if (profPicURI.length() > 10) { //checking if its uploaded image
-            Glide.with(mContext.getApplicationContext())
-                    .load(profPicURI)
-                    .into(profPic);
-        }
-        else if(profPicURI.equals("default")){
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(mContext.getApplicationContext())
-                    .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
-                    .into(profPic);
-        }
-        else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(profPicURI);
-            Glide.with(mContext.getApplicationContext())
-                    .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
-                    .into(profPic);
-        }
-
-        return pview;
-    }
-*/
-
-    public class ViewHolder extends RecyclerView.ViewHolder
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profPic;
         TextView userName;
         TextView comment;
@@ -157,9 +109,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             userName = view.findViewById(R.id.comment_object_ownerName);
             comment = view.findViewById(R.id.comment_object_comment);
             timeElapsed = view.findViewById(R.id.comments_object_postedTime);
-
-            //set text for textview
-
         }
     }
 }

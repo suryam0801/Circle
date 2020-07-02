@@ -37,9 +37,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +57,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private List<Broadcast> broadcastList;
     private Context context;
     private Circle circle;
-    private FirebaseAuth currentUser;
     private User user;
     private Dialog deleteBroadcastConfirmation;
 
@@ -69,7 +65,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         this.context = context;
         this.broadcastList = broadcastList;
         this.circle = circle;
-        currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser((Activity) context);
     }
 
@@ -190,8 +185,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             }
 
             user.setListeningBroadcasts(listenTemp);
-            SessionStorage.saveUser((Activity) context, user);
-            viewHolder.usersDB.child("listeningBroadcasts").setValue(listenTemp);
+            FirebaseWriteHelper.updateUser(user, context);
         });
 
     }
@@ -255,8 +249,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
             viewHolder.pollOptionsDisplayGroup.removeAllViews();
 
-        if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(currentUser.getCurrentUser().getUid()))
-            viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(currentUser.getCurrentUser().getUid()));
+        if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(user.getUserId()))
+            viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(user.getUserId()));
 
         for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
 
@@ -307,17 +301,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         HashMap<String, String> userResponseHashmap;
         if (poll.getUserResponse() != null) {
             userResponseHashmap = new HashMap<>(poll.getUserResponse());
-            userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
         } else {
             userResponseHashmap = new HashMap<>();
-            userResponseHashmap.put(currentUser.getCurrentUser().getUid(), viewHolder.getCurrentUserPollOption());
+            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
         }
 
         poll.setOptions(pollOptionsTemp);
         poll.setUserResponse(userResponseHashmap);
         broadcast.setPoll(poll);
 
-        viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
+        FirebaseWriteHelper.updateBroadcast(broadcast, context, circle.getId());
     }
 
     public void showDeleteBroadcastDialog(Broadcast broadcast, int noOfBroadcasts) {
@@ -360,8 +354,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private RelativeLayout container;
         private ScrollView pollDisplay;
         private String currentUserPollOption = null;
-        private FirebaseDatabase database;
-        private DatabaseReference broadcastDB, usersDB;
         private Button viewPollAnswers;
         private PhotoView imageDisplay;
         private RelativeLayout imageDisplayHolder;
@@ -370,9 +362,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         public ViewHolder(View view) {
             super(view);
-            database = FirebaseDatabase.getInstance();
-            broadcastDB = database.getReference("Broadcasts");
-            usersDB = database.getReference("Users").child(user.getUserId());
             broadcastNameDisplay = view.findViewById(R.id.broadcastWall_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.broadcastWall_Message);
             timeElapsedDisplay = view.findViewById(R.id.broadcastWall_object_postedTime);

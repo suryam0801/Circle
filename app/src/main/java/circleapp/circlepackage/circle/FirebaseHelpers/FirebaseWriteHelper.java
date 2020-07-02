@@ -147,8 +147,22 @@ public class FirebaseWriteHelper {
         SessionStorage.saveUser((Activity) context, user);
     }
 
+    public static void updateBroadcast(Broadcast broadcast, Context context, String circleId){
+        BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
+        SessionStorage.saveBroadcast((Activity) context, broadcast);
+    }
+
+    public static void updateCircle(Circle circle, Context context){
+        CIRCLES_REF.child(circle.getId()).setValue(circle);
+        SessionStorage.saveCircle((Activity) context, circle);
+    }
+
     public static void makeFeedbackEntry(Context context, Map<String, Object> map) {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
+    }
+
+    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId){
+        COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(map);
     }
 
     public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
@@ -237,12 +251,6 @@ public class FirebaseWriteHelper {
         Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         CIRCLES_REF.child(id).setValue(circle);
         return id;
-    }
-
-    public static void createComment(String name, String text, int offsetTimeStamp, String circleId, String broadcastId) {
-        String id = HelperMethods.uuidGet();
-        Comment comment = new Comment(name, text, id, null, System.currentTimeMillis() + offsetTimeStamp);
-        COMMENTS_REF.child(circleId).child(broadcastId).child(id).setValue(comment);
     }
 
     public static void createReportAbuse(Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
