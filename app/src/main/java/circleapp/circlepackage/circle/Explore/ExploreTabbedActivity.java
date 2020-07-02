@@ -309,7 +309,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
-        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
+        FirebaseWriteHelper.applyOrJoin(this, circle, user, subscriber);
     }
 
     public void processUrl(String url) {
@@ -324,7 +324,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             if (circle.getId().equals(circleID)) {
                 circleExists = true;
                 Circle popupCircle = circle;
-                Log.d("wekfjnwef", popupCircle.toString());
                 if(shownPopup == false)
                 showLinkPopup(popupCircle);
             }

@@ -123,7 +123,7 @@ public class ExploreFragment extends Fragment {
         return view;
     }
 
-    public void fetchData(){
+    public void fetchData() {
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
         LiveData<String[]> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 

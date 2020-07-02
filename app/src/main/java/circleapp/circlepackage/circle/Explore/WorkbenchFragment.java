@@ -91,9 +91,9 @@ public class WorkbenchFragment extends Fragment {
         wbrecyclerView.setAdapter(wbadapter);
 
         //remove placeholder
-        if (user.getActiveCircles() == 0 && user.getCreatedCircles() == 0) {
+        if (user.getActiveCircles() == 0 && user.getCreatedCircles() == 0)
             emptyDisplay.setVisibility(View.VISIBLE);
-        }
+
 
         create.setOnClickListener(view12 -> {
             startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
@@ -132,7 +132,7 @@ public class WorkbenchFragment extends Fragment {
         //add new circle to list
         workbenchCircleList.add(circle);
         wbadapter.notifyDataSetChanged();
-        FirebaseWriteHelper.initializeNewCount(circle, user);
+        FirebaseWriteHelper.initializeNewCount(getContext(), circle, user);
     }
 
     public void changeCircle(Circle circle) {

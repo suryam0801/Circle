@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -155,11 +156,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         if (broadcast.isPollExists() == true)
             ifPollExistsAction(viewHolder, broadcast);
+
+
         deleteBroadcastConfirmation = new Dialog(context);
 
         viewHolder.container.setOnLongClickListener(v -> {
             if (broadcast.getCreatorID().equals(user.getUserId())) {
-                showDeleteBroadcastDialog(broadcast.getId(), circle.getNoOfBroadcasts());
+                showDeleteBroadcastDialog(broadcast, circle.getNoOfBroadcasts());
             } else
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
@@ -178,12 +181,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
                 HelperMethods.vibrate(context);
                 listenTemp.remove(broadcast.getId());
-                HelperMethods.broadcastListenerList(1, user.getUserId(), circle.getId(), broadcast.getId());
+                FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), broadcast.getId());
             } else {
                 viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
                 HelperMethods.vibrate(context);
                 listenTemp.add(broadcast.getId());
-                HelperMethods.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
+                FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
             }
 
             user.setListeningBroadcasts(listenTemp);
@@ -317,13 +320,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.broadcastDB.child(circle.getId()).child(broadcast.getId()).child("poll").setValue(poll);
     }
 
-    public void showDeleteBroadcastDialog(String broadcastId, int noOfBroadcasts) {
+    public void showDeleteBroadcastDialog(Broadcast broadcast, int noOfBroadcasts) {
         deleteBroadcastConfirmation.setContentView(R.layout.delete_broadcast_popup);
         final Button closeDialogButton = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_confirm_btn);
         final Button cancel = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_cancel_btn);
 
         closeDialogButton.setOnClickListener(view -> {
-            HelperMethods.deleteBroadcast(circle.getId(), broadcastId, noOfBroadcasts);
+            FirebaseWriteHelper.deleteBroadcast(circle.getId(), broadcast, noOfBroadcasts);
             deleteBroadcastConfirmation.dismiss();
             Toast.makeText(context, "Post Deleted!", Toast.LENGTH_SHORT).show();
         });
