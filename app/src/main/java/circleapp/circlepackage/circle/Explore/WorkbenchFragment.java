@@ -122,7 +122,7 @@ public class WorkbenchFragment extends Fragment {
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 
         liveData.observe(this, dataSnapshot -> {
-            if (dataSnapshot != null) ;
+            if (dataSnapshot != null)
             setWorkbenchTabs(dataSnapshot);
         });
 
@@ -169,6 +169,7 @@ public class WorkbenchFragment extends Fragment {
 
         if(missingIndex != -1) {
             workbenchCircleList.remove(missingIndex);
+
             wbadapter.notifyItemRemoved(missingIndex);
         }
     }

@@ -65,7 +65,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         Circle circle = MycircleList.get(position);
         User user = SessionStorage.getUser((Activity) context);
-
+holder.setIsRecyclable(false);
         database = FirebaseDatabase.getInstance();
         userDB = database.getReference("Users").child(user.getUserId());
 

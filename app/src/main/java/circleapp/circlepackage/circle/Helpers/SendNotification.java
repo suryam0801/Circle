@@ -62,7 +62,7 @@ public class SendNotification {
                         Log.d(TAG, "Notification Sent Successfully !!!");
                     }
                 });
-
+/*
                 db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -75,6 +75,8 @@ public class SendNotification {
                         Log.d(TAG, "Firestore//Broadcast::" + "Notification Sent Failed !!!" + e.toString());
                     }
                 });
+
+ */
 
 
             }
@@ -123,7 +125,7 @@ public class SendNotification {
                     Log.d(TAG,"Notification Sended Successfully !!!");
                 }
             });
-
+/*
                 db.collection("Users/" + i + "/BroadcastNotification").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
@@ -136,6 +138,8 @@ public class SendNotification {
                         Log.d(TAG,"Firestore//Broadcast::"+"Notification Sended Failed !!!"+e.toString());
                     }
                 });
+
+ */
 
 
             }
@@ -183,7 +187,7 @@ public class SendNotification {
                 Log.d(TAG,"Notification Sended Successfully !!!");
             }
         });
-
+/*
         db.collection("Users/" + toUserId + "/Notifications").add(applicationStatus).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
@@ -195,6 +199,8 @@ public class SendNotification {
             public void onFailure(@NonNull Exception e) {
             }
         });
+
+ */
 
 
     }
