@@ -8,7 +8,6 @@ import java.util.Map;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
 public class SendNotification {
-    private static String TAG = SendNotification.class.getSimpleName();
     public static void sendCommentInfo(String userID, String broadcastId, String circleName,String circleId, String creatorName, HashMap<String, Boolean> listenersList,String circleIcon, String message){
 
         String notificationId = FirebaseWriteHelper.getNotificationId(broadcastId);

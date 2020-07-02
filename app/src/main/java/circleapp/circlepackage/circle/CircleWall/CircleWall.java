@@ -228,13 +228,15 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     break;
             }
         });
-
     }
 
     private void addBroadcast(Broadcast broadcast) {
-        broadcastList.add(0, broadcast); //to store timestamp values descendingly
-        adapter.notifyItemInserted(0);
-        recyclerView.setAdapter(adapter);
+        boolean exists = HelperMethods.listContainsBroadcast(broadcastList, broadcast);
+        if(!exists){
+            broadcastList.add(0, broadcast); //to store timestamp values descendingly
+            adapter.notifyItemInserted(0);
+            recyclerView.setAdapter(adapter);
+        }
         recyclerView.scrollToPosition(broadcastPos);
         initializeNewCommentsAlertTimestamp(broadcast);
         initializeNewReadComments(broadcast);
@@ -646,7 +648,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(CircleWall.this,circle.getId(),pollBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), pollBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         pollAnswerOptionsList.clear();

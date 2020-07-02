@@ -71,25 +71,30 @@ public class FirebaseWriteHelper {
         USERS_REF.child("activeCircles").setValue(currentActiveCount);
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
         CIRCLES_REF.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
-
     }
-    public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount){
+
+    public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount) {
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(newCount);
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
     }
-    public static StorageReference getStorageReference(String dbReference){
+
+    public static StorageReference getStorageReference(String dbReference) {
         return storageReference.child(dbReference);
     }
-    public static void updateUserNewTimeStampComments(String userId, String broadcastId, long latestTimestamp){
+
+    public static void updateUserNewTimeStampComments(String userId, String broadcastId, long latestTimestamp) {
         USERS_REF.child(userId).child("newTimeStampsComments").child(broadcastId).setValue(latestTimestamp);
     }
-    public static void updateUserNewReadComments(String userId, String broadcastId, long numberOfComments){
+
+    public static void updateUserNewReadComments(String userId, String broadcastId, long numberOfComments) {
         USERS_REF.child(userId).child("noOfReadDiscussions").child(broadcastId).setValue(numberOfComments);
     }
-    public static void updateUserCount(String userId, String circleId, long noOfBroadcasts){
+
+    public static void updateUserCount(String userId, String circleId, long noOfBroadcasts) {
         USERS_REF.child(userId).child("notificationsAlert").child(circleId).setValue(noOfBroadcasts);
     }
-    public static void updateUserProfilePic(UserProfileChangeRequest profileUpdates){
+
+    public static void updateUserProfilePic(UserProfileChangeRequest profileUpdates) {
         user.updateProfile(profileUpdates);
     }
 
@@ -131,9 +136,10 @@ public class FirebaseWriteHelper {
     public static void makeFeedbackEntry(Context context, Map<String, Object> map) {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
     }
-    public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList){
+
+    public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
         Set<String> member;
-        if(listenersList!=null) {
+        if (listenersList != null) {
             listenersList.remove(userId);
             member = listenersList.keySet();
             for (String i : member) {
@@ -160,13 +166,13 @@ public class FirebaseWriteHelper {
         }
 
     }
-    public static void writeBroadcastNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> membersList){
+
+    public static void writeBroadcastNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> membersList) {
         Set<String> member;
 
-        if(membersList!=null) {
+        if (membersList != null) {
             member = membersList.keySet();
-            for (String i :member)
-            {
+            for (String i : member) {
 
                 NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -189,7 +195,8 @@ public class FirebaseWriteHelper {
             }
         }
     }
-    public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus){
+
+    public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
         NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -207,11 +214,13 @@ public class FirebaseWriteHelper {
             }
         });
     }
-    public static String getNotificationId(String broadcastId){
+
+    public static String getNotificationId(String broadcastId) {
         String notificationId = NOTIFS_REF.child(broadcastId).push().getKey();
         return notificationId;
     }
-    public static String getBroadcastId(String circleId){
+
+    public static String getBroadcastId(String circleId) {
         String broadcastId = BROADCASTS_REF.child(circleId).push().getKey();
         return broadcastId;
     }

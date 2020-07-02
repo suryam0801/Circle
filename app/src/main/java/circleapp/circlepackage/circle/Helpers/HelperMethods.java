@@ -139,6 +139,15 @@ public class HelperMethods {
         return containsCircle;
     }
 
+    public static boolean listContainsBroadcast(List<Broadcast> broadcastList, Broadcast broadcast) {
+        boolean containsBroadcast = false;
+        for (Broadcast b : broadcastList) {
+            if (b.getId().equals(broadcast.getId()))
+                containsBroadcast = true;
+        }
+        return containsBroadcast;
+    }
+
     public static int numberOfApplicants(Circle c, User user) {
         int numOfApplicants = 0;
         if (c.getApplicantsList() != null && user.getUserId().equals(c.getCreatorID())) {
