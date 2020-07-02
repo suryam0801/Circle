@@ -157,12 +157,18 @@ public class FirebaseWriteHelper {
         SessionStorage.saveCircle((Activity) context, circle);
     }
 
+
     public static void makeFeedbackEntry(Context context, Map<String, Object> map) {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
     }
 
     public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId){
         COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(map);
+    }
+
+    public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId){
+        CIRCLES_REF.child(circle.getId()).setValue(circle);
+        CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(userId).setValue(subscriber);
     }
 
     public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
@@ -244,9 +250,7 @@ public class FirebaseWriteHelper {
         return id;
     }
 
-    public static String createCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
-        HashMap<String, Boolean> circleIntTags = new HashMap<>();
-        circleIntTags.put("sample", true);
+    public static String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
         String id = HelperMethods.uuidGet();
         Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         CIRCLES_REF.child(id).setValue(circle);
