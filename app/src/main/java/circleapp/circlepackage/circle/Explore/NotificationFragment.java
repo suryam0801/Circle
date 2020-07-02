@@ -1,8 +1,6 @@
 package circleapp.circlepackage.circle.Explore;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +8,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
@@ -79,21 +76,15 @@ public class NotificationFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
+        LiveData<String[]> liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
 
-        liveData.observe(this, dataSnapshot -> {
-            if (dataSnapshot != null) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Notification notification = snapshot.getValue(Notification.class);
-                    //setNotifsView(notification);
-                    if(!notifs.contains(notification))
-                        notifs.add(notification);
-                    Log.d("wflkn", (startTime - System.currentTimeMillis())+"");
-                }
-                setNotifsView(notifs);
-            }
+        liveData.observe(this, returnArray -> {
+            Notification notification = new Gson().fromJson(returnArray[0], Notification.class);
+            //setNotifsView(notification);
+            if(!notifs.contains(notification))
+                notifs.add(notification);
+            setNotifsView(notifs);
         });
-
         return view;
     }
 

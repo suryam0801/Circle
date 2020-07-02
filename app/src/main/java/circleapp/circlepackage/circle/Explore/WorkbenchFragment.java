@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,16 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
-import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -81,11 +80,6 @@ public class WorkbenchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
 
-        database = FirebaseDatabase.getInstance();
-        circlesDB = database.getReference("Circles");
-        userDB = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        circlesDB.keepSynced(true); //synchronizes and stores local post_icon of data
-        currentUser = FirebaseAuth.getInstance();
         user = SessionStorage.getUser(getActivity());
 
         emptyDisplay = view.findViewById(R.id.workbench_empty_display);
@@ -119,58 +113,44 @@ public class WorkbenchFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+        LiveData<String[]> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 
-        liveData.observe(this, dataSnapshot -> {
-            if (dataSnapshot != null) ;
-            setWorkbenchTabs(dataSnapshot);
+        liveData.observe(this, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            String modifierType = returnArray[1];
+            switch (modifierType){
+                case "added":
+                    addCircle(circle);
+                    break;
+                case "changed":
+                    changeCircle(circle);
+                    break;
+                case "removed":
+                    removeCircle(circle);
+                    break;
+            }
         });
 
         return view;
     }
 
-    private void setWorkbenchTabs(DataSnapshot dataSnapshot) {
-
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Circle circle = snapshot.getValue(Circle.class);
-
-            //if circle is already in the list
-            boolean exists = HelperMethods.listContainsCircle(workbenchCircleList, circle);
-            if (exists) {
-
-                int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
-                workbenchCircleList.remove(index);
-                workbenchCircleList.add(index, circle);
-                wbadapter.notifyItemChanged(index);
-            } else {
-                //add new circle to list
-                workbenchCircleList.add(circle);
-                wbadapter.notifyDataSetChanged();
-                initializeNewCount(circle);
-            }
-        }
-        checkForRemovedCircles(dataSnapshot);
+    public void addCircle(Circle circle){
+        //add new circle to list
+        workbenchCircleList.add(circle);
+        wbadapter.notifyDataSetChanged();
+        initializeNewCount(circle);
+    }
+    public void changeCircle(Circle circle){
+        int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+        workbenchCircleList.remove(index);
+        workbenchCircleList.add(index, circle);
+        wbadapter.notifyItemChanged(index);
     }
 
-    public void checkForRemovedCircles(DataSnapshot dataSnapshot) {
-        List<String> tempWBCirclesIDList = new ArrayList<>();
-        for (Circle c : workbenchCircleList)
-            tempWBCirclesIDList.add(c.getId());
-
-        List<String> tempSnapshotCirclesIDList = new ArrayList<>();
-        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-            Circle circle = snapshot.getValue(Circle.class);
-            tempSnapshotCirclesIDList.add(circle.getId());
-        }
-
-        for(String s : tempWBCirclesIDList){
-            if(!tempSnapshotCirclesIDList.contains(s)){
-                int missingIndex = tempWBCirclesIDList.indexOf(s);
-                workbenchCircleList.remove(missingIndex);
-                wbadapter.notifyItemRemoved(missingIndex);
-            }
-        }
-
+    public void removeCircle(Circle circle){
+        int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+        workbenchCircleList.remove(position);
+        wbadapter.notifyItemChanged(position);
     }
 
     public static void initializeNewCount(Circle c) {

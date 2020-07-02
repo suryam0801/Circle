@@ -15,16 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -124,82 +124,66 @@ public class ExploreFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
+        LiveData<String[]> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
-        liveData.observe(this, dataSnapshot -> {
-            if (dataSnapshot != null)
-                dbSnapShot = dataSnapshot;
-            setCircleTabs(dataSnapshot);
+        liveData.observe(this, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            String modifierType = returnArray[1];
+            switch (modifierType) {
+                case "added":
+                    addCircle(circle);
+                    break;
+                case "changed":
+                    changeCircle(circle);
+                    break;
+                case "removed":
+                    removeCircle(circle);
+                    break;
+            }
         });
         return view;
     }
 
-    private void setCircleTabs(DataSnapshot dataSnapshot) {
+    public void addCircle(Circle circle) {
+        boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+        boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
 
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Circle circle = snapshot.getValue(Circle.class);
+        if (!isMember && circle.getVisibility().equals("Everybody")) {
 
-            //if circle is already in the list
-            int index = 0;
-            boolean exists = HelperMethods.listContainsCircle(exploreCircleList, circle);
-            if (exists) {
-                //edit existing circle
-                index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
-                exploreCircleList.remove(index);
-                exploreCircleList.add(index, circle);
-                adapter.notifyItemChanged(index);
-            } else {
-                //add new circle
-                boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+            if (circle.getCreatorName().equals("The Circle Team")) {
+                exploreCircleList.add(0, circle);
+                adapter.notifyItemInserted(0);
+            }
 
-                if (!isMember && circle.getVisibility().equals("Everybody")) {
-
-                    if (circle.getCreatorName().equals("The Circle Team"))
-                        makeEntryIntoRecyclerView(circle, 0);
-
-                    boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
-
-                    if (listOfFilters == null || listOfFilters.isEmpty())
-                        makeEntryIntoRecyclerView(circle, index);
-                    else if (circleMatchesFilter)
-                        makeEntryIntoRecyclerView(circle, index);
-
-                    exploreRecyclerView.scrollToPosition(setIndex);
+            if (isInLocation) {
+                boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+                if (listOfFilters == null || listOfFilters.isEmpty()) {
+                    exploreCircleList.add(adapter.getItemCount(), circle);
+                    adapter.notifyItemInserted(adapter.getItemCount());
+                } else if (circleMatchesFilter) {
+                    exploreCircleList.add(adapter.getItemCount(), circle);
+                    adapter.notifyItemInserted(adapter.getItemCount());
                 }
             }
+            //exploreRecyclerView.scrollToPosition(index);
         }
-        checkForRemovedCircles(dataSnapshot);
-
     }
 
-    public void makeEntryIntoRecyclerView(Circle circle, int index) {
+    public void changeCircle(Circle circle) {
+        //edit existing circle
+        int index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+        exploreCircleList.remove(index);
         exploreCircleList.add(index, circle);
-        adapter.notifyItemInserted(index);
-        exploreRecyclerView.scrollToPosition(index);
+        adapter.notifyItemChanged(index);
     }
 
-    public void checkForRemovedCircles(DataSnapshot dataSnapshot) {
-        List<String> tempWBCirclesIDList = new ArrayList<>();
-        for (Circle c : exploreCircleList)
-            tempWBCirclesIDList.add(c.getId());
-
-        List<String> tempSnapshotCirclesIDList = new ArrayList<>();
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            Circle circle = snapshot.getValue(Circle.class);
-            tempSnapshotCirclesIDList.add(circle.getId());
+    public void removeCircle(Circle circle) {
+        int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+        if (position != -1) {
+            exploreCircleList.remove(position);
+            adapter.notifyItemRemoved(position);
         }
-
-        for (String s : tempWBCirclesIDList) {
-            if (!tempSnapshotCirclesIDList.contains(s)) {
-                int missingIndex = tempWBCirclesIDList.indexOf(s);
-                exploreCircleList.remove(missingIndex);
-                adapter.notifyItemRemoved(missingIndex);
-
-            }
-        }
-
     }
-
 
     private void setFilterChips(final String name) {
         final Chip chip = new Chip(getContext());
@@ -219,7 +203,7 @@ public class ExploreFragment extends Fragment {
             filterDisplay.removeView(chip);
             exploreCircleList.clear();
             adapter.notifyDataSetChanged();
-            setCircleTabs(dbSnapShot);
+            //setCircleTabs(dbSnapShot);
         });
 
         filterDisplay.addView(chip);
