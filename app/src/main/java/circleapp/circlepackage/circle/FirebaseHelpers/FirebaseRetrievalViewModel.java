@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -24,7 +25,7 @@ public class FirebaseRetrievalViewModel extends ViewModel {
     private static final DatabaseReference NOTIFS_REF = database.getReference("/Notifications");
     private static final DatabaseReference BROADCASTS_REF = database.getReference("/Broadcasts");
     private static final DatabaseReference CIRCLES_PERSONEL_REF = database.getReference("/CirclePersonel");
-    private static final DatabaseReference USERS_REF = database.getReference("/Users").child(user.getUid());
+    private static final DatabaseReference USERS_REF = database.getReference("/Users");
     private static final DatabaseReference COMMENTS_REF = database.getReference("BroadcastComments");
     private static final DatabaseReference LOCATIONS_REF = database.getReference("Locations");
     private static final DatabaseReference REPORT_ABUSE_REF = database.getReference("ReportAbuse");
@@ -43,8 +44,8 @@ public class FirebaseRetrievalViewModel extends ViewModel {
         return liveExploreCircleData;
     }
     @NonNull
-    public LiveData<String[]> getDataSnapsParticularCircleLiveData(String circleId) {
-        FirebaseQueryLiveData liveparticularCircleData = new FirebaseQueryLiveData(CIRCLES_REF.child(circleId));
+    public LiveData<DataSnapshot> getDataSnapsParticularCircleLiveData(String circleId) {
+        FirebaseSingleValueRead liveparticularCircleData = new FirebaseSingleValueRead(CIRCLES_REF.child(circleId));
         return liveparticularCircleData;
     }
 
@@ -78,6 +79,17 @@ public class FirebaseRetrievalViewModel extends ViewModel {
     public LiveData<String[]> getDataSnapsNotificationsLiveData(String userId) {
         FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(NOTIFS_REF.child(userId).orderByChild("timestamp"));
         return liveWorkBenchCircleData;
+    }
+
+    @NonNull
+    public LiveData<DataSnapshot> getDataSnapsCircleValueCirlceLiveData(String circleId) {
+        FirebaseSingleValueRead liveWorkBenchCircleData = new FirebaseSingleValueRead(CIRCLES_REF.child(circleId));
+        return liveWorkBenchCircleData;
+    }
+    @NonNull
+    public LiveData<DataSnapshot> getDataSnapsUserValueCirlceLiveData(String uid) {
+        FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(USERS_REF.child(uid));
+        return liveUserData;
     }
 
 }

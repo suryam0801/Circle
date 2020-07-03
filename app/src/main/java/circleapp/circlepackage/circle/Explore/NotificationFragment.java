@@ -32,8 +32,7 @@ public class NotificationFragment extends Fragment {
     private String mParam2;
 
     private ListView thisWeekListView, previousListView;
-    private List<Notification> thisWeekNotifs, previousNotifs, notifs = new ArrayList<Notification>();;
-    //    private NotificationAdapter adapterThisWeek, adapterPrevious;
+    private List<Notification> thisWeekNotifs, previousNotifs;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
     private User user;
