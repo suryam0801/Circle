@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.app.Person;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.widget.ImageButton;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,9 +35,7 @@ public class PersonelDisplay extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference circlesPersonelDB;
-    //    private FirebaseAuth firebaseAuth;
     private List<Subscriber> applicantsList;
-    private FirebaseAuth firebaseAuth;
     private ImageButton back;
 
 
@@ -48,7 +46,6 @@ public class PersonelDisplay extends AppCompatActivity {
         Circle circle = SessionStorage.getCircle(this);
 
         database = FirebaseDatabase.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
         circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId());//circle.getId()
 
         back = findViewById(R.id.bck_applicants_display);
@@ -63,7 +60,7 @@ public class PersonelDisplay extends AppCompatActivity {
 
 
         final RecyclerView.Adapter adapter = new ApplicantListAdapter(this, applicantsList, circle);
-        if (firebaseAuth.getCurrentUser().getUid().equalsIgnoreCase(circle.getCreatorID()))
+        if (SessionStorage.getUser((PersonelDisplay.this)).getUserId().equalsIgnoreCase(circle.getCreatorID()))
             recyclerView.setAdapter(adapter);
 
         circlesPersonelDB.child("applicants").addChildEventListener(new ChildEventListener() {
