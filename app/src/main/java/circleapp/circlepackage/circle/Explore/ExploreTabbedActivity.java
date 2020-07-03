@@ -66,7 +66,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private String url;
     private TextView locationDisplay;
     private BottomNavigationView bottomNav;
-    Boolean circleExists = false;
+    Boolean popupCalled = false;
     View decorView;
     boolean shownPopup;
     private FloatingActionButton btnAddCircle;
@@ -315,9 +315,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         liveData.observe(this, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
-            showLinkPopup(circle);
+            if (!popupCalled) {
+                showLinkPopup(circle);
+                popupCalled = true;
+            }
         });
-
     }
 
     //bottom sheet dialog onclick (only called when nagivating from create circle)
