@@ -25,7 +25,7 @@ public class FirebaseRetrievalViewModel extends ViewModel {
     private static final DatabaseReference NOTIFS_REF = database.getReference("/Notifications");
     private static final DatabaseReference BROADCASTS_REF = database.getReference("/Broadcasts");
     private static final DatabaseReference CIRCLES_PERSONEL_REF = database.getReference("/CirclePersonel");
-    private static final DatabaseReference USERS_REF = database.getReference("/Users").child(user.getUid());
+    private static final DatabaseReference USERS_REF = database.getReference("/Users");
     private static final DatabaseReference COMMENTS_REF = database.getReference("BroadcastComments");
     private static final DatabaseReference LOCATIONS_REF = database.getReference("Locations");
     private static final DatabaseReference REPORT_ABUSE_REF = database.getReference("ReportAbuse");
@@ -86,6 +86,10 @@ public class FirebaseRetrievalViewModel extends ViewModel {
         FirebaseSingleValueRead liveWorkBenchCircleData = new FirebaseSingleValueRead(CIRCLES_REF.child(circleId));
         return liveWorkBenchCircleData;
     }
-
+    @NonNull
+    public LiveData<DataSnapshot> getDataSnapsUserValueCirlceLiveData(String uid) {
+        FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(USERS_REF.child(uid));
+        return liveUserData;
+    }
 
 }
