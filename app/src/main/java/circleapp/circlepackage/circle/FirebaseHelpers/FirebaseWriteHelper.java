@@ -156,7 +156,7 @@ public class FirebaseWriteHelper {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                new CountDownTimer(900000, 1000) {
+                                new CountDownTimer(300000, 1000) {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
@@ -265,7 +265,7 @@ public class FirebaseWriteHelper {
                                         SessionStorage.saveUser(otpActivity, user);
                                         HelperMethods.storeUserFile(string, otpActivity);
                                     } else {
-                                        HelperMethods.senduserToReg(otpActivity,ward,district,phn_number);
+                                        HelperMethods.senduserToReg(otpActivity,phn_number,ward,district);
                                     }
                                 }
 
