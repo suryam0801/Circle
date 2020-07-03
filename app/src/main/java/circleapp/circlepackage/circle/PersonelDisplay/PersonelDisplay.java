@@ -3,6 +3,8 @@ package circleapp.circlepackage.circle.PersonelDisplay;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -21,23 +23,25 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
 public class PersonelDisplay extends AppCompatActivity {
 
-    private FirebaseDatabase database;
-    private DatabaseReference circlesPersonelDB;
     //    private FirebaseAuth firebaseAuth;
     private List<Subscriber> applicantsList;
-    private FirebaseAuth firebaseAuth;
+    private User user;
     private ImageButton back;
 
 
@@ -46,10 +50,7 @@ public class PersonelDisplay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personel_display);
         Circle circle = SessionStorage.getCircle(this);
-
-        database = FirebaseDatabase.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
-        circlesPersonelDB = database.getReference("CirclePersonel").child(circle.getId());//circle.getId()
+        user = SessionStorage.getUser(this);
 
         back = findViewById(R.id.bck_applicants_display);
         RecyclerView recyclerView = findViewById(R.id.allApplicants_RV);
@@ -63,45 +64,34 @@ public class PersonelDisplay extends AppCompatActivity {
 
 
         final RecyclerView.Adapter adapter = new ApplicantListAdapter(this, applicantsList, circle);
-        if (firebaseAuth.getCurrentUser().getUid().equalsIgnoreCase(circle.getCreatorID()))
+        if (user.getUserId().equalsIgnoreCase(circle.getCreatorID()))
             recyclerView.setAdapter(adapter);
 
-        circlesPersonelDB.child("applicants").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                recyclerView.setAdapter(adapter);
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                applicantsList.add(subscriber);
-                adapter.notifyDataSetChanged();
-            }
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
+        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "applicants");
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                recyclerView.setAdapter(adapter);
-                Subscriber subscriber = dataSnapshot.getValue(Subscriber.class);
-                int position = 0;
-                List<Subscriber> tempList = new ArrayList<>(applicantsList);
-                //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                for (Subscriber sub : tempList) {
-                    if (sub.getId().equals(subscriber.getId())) {
-                        applicantsList.remove(position);
-                        adapter.notifyItemRemoved(position);
-                        break;
+        liveData.observe(this, returnArray -> {
+            Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
+            String modifier = returnArray[1];
+            switch (modifier) {
+                case "added":
+                    applicantsList.add(subscriber);
+                    adapter.notifyDataSetChanged();
+                    break;
+                case "removed":
+                    recyclerView.setAdapter(adapter);
+                    int position = 0;
+                    List<Subscriber> tempList = new ArrayList<>(applicantsList);
+                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
+                    for (Subscriber sub : tempList) {
+                        if (sub.getId().equals(subscriber.getId())) {
+                            applicantsList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            break;
+                        }
+                        position = position + 1;
                     }
-                    position = position + 1;
-                }
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
 

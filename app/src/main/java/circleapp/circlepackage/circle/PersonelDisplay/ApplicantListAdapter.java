@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -31,10 +32,8 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     private List<Subscriber> ApplicantList;
     private Circle circle;
     String TAG = "APPLICANT_LIST_ADAPTER";
-    private FirebaseDatabase database;
-    private DatabaseReference circlesPersonelDB, circleDB;
     private String state;
-    private  int propic;
+    private int propic;
     int myImageList;
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
@@ -54,10 +53,6 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     public void onBindViewHolder(@NonNull ApplicantListAdapter.ViewHolder holder, int position) {
         final Subscriber selectedApplicant = ApplicantList.get(position);
 
-        database = FirebaseDatabase.getInstance();
-        circlesPersonelDB = database.getReference("CirclePersonel");
-        circleDB = database.getReference("Circles");
-
         if (selectedApplicant.getPhotoURI().length() > 10) {
             Glide.with(mContext)
                     .load(selectedApplicant.getPhotoURI())
@@ -70,11 +65,6 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
                     .placeholder(ContextCompat.getDrawable(mContext, myImageList))
                     .into(holder.profPic);
         }
-
-//        Glide.with(mContext)
-//                .load(selectedApplicant.getPhotoURI())
-//                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.avatar4))
-//                .into(holder.profPic);
 
         //Set text for TextView
         final String nameDisplay = selectedApplicant.getName();
@@ -104,22 +94,18 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
-                circleDB.child(circle.getId()).child("applicantsList").child(selectedApplicant.getId()).removeValue();
-                circlesPersonelDB.child(circle.getId()).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
-                circleDB.child(circle.getId()).child("membersList").child(selectedApplicant.getId()).setValue(true);
-                state="Accepted";
-                SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
+                FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant);
+                state = "Accepted";
+                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
             }
         });
 
         holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                circlesPersonelDB.child(circle.getId()).child("applicants").child(selectedApplicant.getId()).removeValue();
-                circleDB.child(circle.getId()).child("applicantsList").child(selectedApplicant.getId()).removeValue();
-                state="Rejected";
-                SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
+                FirebaseWriteHelper.rejectApplicant(circle.getId(), selectedApplicant);
+                state = "Rejected";
+                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
             }
         });
 

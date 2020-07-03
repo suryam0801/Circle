@@ -147,12 +147,12 @@ public class FirebaseWriteHelper {
         SessionStorage.saveUser((Activity) context, user);
     }
 
-    public static void updateBroadcast(Broadcast broadcast, Context context, String circleId){
+    public static void updateBroadcast(Broadcast broadcast, Context context, String circleId) {
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
         SessionStorage.saveBroadcast((Activity) context, broadcast);
     }
 
-    public static void updateCircle(Circle circle, Context context){
+    public static void updateCircle(Circle circle, Context context) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
         SessionStorage.saveCircle((Activity) context, circle);
     }
@@ -162,11 +162,11 @@ public class FirebaseWriteHelper {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
     }
 
-    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId){
+    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId) {
         COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(map);
     }
 
-    public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId){
+    public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(userId).setValue(subscriber);
     }
@@ -192,6 +192,18 @@ public class FirebaseWriteHelper {
                 NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
 
         }
+    }
+
+    public static void acceptApplicant(String circleId, Subscriber selectedApplicant) {
+        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_PERSONEL_REF.child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
+        CIRCLES_REF.child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
+    }
+
+    public static void rejectApplicant(String circleId, Subscriber selectedApplicant) {
+        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
     }
 
     public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
