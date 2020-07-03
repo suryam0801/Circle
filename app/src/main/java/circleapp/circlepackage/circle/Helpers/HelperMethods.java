@@ -43,6 +43,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -66,6 +70,7 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Explore.NotificationAdapter;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
@@ -325,37 +330,26 @@ public class HelperMethods {
 
     }
 
-    public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference circlesDB;
-        circlesDB = database.getReference("Circles");
-        String circleid = curent.getCircleId();
-        circlesDB.child(circleid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-                if (circle != null) {
-
-                    Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                    if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity)context).getUserId())) {
-                        SessionStorage.saveCircle((Activity) context, circle);
-                        Intent intent = new Intent(context, CircleWall.class);
-                        intent.putExtra("broadcastPos", position);
-                        intent.putExtra("broadcastId", broadcastId);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
-                    } else {
-                        Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
-                }
+    public static void NotifyOnclickListener(Context context, Activity activity, Notification curent, int position, String broadcastId) {
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(FirebaseRetrievalViewModel.class);
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
+        liveData.observe((LifecycleOwner) activity, dataSnapshot -> {
+            Circle circle = dataSnapshot.getValue(Circle.class);
+        if (circle != null) {
+            Log.d("Notification Fragment", "Circle list :: " + circle.toString());
+            if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) activity).getUserId())) {
+                SessionStorage.saveCircle((Activity) activity, circle);
+                Intent intent = new Intent(activity, CircleWall.class);
+                intent.putExtra("broadcastPos", position);
+                intent.putExtra("broadcastId", broadcastId);
+                activity.startActivity(intent);
+                ((Activity) activity).finish();
+            } else {
+                Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+        } else {
+            Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
+        }
         });
     }
 

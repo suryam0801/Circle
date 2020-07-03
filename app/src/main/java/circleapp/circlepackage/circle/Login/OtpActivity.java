@@ -310,7 +310,9 @@ public class OtpActivity extends AppCompatActivity {
                                     User user = dataSnapshot.getValue(User.class);
                                     String string = new Gson().toJson(user);
                                     SessionStorage.saveUser(OtpActivity.this, user);
+                                    sendUserToHome();
                                     } else {
+                                    senduserToReg();
                                 }
                             });
                         } else {
@@ -320,22 +322,10 @@ public class OtpActivity extends AppCompatActivity {
                                 mOtpFeedback.setText("There was an error verifying OTP");
                             }
                         }
-                        mOtpProgress.setVisibility(View.INVISIBLE);
-                        mVerifyBtn.setEnabled(true);
                     }
                 });
     }
 
-    private void storeUserFile(String data, Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-            sendUserToHome();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -360,6 +350,8 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the  user to HomePage
     public void sendUserToHome() {
+        mOtpProgress.setVisibility(View.INVISIBLE);
+        mVerifyBtn.setEnabled(true);
         Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -370,6 +362,8 @@ public class OtpActivity extends AppCompatActivity {
 
     //Function to send the user to Registration Page
     private void senduserToReg() {
+        mOtpProgress.setVisibility(View.INVISIBLE);
+        mVerifyBtn.setEnabled(true);
         Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
