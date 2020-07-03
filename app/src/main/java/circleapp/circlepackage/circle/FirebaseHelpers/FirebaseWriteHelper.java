@@ -85,9 +85,9 @@ public class FirebaseWriteHelper {
     }
 
     public static void deleteBroadcast(String circleId, Broadcast broadcast, int noOfBroadcasts) {
-        if (broadcast.isImageExists()) {
-            removeBroadcastImageReference(circleId,broadcast.getId(),broadcast.getAttachmentURI());
-        }
+        if (broadcast.isImageExists())
+            removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
+
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         COMMENTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts - 1);
@@ -168,12 +168,12 @@ public class FirebaseWriteHelper {
         SessionStorage.saveUser((Activity) context, user);
     }
 
-    public static void updateBroadcast(Broadcast broadcast, Context context, String circleId){
+    public static void updateBroadcast(Broadcast broadcast, Context context, String circleId) {
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
         SessionStorage.saveBroadcast((Activity) context, broadcast);
     }
 
-    public static void updateCircle(Circle circle, Context context){
+    public static void updateCircle(Circle circle, Context context) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
         SessionStorage.saveCircle((Activity) context, circle);
     }
@@ -183,11 +183,11 @@ public class FirebaseWriteHelper {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
     }
 
-    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId){
+    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId) {
         COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(map);
     }
 
-    public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId){
+    public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(userId).setValue(subscriber);
     }
@@ -215,6 +215,18 @@ public class FirebaseWriteHelper {
         }
     }
 
+    public static void acceptApplicant(String circleId, Subscriber selectedApplicant) {
+        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_PERSONEL_REF.child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
+        CIRCLES_REF.child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
+    }
+
+    public static void rejectApplicant(String circleId, Subscriber selectedApplicant) {
+        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
+    }
+
     public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
         NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus);
     }
@@ -228,11 +240,13 @@ public class FirebaseWriteHelper {
         String broadcastId = BROADCASTS_REF.child(circleId).push().getKey();
         return broadcastId;
     }
-    public static String getCircleId(){
+
+    public static String getCircleId() {
         String circleId = CIRCLES_REF.push().getKey();
         return circleId;
     }
-    public static String getUserId(){
+
+    public static String getUserId() {
         String userId = USERS_REF.push().getKey();
         return userId;
     }
@@ -296,21 +310,25 @@ public class FirebaseWriteHelper {
             REPORT_ABUSE_REF.child(id).setValue(reportAbuse);
         }
     }
-    public static void signOutAuth(){
+
+    public static void signOutAuth() {
         authenticationToken.signOut();
     }
 
-    public static void deleteStorageReference(String reference){
+    public static void deleteStorageReference(String reference) {
         StorageReference temp = mFirebaseStorage.getReferenceFromUrl(reference);
         temp.delete();
     }
-    public static void addBroadcastImageReference(String circleId, String broadcastId, String imageUrl){
+
+    public static void addBroadcastImageReference(String circleId, String broadcastId, String imageUrl) {
         STORAGE_REFERENCES.child(circleId).child(broadcastId).setValue(imageUrl);
     }
-    public static void addCircleImageReference(String circleId, String imageUrl){
+
+    public static void addCircleImageReference(String circleId, String imageUrl) {
         STORAGE_REFERENCES.child(circleId).child("CircleIcon").setValue(imageUrl);
     }
-    public static void removeCircleImageReference(String circleId, String imageUrl){
+
+    public static void removeCircleImageReference(String circleId, String imageUrl) {
         deleteStorageReference(imageUrl);
         /* ITERATE THROUGH BROADCASTS WITHIN CIRCLE ID
         STORAGE_REFERENCES.child(circleId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -334,10 +352,10 @@ public class FirebaseWriteHelper {
         });*/
         STORAGE_REFERENCES.child(circleId).removeValue();
     }
-    public static void removeBroadcastImageReference(String circleId, String broadcastId, String imageUrl){
+
+    public static void removeBroadcastImageReference(String circleId, String broadcastId, String imageUrl) {
         deleteStorageReference(imageUrl);
         STORAGE_REFERENCES.child(circleId).child(broadcastId).removeValue();
     }
-
 
 }

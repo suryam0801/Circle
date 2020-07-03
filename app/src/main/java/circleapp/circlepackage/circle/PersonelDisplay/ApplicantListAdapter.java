@@ -33,7 +33,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     private Circle circle;
     String TAG = "APPLICANT_LIST_ADAPTER";
     private String state;
-    private  int propic;
+    private int propic;
     int myImageList;
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
@@ -66,11 +66,6 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
                     .into(holder.profPic);
         }
 
-//        Glide.with(mContext)
-//                .load(selectedApplicant.getPhotoURI())
-//                .placeholder(ContextCompat.getDrawable(mContext, R.drawable.avatar4))
-//                .into(holder.profPic);
-
         //Set text for TextView
         final String nameDisplay = selectedApplicant.getName();
         holder.name.setText(nameDisplay);
@@ -99,21 +94,23 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseWriteHelper.acceptApplicant(circle.getId(),selectedApplicant);
-                state="Accepted";
-                SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
+                FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant);
+                state = "Accepted";
+                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
+
             }
         });
 
         holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseWriteHelper.rejectApplicant(circle.getId(),selectedApplicant);
-                state="Rejected";
-                SendNotification.sendnotification(state,circle.getId(),circle.getName(),selectedApplicant.getId());
+                FirebaseWriteHelper.rejectApplicant(circle.getId(), selectedApplicant);
+                state = "Rejected";
+                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
+
             }
         });
-
+ 
         holder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.item_animation_fall_down));
     }
 

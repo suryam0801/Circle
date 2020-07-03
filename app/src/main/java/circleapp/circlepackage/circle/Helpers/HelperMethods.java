@@ -357,7 +357,6 @@ public class HelperMethods {
 
             }
         });
-
     }
 
     public static String uuidGet() {
