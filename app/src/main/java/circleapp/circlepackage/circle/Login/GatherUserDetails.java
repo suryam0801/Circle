@@ -2,8 +2,6 @@ package circleapp.circlepackage.circle.Login;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,9 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,13 +32,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -54,24 +47,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -80,8 +64,6 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -92,19 +74,16 @@ import static android.Manifest.permission.CAMERA;
 public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
 
     private String TAG = GatherUserDetails.class.getSimpleName();
-
     private FirebaseAuth firebaseAuth;
-    private StorageReference storageReference;
+    private FirebaseDatabase database;
+    private DatabaseReference locationsDB;
     private Uri filePath;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int REQUEST_IMAGE_CAPTURE = 102;
     private Uri downloadUri;
     private CircleImageView profilePic;
-    private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB, locationsDB;
     private User user;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Set<String> locationList;
     ProgressDialog progressDialog;
     SharedPreferences pref;
@@ -117,6 +96,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
+    boolean locationExists = false;
 
 
     //location services elements
@@ -132,11 +112,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
+        locationsDB = database.getReference("Locations");
+
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
-        storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
-        locationsDB = database.getReference("Locations");
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
@@ -396,7 +376,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
                 //generating random id to store the profliepic
                 String id = UUID.randomUUID().toString();
-                final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+
+                final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
 
                 //storing  the pic
                 profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -428,7 +409,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
-                        firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
+                        FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
                         filePath = null;
@@ -455,8 +436,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        firebaseAuth.signOut();
-
+        FirebaseWriteHelper.signOutAuth();
     }
 
     @Override
@@ -478,7 +458,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
-            userId = firebaseAuth.getInstance().getCurrentUser().getUid();
+            userId = FirebaseWriteHelper.getUserId();
 
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -486,25 +466,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     .build();
 
             //update the user display name
-            firebaseAuth.getCurrentUser().updateProfile(profileUpdates)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                            //Adding the user to collection
-                            if (!locationList.contains(district))
-                                createInitialCircles();
+            FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
+            if (!locationList.contains(district))
+                createInitialCircles();
 
-                            addUser();
-                            Log.d(TAG, "User Registered success fully added");
-                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            //to signout the current firebase user
-                            firebaseAuth.signOut();
-                            //delete the user details
-                            firebaseAuth.getCurrentUser().delete();
-                        }
-                    });
+            addUser();
 
         } else {
             Toast.makeText(GatherUserDetails.this, "Enter Valid details", Toast.LENGTH_LONG).show();
@@ -513,8 +479,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     //function that adds the user to the firestore
     private void addUser() {
-
-        usersDB = database.getReference("Users");
 
         FirebaseWriteHelper.addDistrict(district);
         // storing the tokenid for the notification purposes
@@ -543,30 +507,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(GatherUserDetails.this, user);
         //store user in realtime database. (testing possible options for fastest retrieval)
-        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
-            Log.d(TAG, "User data success fully added realtime db");
-
-            Log.d(TAG, "User data success fully added");
-            progressDialog.cancel();
-            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(i);
-            Log.d(TAG, "Intent lines are executed...");
+        FirebaseWriteHelper.updateUser(user, GatherUserDetails.this);
+        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        progressDialog.dismiss();
+        startActivity(i);
+        Log.d(TAG, "Intent lines are executed...");
 //            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
 //            sendnotify();
-            db.collection("Users")
-                    .document(userId)
-                    .set(user)
-                    .addOnSuccessListener(aVoid -> {
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-                        }
-                    });
-            finish();
-        });
+        finish();
     }
 /*
     private void sendnotify() {
