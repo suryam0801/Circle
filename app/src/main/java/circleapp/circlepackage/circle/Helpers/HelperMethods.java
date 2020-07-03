@@ -22,11 +22,9 @@ import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Button;
@@ -36,25 +34,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,8 +62,12 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Explore.NotificationAdapter;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Login.GatherUserDetails;
+import circleapp.circlepackage.circle.Login.OtpActivity;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -325,36 +326,25 @@ public class HelperMethods {
 
     }
 
-    public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference circlesDB;
-        circlesDB = database.getReference("Circles");
-        String circleid = curent.getCircleId();
-        circlesDB.child(circleid).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Circle circle = dataSnapshot.getValue(Circle.class);
-                if (circle != null) {
-
-                    Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                    if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity)context).getUserId())) {
-                        SessionStorage.saveCircle((Activity) context, circle);
-                        Intent intent = new Intent(context, CircleWall.class);
-                        intent.putExtra("broadcastPos", position);
-                        intent.putExtra("broadcastId", broadcastId);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
-                    } else {
-                        Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
-                    }
+    public static void NotifyOnclickListener(Context context, Activity activity, Notification curent, int position, String broadcastId) {
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(FirebaseRetrievalViewModel.class);
+        LiveData<String[]> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
+        liveData.observe((LifecycleOwner) activity, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            if (circle != null) {
+                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
+                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) activity).getUserId())) {
+                    SessionStorage.saveCircle((Activity) activity, circle);
+                    Intent intent = new Intent(activity, CircleWall.class);
+                    intent.putExtra("broadcastPos", position);
+                    intent.putExtra("broadcastId", broadcastId);
+                    activity.startActivity(intent);
+                    ((Activity) activity).finish();
                 } else {
-                    Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            } else {
+                Toast.makeText(activity, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -620,6 +610,38 @@ public class HelperMethods {
         // Collapse speed of 1dp/ms
         a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
+    }
+    public static void storeUserFile(String data, OtpActivity otpActivity) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(otpActivity.openFileOutput("user.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+            sendUserToHome(otpActivity);
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+    public static void sendUserToHome(OtpActivity otpActivity) {
+        Intent homeIntent = new Intent(otpActivity, ExploreTabbedActivity.class);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        otpActivity.startActivity(homeIntent);
+        otpActivity.finish();
+    }
+
+    //Function to send the user to Registration Page
+    public static void senduserToReg(OtpActivity otpActivity, String phn_number, String ward, String district) {
+        Intent homeIntent = new Intent(otpActivity, GatherUserDetails.class);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        homeIntent.putExtra("phn", phn_number);
+        homeIntent.putExtra("ward",ward);
+        homeIntent.putExtra("district",district);
+        //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        otpActivity.startActivity(homeIntent);
+        Log.d("OtpActivity",ward+"::"+district);
+        otpActivity.finish();
     }
 
 }

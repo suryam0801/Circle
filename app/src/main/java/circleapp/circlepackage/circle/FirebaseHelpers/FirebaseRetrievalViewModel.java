@@ -42,6 +42,11 @@ public class FirebaseRetrievalViewModel extends ViewModel {
         FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(CIRCLES_REF.orderByChild("circleDistrict"));
         return liveExploreCircleData;
     }
+    @NonNull
+    public LiveData<String[]> getDataSnapsParticularCircleLiveData(String circleId) {
+        FirebaseQueryLiveData liveparticularCircleData = new FirebaseQueryLiveData(CIRCLES_REF.child(circleId));
+        return liveparticularCircleData;
+    }
 
     @NonNull
     public LiveData<String[]> getDataSnapsWorkbenchCircleLiveData(String userId) {

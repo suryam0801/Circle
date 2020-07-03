@@ -1,7 +1,19 @@
 package circleapp.circlepackage.circle.FirebaseHelpers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.CountDownTimer;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,8 +22,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,15 +37,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Login.OtpActivity;
+import circleapp.circlepackage.circle.Login.PhoneLogin;
+import circleapp.circlepackage.circle.Login.PinEntryEditText;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
@@ -36,22 +58,234 @@ import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.R;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
     private static final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private static PhoneAuthProvider.ForceResendingToken resendingToken;
+    private static PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend;
+    private static PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     private static final DatabaseReference CIRCLES_REF = database.getReference("/Circles");
     private static final DatabaseReference NOTIFS_REF = database.getReference("/Notifications");
     private static final DatabaseReference BROADCASTS_REF = database.getReference("/Broadcasts");
     private static final DatabaseReference CIRCLES_PERSONEL_REF = database.getReference("/CirclePersonel");
-    private static final DatabaseReference USERS_REF = database.getReference("/Users").child(user.getUid());
+    private static final DatabaseReference USERS_REF = database.getReference("/Users");
     private static final DatabaseReference COMMENTS_REF = database.getReference("BroadcastComments");
     private static final DatabaseReference LOCATIONS_REF = database.getReference("Locations");
     private static final DatabaseReference REPORT_ABUSE_REF = database.getReference("ReportAbuse");
     private static final DatabaseReference STORAGE_REFERENCES = database.getReference("StorageReferences");
     private static final DatabaseReference USER_FEEDBACK_REF = database.getReference("UserFeedback");
+    private static int counter = 30;
+    private static int failcounter;
+    private static String mAuthVerificationId;
+    private static DatabaseReference usersDB = database.getReference("Users");;
+
+    public static void PhoneAuth(OtpActivity otpActivity, String phn_number)
+    {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phn_number,
+                60,
+                TimeUnit.SECONDS,
+                otpActivity,
+                mCallbacks
+        );
+    }
+
+    public static void verifyUser(String phn_number, PinEntryEditText mOtpText, Button mVerifyBtn, ProgressDialog progressDialog, TextView resendTextView, OtpActivity otpActivity, TextView mOtpFeedback, ProgressBar mOtpProgress, String ward, String district)
+    {
+        AlertDialog.Builder confirmation,verifyfail;
+        confirmation = new AlertDialog.Builder(otpActivity);
+        verifyfail = new AlertDialog.Builder(otpActivity);
+        verifyfail.setMessage("You have Entered Wrong Number 2 times so reopen the app to continue")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        otpActivity.finish();
+                        otpActivity.finishAffinity();
+                    }
+                });
+
+        confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent= new Intent(otpActivity, PhoneLogin.class);
+                        intent.putExtra("ward", ward);
+                        intent.putExtra("district", district);
+                        intent.putExtra("fail", "1");
+                        otpActivity.startActivity(intent);
+                    }
+                });
+        mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                // Here we can add the code for Auto Read the OTP
+                Log.d("TAG","onVerificationCompleted:: "+phoneAuthCredential.getSmsCode());
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                //Display the Error msg to the user through the Textview when error occurs
+                failcounter = failcounter+1;
+                progressDialog.dismiss();
+                if (failcounter != 2)
+                {
+                    AlertDialog alertDialog = confirmation.create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.show();
+                }
+                else
+                {
+                    AlertDialog dialog = verifyfail.create();
+                    dialog.setTitle("Alert");
+                    dialog.show();
+                }
+
+            }
+
+            @Override
+            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                new CountDownTimer(900000, 1000) {
+                                    @Override
+                                    public void onTick(long millisUntilFinished) {
+                                        resendTextView.setText("Resend OTP in: " + counter);
+                                        counter--;
+                                    }
+
+                                    @Override
+                                    public void onFinish() {
+                                        resendTextView.setText("Click here to resend OTP");
+                                        resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+                                        resendTextView.setClickable(true);
+                                        resendTextView.setOnClickListener(view -> {
+                                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                    phn_number,
+                                                    15,
+                                                    TimeUnit.SECONDS,
+                                                    otpActivity,
+                                                    mCallbacksresend
+                                            );
+                                            if (counter==0)
+                                            {
+                                                resendTextView.setVisibility(View.VISIBLE);
+                                            }
+                                        });
+                                    }
+                                }.start();
+                                mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
+                                progressDialog.dismiss();
+                                mOtpText.requestFocus();
+                                mAuthVerificationId = s;
+                                mVerifyBtn.setClickable(true);
+                                mVerifyBtn.setEnabled(true);
+                                Log.d("OtpActivity",s);
+                                Toast.makeText(otpActivity, "OTP Sent successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        5000);
+            }
+        };
+        mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                // Here we can add the code for Auto Read the OTP
+            }
+
+            @Override
+            public void onVerificationFailed(@NonNull FirebaseException e) {
+                //Display the Error msg to the user through the Textview when error occurs
+            }
+
+            @Override
+            public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                mAuthVerificationId = s;
+                                //Opening the OtpActivity after the code(OTP) sent to the users mobile number
+                                Toast.makeText(otpActivity, "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        5000);
+            }
+        };
+
+        mVerifyBtn.setOnClickListener(v -> {
+            String otp = mOtpText.getText().toString();
+            otpActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+            if (otp.isEmpty()) {
+                mOtpFeedback.setVisibility(View.VISIBLE);
+                mOtpFeedback.setText("Please fill in the form and try again.");
+
+            } else {
+
+                mOtpProgress.setVisibility(View.VISIBLE);
+                mVerifyBtn.setEnabled(false);
+                mVerifyBtn.setClickable(false);
+
+                //Pasing the OTP and credentials for the Verification
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
+                Log.d("OtpActivity","credential:: "+credential.getSmsCode());
+                signInWithPhoneAuthCredential(credential,otpActivity,mOtpProgress,mOtpFeedback,mVerifyBtn,ward,district,phn_number);
+            }
+        });
+
+    }
+    private static void signInWithPhoneAuthCredential(PhoneAuthCredential credential, OtpActivity otpActivity, ProgressBar mOtpProgress, TextView mOtpFeedback, Button mVerifyBtn, String ward, String district,String phn_number ){
+
+        authenticationToken.signInWithCredential(credential)
+                .addOnCompleteListener(otpActivity, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            //get the user instance from the firebase
+                            final FirebaseUser user = task.getResult().getUser();
+                            final String uid = user.getUid();
+                            //To check the users is already registered or not
+                            usersDB.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        User user = dataSnapshot.getValue(User.class);
+                                        String string = new Gson().toJson(user);
+                                        SessionStorage.saveUser(otpActivity, user);
+                                        HelperMethods.storeUserFile(string, otpActivity);
+                                    } else {
+                                        HelperMethods.senduserToReg(otpActivity,ward,district,phn_number);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                // The verification code entered was invalid
+                                mOtpFeedback.setVisibility(View.VISIBLE);
+                                mOtpFeedback.setText("There was an error verifying OTP");
+                            }
+                        }
+                        mOtpProgress.setVisibility(View.INVISIBLE);
+                        mVerifyBtn.setEnabled(true);
+                    }
+                });
+    }
 
     public static void deleteCircle(Context context, Circle circle, User user) {
         //reducing created circle count
@@ -64,7 +298,7 @@ public class FirebaseWriteHelper {
 
         CIRCLES_PERSONEL_REF.child(circle.getId()).removeValue();
         CIRCLES_REF.child(circle.getId()).removeValue();
-        USERS_REF.child("createdCircles").setValue(currentCreatedCount);
+        USERS_REF.child(user.getUserId()).child("createdCircles").setValue(currentCreatedCount);
         BROADCASTS_REF.child(circle.getId()).removeValue();
         COMMENTS_REF.child(circle.getId()).removeValue();
         removeCircleImageReference(circle.getId(), circle.getBackgroundImageLink());
@@ -79,7 +313,7 @@ public class FirebaseWriteHelper {
         user.setActiveCircles(currentActiveCount);
         SessionStorage.saveUser((Activity) context, user);
 
-        USERS_REF.child("activeCircles").setValue(currentActiveCount);
+        USERS_REF.child(user.getUserId()).child("activeCircles").setValue(currentActiveCount);
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
         CIRCLES_REF.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
     }
@@ -164,7 +398,7 @@ public class FirebaseWriteHelper {
     }
 
     public static void updateUser(User user, Context context) {
-        USERS_REF.setValue(user);
+        USERS_REF.child(user.getUserId()).setValue(user);
         SessionStorage.saveUser((Activity) context, user);
     }
 
@@ -214,7 +448,7 @@ public class FirebaseWriteHelper {
 
         }
     }
-
+/*
     public static void acceptApplicant(String circleId, Subscriber selectedApplicant) {
         CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
@@ -226,6 +460,7 @@ public class FirebaseWriteHelper {
         CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
     }
+ */
 
     public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
         NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus);
@@ -247,7 +482,7 @@ public class FirebaseWriteHelper {
     }
 
     public static String getUserId() {
-        String userId = USERS_REF.push().getKey();
+        String userId = USERS_REF.child(user.getUid()).push().getKey();
         return userId;
     }
 

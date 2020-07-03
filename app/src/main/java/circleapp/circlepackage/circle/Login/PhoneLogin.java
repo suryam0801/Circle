@@ -25,8 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
-import com.google.firebase.auth.PhoneAuthProvider;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,7 +42,6 @@ public class PhoneLogin extends AppCompatActivity {
     private Button mGenerateBtn;
     private ProgressBar mLoginProgress;
     private TextView mLoginFeedbackText;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private String complete_phone_number = "";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -57,8 +54,6 @@ public class PhoneLogin extends AppCompatActivity {
     List<String> al = new ArrayList<String>();
     int pos;
     AlertDialog.Builder confirmation;
-
-    public PhoneAuthProvider.ForceResendingToken resendingToken;
     LocationHelper locationHelper;
 
     @SuppressLint("MissingPermission")
