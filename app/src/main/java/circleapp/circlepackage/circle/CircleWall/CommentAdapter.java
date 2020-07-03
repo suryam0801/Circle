@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.R;
@@ -60,6 +62,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.userName.setText(name);
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
+        HelperMethods.setUserProfileImage(SessionStorage.getUser((Activity) mContext),mContext.getApplicationContext(), holder.profPic);
 /*
         if (profPicURI.length() > 10) { //checking if its uploaded image
             Glide.with(mContext.getApplicationContext())
