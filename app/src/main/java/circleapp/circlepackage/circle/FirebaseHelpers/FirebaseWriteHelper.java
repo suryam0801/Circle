@@ -85,9 +85,9 @@ public class FirebaseWriteHelper {
     }
 
     public static void deleteBroadcast(String circleId, Broadcast broadcast, int noOfBroadcasts) {
-        if (broadcast.isImageExists()) {
-            removeBroadcastImageReference(circleId,broadcast.getId(),broadcast.getAttachmentURI());
-        }
+        if (broadcast.isImageExists())
+            removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
+
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         COMMENTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts - 1);
@@ -227,11 +227,13 @@ public class FirebaseWriteHelper {
         String broadcastId = BROADCASTS_REF.child(circleId).push().getKey();
         return broadcastId;
     }
-    public static String getCircleId(){
+
+    public static String getCircleId() {
         String circleId = CIRCLES_REF.push().getKey();
         return circleId;
     }
-    public static String getUserId(){
+
+    public static String getUserId() {
         String userId = USERS_REF.push().getKey();
         return userId;
     }
@@ -295,21 +297,25 @@ public class FirebaseWriteHelper {
             REPORT_ABUSE_REF.child(id).setValue(reportAbuse);
         }
     }
-    public static void signOutAuth(){
+
+    public static void signOutAuth() {
         authenticationToken.signOut();
     }
 
-    public static void deleteStorageReference(String reference){
+    public static void deleteStorageReference(String reference) {
         StorageReference temp = mFirebaseStorage.getReferenceFromUrl(reference);
         temp.delete();
     }
-    public static void addBroadcastImageReference(String circleId, String broadcastId, String imageUrl){
+
+    public static void addBroadcastImageReference(String circleId, String broadcastId, String imageUrl) {
         STORAGE_REFERENCES.child(circleId).child(broadcastId).setValue(imageUrl);
     }
-    public static void addCircleImageReference(String circleId, String imageUrl){
+
+    public static void addCircleImageReference(String circleId, String imageUrl) {
         STORAGE_REFERENCES.child(circleId).child("CircleIcon").setValue(imageUrl);
     }
-    public static void removeCircleImageReference(String circleId, String imageUrl){
+
+    public static void removeCircleImageReference(String circleId, String imageUrl) {
         deleteStorageReference(imageUrl);
         /* ITERATE THROUGH BROADCASTS WITHIN CIRCLE ID
         STORAGE_REFERENCES.child(circleId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -333,10 +339,10 @@ public class FirebaseWriteHelper {
         });*/
         STORAGE_REFERENCES.child(circleId).removeValue();
     }
-    public static void removeBroadcastImageReference(String circleId, String broadcastId, String imageUrl){
+
+    public static void removeBroadcastImageReference(String circleId, String broadcastId, String imageUrl) {
         deleteStorageReference(imageUrl);
         STORAGE_REFERENCES.child(circleId).child(broadcastId).removeValue();
     }
-
 
 }

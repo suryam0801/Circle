@@ -108,7 +108,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
             }
         });
-
+ 
         holder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.item_animation_fall_down));
     }
 
