@@ -76,6 +76,8 @@ import static android.Manifest.permission.CAMERA;
 public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
 
     private String TAG = GatherUserDetails.class.getSimpleName();
+
+    private FirebaseAuth firebaseAuth;
     private StorageReference storageReference;
     private Uri filePath;
     private static final int PICK_IMAGE_REQUEST = 100;
@@ -84,8 +86,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private Uri downloadUri;
     private CircleImageView profilePic;
     private FirebaseDatabase database;
-    private DatabaseReference locationsDB;
+    private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB, locationsDB;
     private User user;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Set<String> locationList;
     ProgressDialog progressDialog;
     SharedPreferences pref;
@@ -111,6 +114,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
         //Getting the instance and references
+        firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
@@ -408,7 +412,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
+                    firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
                     Log.d(TAG, "Profile URL: " + downloadUri.toString());
                     Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
                     filePath = null;
@@ -435,7 +439,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        FirebaseWriteHelper.signOutAuth();
+        firebaseAuth.signOut();
 
     }
 
@@ -458,7 +462,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
-            userId = FirebaseWriteHelper.getUserId();
+            userId = firebaseAuth.getInstance().getCurrentUser().getUid();
 
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -466,7 +470,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     .build();
 
             //update the user display name
-            FirebaseWriteHelper.getUser().updateProfile(profileUpdates)
+            firebaseAuth.getCurrentUser().updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
@@ -480,9 +484,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         } else {
                             Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             //to signout the current firebase user
-                            FirebaseWriteHelper.signOutAuth();
+                            firebaseAuth.signOut();
                             //delete the user details
-                            FirebaseWriteHelper.deleteFirebaseAuth();
+                            firebaseAuth.getCurrentUser().delete();
                         }
                     });
 
@@ -493,6 +497,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     //function that adds the user to the firestore
     private void addUser() {
+
+        usersDB = database.getReference("Users");
 
         FirebaseWriteHelper.addDistrict(district);
         // storing the tokenid for the notification purposes
@@ -521,15 +527,30 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(GatherUserDetails.this, user);
         //store user in realtime database. (testing possible options for fastest retrieval)
-        FirebaseWriteHelper.updateUser(user, GatherUserDetails.this);
-        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        progressDialog.dismiss();
-        startActivity(i);
-        Log.d(TAG, "Intent lines are executed...");
+        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
+            Log.d(TAG, "User data success fully added realtime db");
+
+            Log.d(TAG, "User data success fully added");
+            progressDialog.cancel();
+            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(i);
+            Log.d(TAG, "Intent lines are executed...");
 //            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
 //            sendnotify();
-        finish();
+            db.collection("Users")
+                    .document(userId)
+                    .set(user)
+                    .addOnSuccessListener(aVoid -> {
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                        }
+                    });
+            finish();
+        });
     }
 /*
     private void sendnotify() {
