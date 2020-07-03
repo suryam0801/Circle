@@ -63,23 +63,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
         HelperMethods.setUserProfileImage(SessionStorage.getUser((Activity) mContext),mContext.getApplicationContext(), holder.profPic);
-/*
-        if (profPicURI.length() > 10) { //checking if its uploaded image
-            Glide.with(mContext.getApplicationContext())
-                    .load(profPicURI)
-                    .into(holder.profPic);
-        } else if (profPicURI.equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(mContext.getApplicationContext())
-                    .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
-                    .into(holder.profPic);
-        } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(profPicURI);
-            Glide.with(mContext.getApplicationContext())
-                    .load(ContextCompat.getDrawable(mContext.getApplicationContext(), profilePic))
-                    .into(holder.profPic);
-        }
-*/
     }
 
     @Override

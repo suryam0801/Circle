@@ -47,7 +47,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -74,16 +76,19 @@ import static android.Manifest.permission.CAMERA;
 public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
 
     private String TAG = GatherUserDetails.class.getSimpleName();
+
     private FirebaseAuth firebaseAuth;
-    private FirebaseDatabase database;
-    private DatabaseReference locationsDB;
+    private StorageReference storageReference;
     private Uri filePath;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int REQUEST_IMAGE_CAPTURE = 102;
     private Uri downloadUri;
     private CircleImageView profilePic;
+    private FirebaseDatabase database;
+    private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB, locationsDB;
     private User user;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Set<String> locationList;
     ProgressDialog progressDialog;
     SharedPreferences pref;
@@ -96,7 +101,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
-    boolean locationExists = false;
 
 
     //location services elements
@@ -112,11 +116,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //Getting the instance and references
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        locationsDB = database.getReference("Locations");
-
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
+        storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
+        locationsDB = database.getReference("Locations");
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
@@ -363,80 +367,80 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             filePath = downloadUri;
         }
-            //check the path for the image
-            //if the image path is notnull the uploading process will start
+        //check the path for the image
+        //if the image path is notnull the uploading process will start
 
-            if (filePath != null) {
-                ContentResolver resolver = getContentResolver();
-                HelperMethods.compressImage(resolver, filePath);
-                //Creating an  custom dialog to show the uploading status
-                final ProgressDialog progressDialog = new ProgressDialog(GatherUserDetails.this);
-                progressDialog.setTitle("Uploading");
-                progressDialog.show();
+        if (filePath != null) {
+            ContentResolver resolver = getContentResolver();
+            HelperMethods.compressImage(resolver, filePath);
+            //Creating an  custom dialog to show the uploading status
+            final ProgressDialog progressDialog = new ProgressDialog(GatherUserDetails.this);
+            progressDialog.setTitle("Uploading");
+            progressDialog.show();
 
-                //generating random id to store the profliepic
-                String id = UUID.randomUUID().toString();
+            //generating random id to store the profliepic
+            String id = UUID.randomUUID().toString();
+            final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
 
-                final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
+            //storing  the pic
+            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                //storing  the pic
-                profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                        //displaying percentage in progress dialog
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                })
-                        .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
-
-                                // Continue with the task to get the download URL
-                                return profileRef.getDownloadUrl();
+                    //displaying percentage in progress dialog
+                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                }
+            })
+                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
                             }
-                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        progressDialog.dismiss();
-                        //and displaying a success toast
-//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                        downloadUri = uri;
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                .setPhotoUri(uri)
-                                .build();
-                        FirebaseWriteHelper.updateUserProfile(profileUpdates);
-                        Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                        Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
-                        filePath = null;
-                        for (int i = 0; i < 8; i++) {
-                            avatarBgList[i].setVisibility(View.INVISIBLE);
+
+                            // Continue with the task to get the download URL
+                            return profileRef.getDownloadUrl();
                         }
-
+                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    progressDialog.dismiss();
+                    //and displaying a success toast
+//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
+                    downloadUri = uri;
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(uri)
+                            .build();
+                    firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
+                    Log.d(TAG, "Profile URL: " + downloadUri.toString());
+                    Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
+                    filePath = null;
+                    for (int i = 0; i < 8; i++) {
+                        avatarBgList[i].setVisibility(View.INVISIBLE);
                     }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                //if the upload is not successfull
-                                //hiding the progress dialog
-                                progressDialog.dismiss();
 
-                                //and displaying error message
-                                Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            //if the upload is not successfull
+                            //hiding the progress dialog
+                            progressDialog.dismiss();
+
+                            //and displaying error message
+                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        FirebaseWriteHelper.signOutAuth();
+        firebaseAuth.signOut();
+
     }
 
     @Override
@@ -458,7 +462,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
-            userId = FirebaseWriteHelper.getUserId();
+            userId = firebaseAuth.getInstance().getCurrentUser().getUid();
 
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -466,11 +470,25 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     .build();
 
             //update the user display name
-            FirebaseWriteHelper.updateUserProfile(profileUpdates);
-            if (!locationList.contains(district))
-                createInitialCircles();
+            firebaseAuth.getCurrentUser().updateProfile(profileUpdates)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                            //Adding the user to collection
+                            if (!locationList.contains(district))
+                                createInitialCircles();
 
-            addUser();
+                            addUser();
+                            Log.d(TAG, "User Registered success fully added");
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            //to signout the current firebase user
+                            firebaseAuth.signOut();
+                            //delete the user details
+                            firebaseAuth.getCurrentUser().delete();
+                        }
+                    });
 
         } else {
             Toast.makeText(GatherUserDetails.this, "Enter Valid details", Toast.LENGTH_LONG).show();
@@ -479,6 +497,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     //function that adds the user to the firestore
     private void addUser() {
+
+        usersDB = database.getReference("Users");
 
         FirebaseWriteHelper.addDistrict(district);
         // storing the tokenid for the notification purposes
@@ -507,15 +527,30 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         String string = new Gson().toJson(user);
         SessionStorage.saveUser(GatherUserDetails.this, user);
         //store user in realtime database. (testing possible options for fastest retrieval)
-        FirebaseWriteHelper.updateUser(user, GatherUserDetails.this);
-        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        progressDialog.dismiss();
-        startActivity(i);
-        Log.d(TAG, "Intent lines are executed...");
+        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
+            Log.d(TAG, "User data success fully added realtime db");
+
+            Log.d(TAG, "User data success fully added");
+            progressDialog.cancel();
+            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(i);
+            Log.d(TAG, "Intent lines are executed...");
 //            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
 //            sendnotify();
-        finish();
+            db.collection("Users")
+                    .document(userId)
+                    .set(user)
+                    .addOnSuccessListener(aVoid -> {
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                        }
+                    });
+            finish();
+        });
     }
 /*
     private void sendnotify() {
@@ -530,8 +565,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         .setSound(defaultSoundUri)
                         .setContentText("Welcome to the Circle " + firebaseAuth.getCurrentUser().getDisplayName() +
                                 " You can find the people with same Interest in your Locality");
-
-
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -548,11 +581,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         String adminCircleId, adminNormalBroadcastId, adminPollBroadcastId;
         adminCircleId = HelperMethods.createCircle("Meet The Developers", "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
                 "Automatic", "The Circle Team", "Admin World", 2, 0, "The Circle App");
-
         adminNormalBroadcastId = HelperMethods.createMessageBroadcast("Hi guys, Welcome to Circle", "Use this app to form circles " +
                 "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
                 "opinions. All on a single platform!", "Admin", 1, 0, adminCircleId);
-
         HashMap<String, Integer> adminPollOptions = new HashMap<>(); //creating poll options
         adminPollOptions.put("This app is amazing!", 0);
         adminPollOptions.put("I'd like to see some changes", 0);
@@ -581,7 +612,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //students circle
         String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
         studentsCircleId = FirebaseWriteHelper.createDefaultCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
-                "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
+                        "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
                 district, 0, 0, "Students & Clubs");
 
         studentsNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
