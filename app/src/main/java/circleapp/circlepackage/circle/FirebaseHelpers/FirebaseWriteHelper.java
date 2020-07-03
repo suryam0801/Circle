@@ -215,18 +215,6 @@ public class FirebaseWriteHelper {
         }
     }
 
-    public static void acceptApplicant(String circleId, Subscriber selectedApplicant) {
-        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
-        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
-        CIRCLES_PERSONEL_REF.child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
-        CIRCLES_REF.child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
-    }
-
-    public static void rejectApplicant(String circleId, Subscriber selectedApplicant) {
-        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
-        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
-    }
-
     public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
         NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus);
     }
