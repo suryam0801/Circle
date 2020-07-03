@@ -27,6 +27,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,10 +41,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -50,7 +48,10 @@ import java.io.OutputStreamWriter;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -61,25 +62,19 @@ public class OtpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private PhoneAuthProvider.ForceResendingToken resendingToken;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend,mCallbacks;
+    private String ward, district;
     private String mAuthVerificationId, phn_number;
     private PinEntryEditText mOtpText;
     private Button mVerifyBtn;
     private ProgressBar mOtpProgress;
-    private DatabaseReference usersDB;
-    private FirebaseDatabase database;
     private TextView mOtpFeedback;
     private TextView resendTextView;
     private int counter = 30;
-    private String ward, district;
-    private PhoneAuthProvider.ForceResendingToken resendingToken;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend,mCallbacks;
     int failcounter;
 
     AlertDialog.Builder confirmation,verifyfail;
-
-    private User userldb;
-    //    private AppDatabase lDb;
-    String doc_id;
     ProgressDialog progressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -92,8 +87,6 @@ public class OtpActivity extends AppCompatActivity {
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
-        database = FirebaseDatabase.getInstance();
-        usersDB = database.getReference("Users");
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
         phn_number = getIntent().getStringExtra("phn_num");
@@ -111,10 +104,6 @@ public class OtpActivity extends AppCompatActivity {
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
-//        mOtpText.requestFocus();
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.showSoftInput(mOtpText, InputMethodManager.SHOW_IMPLICIT);
         mVerifyBtn = findViewById(R.id.verify_btn);
         mVerifyBtn.setEnabled(false);
         mVerifyBtn.setClickable(false);
@@ -133,6 +122,9 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
+
+        confirmation = new AlertDialog.Builder(this);
+        verifyfail = new AlertDialog.Builder(this);
         verifyfail.setMessage("You have Entered Wrong Number 2 times so reopen the app to continue")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -149,14 +141,13 @@ public class OtpActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
+                        Intent intent= new Intent(OtpActivity.this, PhoneLogin.class);
                         intent.putExtra("ward", ward);
                         intent.putExtra("district", district);
                         intent.putExtra("fail", "1");
                         startActivity(intent);
                     }
                 });
-
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
@@ -191,13 +182,34 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                new CountDownTimer(900000, 1000) {
+                                new CountDownTimer(3000, 1000) {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
-                                        counter--;
-                                    }
 
+                                        if (counter!=0)
+                                        {
+                                            counter--;
+                                        }
+                                        else
+                                        {
+                                            resendTextView.setVisibility(View.VISIBLE);
+                                            resendTextView.setText("Click here to resend OTP");
+                                            resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+                                            resendTextView.setClickable(true);
+                                            resendTextView.setOnClickListener(view -> {
+                                                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                        phn_number,
+                                                        15,
+                                                        TimeUnit.SECONDS,
+                                                        OtpActivity.this,
+                                                        mCallbacksresend
+                                                );
+
+                                            });
+                                        }
+
+                                    }
                                     @Override
                                     public void onFinish() {
                                         resendTextView.setText("Click here to resend OTP");
@@ -211,7 +223,7 @@ public class OtpActivity extends AppCompatActivity {
                                                     OtpActivity.this,
                                                     mCallbacksresend
                                             );
-                                            resendTextView.setVisibility(View.GONE);
+
                                         });
                                     }
                                 }.start();
@@ -222,14 +234,12 @@ public class OtpActivity extends AppCompatActivity {
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);
                                 Log.d("OtpActivity",s);
-                                Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(OtpActivity.this, "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                             }
                         },
-                        5000);
+                        0);
             }
         };
-
-
         mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
@@ -249,7 +259,7 @@ public class OtpActivity extends AppCompatActivity {
                             public void run() {
                                 mAuthVerificationId = s;
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                Toast.makeText(getApplicationContext(), "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(OtpActivity.this, "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
                             }
                         },
                         5000);
@@ -268,6 +278,7 @@ public class OtpActivity extends AppCompatActivity {
 
                 mOtpProgress.setVisibility(View.VISIBLE);
                 mVerifyBtn.setEnabled(false);
+                mVerifyBtn.setClickable(false);
 
                 //Pasing the OTP and credentials for the Verification
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
@@ -275,11 +286,8 @@ public class OtpActivity extends AppCompatActivity {
                 signInWithPhoneAuthCredential(credential);
             }
         });
-
     }
-
-    //Function to check the given OTP
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential ){
 
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(OtpActivity.this, new OnCompleteListener<AuthResult>() {
@@ -288,25 +296,20 @@ public class OtpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             //get the user instance from the firebase
-                            final FirebaseUser user = task.getResult().getUser();
-                            final String uid = user.getUid();
+                            final FirebaseUser FBuser = task.getResult().getUser();
+                            final String uid = FBuser.getUid();
                             //To check the users is already registered or not
-                            usersDB.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        User user = dataSnapshot.getValue(User.class);
-                                        String string = new Gson().toJson(user);
-                                        SessionStorage.saveUser(OtpActivity.this, user);
-                                        storeUserFile(string, getApplicationContext());
-                                    } else {
-                                        senduserToReg();
-                                    }
-                                }
+                            FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(OtpActivity.this).get(FirebaseRetrievalViewModel.class);
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(uid);
+                            liveData.observe(OtpActivity.this, dataSnapshot -> {
+                                if (dataSnapshot.exists()) {
+                                    User user = dataSnapshot.getValue(User.class);
+                                    String string = new Gson().toJson(user);
+                                    SessionStorage.saveUser(OtpActivity.this, user);
+                                    HelperMethods.storeUserFile(string, OtpActivity.this);
+                                } else {
+                                    HelperMethods.senduserToReg(OtpActivity.this,phn_number,ward,district);
                                 }
                             });
                         } else {
@@ -322,29 +325,11 @@ public class OtpActivity extends AppCompatActivity {
                 });
     }
 
-    private void storeUserFile(String data, Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-            sendUserToHome();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         phn_number = getIntent().getStringExtra("phn_num");
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phn_number,
-                60,
-                TimeUnit.SECONDS,
-                OtpActivity.this,
-                mCallbacks
-        );
-//        to check the user and change the BUtton text based on the user
+        FirebaseWriteHelper.PhoneAuth(this,phn_number);
         if (mCurrentUser != null) {
             //old user
             mVerifyBtn.setText("Verify & Login");
@@ -353,37 +338,11 @@ public class OtpActivity extends AppCompatActivity {
             mVerifyBtn.setText("Verify & Register");
         }
     }
-
-    //Function to send the  user to HomePage
-    public void sendUserToHome() {
-        Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(homeIntent);
-        finish();
-    }
-
-    //Function to send the user to Registration Page
-    private void senduserToReg() {
-        Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        homeIntent.putExtra("phn", phn_number);
-        homeIntent.putExtra("ward",ward);
-        homeIntent.putExtra("district",district);
-        //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(homeIntent);
-        Log.d("OtpActivity",ward+"::"+district);
-        finish();
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
         Log.d("OtpActivity","onPause:: "+mOtpText.getText());
     }
-
     @Override
     protected void onResume() {
         super.onResume();
