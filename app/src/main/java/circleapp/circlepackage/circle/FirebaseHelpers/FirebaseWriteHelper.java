@@ -82,7 +82,7 @@ public class FirebaseWriteHelper {
     private static int failcounter;
     private static String mAuthVerificationId;
     private static DatabaseReference usersDB = database.getReference("Users");;
-
+/*
     public static void PhoneAuth(OtpActivity otpActivity, String phn_number)
     {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -92,7 +92,7 @@ public class FirebaseWriteHelper {
                 otpActivity,
                 mCallbacks
         );
-    }
+    }*/
     public static void deleteCircle(Context context, Circle circle, User user) {
         //reducing created circle count
         int currentCreatedCount = 0;
@@ -276,6 +276,9 @@ public class FirebaseWriteHelper {
     public static String getUserId() {
         String userId = USERS_REF.child(user.getUid()).push().getKey();
         return userId;
+    }
+    public static void deleteFirebaseAuth(){
+        user.delete();
     }
 
     public static void addDistrict(String district) {
