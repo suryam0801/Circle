@@ -310,9 +310,7 @@ public class OtpActivity extends AppCompatActivity {
                                     User user = dataSnapshot.getValue(User.class);
                                     String string = new Gson().toJson(user);
                                     SessionStorage.saveUser(OtpActivity.this, user);
-                                    HelperMethods.storeUserFile(string, OtpActivity.this);
-                                } else {
-                                    HelperMethods.senduserToReg(OtpActivity.this,phn_number,ward,district);
+                                    } else {
                                 }
                             });
                         } else {
