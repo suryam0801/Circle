@@ -277,6 +277,9 @@ public class FirebaseWriteHelper {
         String userId = USERS_REF.child(user.getUid()).push().getKey();
         return userId;
     }
+    public static void deleteFirebaseAuth(){
+        user.delete();
+    }
 
     public static void addDistrict(String district) {
         LOCATIONS_REF.child(district).setValue(true);
@@ -340,6 +343,9 @@ public class FirebaseWriteHelper {
 
     public static void signOutAuth() {
         authenticationToken.signOut();
+    }
+    public static FirebaseAuth getAuthToken(){
+        return authenticationToken;
     }
 
     public static void deleteStorageReference(String reference) {

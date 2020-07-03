@@ -192,22 +192,22 @@ public class OtpActivity extends AppCompatActivity {
                                             counter--;
                                         }
                                         else
-                                            {
-                                                resendTextView.setVisibility(View.VISIBLE);
-                                                resendTextView.setText("Click here to resend OTP");
-                                                resendTextView.setTextColor(Color.parseColor("#6CACFF"));
-                                                resendTextView.setClickable(true);
-                                                resendTextView.setOnClickListener(view -> {
-                                                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                            phn_number,
-                                                            15,
-                                                            TimeUnit.SECONDS,
-                                                            OtpActivity.this,
-                                                            mCallbacksresend
-                                                    );
+                                        {
+                                            resendTextView.setVisibility(View.VISIBLE);
+                                            resendTextView.setText("Click here to resend OTP");
+                                            resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+                                            resendTextView.setClickable(true);
+                                            resendTextView.setOnClickListener(view -> {
+                                                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                                        phn_number,
+                                                        15,
+                                                        TimeUnit.SECONDS,
+                                                        OtpActivity.this,
+                                                        mCallbacksresend
+                                                );
 
-                                                });
-                                            }
+                                            });
+                                        }
 
                                     }
                                     @Override
