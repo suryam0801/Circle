@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -139,7 +140,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new WorkbenchFragment()).commit();
         }
-
 
 
         //set view pager adapter
@@ -254,8 +254,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             if (!alreadyMember && !alreadyApplicant) {
                 linkCircleDialog.dismiss();
                 applyOrJoin(popupCircle);
-            }
-            else{
+            } else {
                 applyOrJoin(popupCircle);
                 linkCircleDialog.dismiss();
             }
@@ -312,17 +311,13 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<String[]> liveData = viewModel.getDataSnapsAllCircleLiveData();
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsCircleValueCirlceLiveData(circleID);
 
-        liveData.observe(this, returnArray -> {
-            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
-            if (circle.getId().equals(circleID)) {
-                circleExists = true;
-                Circle popupCircle = circle;
-                if(shownPopup == false)
-                showLinkPopup(popupCircle);
-            }
+        liveData.observe(this, dataSnapshot -> {
+            Circle circle = dataSnapshot.getValue(Circle.class);
+            showLinkPopup(circle);
         });
+
     }
 
     //bottom sheet dialog onclick (only called when nagivating from create circle)

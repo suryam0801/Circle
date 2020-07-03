@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -34,12 +35,6 @@ public class FirebaseRetrievalViewModel extends ViewModel {
     @NonNull
     public LiveData<String[]> getDataSnapsExploreCircleLiveData(String location) {
         FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(CIRCLES_REF.orderByChild("circleDistrict").equalTo(location));
-        return liveExploreCircleData;
-    }
-
-    @NonNull
-    public LiveData<String[]> getDataSnapsAllCircleLiveData() {
-        FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(CIRCLES_REF.orderByChild("circleDistrict"));
         return liveExploreCircleData;
     }
 
@@ -72,6 +67,12 @@ public class FirebaseRetrievalViewModel extends ViewModel {
     @NonNull
     public LiveData<String[]> getDataSnapsNotificationsLiveData(String userId) {
         FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(NOTIFS_REF.child(userId).orderByChild("timestamp"));
+        return liveWorkBenchCircleData;
+    }
+
+    @NonNull
+    public LiveData<DataSnapshot> getDataSnapsCircleValueCirlceLiveData(String circleId) {
+        FirebaseSingleValueRead liveWorkBenchCircleData = new FirebaseSingleValueRead(CIRCLES_REF.child(circleId));
         return liveWorkBenchCircleData;
     }
 
