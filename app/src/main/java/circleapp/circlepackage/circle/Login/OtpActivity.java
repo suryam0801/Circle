@@ -130,29 +130,6 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
-        verifyfail.setMessage("You have Entered Wrong Number 2 times so reopen the app to continue")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        finishAffinity();
-                    }
-                });
-
-        confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
-                        intent.putExtra("ward", ward);
-                        intent.putExtra("district", district);
-                        intent.putExtra("fail", "1");
-                        startActivity(intent);
-                    }
-                });
         FirebaseWriteHelper.verifyUser(phn_number,mOtpText,mVerifyBtn,progressDialog,resendTextView,this,mOtpFeedback,mOtpProgress,ward,district);
     }
 
