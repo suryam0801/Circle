@@ -234,10 +234,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void addBroadcast(Broadcast broadcast) {
         boolean exists = HelperMethods.listContainsBroadcast(broadcastList, broadcast);
         if (!exists) {
-            broadcastList.add(0, broadcast); //to store timestamp values descendingly
-            adapter.notifyItemInserted(0);
+            broadcastList.add(broadcast); //to store timestamp values descendingly
+            adapter.notifyDataSetChanged();
             recyclerView.setAdapter(adapter);
         }
+
         recyclerView.scrollToPosition(broadcastPos);
         initializeNewCommentsAlertTimestamp(broadcast);
         initializeNewReadComments(broadcast);
