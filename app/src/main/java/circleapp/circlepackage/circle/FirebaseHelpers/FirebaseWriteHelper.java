@@ -115,8 +115,11 @@ public class FirebaseWriteHelper {
         USERS_REF.child(userId).child("notificationsAlert").child(circleId).setValue(noOfBroadcasts);
     }
 
-    public static void updateUserProfilePic(UserProfileChangeRequest profileUpdates) {
+    public static void updateUserProfile(UserProfileChangeRequest profileUpdates) {
         user.updateProfile(profileUpdates);
+    }
+    public static FirebaseUser getUser(){
+        return user;
     }
 
     public static void initializeNewCount(Context context, Circle c, User user) {

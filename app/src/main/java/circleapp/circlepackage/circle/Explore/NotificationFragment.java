@@ -88,7 +88,6 @@ public class NotificationFragment extends Fragment {
 
         HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
         HelperMethods.setListViewHeightBasedOnChildren(previousListView);
-
         thisWeekListView.setOnItemClickListener((parent, view1, position, id) -> {
             Notification curent = thisWeekNotifs.get(position);
             HelperMethods.NotifyOnclickListener(getContext(),curent,position,thisWeekNotifs.get(position).getBroadcastId());

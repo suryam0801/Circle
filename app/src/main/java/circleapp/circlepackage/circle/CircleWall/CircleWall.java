@@ -808,7 +808,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
+                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
                     Log.d(TAG, "Profile URL: " + downloadUri.toString());
                     if (pollExists)
                         Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollAddPhoto);

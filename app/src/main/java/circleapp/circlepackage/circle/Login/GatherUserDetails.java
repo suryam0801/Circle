@@ -409,7 +409,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setPhotoUri(uri)
                                 .build();
-                        FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
+                        FirebaseWriteHelper.updateUserProfile(profileUpdates);
                         Log.d(TAG, "Profile URL: " + downloadUri.toString());
                         Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
                         filePath = null;
@@ -466,7 +466,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     .build();
 
             //update the user display name
-            FirebaseWriteHelper.updateUserProfilePic(profileUpdates);
+            FirebaseWriteHelper.updateUserProfile(profileUpdates);
             if (!locationList.contains(district))
                 createInitialCircles();
 

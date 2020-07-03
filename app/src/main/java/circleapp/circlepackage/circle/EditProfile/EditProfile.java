@@ -37,11 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -87,8 +83,6 @@ public class EditProfile extends AppCompatActivity {
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
 
-    private FirebaseAuth currentUser;
-
     private Boolean finalizeChange = false;
 
     //UI elements for location tag selector popup and interest tag selector popup
@@ -116,7 +110,6 @@ public class EditProfile extends AppCompatActivity {
         back = findViewById(R.id.bck_view_edit_profile);
         finalizeChanges = findViewById(R.id.profile_finalize_changes);
 
-        currentUser = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
         userName.setText(user.getName());
@@ -137,7 +130,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
         logout.setOnClickListener(view -> {
-            currentUser.signOut();
+            FirebaseWriteHelper.signOutAuth();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
         });
@@ -290,7 +283,7 @@ public class EditProfile extends AppCompatActivity {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(downloadUri)
                             .build();
-                    currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             user.setProfileImageLink(downloadUri.toString());
@@ -307,7 +300,7 @@ public class EditProfile extends AppCompatActivity {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(Uri.parse(avatar))
                             .build();
-                    currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             user.setProfileImageLink(avatar);
@@ -351,14 +344,14 @@ public class EditProfile extends AppCompatActivity {
                 if (!TextUtils.isEmpty(name)) {
                     progressDialog.setTitle("Updating Name....");
                     progressDialog.show();
-                    String userId = currentUser.getInstance().getCurrentUser().getUid();
+                    String userId = FirebaseWriteHelper.getUserId();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
                             .build();
-                    currentUser.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            userName.setText(currentUser.getCurrentUser().getDisplayName());
+                            userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
                             progressDialog.dismiss();
                             editUserNamedialogue.dismiss();
                             user.setName(name);
@@ -504,7 +497,7 @@ public class EditProfile extends AppCompatActivity {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    currentUser.getCurrentUser().updateProfile(profileUpdates);
+                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
                     Glide.with(EditProfile.this).load(filePath).into(profileImageView);
                     filePath = null;
 

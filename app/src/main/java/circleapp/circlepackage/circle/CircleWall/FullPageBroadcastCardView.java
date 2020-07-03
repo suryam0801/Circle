@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,8 +21,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.w3c.dom.Text;
 
@@ -70,9 +69,8 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
             finish();
         });
-
         //set applicants button visible
-        if (circle.getCreatorID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        if (circle.getCreatorID().equals(SessionStorage.getUser(FullPageBroadcastCardView.this).getUserId()))
             viewApplicants.setVisibility(View.VISIBLE);
 
         viewApplicants.setOnClickListener(view -> {
