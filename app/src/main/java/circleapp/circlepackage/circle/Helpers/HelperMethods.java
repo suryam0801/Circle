@@ -46,6 +46,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -328,9 +329,9 @@ public class HelperMethods {
 
     public static void NotifyOnclickListener(Context context, Activity activity, Notification curent, int position, String broadcastId) {
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(FirebaseRetrievalViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
-        liveData.observe((LifecycleOwner) activity, returnArray -> {
-            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
+        liveData.observe((LifecycleOwner) activity, dataSnapshot -> {
+            Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                 if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) activity).getUserId())) {
