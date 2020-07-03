@@ -43,11 +43,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,10 +56,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -75,15 +71,11 @@ import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
-import circleapp.circlepackage.circle.ObjectModels.Poll;
-import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static java.security.AccessController.getContext;
 
 public class HelperMethods {
 
@@ -336,7 +328,6 @@ public class HelperMethods {
     public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference circlesDB;
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         circlesDB = database.getReference("Circles");
         String circleid = curent.getCircleId();
         circlesDB.child(circleid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -346,7 +337,7 @@ public class HelperMethods {
                 if (circle != null) {
 
                     Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                    if (circle.getMembersList().containsKey(firebaseAuth.getCurrentUser().getUid())) {
+                    if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity)context).getUserId())) {
                         SessionStorage.saveCircle((Activity) context, circle);
                         Intent intent = new Intent(context, CircleWall.class);
                         intent.putExtra("broadcastPos", position);

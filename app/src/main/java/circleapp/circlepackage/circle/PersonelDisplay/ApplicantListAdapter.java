@@ -97,6 +97,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
                 FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant);
                 state = "Accepted";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
+
             }
         });
 
@@ -106,6 +107,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
                 FirebaseWriteHelper.rejectApplicant(circle.getId(), selectedApplicant);
                 state = "Rejected";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
+
             }
         });
  

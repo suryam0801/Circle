@@ -115,8 +115,11 @@ public class FirebaseWriteHelper {
         USERS_REF.child(userId).child("notificationsAlert").child(circleId).setValue(noOfBroadcasts);
     }
 
-    public static void updateUserProfilePic(UserProfileChangeRequest profileUpdates) {
+    public static void updateUserProfile(UserProfileChangeRequest profileUpdates) {
         user.updateProfile(profileUpdates);
+    }
+    public static FirebaseUser getUser(){
+        return user;
     }
 
     public static void initializeNewCount(Context context, Circle c, User user) {
@@ -148,6 +151,16 @@ public class FirebaseWriteHelper {
             user.setActiveCircles(nowActive);
             updateUser(user, context);
         }
+    }
+    public static void acceptApplicant(String circleId, Subscriber selectedApplicant){
+        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_PERSONEL_REF.child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
+        CIRCLES_REF.child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
+    }
+    public static void rejectApplicant(String circleId, Subscriber selectedApplicant){
+        CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
+        CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
     }
 
     public static void updateUser(User user, Context context) {

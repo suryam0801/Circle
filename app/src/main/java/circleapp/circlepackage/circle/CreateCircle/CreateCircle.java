@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,20 +40,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -93,7 +90,6 @@ public class CreateCircle extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 102;
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
-    private StorageReference storageReference;
     private String backgroundImageLink;
 
     @Override
@@ -126,7 +122,6 @@ public class CreateCircle extends AppCompatActivity {
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
         runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
-        storageReference = FirebaseStorage.getInstance().getReference();
 
         visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
 
@@ -333,7 +328,7 @@ public class CreateCircle extends AppCompatActivity {
 
             //generating random id to store the backgroundpic
             String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = storageReference.child("BackgroundPics/" + id);
+            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("BackgroundPics/" + id);
 
             //storing  the pic
             profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -367,7 +362,7 @@ public class CreateCircle extends AppCompatActivity {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
+                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
                     Log.d(TAG, "Profile URL: " + downloadUri.toString());
                     Glide.with(CreateCircle.this).load(filePath).into(backgroundPic);
                     filePath = null;
