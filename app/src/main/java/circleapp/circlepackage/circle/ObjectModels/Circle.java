@@ -4,13 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Circle {
-    private String id, name, description, acceptanceType, visibility, creatorID, creatorName, circleDistrict, circleWard, category,backgroundImageLink;
+    private String id, name, description, acceptanceType, visibility, creatorID, creatorName, circleDistrict, circleWard="", category, backgroundImageLink;
     private HashMap<String, Boolean> membersList, applicantsList;
     private long timestamp;
     private int noOfBroadcasts, noOfNewDiscussions;
 
-    public Circle(){
-
+    public Circle() {
     }
 
     public Circle(String id, String name, String description, String acceptanceType, String visibility, String creatorID,
@@ -146,9 +145,14 @@ public class Circle {
     public void setNoOfNewDiscussions(int noOfNewDiscussions) {
         this.noOfNewDiscussions = noOfNewDiscussions;
     }
-    public String getBackgroundImageLink() { return backgroundImageLink; }
 
-    public void setBackgroundImageLink(String backgroundImageLink) { this.backgroundImageLink = backgroundImageLink; }
+    public String getBackgroundImageLink() {
+        return backgroundImageLink;
+    }
+
+    public void setBackgroundImageLink(String backgroundImageLink) {
+        this.backgroundImageLink = backgroundImageLink;
+    }
 
     public String getVisibility() {
         return visibility;

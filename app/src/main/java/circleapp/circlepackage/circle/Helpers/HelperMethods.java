@@ -60,8 +60,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -330,29 +332,6 @@ public class HelperMethods {
 
     }
 
-    public static void NotifyOnclickListener(Context context, Activity activity, Notification curent, int position, String broadcastId) {
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(FirebaseRetrievalViewModel.class);
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
-        liveData.observe((LifecycleOwner) activity, dataSnapshot -> {
-            Circle circle = dataSnapshot.getValue(Circle.class);
-        if (circle != null) {
-            Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-            if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) activity).getUserId())) {
-                SessionStorage.saveCircle((Activity) activity, circle);
-                Intent intent = new Intent(activity, CircleWall.class);
-                intent.putExtra("broadcastPos", position);
-                intent.putExtra("broadcastId", broadcastId);
-                activity.startActivity(intent);
-                ((Activity) activity).finish();
-            } else {
-                Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
-        }
-        });
-    }
-
     public static String uuidGet() {
         return UUID.randomUUID().toString();
     }
@@ -371,6 +350,43 @@ public class HelperMethods {
 
         return circleFits;
     }
+
+    public static void initializeBroadcastListener(Context context, Broadcast b, User user) {
+        boolean listeningToBroadcast = user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(b.getId());
+
+        List<String> listenTemp = new ArrayList<>();
+
+        if (user.getListeningBroadcasts() != null)
+            listenTemp = new ArrayList<>(user.getListeningBroadcasts());
+
+        if (!listeningToBroadcast) {
+            listenTemp.add(b.getId());
+            user.setListeningBroadcasts(listenTemp);
+            FirebaseWriteHelper.updateUser(user, context);
+        }
+    }
+
+    public static void initializeNewReadComments(Context context, Broadcast b, User user) {
+        HashMap<String, Integer> userNoReadComments;
+        if (user.getNoOfReadDiscussions() == null) {
+            //first time viewing any comments
+            userNoReadComments = new HashMap<>();
+            userNoReadComments.put(b.getId(), b.getNumberOfComments());
+            user.setNoOfReadDiscussions(userNoReadComments);
+
+            SessionStorage.saveUser((Activity) context, user);
+            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
+        } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
+            //if timestampcomments exists but does not contain value for that particular broadcast
+            userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
+            userNoReadComments.put(b.getId(), 0);
+            user.setNoOfReadDiscussions(userNoReadComments);
+
+            SessionStorage.saveUser((Activity) context, user);
+            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
+        }
+    }
+
 
     public static Uri getImageUri() {
         Uri m_imgUri = null;

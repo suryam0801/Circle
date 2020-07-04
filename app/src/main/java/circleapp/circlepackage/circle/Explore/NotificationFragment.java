@@ -18,6 +18,7 @@ import java.util.List;
 
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
@@ -82,19 +83,19 @@ public class NotificationFragment extends Fragment {
         return view;
     }
 
-    private void setNotifsView(Notification notification){
-        HelperMethods.OrderNotification(getContext(),prevnotify,notification,previousNotifs,thisWeekNotifs,adapterPrevious,adapterThisWeek,previousListView,thisWeekListView);
+    private void setNotifsView(Notification notification) {
+        HelperMethods.OrderNotification(getContext(), prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
 
         HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
         HelperMethods.setListViewHeightBasedOnChildren(previousListView);
         thisWeekListView.setOnItemClickListener((parent, view1, position, id) -> {
             Notification curent = thisWeekNotifs.get(position);
-            HelperMethods.NotifyOnclickListener(getContext(),getActivity(),curent,position,thisWeekNotifs.get(position).getBroadcastId());
+            FirebaseWriteHelper.NotifyOnclickListener(getContext(), getActivity(), curent, position, thisWeekNotifs.get(position).getBroadcastId());
         });
 
         previousListView.setOnItemClickListener((parent, view1, position, id) -> {
             Notification curent = previousNotifs.get(position);
-            HelperMethods.NotifyOnclickListener(getContext(), getActivity(),curent,position,previousNotifs.get(position).getBroadcastId());
+            FirebaseWriteHelper.NotifyOnclickListener(getContext(), getActivity(), curent, position, previousNotifs.get(position).getBroadcastId());
         });
 
     }

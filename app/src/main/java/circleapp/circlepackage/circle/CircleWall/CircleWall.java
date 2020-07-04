@@ -201,9 +201,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         moreOptions.setOnClickListener(view -> {
-
             makeMenuPopup();
-
         });
 
         getStartedPhoto.setOnClickListener(view -> showCreatePhotoBroadcastDialog());
@@ -234,14 +232,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void addBroadcast(Broadcast broadcast) {
         boolean exists = HelperMethods.listContainsBroadcast(broadcastList, broadcast);
         if (!exists) {
-            broadcastList.add(broadcast); //to store timestamp values descendingly
-            adapter.notifyDataSetChanged();
+            broadcastList.add(0, broadcast); //to store timestamp values descendingly
+            adapter.notifyItemInserted(0);
             recyclerView.setAdapter(adapter);
         }
 
         recyclerView.scrollToPosition(broadcastPos);
         initializeNewCommentsAlertTimestamp(broadcast);
-        initializeNewReadComments(broadcast);
 
         //coming back from image display
         int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
@@ -873,27 +870,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             SessionStorage.saveUser(CircleWall.this, user);
             FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
-        }
-    }
-
-    public void initializeNewReadComments(Broadcast b) {
-        HashMap<String, Integer> userNoReadComments;
-        if (user.getNoOfReadDiscussions() == null) {
-            //first time viewing any comments
-            userNoReadComments = new HashMap<>();
-            userNoReadComments.put(b.getId(), b.getNumberOfComments());
-            user.setNoOfReadDiscussions(userNoReadComments);
-
-            SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
-        } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
-            //if timestampcomments exists but does not contain value for that particular broadcast
-            userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
-            userNoReadComments.put(b.getId(), 0);
-            user.setNoOfReadDiscussions(userNoReadComments);
-
-            SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         }
     }
 

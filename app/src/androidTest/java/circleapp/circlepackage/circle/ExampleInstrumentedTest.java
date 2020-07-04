@@ -5,8 +5,13 @@ import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.firebase.FirebaseApp;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
 import static org.junit.Assert.*;
 
@@ -17,11 +22,19 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+
+    Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+    @Before
+    public void createCircles() {
+        FirebaseApp.initializeApp(appContext);
+        FirebaseWriteHelper.createDefaultCircle("Test Circle", "Circle for Testing", "Public",
+                "Surya", "Namakkal", 0, 0, "Events");
+    }
+
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
         assertEquals("circleapp.circlepackage.circle", appContext.getPackageName());
     }
 }
