@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+import com.squareup.leakcanary.LeakCanary;
+
 
 public class InAppNotificationHelper extends Application {
     public static final String CHANNEL_1_ID = "channel1";
@@ -13,6 +15,10 @@ public class InAppNotificationHelper extends Application {
     public void onCreate() {
         super.onCreate();
         createNotificationChannels();
+        if(LeakCanary.isInAnalyzerProcess(this)){
+            return;
+        }
+        LeakCanary.install(this);
     }
 
     private void createNotificationChannels() {
