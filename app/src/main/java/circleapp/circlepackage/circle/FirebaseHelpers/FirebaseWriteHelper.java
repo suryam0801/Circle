@@ -17,6 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -54,6 +59,7 @@ import circleapp.circlepackage.circle.Login.PinEntryEditText;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Comment;
+import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
@@ -81,10 +87,10 @@ public class FirebaseWriteHelper {
     private static int counter = 30;
     private static int failcounter;
     private static String mAuthVerificationId;
-    private static DatabaseReference usersDB = database.getReference("Users");;
+    private static DatabaseReference usersDB = database.getReference("Users");
+    ;
 
-    public static void PhoneAuth(OtpActivity otpActivity, String phn_number)
-    {
+    public static void PhoneAuth(OtpActivity otpActivity, String phn_number) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phn_number,
                 60,
@@ -93,6 +99,7 @@ public class FirebaseWriteHelper {
                 mCallbacks
         );
     }
+
     public static void deleteCircle(Context context, Circle circle, User user) {
         //reducing created circle count
         int currentCreatedCount = 0;
@@ -158,7 +165,8 @@ public class FirebaseWriteHelper {
     public static void updateUserProfile(UserProfileChangeRequest profileUpdates) {
         user.updateProfile(profileUpdates);
     }
-    public static FirebaseUser getUser(){
+
+    public static FirebaseUser getUser() {
         return user;
     }
 
@@ -192,20 +200,22 @@ public class FirebaseWriteHelper {
             updateUser(user, context);
         }
     }
-    public static void acceptApplicant(String circleId, Subscriber selectedApplicant){
+
+    public static void acceptApplicant(String circleId, Subscriber selectedApplicant) {
         CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
         CIRCLES_PERSONEL_REF.child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
         CIRCLES_REF.child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
     }
-    public static void rejectApplicant(String circleId, Subscriber selectedApplicant){
+
+    public static void rejectApplicant(String circleId, Subscriber selectedApplicant) {
         CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
     }
 
     public static void updateUser(User user, Context context) {
-        USERS_REF.child(user.getUserId()).setValue(user);
         SessionStorage.saveUser((Activity) context, user);
+        USERS_REF.child(user.getUserId()).setValue(user);
     }
 
     public static void updateBroadcast(Broadcast broadcast, Context context, String circleId) {
@@ -254,6 +264,7 @@ public class FirebaseWriteHelper {
 
         }
     }
+
     public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
         NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus);
     }
@@ -277,7 +288,8 @@ public class FirebaseWriteHelper {
         String userId = USERS_REF.child(user.getUid()).push().getKey();
         return userId;
     }
-    public static void deleteFirebaseAuth(){
+
+    public static void deleteFirebaseAuth() {
         user.delete();
     }
 
@@ -290,7 +302,6 @@ public class FirebaseWriteHelper {
             BROADCASTS_REF.child(circleId).child(broadcastId).child("listenersList").child(userId).setValue(true);
         else
             BROADCASTS_REF.child(circleId).child(broadcastId).child("listenersList").child(userId).removeValue();
-
     }
 
     public static String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
@@ -344,7 +355,8 @@ public class FirebaseWriteHelper {
     public static void signOutAuth() {
         authenticationToken.signOut();
     }
-    public static FirebaseAuth getAuthToken(){
+
+    public static FirebaseAuth getAuthToken() {
         return authenticationToken;
     }
 
@@ -360,6 +372,30 @@ public class FirebaseWriteHelper {
     public static void addCircleImageReference(String circleId, String imageUrl) {
         STORAGE_REFERENCES.child(circleId).child("CircleIcon").setValue(imageUrl);
     }
+
+    public static void NotifyOnclickListener(Context context, Activity activity, Notification curent, int position, String broadcastId) {
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(FirebaseRetrievalViewModel.class);
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
+        liveData.observe((LifecycleOwner) activity, dataSnapshot -> {
+            Circle circle = dataSnapshot.getValue(Circle.class);
+            if (circle != null) {
+                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
+                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) activity).getUserId())) {
+                    SessionStorage.saveCircle((Activity) activity, circle);
+                    Intent intent = new Intent(activity, CircleWall.class);
+                    intent.putExtra("broadcastPos", position);
+                    intent.putExtra("broadcastId", broadcastId);
+                    activity.startActivity(intent);
+                    ((Activity) activity).finish();
+                } else {
+                    Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(context, "The Circle has been deleted by Creator", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     public static void removeCircleImageReference(String circleId, String imageUrl) {
         deleteStorageReference(imageUrl);

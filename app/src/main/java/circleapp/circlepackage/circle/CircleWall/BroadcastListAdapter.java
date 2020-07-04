@@ -79,6 +79,9 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         final Broadcast broadcast = broadcastList.get(i);
 
+        HelperMethods.initializeBroadcastListener(context, broadcast, user);
+        HelperMethods.initializeNewReadComments(context, broadcast, user);
+
         if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
             Glide.with((Activity) context)
                     .load(broadcast.getCreatorPhotoURI())
@@ -164,6 +167,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             return true;
         });
 
+        List<String> listenTempx = new ArrayList<>(user.getListeningBroadcasts());
+
+        Log.d("wkejfn", listenTempx.toString());
+
         viewHolder.broadcastListenerToggle.setOnClickListener(view -> {
 
             List<String> listenTemp;
@@ -186,6 +193,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
             user.setListeningBroadcasts(listenTemp);
             FirebaseWriteHelper.updateUser(user, context);
+
         });
 
     }
