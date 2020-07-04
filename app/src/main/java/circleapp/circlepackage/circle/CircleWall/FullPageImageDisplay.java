@@ -1,10 +1,12 @@
 package circleapp.circlepackage.circle.CircleWall;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
@@ -32,12 +34,12 @@ public class FullPageImageDisplay extends AppCompatActivity {
                 .into(photoView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finishAfterTransition();
         Intent intent = new Intent(this, CircleWall.class);
         intent.putExtra("indexOfBroadcast", indexOfBroadcast);
         startActivity(intent);
-        finish();
     }
 }

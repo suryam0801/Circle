@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.EditProfile;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -86,6 +88,7 @@ public class EditProfile extends AppCompatActivity {
     private Boolean finalizeChange = false;
 
     //UI elements for location tag selector popup and interest tag selector popup
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,8 +139,8 @@ public class EditProfile extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
-            finish();
         });
 
     }
@@ -517,11 +520,11 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finishAfterTransition();
         Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
         startActivity(intent);
-        finish();
     }
 }

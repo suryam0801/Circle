@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.CircleWall;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +53,7 @@ public class CircleInformation extends AppCompatActivity {
     private User user;
     private ImageButton back;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,13 +90,13 @@ public class CircleInformation extends AppCompatActivity {
         back.setOnClickListener(view -> {
             int indexValue = getIntent().getIntExtra("exploreIndex", -1);
             if (indexValue == -1) {
+                finishAfterTransition();
                 startActivity(new Intent(CircleInformation.this, CircleWall.class));
-                finish();
             } else {
+                finishAfterTransition();
                 Intent intent = new Intent(CircleInformation.this, ExploreTabbedActivity.class);
                 intent.putExtra("exploreIndex", indexValue);
                 startActivity(intent);
-                finish();
             }
         });
 

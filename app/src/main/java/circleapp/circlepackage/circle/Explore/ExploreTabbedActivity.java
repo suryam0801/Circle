@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Explore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -71,6 +73,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     boolean shownPopup;
     private FloatingActionButton btnAddCircle;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,13 +120,13 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         }
 
         profPicHolder.setOnClickListener(v -> {
+            finishAfterTransition();
             startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
-            finish();
         });
 
         btnAddCircle.setOnClickListener(v -> {
+            finishAfterTransition();
             startActivity(new Intent(this, CreateCircleCategoryPicker.class));
-            finish();
         });
 
 
@@ -273,6 +276,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         shownPopup = true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void applyOrJoin(final Circle circle) {
         circleJoinSuccessDialog = new Dialog(ExploreTabbedActivity.this);
         circleJoinSuccessDialog.setContentView(R.layout.apply_popup_layout);
@@ -292,10 +296,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         closeDialogButton.setOnClickListener(view -> {
             if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
+                finishAfterTransition();
                 SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
                 shownPopup = false;
                 startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
-                finish();
             }
             circleJoinSuccessDialog.cancel();
         });

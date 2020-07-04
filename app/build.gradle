@@ -88,6 +88,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    androidTestImplementation 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.android.volley:volley:1.1.0'
@@ -119,6 +120,8 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
 }
 
 

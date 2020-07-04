@@ -1,10 +1,12 @@
 package circleapp.circlepackage.circle.Login;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import circleapp.circlepackage.circle.R;
@@ -20,10 +22,11 @@ public class get_started_third_page extends AppCompatActivity {
         startentry = findViewById(R.id.startEntryButton);
 
         startentry.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
+                finishAfterTransition();
                 startActivity(new Intent(get_started_third_page.this, EntryPage.class));
-                finish();
             }
         });
 

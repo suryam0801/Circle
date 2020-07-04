@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.CreateCircle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,6 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -92,6 +94,7 @@ public class CreateCircle extends AppCompatActivity {
     int photo;
     private String backgroundImageLink;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,8 +139,8 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
-            finish();
         });
 
         addLogo.setOnClickListener(v -> {
@@ -179,6 +182,7 @@ public class CreateCircle extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void createCircle(String cName, String cDescription, String acceptanceType, String visibilty) {
 
         User user = SessionStorage.getUser(CreateCircle.this);
@@ -221,16 +225,16 @@ public class CreateCircle extends AppCompatActivity {
         //navigate back to explore. new circle will be available in workbench
         SharedPreferences prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
         if (prefs.getBoolean("firstWall", true)) {
+            finishAfterTransition();
             Intent intent = new Intent(this, CircleWallBackgroundPicker.class);
             intent.putExtra("fromCreateCircle", true);
             startActivity(intent);
-            finish();
             prefs.edit().putBoolean("firstWall", false).commit();
         } else {
+            finishAfterTransition();
             Intent intent = new Intent(this, CircleWall.class);
             intent.putExtra("fromCreateCircle", true);
             startActivity(intent);
-            finish();
         }
     }
 
@@ -384,9 +388,9 @@ public class CreateCircle extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        finishAfterTransition();
         Intent about_intent = new Intent(CreateCircle.this, ExploreTabbedActivity.class);
         startActivity(about_intent);
-        finish();
     }
 
     @Override
