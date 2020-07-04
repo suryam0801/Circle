@@ -43,8 +43,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -131,13 +133,48 @@ public class FirebaseWriteHelper {
         CIRCLES_REF.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
     }
 
-    public static void deleteBroadcast(String circleId, Broadcast broadcast, int noOfBroadcasts) {
+    public static void deleteBroadcast(Context context, String circleId, Broadcast broadcast, int noOfBroadcasts, User user) {
+        Log.d("wefkjn", "tempListening.toString()");
         if (broadcast.isImageExists())
             removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
 
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         COMMENTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts - 1);
+        updateUserObjectWhenDeletingBroadcast(context, user, broadcast);
+    }
+
+    public static void updateUserObjectWhenDeletingBroadcast(Context context, User user, Broadcast broadcast){
+        //remove listening broadcast
+        List<String> tempListening;
+        if(user.getListeningBroadcasts()!=null && user.getListeningBroadcasts().contains(broadcast.getId())) {
+            tempListening = new ArrayList<>(user.getListeningBroadcasts());
+            tempListening.remove(broadcast.getId());
+            user.setListeningBroadcasts(tempListening);
+            updateUser(user, context);
+        }
+
+        //remove no of read discussions
+        HashMap<String, Integer> userNoReadComments;
+        if (user.getNoOfReadDiscussions() != null && user.getNoOfReadDiscussions().containsKey(broadcast.getId())) {
+            //if timestampcomments exists but does not contain value for that particular broadcast
+            userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
+            userNoReadComments.remove(broadcast.getId());
+            user.setNoOfReadDiscussions(userNoReadComments);
+            Log.d("wefkjn", userNoReadComments.toString());
+            updateUser(user, context);
+        }
+
+        //remove new timestamp comments
+        HashMap<String, Long> userCommentTimestamps;
+        if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(broadcast.getId())) {
+            //if timestampcomments exists but does not contain value for that particular broadcast
+            userCommentTimestamps = new HashMap<>(user.getNewTimeStampsComments());
+            userCommentTimestamps.remove(broadcast.getId());
+            user.setNewTimeStampsComments(userCommentTimestamps);
+            Log.d("wefkjn", userCommentTimestamps.toString());
+            updateUser(user, context);
+        }
     }
 
     public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount) {
