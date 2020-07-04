@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -60,6 +61,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Circle circle;
     private User user;
     private int initialIndex;
+    private InputMethodManager imm;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -67,6 +69,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         this.circle = circle;
         this.initialIndex = initialIndex;
         user = SessionStorage.getUser((Activity) mContext);
+        imm = (InputMethodManager) mContext.getSystemService(mContext.INPUT_METHOD_SERVICE);
     }
 
     @NonNull
@@ -85,7 +88,13 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         Broadcast currentBroadcast = broadcastList.get(position);
 
         holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
-        holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
+        holder.collapseCommentView.setOnClickListener(view -> {
+            HelperMethods.expand(holder.broadcst_container);
+            try {
+                imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+            }
+        });
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
         mLinearLayoutManager.setStackFromEnd(true);
@@ -97,6 +106,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 makeCommentEntry(commentMessage, currentBroadcast);
             }
             holder.addCommentEditText.setText("");
+            try {
+                imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+            }
+
         });
 
 
