@@ -167,10 +167,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             return true;
         });
 
-        List<String> listenTempx = new ArrayList<>(user.getListeningBroadcasts());
-
-        Log.d("wkejfn", listenTempx.toString());
-
         viewHolder.broadcastListenerToggle.setOnClickListener(view -> {
 
             List<String> listenTemp;
@@ -328,7 +324,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         final Button cancel = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_cancel_btn);
 
         closeDialogButton.setOnClickListener(view -> {
-            FirebaseWriteHelper.deleteBroadcast(circle.getId(), broadcast, noOfBroadcasts);
+            FirebaseWriteHelper.deleteBroadcast(context, circle.getId(), broadcast, noOfBroadcasts, user);
             deleteBroadcastConfirmation.dismiss();
             Toast.makeText(context, "Post Deleted!", Toast.LENGTH_SHORT).show();
         });
