@@ -201,9 +201,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         moreOptions.setOnClickListener(view -> {
-
             makeMenuPopup();
-
         });
 
         getStartedPhoto.setOnClickListener(view -> showCreatePhotoBroadcastDialog());
@@ -234,8 +232,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void addBroadcast(Broadcast broadcast) {
         boolean exists = HelperMethods.listContainsBroadcast(broadcastList, broadcast);
         if (!exists) {
-            broadcastList.add(broadcast); //to store timestamp values descendingly
-            adapter.notifyDataSetChanged();
+            broadcastList.add(0, broadcast); //to store timestamp values descendingly
+            adapter.notifyItemInserted(0);
             recyclerView.setAdapter(adapter);
         }
 

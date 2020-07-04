@@ -88,6 +88,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.collapseCommentView.setOnClickListener(view -> HelperMethods.expand(holder.broadcst_container));
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
+        mLinearLayoutManager.setStackFromEnd(true);
         holder.commentListView.setLayoutManager(mLinearLayoutManager);
 
         holder.addCommentButton.setOnClickListener(view -> {
@@ -114,8 +115,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
             commentsList.add(tempComment); //to store timestamp values descendingly
             commentAdapter.notifyDataSetChanged();
-
-            Log.d("kewjfnwe", initialIndex + " " + position);
+            holder.commentListView.scrollToPosition(commentsList.size() - 1);
 
             if (position == initialIndex)
                 HelperMethods.collapse(holder.broadcst_container);
@@ -260,7 +260,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 button.setPressed(true);
             }
         }
-
     }
 
     public void makeCommentEntry(String commentMessage, Broadcast broadcast) {
