@@ -1,9 +1,8 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -23,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -120,6 +119,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,8 +174,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             emptyDisplay.setVisibility(View.VISIBLE);
 
         back.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-            finish();
         });
 
         poll.setOnClickListener(view -> {
@@ -196,8 +196,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             viewApplicants.setVisibility(View.VISIBLE);
 
         viewApplicants.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(CircleWall.this, PersonelDisplay.class));
-            finish();
         });
 
         moreOptions.setOnClickListener(view -> {
@@ -264,6 +264,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         adapter.notifyItemRemoved(position);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void makeMenuPopup() {
         PopupMenu popup = new PopupMenu(this, moreOptions);
         popup.getMenuInflater()
@@ -277,8 +278,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getTitle().toString()) {
                 case "Change wallpaper":
+                    finishAfterTransition();
                     startActivity(new Intent(CircleWall.this, CircleWallBackgroundPicker.class));
-                    finish();
                     break;
                 case "Invite a friend":
                     InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
@@ -381,16 +382,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void showExitDialog() {
         confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
         final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
         final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
+            finishAfterTransition();
             FirebaseWriteHelper.exitCircle(this, circle, user);
             confirmationDialog.dismiss();
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-            finish();
         });
 
         cancel.setOnClickListener(view -> confirmationDialog.dismiss());
@@ -399,6 +401,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         confirmationDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void showDeleteDialog() {
 
         confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
@@ -406,10 +409,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-
+            finishAfterTransition();
             FirebaseWriteHelper.deleteCircle(this, circle, user);
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-            finish();
             confirmationDialog.dismiss();
         });
 
@@ -831,12 +833,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finishAfterTransition();
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
-        finish();
     }
 
     //bottom sheet dialog onclick (only called when nagivating from create circle)

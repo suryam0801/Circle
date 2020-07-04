@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.PersonelDisplay;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -12,6 +13,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.Activity;
 import android.app.Person;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
@@ -46,6 +48,7 @@ public class PersonelDisplay extends AppCompatActivity {
     private ImageButton back;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +62,8 @@ public class PersonelDisplay extends AppCompatActivity {
         applicantsList = new ArrayList<>(); //initialize membersList
 
         back.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
-            finish();
         });
 
 
@@ -98,10 +101,10 @@ public class PersonelDisplay extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finishAfterTransition();
         startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
-        finish();
     }
 }

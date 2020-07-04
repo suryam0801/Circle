@@ -1,9 +1,11 @@
 package circleapp.circlepackage.circle.CircleWall;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -86,8 +88,9 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void backToCircleWall(){
+        finishAfterTransition();
         startActivity(new Intent(CircleWallBackgroundPicker.this, CircleWall.class));
-        finish();
     }
 }

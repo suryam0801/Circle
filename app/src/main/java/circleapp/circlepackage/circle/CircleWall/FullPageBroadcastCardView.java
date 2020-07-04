@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.CircleWall;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -36,6 +38,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
     private LinearLayout parentLayout;
     private ImageButton moreOptions, viewApplicants;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,16 +60,16 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
 
         banner.setText(circle.getName());
         back.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
-            finish();
         });
         //set applicants button visible
         if (circle.getCreatorID().equals(SessionStorage.getUser(FullPageBroadcastCardView.this).getUserId()))
             viewApplicants.setVisibility(View.VISIBLE);
 
         viewApplicants.setOnClickListener(view -> {
+            finishAfterTransition();
             startActivity(new Intent(this, PersonelDisplay.class));
-            finish();
         });
 
         moreOptions.setOnClickListener(view -> {
@@ -77,8 +80,8 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getTitle().toString()) {
                     case "Change wallpaper":
+                        finishAfterTransition();
                         startActivity(new Intent(this, CircleWallBackgroundPicker.class));
-                        finish();
                         break;
                     case "Invite a friend":
                         HelperMethods.showShareCirclePopup(circle, this);
@@ -173,10 +176,10 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
+        finishAfterTransition();
         startActivity(new Intent(getApplicationContext(), CircleWall.class));
-        finish();
-        super.onBackPressed();
     }
 }

@@ -1,8 +1,10 @@
 package circleapp.circlepackage.circle.Explore;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -25,6 +27,7 @@ public class ExploreCategoryFilter extends AppCompatActivity {
     private Button applyFilter;
     private List<String> selectedFilters = new ArrayList<>();
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,18 +151,18 @@ public class ExploreCategoryFilter extends AppCompatActivity {
         });
 
         back.setOnClickListener(view -> {
+            finishAfterTransition();
             Intent intent = new Intent(ExploreCategoryFilter.this, ExploreTabbedActivity.class);
             intent.putExtra("fromFilters", true);
             startActivity(intent);
-            finish();
         });
 
         applyFilter.setOnClickListener(view -> {
+            finishAfterTransition();
             Intent intent = new Intent(ExploreCategoryFilter.this, ExploreTabbedActivity.class);
             intent.putExtra("fromFilters", true);
             SessionStorage.saveFilters(this, selectedFilters);
             startActivity(intent);
-            finish();
         });
     }
 }
