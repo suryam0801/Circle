@@ -7,19 +7,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -79,7 +73,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         final Broadcast broadcast = broadcastList.get(i);
 
-        HelperMethods.initializeBroadcastListener(context, broadcast, user);
+        //HelperMethods.initializeBroadcastListener(context, broadcast, user);
         HelperMethods.initializeNewReadComments(context, broadcast, user);
 
         if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
@@ -106,20 +100,25 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
-        if (user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(broadcast.getId()))
-            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
-
         //new comments setter
         String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
-        boolean listeningToBroadcast = user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(broadcast.getId());
-        if (listeningToBroadcast) {
+        boolean notListeningToBroadcast = true;
+        if (user.getMutedBroadcasts() == null)
+            notListeningToBroadcast = false;
+        else if (user.getMutedBroadcasts().contains(broadcast.getId()))
+            notListeningToBroadcast = false;
+
+        if (!notListeningToBroadcast) {
+            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
             int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
             if (noOfUserUnread > 0) {
                 viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
                 viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
             }
+        } else {
+            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         }
 
         try {
@@ -169,25 +168,25 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.broadcastListenerToggle.setOnClickListener(view -> {
 
-            List<String> listenTemp;
-            if (user.getListeningBroadcasts() != null)
-                listenTemp = new ArrayList<>(user.getListeningBroadcasts());
+            List<String> mutedTemp;
+            if (user.getMutedBroadcasts() != null)
+                mutedTemp = new ArrayList<>(user.getMutedBroadcasts());
             else
-                listenTemp = new ArrayList<>();
+                mutedTemp = new ArrayList<>();
 
-            if (listenTemp.contains(broadcast.getId())) {
+            if (!mutedTemp.contains(broadcast.getId())) {
                 viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
                 HelperMethods.vibrate(context);
-                listenTemp.remove(broadcast.getId());
+                mutedTemp.add(broadcast.getId());
                 FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), broadcast.getId());
             } else {
                 viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
                 HelperMethods.vibrate(context);
-                listenTemp.add(broadcast.getId());
+                mutedTemp.remove(broadcast.getId());
                 FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
             }
 
-            user.setListeningBroadcasts(listenTemp);
+            user.setMutedBroadcasts(mutedTemp);
             FirebaseWriteHelper.updateUser(user, context);
 
         });

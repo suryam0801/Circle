@@ -1,50 +1,27 @@
 package circleapp.circlepackage.circle.FirebaseHelpers;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,17 +33,13 @@ import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Login.OtpActivity;
-import circleapp.circlepackage.circle.Login.PhoneLogin;
-import circleapp.circlepackage.circle.Login.PinEntryEditText;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
-import circleapp.circlepackage.circle.R;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
@@ -147,10 +120,10 @@ public class FirebaseWriteHelper {
     public static void updateUserObjectWhenDeletingBroadcast(Context context, User user, Broadcast broadcast){
         //remove listening broadcast
         List<String> tempListening;
-        if(user.getListeningBroadcasts()!=null && user.getListeningBroadcasts().contains(broadcast.getId())) {
-            tempListening = new ArrayList<>(user.getListeningBroadcasts());
+        if(user.getMutedBroadcasts()!=null && user.getMutedBroadcasts().contains(broadcast.getId())) {
+            tempListening = new ArrayList<>(user.getMutedBroadcasts());
             tempListening.remove(broadcast.getId());
-            user.setListeningBroadcasts(tempListening);
+            user.setMutedBroadcasts(tempListening);
             updateUser(user, context);
         }
 
