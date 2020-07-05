@@ -282,7 +282,7 @@ public class FirebaseWriteHelper {
     public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
         Set<String> member;
         if (listenersList != null) {
-            //listenersList.remove(userId);
+            listenersList.remove(userId);
             member = listenersList.keySet();
             for (String i : member)
                 NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
