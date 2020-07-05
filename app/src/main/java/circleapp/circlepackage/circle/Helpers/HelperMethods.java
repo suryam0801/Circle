@@ -351,6 +351,7 @@ public class HelperMethods {
         return circleFits;
     }
 
+/*
     public static void initializeBroadcastListener(Context context, Broadcast b, User user) {
         boolean listeningToBroadcast = user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(b.getId());
 
@@ -365,6 +366,7 @@ public class HelperMethods {
             FirebaseWriteHelper.updateUser(user, context);
         }
     }
+*/
 
     public static void initializeNewCommentsAlertTimestamp(Context context, Broadcast b, User user) {
         HashMap<String, Long> commentTimeStampTemp;

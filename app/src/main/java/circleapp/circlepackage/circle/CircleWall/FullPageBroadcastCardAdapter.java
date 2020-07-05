@@ -3,11 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +13,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
@@ -112,42 +105,47 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             holder.addCommentEditText.setText("");
         });
 
-        if (user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(currentBroadcast.getId()))
-            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
-
         holder.notificationToggle.setOnClickListener(view -> {
 
-            List<String> listenTemp;
-            if (user.getListeningBroadcasts() != null)
-                listenTemp = new ArrayList<>(user.getListeningBroadcasts());
+            List<String> mutedTemp;
+            if (user.getMutedBroadcasts() != null)
+                mutedTemp = new ArrayList<>(user.getMutedBroadcasts());
             else
-                listenTemp = new ArrayList<>();
+                mutedTemp = new ArrayList<>();
 
-            if (listenTemp.contains(currentBroadcast.getId())) {
+            if (!mutedTemp.contains(currentBroadcast.getId())) {
                 holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
                 HelperMethods.vibrate(mContext);
-                listenTemp.remove(currentBroadcast.getId());
+                mutedTemp.add(currentBroadcast.getId());
                 FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), currentBroadcast.getId());
             } else {
                 holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
                 HelperMethods.vibrate(mContext);
-                listenTemp.add(currentBroadcast.getId());
+                mutedTemp.remove(currentBroadcast.getId());
                 FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), currentBroadcast.getId());
             }
 
-            user.setListeningBroadcasts(listenTemp);
+            user.setMutedBroadcasts(mutedTemp);
             FirebaseWriteHelper.updateUser(user, mContext);
+
         });
 
-        boolean listeningToBroadcast = user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(currentBroadcast.getId());
-        if (listeningToBroadcast) {
+        boolean notListeningToBroadcast = true;
+        if (user.getMutedBroadcasts() == null)
+            notListeningToBroadcast = false;
+        else if (user.getMutedBroadcasts().contains(currentBroadcast.getId()))
+            notListeningToBroadcast = false;
+
+        if (!notListeningToBroadcast) {
+            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
             int noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
             if (noOfUserUnread > 0) {
                 holder.newNotifsContainer.setVisibility(View.VISIBLE);
                 holder.newNotifsTV.setText(noOfUserUnread + "");
             }
+        } else {
+            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         }
-
 
         String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
         holder.viewComments.setText(commentsDisplayText);

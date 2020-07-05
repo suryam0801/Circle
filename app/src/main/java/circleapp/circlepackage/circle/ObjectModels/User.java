@@ -10,7 +10,7 @@ public class User  {
     private HashMap<String, Integer> notificationsAlert;
     private HashMap<String, Integer> noOfReadDiscussions;
     private HashMap<String, Long> newTimeStampsComments;
-    private List<String> listeningBroadcasts;
+    private List<String> mutedBroadcasts;
     private int createdCircles, activeCircles, completedProjects;
 
 
@@ -22,7 +22,7 @@ public class User  {
                 String profileImageLink, String userId,
                 int createdCircles, int activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
-                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> listeningBroadcasts) {
+                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> mutedBroadcasts) {
         this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
@@ -36,7 +36,7 @@ public class User  {
         this.notificationsAlert = notificationsAlert;
         this.newTimeStampsComments = newDiscussionAlert;
         this.noOfReadDiscussions = noOfNewComments;
-        this.listeningBroadcasts = listeningBroadcasts;
+        this.mutedBroadcasts = mutedBroadcasts;
     }
 
     public void setCreatedCircles(int createdCircles) {
@@ -142,12 +142,12 @@ public class User  {
         this.noOfReadDiscussions = noOfReadDiscussions;
     }
 
-    public List<String> getListeningBroadcasts() {
-        return listeningBroadcasts;
+    public List<String> getMutedBroadcasts() {
+        return mutedBroadcasts;
     }
 
-    public void setListeningBroadcasts(List<String> listeningBroadcasts) {
-        this.listeningBroadcasts = listeningBroadcasts;
+    public void setMutedBroadcasts(List<String> mutedBroadcasts) {
+        this.mutedBroadcasts = mutedBroadcasts;
     }
 
     @Override
@@ -163,7 +163,7 @@ public class User  {
                 ", notificationsAlert=" + notificationsAlert +
                 ", noOfReadDiscussions=" + noOfReadDiscussions +
                 ", newTimeStampsComments=" + newTimeStampsComments +
-                ", listeningBroadcasts=" + listeningBroadcasts +
+                ", listeningBroadcasts=" + mutedBroadcasts +
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +
                 ", completedProjects=" + completedProjects +
