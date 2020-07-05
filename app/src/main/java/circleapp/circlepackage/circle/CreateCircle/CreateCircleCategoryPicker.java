@@ -66,7 +66,7 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this, ExploreTabbedActivity.class));
         finishAfterTransition();
+        startActivity(new Intent(this, ExploreTabbedActivity.class));
     }
 }
