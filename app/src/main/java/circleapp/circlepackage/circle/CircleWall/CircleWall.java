@@ -238,7 +238,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
         recyclerView.scrollToPosition(broadcastPos);
-        initializeNewCommentsAlertTimestamp(broadcast);
+        HelperMethods.initializeNewCommentsAlertTimestamp(this, broadcast, user);
 
         //coming back from image display
         int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
@@ -849,27 +849,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             case "copyLink":
                 HelperMethods.copyLinkToClipBoard(circle, CircleWall.this);
                 break;
-        }
-    }
-
-    public void initializeNewCommentsAlertTimestamp(Broadcast b) {
-        HashMap<String, Long> commentTimeStampTemp;
-        if (user.getNewTimeStampsComments() == null) {
-            //first time viewing any comments
-            commentTimeStampTemp = new HashMap<>();
-            commentTimeStampTemp.put(b.getId(), (long) 0);
-            user.setNewTimeStampsComments(commentTimeStampTemp);
-
-            SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
-        } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())) {
-            //if timestampcomments exists but does not contain value for that particular broadcast
-            commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
-            commentTimeStampTemp.put(b.getId(), (long) 0);
-            user.setNewTimeStampsComments(commentTimeStampTemp);
-
-            SessionStorage.saveUser(CircleWall.this, user);
-            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         }
     }
 
