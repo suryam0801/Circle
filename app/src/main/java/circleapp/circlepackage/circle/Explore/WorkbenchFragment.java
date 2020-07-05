@@ -45,6 +45,7 @@ public class WorkbenchFragment extends Fragment {
     private static User user;
     private LinearLayout emptyDisplay;
     private RecyclerView.Adapter wbadapter;
+    LiveData<String[]> liveData;
 
     public WorkbenchFragment() {
         // Required empty public constructor
@@ -107,7 +108,7 @@ public class WorkbenchFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<String[]> liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
@@ -126,6 +127,12 @@ public class WorkbenchFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        liveData.removeObservers(this);
+        super.onPause();
     }
 
     public void addCircle(Circle circle) {

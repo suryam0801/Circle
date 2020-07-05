@@ -37,6 +37,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
     ImageButton back;
     private LinearLayout parentLayout;
     private ImageButton moreOptions, viewApplicants;
+    RecyclerView recyclerView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -44,7 +45,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_page_broadcast_card_view);
 
-        RecyclerView recyclerView = findViewById(R.id.full_page_broadcast_card_recycler_view);
+        recyclerView = findViewById(R.id.full_page_broadcast_card_recycler_view);
         banner = findViewById(R.id.full_page_broadcast_banner_name);
         back = findViewById(R.id.bck_fullpage_broadcast);
         parentLayout = findViewById(R.id.full_page_broadcast_parent_layout);
@@ -174,6 +175,12 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        recyclerView.removeAllViews();
+        super.onPause();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
