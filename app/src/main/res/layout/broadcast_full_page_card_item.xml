@@ -25,12 +25,13 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -45,14 +46,23 @@
                         android:id="@+id/full_page_broadcast_ownerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="50dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Name"
                         android:textColor="#000000"
                         android:textSize="15dp"></TextView>
 
-                </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/full_page_broadcast_listener_on_off_toggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/ic_outline_broadcast_not_listening_icon"></ImageButton>
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -156,24 +166,50 @@
             </LinearLayout>
         </ScrollView>
 
-
-
-        <Button
-            android:id="@+id/clickToViewComments"
-            style="?android:attr/borderlessButtonStyle"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="5dp"
-            android:clickable="true"
-            android:drawableTop="@drawable/ic_baseline_arrow_drop_up_24"
-            android:drawablePadding="0dp"
-            android:padding="0dp"
-            android:text="View Comments"
-            android:textAllCaps="false"
-            android:textColor="#828282"
-            android:tooltipText="CreateCircle" />
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/clickToViewComments"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_alignParentBottom="true"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_baseline_arrow_drop_up_24"
+                android:drawablePadding="0dp"
+                android:padding="0dp"
+                android:text="View Comments"
+                android:textAllCaps="false"
+                android:textColor="#828282"
+                android:tooltipText="CreateCircle" />
+
+            <LinearLayout
+                android:id="@+id/full_page_broadcast_adapter_comments_alert_display"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/edit_project_button_background"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/full_page_broadcast_adapter_no_of_comments_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"></TextView>
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -59,7 +60,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Context mContext;
     private List<Broadcast> broadcastList;
     private Circle circle;
-    private User user;
     private int initialIndex;
     private InputMethodManager imm;
 
@@ -68,7 +68,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         this.broadcastList = broadcastList;
         this.circle = circle;
         this.initialIndex = initialIndex;
-        user = SessionStorage.getUser((Activity) mContext);
         imm = (InputMethodManager) mContext.getSystemService(mContext.INPUT_METHOD_SERVICE);
     }
 
@@ -86,38 +85,74 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         Broadcast currentBroadcast = broadcastList.get(position);
+        User user = SessionStorage.getUser((Activity) mContext);
 
-        holder.collapseBroadcastView.setOnClickListener(view -> HelperMethods.collapse(holder.broadcst_container));
+        holder.collapseBroadcastView.setOnClickListener(view -> {
+            HelperMethods.collapse(holder.broadcst_container);
+            holder.newNotifsContainer.setVisibility(View.GONE);
+        });
+
         holder.collapseCommentView.setOnClickListener(view -> {
             HelperMethods.expand(holder.broadcst_container);
+            SessionStorage.saveBroadcast((Activity) mContext, broadcastList.get(position));
             try {
                 imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
             } catch (Exception e) {
             }
         });
 
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
-        mLinearLayoutManager.setStackFromEnd(true);
-        holder.commentListView.setLayoutManager(mLinearLayoutManager);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        holder.commentListView.setLayoutManager(layoutManager);
 
         holder.addCommentButton.setOnClickListener(view -> {
             String commentMessage = holder.addCommentEditText.getText().toString().trim();
             if (!commentMessage.equals("")) {
-                makeCommentEntry(commentMessage, currentBroadcast);
+                makeCommentEntry(commentMessage, currentBroadcast, user);
             }
             holder.addCommentEditText.setText("");
-            try {
-                imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
-            } catch (Exception e) {
+        });
+
+        if (user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(currentBroadcast.getId()))
+            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
+
+        holder.notificationToggle.setOnClickListener(view -> {
+
+            List<String> listenTemp;
+            if (user.getListeningBroadcasts() != null)
+                listenTemp = new ArrayList<>(user.getListeningBroadcasts());
+            else
+                listenTemp = new ArrayList<>();
+
+            if (listenTemp.contains(currentBroadcast.getId())) {
+                holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+                HelperMethods.vibrate(mContext);
+                listenTemp.remove(currentBroadcast.getId());
+                FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), currentBroadcast.getId());
+            } else {
+                holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
+                HelperMethods.vibrate(mContext);
+                listenTemp.add(currentBroadcast.getId());
+                FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), currentBroadcast.getId());
             }
 
+            user.setListeningBroadcasts(listenTemp);
+            FirebaseWriteHelper.updateUser(user, mContext);
         });
+
+        boolean listeningToBroadcast = user.getListeningBroadcasts() != null && user.getListeningBroadcasts().contains(currentBroadcast.getId());
+        if (listeningToBroadcast) {
+            int noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
+            if (noOfUserUnread > 0) {
+                holder.newNotifsContainer.setVisibility(View.VISIBLE);
+                holder.newNotifsTV.setText(noOfUserUnread + "");
+            }
+        }
 
 
         String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
         holder.viewComments.setText(commentsDisplayText);
 
-        setBroadcastInfo(mContext, holder, currentBroadcast);
+        setBroadcastInfo(mContext, holder, currentBroadcast, user);
 
         commentAdapter = new CommentAdapter(mContext, commentsList);
         holder.commentListView.setAdapter(commentAdapter);
@@ -127,20 +162,22 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         liveData.observe((LifecycleOwner) mContext, returnArray -> {
             Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
-            commentsList.add(tempComment); //to store timestamp values descendingly
-            commentAdapter.notifyDataSetChanged();
-            holder.commentListView.scrollToPosition(commentsList.size() - 1);
+            commentsList.add(0, tempComment); //to store timestamp values descendingly
+            commentAdapter.notifyItemInserted(0);
 
             if (position == initialIndex)
                 HelperMethods.collapse(holder.broadcst_container);
 
-            if (commentsList.size() == currentBroadcast.getNumberOfComments())
-                updateUserFields(currentBroadcast, "view");
+            if (commentsList.size() == broadcastList.get(position).getNumberOfComments()) {
+                holder.commentListView.scrollToPosition(commentsList.size());
+                HelperMethods.updateUserFields(mContext, currentBroadcast, "view", user);
+                HelperMethods.initializeNewCommentsAlertTimestamp(mContext, broadcastList.get(position), user);
+            }
 
         });
     }
 
-    public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast) {
+    public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast, User user) {
 
         final Poll poll;
 
@@ -267,7 +304,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
                     Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
 
-                    setBroadcastInfo(context, viewHolder, broadcast);
+                    setBroadcastInfo(context, viewHolder, broadcast, user);
 
                 });
                 viewHolder.pollOptionsDisplayGroup.addView(layout);
@@ -276,7 +313,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         }
     }
 
-    public void makeCommentEntry(String commentMessage, Broadcast broadcast) {
+    public void makeCommentEntry(String commentMessage, Broadcast broadcast, User user) {
         long currentCommentTimeStamp = System.currentTimeMillis();
 
         Map<String, Object> map = new HashMap<>();
@@ -290,7 +327,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage);
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
-        updateUserFields(broadcast, "create");
+        HelperMethods.updateUserFields(mContext, broadcast, "create", user);
     }
 
     @Override
@@ -301,40 +338,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     @Override
     public int getItemCount() {
         return broadcastList.size();
-    }
-
-    public void updateUserFields(Broadcast broadcast, String navFrom) {
-        HashMap<String, Integer> tempNoOfDiscussion;
-        if (user.getNoOfReadDiscussions() != null)
-            tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
-        else
-            tempNoOfDiscussion = new HashMap<>();
-
-        switch (navFrom) {
-            case "create":
-                //updating userReadDiscussions after creating the comment
-                int updateDiscussionInt;
-                if (tempNoOfDiscussion.containsKey(broadcast.getId()))
-                    updateDiscussionInt = tempNoOfDiscussion.get(broadcast.getId());
-                else
-                    updateDiscussionInt = 0;
-                tempNoOfDiscussion.put(broadcast.getId(), updateDiscussionInt + 1);
-                user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                FirebaseWriteHelper.updateUser(user, mContext);
-                break;
-
-            case "view":
-                tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
-                user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                FirebaseWriteHelper.updateUser(user, mContext);
-                break;
-        }
-
-        //updating user latest timestamp for that comment
-        HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
-        tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
-        user.setNewTimeStampsComments(tempCommentTimeStamps);
-        FirebaseWriteHelper.updateUser(user, mContext);
     }
 
     public void updateCommentNumbersPostCreate(Broadcast broadcast, long timetamp) {
@@ -353,9 +356,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public class ViewHolder extends RecyclerView.ViewHolder {
         private RecyclerView commentListView;
         private RelativeLayout broadcst_container;
-        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle;
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newNotifsTV;
         private CircleImageView profPicDisplay;
-        private LinearLayout pollOptionsDisplayGroup;
+        private LinearLayout pollOptionsDisplayGroup, newNotifsContainer;
+        private ImageButton notificationToggle;
         private String currentUserPollOption = null;
         private Button viewPollAnswers, collapseBroadcastView, collapseCommentView, addCommentButton;
         private EditText addCommentEditText;
@@ -378,6 +382,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             collapseCommentView = view.findViewById(R.id.clickToViewBroadcastFullPage);
             addCommentButton = view.findViewById(R.id.full_page_broadcast_comment_send_button);
             addCommentEditText = view.findViewById(R.id.full_page_broadcast_comment_type_editText);
+            notificationToggle = view.findViewById(R.id.full_page_broadcast_listener_on_off_toggle);
+            newNotifsContainer = view.findViewById(R.id.full_page_broadcast_adapter_comments_alert_display);
+            newNotifsTV = view.findViewById(R.id.full_page_broadcast_adapter_no_of_comments_display);
         }
 
         public String getCurrentUserPollOption() {
