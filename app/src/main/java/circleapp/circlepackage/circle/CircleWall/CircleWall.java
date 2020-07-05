@@ -584,7 +584,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), normalBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), normalBroadcast, newCount, user.getUserId());
         pollExists = false;
         imageExists = false;
 
@@ -611,7 +611,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         updateUserCount(circle);
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), photoBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), photoBroadcast, newCount, user.getUserId());
         pollExists = false;
         imageExists = false;
         createPhotoBroadcastPopup.dismiss();
@@ -651,7 +651,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), pollBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(CircleWall.this, circle.getId(), pollBroadcast, newCount, user.getUserId());
         pollExists = false;
         imageExists = false;
         pollAnswerOptionsList.clear();
