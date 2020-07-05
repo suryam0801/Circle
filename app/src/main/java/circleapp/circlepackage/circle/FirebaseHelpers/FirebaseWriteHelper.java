@@ -181,7 +181,6 @@ public class FirebaseWriteHelper {
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(newCount);
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
         addBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
-        broadcastListenerList(0, userId, circleId,broadcast.getId());
     }
 
     public static StorageReference getStorageReference(String dbReference) {
@@ -283,7 +282,7 @@ public class FirebaseWriteHelper {
     public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
         Set<String> member;
         if (listenersList != null) {
-            listenersList.remove(userId);
+            //listenersList.remove(userId);
             member = listenersList.keySet();
             for (String i : member)
                 NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
@@ -338,7 +337,7 @@ public class FirebaseWriteHelper {
     public static void broadcastListenerList(int transaction, String userId, String circleId, String broadcastId) {
         if (transaction == 0)
             BROADCASTS_REF.child(circleId).child(broadcastId).child("listenersList").child(userId).setValue(true);
-        else
+            else
             BROADCASTS_REF.child(circleId).child(broadcastId).child("listenersList").child(userId).removeValue();
     }
 
