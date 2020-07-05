@@ -52,6 +52,7 @@ public class CircleInformation extends AppCompatActivity {
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
     private ImageButton back;
+    LiveData<String[]> liveData;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -114,6 +115,11 @@ public class CircleInformation extends AppCompatActivity {
             noMembersDisplay.setVisibility(View.VISIBLE);
         }
     }
+    @Override
+    public void onPause() {
+        liveData.removeObservers(this);
+        super.onPause();
+    }
 
     private void loadMembersList() {
         memberList = new ArrayList<>(); //initialize membersList
@@ -122,7 +128,7 @@ public class CircleInformation extends AppCompatActivity {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+        liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
 
         liveData.observe(this, returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);

@@ -37,6 +37,7 @@ public class NotificationFragment extends Fragment {
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
     private User user;
+    LiveData<String[]> liveData;
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -74,7 +75,7 @@ public class NotificationFragment extends Fragment {
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
 
-        LiveData<String[]> liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
+        liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
 
         liveData.observe(this, returnArray -> {
             Notification notification = new Gson().fromJson(returnArray[0], Notification.class);
@@ -103,5 +104,10 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+    @Override
+    public void onPause() {
+        liveData.removeObservers(this);
+        super.onPause();
     }
 }

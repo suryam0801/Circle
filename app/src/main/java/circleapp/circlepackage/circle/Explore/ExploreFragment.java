@@ -52,6 +52,7 @@ public class ExploreFragment extends Fragment {
     RecyclerView exploreRecyclerView;
 
     private List<String> listOfFilters = new ArrayList<>();
+    LiveData<String[]> liveData;
 
     private TextView filter;
     private int setIndex = 0;
@@ -125,7 +126,7 @@ public class ExploreFragment extends Fragment {
 
     public void fetchData() {
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
+        liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
@@ -214,5 +215,10 @@ public class ExploreFragment extends Fragment {
     public void onDestroy() {
         SessionStorage.tempIndexStore(getActivity(), 0);
         super.onDestroy();
+    }
+    @Override
+    public void onPause() {
+        liveData.removeObservers(this);
+        super.onPause();
     }
 }
