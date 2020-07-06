@@ -95,7 +95,7 @@ public class FirebaseWriteHelper {
 
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         COMMENTS_REF.child(circleId).child(broadcast.getId()).removeValue();
-        CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts);
+        CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts-1);
         updateUserObjectWhenDeletingBroadcast(context, user, broadcast);
     }
 
