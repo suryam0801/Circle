@@ -117,10 +117,10 @@ public class FirebaseWriteHelper {
         updateUserObjectWhenDeletingBroadcast(context, user, broadcast);
     }
 
-    public static void updateUserObjectWhenDeletingBroadcast(Context context, User user, Broadcast broadcast){
+    public static void updateUserObjectWhenDeletingBroadcast(Context context, User user, Broadcast broadcast) {
         //remove listening broadcast
         List<String> tempListening;
-        if(user.getMutedBroadcasts()!=null && user.getMutedBroadcasts().contains(broadcast.getId())) {
+        if (user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(broadcast.getId())) {
             tempListening = new ArrayList<>(user.getMutedBroadcasts());
             tempListening.remove(broadcast.getId());
             user.setMutedBroadcasts(tempListening);
@@ -310,7 +310,7 @@ public class FirebaseWriteHelper {
     public static void broadcastListenerList(int transaction, String userId, String circleId, String broadcastId) {
         if (transaction == 0)
             BROADCASTS_REF.child(circleId).child(broadcastId).child("listenersList").child(userId).setValue(true);
-            else
+        else
             BROADCASTS_REF.child(circleId).child(broadcastId).child("listenersList").child(userId).removeValue();
     }
 
