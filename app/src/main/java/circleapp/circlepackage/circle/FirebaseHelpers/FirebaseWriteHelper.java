@@ -330,9 +330,7 @@ public class FirebaseWriteHelper {
 
     public static String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
         String id = HelperMethods.uuidGet();
-        HashMap<String , Boolean> memberlist = new HashMap<>();
-        memberlist.put("",true);
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", memberlist, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
         CIRCLES_REF.child(id).setValue(circle);
         return id;
     }

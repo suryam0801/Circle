@@ -607,7 +607,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         quarantinePollOptions.put("Never :(", 0);
         quarantinePollOptions.put("Soon? Please be soon!", 0);
         quarantinePollBroadcastId = FirebaseWriteHelper.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
-                2, quarantinePollOptions,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2F4903a0a2-fc75-4c33-b417-98e45a8f6332?alt=media&token=aa71896f-90a9-4e2c-8322-5e04fac8ba56"
+                2, quarantinePollOptions,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/modi-us-2126610f-1481508682.jpg?alt=media&token=5ff4230c-945f-4918-9c21-bff5f90c75e9"
                 , 0, quarantineCircleId);
 
         //students circle
@@ -625,7 +625,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
 
         studentsPollBroadcastId = FirebaseWriteHelper.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
-                pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/ProfilePics%2Fe60bebee-7141-47a0-a502-bf018a8fe31c?alt=media&token=be032bf6-511c-4757-8451-8b7c852f3cdb",
+                pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/k9rd8iesn6ygrioen9cv.jpg?alt=media&token=220677ac-6e5f-473e-a28d-ae5c034e83e1",
                 0, studentsCircleId);
     }
 
