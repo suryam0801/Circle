@@ -179,14 +179,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(broadcast.getId());
 
         if (broadcastMuted) {
-            Log.d("wlekjfn", "ONCE TRUE");
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
             userMutedArray.remove(broadcast.getId());
             user.setMutedBroadcasts(userMutedArray);
             FirebaseWriteHelper.updateUser(user, context);
             FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
         } else {
-            Log.d("wlekjfn", "ONCE FALSE");
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
             userMutedArray.add(broadcast.getId());
             user.setMutedBroadcasts(userMutedArray);
