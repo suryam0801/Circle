@@ -36,11 +36,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private List<Comment> CommentList;
     private int count = 0;
     private User user;
+    private Broadcast currentBroadcast;
 
-    public CommentAdapter(Context mContext, List<Comment> CommentList) {
+    public CommentAdapter(Context mContext, List<Comment> CommentList, Broadcast currentBroadcast) {
         this.mContext = mContext;
         this.CommentList = CommentList;
         this.user = SessionStorage.getUser((Activity) mContext);
+        this.currentBroadcast = currentBroadcast;
     }
 
     @NonNull
@@ -52,7 +54,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
-        final Broadcast currentBroadcast = SessionStorage.getBroadcast((Activity) mContext);
         final Comment comment = CommentList.get(position);
         final String name = comment.getCommentorName();
         final String cmnt = comment.getComment();

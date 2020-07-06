@@ -80,13 +80,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         Broadcast currentBroadcast = broadcastList.get(position);
         User user = SessionStorage.getUser((Activity) mContext);
 
-        if (position == initialIndex) {
-            HelperMethods.collapse(holder.broadcst_container);
-            loadComments(currentBroadcast, holder, position);
-        }
-
         holder.collapseBroadcastView.setOnClickListener(view -> {
-            loadComments(currentBroadcast, holder, position);
+            //loadComments(currentBroadcast, holder, position);
             //holder.commentListView.scrollToPosition(commentsList.size());
             HelperMethods.collapse(holder.broadcst_container);
             holder.newNotifsContainer.setVisibility(View.GONE);
@@ -130,6 +125,32 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.notificationToggle.setOnClickListener(view -> {
             toggleNotif(currentBroadcast, holder);
         });
+
+
+        CommentAdapter commentAdapter;
+        List<Comment> commentsList = new ArrayList<>();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        holder.commentListView.setLayoutManager(layoutManager);
+
+        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
+        holder.commentListView.setAdapter(commentAdapter);
+
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(FirebaseRetrievalViewModel.class);
+        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
+
+        liveData.observe((LifecycleOwner) mContext, returnArray -> {
+            Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
+            commentsList.add(0, tempComment); //to store timestamp values descendingly
+            commentAdapter.notifyItemInserted(0);
+
+            if (position == initialIndex)
+                HelperMethods.collapse(holder.broadcst_container);
+
+        });
+
+        HelperMethods.updateUserFields(mContext, currentBroadcast, "view", user);
+        HelperMethods.initializeNewCommentsAlertTimestamp(mContext, broadcastList.get(position), user);
+
     }
 
     public void toggleNotif(Broadcast broadcast, ViewHolder viewHolder) {
@@ -164,7 +185,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
         holder.commentListView.setLayoutManager(layoutManager);
 
-        commentAdapter = new CommentAdapter(mContext, commentsList);
+        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
         holder.commentListView.setAdapter(commentAdapter);
 
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(FirebaseRetrievalViewModel.class);
@@ -182,7 +203,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         HelperMethods.updateUserFields(mContext, currentBroadcast, "view", user);
         HelperMethods.initializeNewCommentsAlertTimestamp(mContext, broadcastList.get(position), user);
-
     }
 
     public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast, User user) {
