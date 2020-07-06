@@ -142,7 +142,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.container.setOnLongClickListener(v -> {
             if (broadcast.getCreatorID().equals(user.getUserId())) {
-                showDeleteBroadcastDialog(broadcast, circle.getNoOfBroadcasts(), SessionStorage.getUser((Activity) context));
+                showDeleteBroadcastDialog(broadcast, SessionStorage.getUser((Activity) context));
             } else
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
@@ -317,13 +317,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         FirebaseWriteHelper.updateBroadcast(broadcast, context, circle.getId());
     }
 
-    public void showDeleteBroadcastDialog(Broadcast broadcast, int noOfBroadcasts, User user) {
+    public void showDeleteBroadcastDialog(Broadcast broadcast, User user) {
         deleteBroadcastConfirmation.setContentView(R.layout.delete_broadcast_popup);
         final Button closeDialogButton = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_confirm_btn);
         final Button cancel = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_cancel_btn);
 
         closeDialogButton.setOnClickListener(view -> {
-            FirebaseWriteHelper.deleteBroadcast(context, circle.getId(), broadcast, noOfBroadcasts, user);
+            FirebaseWriteHelper.deleteBroadcast(context, circle.getId(), broadcast, circle.getNoOfBroadcasts(), user);
             deleteBroadcastConfirmation.dismiss();
             Toast.makeText(context, "Post Deleted!", Toast.LENGTH_SHORT).show();
         });

@@ -44,9 +44,6 @@ import circleapp.circlepackage.circle.ObjectModels.User;
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
     private static final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private static PhoneAuthProvider.ForceResendingToken resendingToken;
-    private static PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend;
-    private static PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     private static final DatabaseReference CIRCLES_REF = database.getReference("/Circles");
@@ -59,21 +56,6 @@ public class FirebaseWriteHelper {
     private static final DatabaseReference REPORT_ABUSE_REF = database.getReference("ReportAbuse");
     private static final DatabaseReference STORAGE_REFERENCES = database.getReference("StorageReferences");
     private static final DatabaseReference USER_FEEDBACK_REF = database.getReference("UserFeedback");
-    private static int counter = 30;
-    private static int failcounter;
-    private static String mAuthVerificationId;
-    private static DatabaseReference usersDB = database.getReference("Users");
-    ;
-
-    public static void PhoneAuth(OtpActivity otpActivity, String phn_number) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phn_number,
-                60,
-                TimeUnit.SECONDS,
-                otpActivity,
-                mCallbacks
-        );
-    }
 
     public static void deleteCircle(Context context, Circle circle, User user) {
         //reducing created circle count
@@ -113,7 +95,7 @@ public class FirebaseWriteHelper {
 
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         COMMENTS_REF.child(circleId).child(broadcast.getId()).removeValue();
-        CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts - 1);
+        CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts);
         updateUserObjectWhenDeletingBroadcast(context, user, broadcast);
     }
 
@@ -250,6 +232,8 @@ public class FirebaseWriteHelper {
     public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(userId).setValue(subscriber);
+        if(!circle.getBackgroundImageLink().equals("default"))
+        addCircleImageReference(circle.getId(),circle.getBackgroundImageLink());
     }
 
     public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
@@ -408,7 +392,9 @@ public class FirebaseWriteHelper {
 
 
     public static void removeCircleImageReference(String circleId, String imageUrl) {
-        deleteStorageReference(imageUrl);
+        if(!imageUrl.equals("default"))
+            deleteStorageReference(imageUrl);
+
         /* ITERATE THROUGH BROADCASTS WITHIN CIRCLE ID
         STORAGE_REFERENCES.child(circleId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

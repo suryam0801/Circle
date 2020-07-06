@@ -137,7 +137,7 @@ public class OtpActivity extends AppCompatActivity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        finishAfterTransition();
                         Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
                         intent.putExtra("ward", ward);
                         intent.putExtra("district", district);
@@ -259,7 +259,7 @@ public class OtpActivity extends AppCompatActivity {
                             public void run() {
                                 mAuthVerificationId = s;
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                Toast.makeText(getApplicationContext(), "OTP Sended succssfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                             }
                         },
                         5000);
@@ -268,6 +268,7 @@ public class OtpActivity extends AppCompatActivity {
 
         mVerifyBtn.setOnClickListener(v -> {
             String otp = mOtpText.getText().toString();
+            mOtpFeedback.setVisibility(View.INVISIBLE);
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
             if (otp.isEmpty()) {
@@ -317,9 +318,12 @@ public class OtpActivity extends AppCompatActivity {
                             });
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                mOtpProgress.setVisibility(View.INVISIBLE);
+                                mVerifyBtn.setEnabled(true);
+                                mVerifyBtn.setClickable(true);
                                 // The verification code entered was invalid
                                 mOtpFeedback.setVisibility(View.VISIBLE);
-                                mOtpFeedback.setText("There was an error verifying OTP");
+                                mOtpFeedback.setText("Incorrect OTP, Please try again");
                             }
                         }
                     }

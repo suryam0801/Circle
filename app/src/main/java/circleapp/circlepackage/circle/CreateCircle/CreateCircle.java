@@ -156,6 +156,7 @@ public class CreateCircle extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void radioButtonCheck(String name, String description) {
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
@@ -189,7 +190,7 @@ public class CreateCircle extends AppCompatActivity {
 
         String category = getIntent().getStringExtra("category_name");
 
-        String myCircleID = HelperMethods.uuidGet();
+        String myCircleID = FirebaseWriteHelper.getCircleId();
         String creatorUserID = user.getUserId();
 
         if (acceptanceType.equals("Public"))
@@ -386,6 +387,7 @@ public class CreateCircle extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
         finishAfterTransition();
