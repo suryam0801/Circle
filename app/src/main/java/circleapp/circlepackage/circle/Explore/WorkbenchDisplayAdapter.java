@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,10 +63,9 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         Circle circle = MycircleList.get(position);
         User user = SessionStorage.getUser((Activity) context);
 
-        if(!circle.getBackgroundImageLink().equals("default"))
+        if (!circle.getBackgroundImageLink().equals("default"))
             Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
-        else
-        {
+        else {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
             Glide.with(context)
                     .load(ContextCompat.getDrawable(context, profilePic))
@@ -75,14 +75,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         //set the details of each circle to its respective card.
         //holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
         holder.tv_MycircleName.setText(circle.getName());
-        if(circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getCreatorID().equals(user.getUserId()))
             holder.tv_circleCreatorName.setText("Me");
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
 
 
-
         //setting new applicants
-        if(HelperMethods.numberOfApplicants(circle,user) > 0){
+        if (HelperMethods.numberOfApplicants(circle, user) > 0) {
             GradientDrawable itemBackgroundApplicant = HelperMethods.gradientRectangleDrawableSetter(80);
             itemBackgroundApplicant.setColor(context.getResources().getColor(R.color.request_alert_color));
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
@@ -92,10 +91,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //read for new notifs
         int newNotifs = HelperMethods.newNotifications(circle, user);
-        if(newNotifs > 0){
+        if (newNotifs > 0) {
             GradientDrawable itemBackgroundNotif = HelperMethods.gradientRectangleDrawableSetter(80);
             itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
-            holder.newNotifAlert.setText(newNotifs+"");
+            holder.newNotifAlert.setText(newNotifs + "");
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
@@ -134,13 +133,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.shareCirclesLayout.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, circle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
+            bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
-        holder.shareCirclesButton.setOnClickListener(view ->{
+        holder.shareCirclesButton.setOnClickListener(view -> {
             SessionStorage.saveCircle((Activity) context, circle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show((((FragmentActivity)context).getSupportFragmentManager()), "exampleBottomSheet");
+            bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         String timeElapsed = HelperMethods.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
@@ -148,7 +147,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         holder.categoryDisplay.setText(circle.getCategory());
     }
-
 
 
     @Override
@@ -164,6 +162,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         private LinearLayout container;
         private RelativeLayout shareCirclesLayout;
         private ImageButton shareCirclesButton;
+
         public ViewHolder(View view) {
             super(view);
             newApplicantsDisplay = view.findViewById(R.id.newApplicantsDisplay);

@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -147,6 +148,39 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
             return true;
+        });
+
+        final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(broadcast.getId());
+
+        if (broadcastMuted) {
+            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+        } else {
+            int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
+            if (noOfUserUnread > 0) {
+                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
+                viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
+            }
+        }
+
+        viewHolder.broadcastListenerToggle.setOnClickListener(view -> {
+            List<String> userMutedArray;
+            if (user.getMutedBroadcasts() != null)
+                userMutedArray = new ArrayList<>(user.getMutedBroadcasts());
+            else
+                userMutedArray = new ArrayList<>();
+
+            if (broadcastMuted) {
+                viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
+                userMutedArray.remove(broadcast.getId());
+                user.setMutedBroadcasts(userMutedArray);
+                FirebaseWriteHelper.updateUser(user, context);
+            } else {
+                viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+                userMutedArray.add(broadcast.getId());
+                user.setMutedBroadcasts(userMutedArray);
+                FirebaseWriteHelper.updateUser(user, context);
+            }
+
         });
 
     }
