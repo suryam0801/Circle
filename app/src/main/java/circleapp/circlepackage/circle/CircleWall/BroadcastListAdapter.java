@@ -25,6 +25,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -33,12 +37,14 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
@@ -75,6 +81,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         User user = SessionStorage.getUser((Activity) context);
         //HelperMethods.initializeBroadcastListener(context, broadcast, user);
         HelperMethods.initializeNewReadComments(context, broadcast, user);
+        FirebaseRetrievalViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
+            circle = dataSnapshot.getValue(Circle.class);
+            if (circle != null) {
+                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
+                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
+                    SessionStorage.saveCircle((Activity) context, circle);
+                }
+            }
+        });
 
         if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
             Glide.with((Activity) context)
@@ -142,7 +159,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         viewHolder.container.setOnLongClickListener(v -> {
             if (broadcast.getCreatorID().equals(user.getUserId())) {
-                showDeleteBroadcastDialog(broadcast, circle.getNoOfBroadcasts(), SessionStorage.getUser((Activity) context));
+                showDeleteBroadcastDialog(broadcast, SessionStorage.getUser((Activity) context));
             } else
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
@@ -317,13 +334,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         FirebaseWriteHelper.updateBroadcast(broadcast, context, circle.getId());
     }
 
-    public void showDeleteBroadcastDialog(Broadcast broadcast, int noOfBroadcasts, User user) {
+    public void showDeleteBroadcastDialog(Broadcast broadcast, User user) {
         deleteBroadcastConfirmation.setContentView(R.layout.delete_broadcast_popup);
         final Button closeDialogButton = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_confirm_btn);
         final Button cancel = deleteBroadcastConfirmation.findViewById(R.id.delete_broadcast_cancel_btn);
 
         closeDialogButton.setOnClickListener(view -> {
-            FirebaseWriteHelper.deleteBroadcast(context, circle.getId(), broadcast, noOfBroadcasts, user);
+            FirebaseWriteHelper.deleteBroadcast(context, circle.getId(), broadcast, circle.getNoOfBroadcasts(), user);
             deleteBroadcastConfirmation.dismiss();
             Toast.makeText(context, "Post Deleted!", Toast.LENGTH_SHORT).show();
         });
