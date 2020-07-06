@@ -5,10 +5,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -47,6 +49,7 @@ import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Login.OtpActivity;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
@@ -81,6 +84,15 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         location = findViewById(R.id.explore_district_name_display);
         user = SessionStorage.getUser(this);
+        FirebaseRetrievalViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(FirebaseRetrievalViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
+        tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
+            user = dataSnapshot.getValue(User.class);
+            if (user != null) {
+                String string = new Gson().toJson(user);
+                SessionStorage.saveUser(ExploreTabbedActivity.this, user);
+            }
+        });
         location.setText(user.getDistrict());
         intentUri = getIntent().getData();
         shownPopup = false;
@@ -176,6 +188,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         return true;
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void showLinkPopup(Circle popupCircle) {
         linkCircleDialog = new Dialog(ExploreTabbedActivity.this);
         linkCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
@@ -310,6 +323,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         FirebaseWriteHelper.applyOrJoin(this, circle, user, subscriber);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void processUrl(String url) {
         String circleID = HelperMethods.getCircleIdFromShareURL(url);
 

@@ -117,6 +117,7 @@ public class CircleInformation extends AppCompatActivity {
     }
     @Override
     public void onPause() {
+        if(liveData!=null)
         liveData.removeObservers(this);
         super.onPause();
     }
@@ -174,6 +175,21 @@ public class CircleInformation extends AppCompatActivity {
             default:
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(banner);
                 break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onBackPressed() {
+        int indexValue = getIntent().getIntExtra("exploreIndex", -1);
+        if (indexValue == -1) {
+            finishAfterTransition();
+            startActivity(new Intent(CircleInformation.this, CircleWall.class));
+        } else {
+            finishAfterTransition();
+            Intent intent = new Intent(CircleInformation.this, ExploreTabbedActivity.class);
+            intent.putExtra("exploreIndex", indexValue);
+            startActivity(intent);
         }
     }
 }

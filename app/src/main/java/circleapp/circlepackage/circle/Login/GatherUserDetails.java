@@ -436,9 +436,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finishAfterTransition();
         firebaseAuth.signOut();
 
     }
