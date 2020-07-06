@@ -27,10 +27,6 @@ public class FirebaseRetrievalViewModel extends ViewModel {
     private static final DatabaseReference CIRCLES_PERSONEL_REF = database.getReference("/CirclePersonel");
     private static final DatabaseReference USERS_REF = database.getReference("/Users");
     private static final DatabaseReference COMMENTS_REF = database.getReference("BroadcastComments");
-    private static final DatabaseReference LOCATIONS_REF = database.getReference("Locations");
-    private static final DatabaseReference REPORT_ABUSE_REF = database.getReference("ReportAbuse");
-    private static final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-    private static final DatabaseReference USER_FEEDBACK_REF = database.getReference("UserFeedback");
 
     @NonNull
     public LiveData<String[]> getDataSnapsExploreCircleLiveData(String location) {

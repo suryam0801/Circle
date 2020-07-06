@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,13 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +35,10 @@ import java.util.List;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -42,6 +49,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     private List<Circle> MycircleList;
     private Context context;
+    int noOfUnreadDiscussions, tempUserRead;
 
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
@@ -146,6 +154,29 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
 
         holder.categoryDisplay.setText(circle.getCategory());
+
+        noOfUnreadDiscussions = 0;
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
+        LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
+        liveData.observe((LifecycleOwner) context, returnArray -> {
+            Broadcast broadcast = new Gson().fromJson(returnArray[0], Broadcast.class);
+            if(user.getNoOfReadDiscussions().get(broadcast.getId())==null)
+                tempUserRead = 0;
+            else
+                tempUserRead = user.getNoOfReadDiscussions().get(broadcast.getId());
+            if (!user.getMutedBroadcasts().contains(broadcast.getId()))
+                noOfUnreadDiscussions = noOfUnreadDiscussions + broadcast.getNumberOfComments()- tempUserRead;
+            Log.d("noOfComments", noOfUnreadDiscussions+"");
+            if(noOfUnreadDiscussions!=0){
+                GradientDrawable itemBackgroundNotif = HelperMethods.gradientRectangleDrawableSetter(80);
+                itemBackgroundNotif.setColor(context.getResources().getColor(R.color.comment_alert_color));
+                holder.newDiscussionDisplay.setVisibility(View.VISIBLE);
+                holder.newDiscussionDisplay.setBackground(itemBackgroundNotif);
+                holder.newDiscussionDisplay.setText(noOfUnreadDiscussions+"");
+            }
+            else
+                holder.newDiscussionDisplay.setVisibility(View.GONE);
+        });
     }
 
 
