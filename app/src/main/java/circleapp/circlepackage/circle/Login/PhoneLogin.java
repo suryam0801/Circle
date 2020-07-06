@@ -74,7 +74,7 @@ public class PhoneLogin extends AppCompatActivity {
         confirmation = new AlertDialog.Builder(this);
 
 
-        pos=getIntent().getIntExtra("pos",1234);
+        pos=getIntent().getIntExtra("pos",0);
         mCountryName = getIntent().getStringExtra("countryName");
         mCountryDialCode = getIntent().getStringExtra("dialCode");
         ward = getIntent().getStringExtra("ward");
@@ -144,8 +144,11 @@ public class PhoneLogin extends AppCompatActivity {
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-
+                                            finishAfterTransition();
                                             Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
+                                            otpIntent.putExtra("pos", pos);
+                                            otpIntent.putExtra("countryName",mCountryName);
+                                            otpIntent.putExtra("dialCode",mCountryDialCode);
                                             otpIntent.putExtra("phn_num", complete_phone_number);
                                             otpIntent.putExtra("ward", ward);
                                             otpIntent.putExtra("district", district);

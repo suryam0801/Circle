@@ -64,7 +64,7 @@ public class OtpActivity extends AppCompatActivity {
     private FirebaseUser mCurrentUser;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend,mCallbacks;
-    private String ward, district;
+    private String ward, district,mCountryDialCode,mCountryName;
     private String mAuthVerificationId, phn_number;
     private PinEntryEditText mOtpText;
     private Button mVerifyBtn;
@@ -73,6 +73,7 @@ public class OtpActivity extends AppCompatActivity {
     private TextView resendTextView;
     private int counter = 30;
     int failcounter;
+    int pos;
 
     AlertDialog.Builder confirmation,verifyfail;
     ProgressDialog progressDialog;
@@ -90,6 +91,9 @@ public class OtpActivity extends AppCompatActivity {
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
         phn_number = getIntent().getStringExtra("phn_num");
+        pos=getIntent().getIntExtra("pos",0);
+        mCountryName = getIntent().getStringExtra("countryName");
+        mCountryDialCode = getIntent().getStringExtra("dialCode");
         //Getting AuthCredentials from the PhoneLogin page
 //        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
         resendingToken = getIntent().getParcelableExtra("resendToken");
@@ -137,8 +141,17 @@ public class OtpActivity extends AppCompatActivity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         finishAfterTransition();
                         Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
+                        intent.putExtra("pos", pos);
+                        intent.putExtra("countryName",mCountryName);
+                        intent.putExtra("dialCode",mCountryDialCode);
+                        if(ward == null)
+                            intent.putExtra("ward", "default");
+                        else
+                            intent.putExtra("ward", ward.trim());
+                        intent.putExtra("district", district.trim());
                         intent.putExtra("ward", ward);
                         intent.putExtra("district", district);
                         intent.putExtra("fail", "1");
@@ -295,6 +308,7 @@ public class OtpActivity extends AppCompatActivity {
 
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(OtpActivity.this, new OnCompleteListener<AuthResult>() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -353,21 +367,24 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     //Function to send the  user to HomePage
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void sendUserToHome() {
         mOtpProgress.setVisibility(View.INVISIBLE);
         mVerifyBtn.setEnabled(true);
+        finishAfterTransition();
         Intent homeIntent = new Intent(OtpActivity.this, ExploreTabbedActivity.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
-        finish();
     }
 
     //Function to send the user to Registration Page
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void senduserToReg() {
         mOtpProgress.setVisibility(View.INVISIBLE);
         mVerifyBtn.setEnabled(true);
+        finishAfterTransition();
         Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -377,7 +394,6 @@ public class OtpActivity extends AppCompatActivity {
         //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
         Log.d("OtpActivity",ward+"::"+district);
-        finish();
     }
 
     @Override
@@ -390,5 +406,24 @@ public class OtpActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("OtpActivity","onResume");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onBackPressed() {
+        finishAfterTransition();
+        Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
+        intent.putExtra("pos", pos);
+        intent.putExtra("countryName",mCountryName);
+        intent.putExtra("dialCode",mCountryDialCode);
+        if(ward == null)
+            intent.putExtra("ward", "default");
+        else
+            intent.putExtra("ward", ward.trim());
+        intent.putExtra("district", district.trim());
+        intent.putExtra("ward", ward);
+        intent.putExtra("district", district);
+        intent.putExtra("fail", "1");
+        startActivity(intent);
     }
 }

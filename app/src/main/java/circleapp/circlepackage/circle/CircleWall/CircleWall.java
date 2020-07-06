@@ -138,7 +138,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())) {
+                if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())&&circle.getMembersList()!=null) {
                     SessionStorage.saveCircle((Activity) CircleWall.this, circle);
                 }
             }
@@ -307,6 +307,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     showDeleteDialog();
                     break;
                 case "Circle Information":
+
                     startActivity(new Intent(CircleWall.this, CircleInformation.class));
                     break;
             }
