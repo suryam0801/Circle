@@ -104,23 +104,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
-        boolean notListeningToBroadcast = true;
-        if (user.getMutedBroadcasts() == null)
-            notListeningToBroadcast = false;
-        else if (user.getMutedBroadcasts().contains(broadcast.getId()))
-            notListeningToBroadcast = false;
-
-        if (!notListeningToBroadcast) {
-            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
-            int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
-            if (noOfUserUnread > 0) {
-                viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
-                viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
-            }
-        } else {
-            viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
-        }
-
         try {
             if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
                 viewHolder.viewComments.setText(commentsDisplayText + " (new)");
@@ -164,31 +147,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
             return true;
-        });
-
-        viewHolder.broadcastListenerToggle.setOnClickListener(view -> {
-
-            List<String> mutedTemp;
-            if (user.getMutedBroadcasts() != null)
-                mutedTemp = new ArrayList<>(user.getMutedBroadcasts());
-            else
-                mutedTemp = new ArrayList<>();
-
-            if (!mutedTemp.contains(broadcast.getId())) {
-                viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
-                HelperMethods.vibrate(context);
-                mutedTemp.add(broadcast.getId());
-                FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), broadcast.getId());
-            } else {
-                viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
-                HelperMethods.vibrate(context);
-                mutedTemp.remove(broadcast.getId());
-                FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
-            }
-
-            user.setMutedBroadcasts(mutedTemp);
-            FirebaseWriteHelper.updateUser(user, context);
-
         });
 
     }

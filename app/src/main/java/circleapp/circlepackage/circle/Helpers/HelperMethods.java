@@ -439,12 +439,16 @@ public class HelperMethods {
         }
 
         //updating user latest timestamp for that comment
-        HashMap<String, Long> tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
+        HashMap<String, Long> tempCommentTimeStamps;
+        if (user.getNewTimeStampsComments() != null)
+            tempCommentTimeStamps = new HashMap<>(user.getNewTimeStampsComments());
+        else
+            tempCommentTimeStamps = new HashMap<>();
+
         tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
         user.setNewTimeStampsComments(tempCommentTimeStamps);
         FirebaseWriteHelper.updateUser(user, mContext);
     }
-
 
     public static Uri getImageUri() {
         Uri m_imgUri = null;
