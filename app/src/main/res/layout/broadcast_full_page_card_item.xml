@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:background="@drawable/ic_outline_broadcast_not_listening_icon"></ImageButton>
+                        android:background="@drawable/ic_outline_broadcast_listening_icon"></ImageButton>
 
                 </RelativeLayout>
 

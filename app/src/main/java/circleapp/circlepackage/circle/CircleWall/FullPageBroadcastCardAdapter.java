@@ -114,6 +114,40 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
 
+        final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
+
+        if (broadcastMuted) {
+            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+        } else {
+            int noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
+            if (noOfUserUnread > 0) {
+                holder.newNotifsContainer.setVisibility(View.VISIBLE);
+                holder.newNotifsTV.setText(noOfUserUnread + "");
+            }
+        }
+
+        holder.notificationToggle.setOnClickListener(view -> {
+            List<String> userMutedArray;
+            if (user.getMutedBroadcasts() != null)
+                userMutedArray = new ArrayList<>(user.getMutedBroadcasts());
+            else
+                userMutedArray = new ArrayList<>();
+
+            if (broadcastMuted) {
+                holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
+                userMutedArray.remove(currentBroadcast.getId());
+                user.setMutedBroadcasts(userMutedArray);
+                FirebaseWriteHelper.updateUser(user, mContext);
+            } else {
+                holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+                userMutedArray.add(currentBroadcast.getId());
+                user.setMutedBroadcasts(userMutedArray);
+                FirebaseWriteHelper.updateUser(user, mContext);
+            }
+
+        });
+
+
     }
 
     public void loadComments(Broadcast currentBroadcast, ViewHolder holder, int position) {
