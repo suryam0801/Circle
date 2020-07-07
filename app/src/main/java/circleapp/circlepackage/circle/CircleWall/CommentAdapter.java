@@ -9,7 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -46,6 +50,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         final Comment comment = CommentList.get(position);
         final String name = comment.getCommentorName();
         final String cmnt = comment.getComment();
+        final String picUrl = comment.getCommentorPicURL();
 
         final long createdTime = comment.getTimestamp();
         final long currentTime = System.currentTimeMillis();
@@ -61,7 +66,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.userName.setText(name);
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
-        HelperMethods.setUserProfileImage(SessionStorage.getUser((Activity) mContext), mContext.getApplicationContext(), holder.profPic);
+        if (picUrl.length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) mContext)
+                    .load(picUrl)
+                    .into(holder.profPic);
+        } else if (picUrl.equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(holder.profPic);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(picUrl);
+            Glide.with((Activity) mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(holder.profPic);
+        }
     }
 
     @Override

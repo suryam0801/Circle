@@ -16,23 +16,30 @@
 
     <application
         android:name=".Helpers.InAppNotificationHelper"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true" >
-        <activity android:name=".CircleWall.CircleInformation" />
-        <activity android:name=".CircleWall.CircleWallBackgroundPicker" />
-        <activity android:name=".Explore.ExploreCategoryFilter" />
-        <activity android:name=".CircleWall.FullPageImageDisplay" />
-        <activity android:name=".CircleWall.FullPageBroadcastCardView" />
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+        <activity android:name=".CircleWall.CircleInformation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CircleWall.CircleWallBackgroundPicker"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Explore.ExploreCategoryFilter"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CircleWall.FullPageImageDisplay"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CircleWall.FullPageBroadcastCardView"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".CreateCircle.CreateCircleCategoryPicker"
             android:label="@string/title_activity_create_circle_category_picker"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="firebase_performance_logcat_enabled"
@@ -73,12 +80,18 @@
         <activity android:name=".Login.get_started_first_page" />
         <activity android:name=".Login.get_started_second_page" />
         <activity android:name=".Login.get_started_third_page" />
-        <activity android:name=".EditProfile.EditProfile" />
-        <activity android:name=".PersonelDisplay.PersonelDisplay" />
-        <activity android:name=".Login.GatherUserDetails" />
-        <activity android:name=".Login.OtpActivity" />
-        <activity android:name=".Login.PhoneLogin" />
-        <activity android:name=".CircleWall.CircleWall" />
+        <activity android:name=".EditProfile.EditProfile"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PersonelDisplay.PersonelDisplay"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login.GatherUserDetails"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login.OtpActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login.PhoneLogin"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CircleWall.CircleWall"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
             android:noHistory="true" >

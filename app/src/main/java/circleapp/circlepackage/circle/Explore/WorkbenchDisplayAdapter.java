@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -56,6 +58,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         return new ViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("Range")
     @Override
     public void onBindViewHolder(@NonNull WorkbenchDisplayAdapter.ViewHolder holder, int position) {
@@ -121,11 +124,11 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
             if (prefs.getBoolean("firstWall", true)) {
                 context.startActivity(new Intent(context, CircleWallBackgroundPicker.class));
-                ((Activity) context).finish();
+                ((Activity) context).finishAfterTransition();
                 prefs.edit().putBoolean("firstWall", false).commit();
             } else {
                 context.startActivity(new Intent(context, CircleWall.class));
-                ((Activity) context).finish();
+                ((Activity) context).finishAfterTransition();
             }
         });
 

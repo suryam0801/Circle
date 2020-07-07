@@ -87,6 +87,8 @@ public class OtpActivity extends AppCompatActivity {
 
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+        mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
