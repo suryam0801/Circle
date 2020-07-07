@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -190,11 +191,19 @@ public class FirebaseWriteHelper {
         }
     }
 
-    public static void acceptApplicant(String circleId, Subscriber selectedApplicant) {
+    public static void acceptApplicant(String circleId, Subscriber selectedApplicant, Context context) {
         CIRCLES_PERSONEL_REF.child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
         CIRCLES_PERSONEL_REF.child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
         CIRCLES_REF.child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
+        FirebaseRetrievalViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(selectedApplicant.getId());
+        AtomicInteger noOfActiveCircles = new AtomicInteger();
+        tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
+            User tempUser = dataSnapshot.getValue(User.class);
+            noOfActiveCircles.set(tempUser.getActiveCircles());
+        });
+        USERS_REF.child(selectedApplicant.getId()).child("activeCircles").setValue(noOfActiveCircles.get() +1);
     }
 
     public static void rejectApplicant(String circleId, Subscriber selectedApplicant) {

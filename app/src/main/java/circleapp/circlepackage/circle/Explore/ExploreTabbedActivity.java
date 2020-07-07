@@ -271,7 +271,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 linkCircleDialog.dismiss();
                 applyOrJoin(popupCircle);
             } else {
-                applyOrJoin(popupCircle);
                 linkCircleDialog.dismiss();
             }
         });

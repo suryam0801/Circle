@@ -94,7 +94,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant);
+                FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant, mContext);
                 state = "Accepted";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
 
