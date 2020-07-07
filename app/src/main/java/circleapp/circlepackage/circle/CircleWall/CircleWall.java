@@ -138,8 +138,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())&&circle.getMembersList()!=null) {
-                    SessionStorage.saveCircle((Activity) CircleWall.this, circle);
+                if(circle.getMembersList()!=null){
+                    if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())) {
+                        SessionStorage.saveCircle((Activity) CircleWall.this, circle);
+                    }
                 }
             }
         });
