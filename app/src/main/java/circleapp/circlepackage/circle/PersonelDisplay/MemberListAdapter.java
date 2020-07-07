@@ -66,6 +66,7 @@ public class MemberListAdapter extends BaseAdapter {
         profPic = pview.findViewById(R.id.member_profile_picture);
 
         final Subscriber member = memberList.get(position);
+        String picUrl = member.getPhotoURI();
 
         User user = SessionStorage.getUser((Activity) mContext);
 
@@ -79,6 +80,21 @@ public class MemberListAdapter extends BaseAdapter {
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
         String dateString = formatter.format(new Date(createdTime));
         timeElapsed.setText("Member since " + dateString);
+        if (picUrl.length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) mContext)
+                    .load(picUrl)
+                    .into(profPic);
+        } else if (picUrl.equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(profPic);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(picUrl);
+            Glide.with((Activity) mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(profPic);
+        }
 
         return pview;
     }
