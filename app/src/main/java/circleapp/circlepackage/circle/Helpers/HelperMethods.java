@@ -47,6 +47,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -300,9 +303,10 @@ public class HelperMethods {
         reportAbuseDialog.show();
     }
 
-    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, ListView previousListView, ListView thisWeekListView) {
+    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, RecyclerView previousListView, RecyclerView thisWeekListView) {
         String currentTimeStamp = getCurrentTimeStamp();
-
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(thisWeekNotifs.size(), StaggeredGridLayoutManager.HORIZONTAL );
+        thisWeekListView.setLayoutManager(gridLayoutManager);
         Scanner scan = new Scanner(currentTimeStamp);
         scan.useDelimiter("-");
         int currentDay = Integer.parseInt(scan.next());
@@ -322,6 +326,8 @@ public class HelperMethods {
             prevnotify.setVisibility(View.INVISIBLE);
         } else {
             prevnotify.setVisibility(View.VISIBLE);
+            StaggeredGridLayoutManager prevnotifygridLayoutManager = new StaggeredGridLayoutManager(previousNotifs.size(), StaggeredGridLayoutManager.HORIZONTAL );
+            thisWeekListView.setLayoutManager(prevnotifygridLayoutManager);
         }
 
         adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
