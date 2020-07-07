@@ -16,14 +16,15 @@
 
     <application
         android:name=".Helpers.InAppNotificationHelper"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
         <activity android:name=".CircleWall.CircleInformation" />
         <activity android:name=".CircleWall.CircleWallBackgroundPicker" />
         <activity android:name=".Explore.ExploreCategoryFilter" />
