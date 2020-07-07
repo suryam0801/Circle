@@ -63,8 +63,8 @@ public class OtpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend,mCallbacks;
-    private String ward, district,mCountryDialCode,mCountryName;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
+    private String ward, district, mCountryDialCode, mCountryName;
     private String mAuthVerificationId, phn_number;
     private PinEntryEditText mOtpText;
     private Button mVerifyBtn;
@@ -75,7 +75,7 @@ public class OtpActivity extends AppCompatActivity {
     int failcounter;
     int pos;
 
-    AlertDialog.Builder confirmation,verifyfail;
+    AlertDialog.Builder confirmation, verifyfail;
     ProgressDialog progressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -91,7 +91,7 @@ public class OtpActivity extends AppCompatActivity {
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
         phn_number = getIntent().getStringExtra("phn_num");
-        pos=getIntent().getIntExtra("pos",0);
+        pos = getIntent().getIntExtra("pos", 0);
         mCountryName = getIntent().getStringExtra("countryName");
         mCountryDialCode = getIntent().getStringExtra("dialCode");
         //Getting AuthCredentials from the PhoneLogin page
@@ -114,14 +114,13 @@ public class OtpActivity extends AppCompatActivity {
         mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
         mVerifyBtn.setTextColor(R.color.black);
 //Intimate the user for his low internet speed
-        ConnectivityManager connectivityManager = (ConnectivityManager)this.getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
         NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
         int downSpeed = nc.getLinkDownstreamBandwidthKbps();
         int upSpeed = nc.getLinkUpstreamBandwidthKbps();
-        Log.d("OtpActivity","Intenet Speed ::"+ downSpeed);
-        if (downSpeed <10240)
-        {
-            Toast.makeText(this,"Your Internet speed is very Low",Toast.LENGTH_SHORT).show();
+        Log.d("OtpActivity", "Intenet Speed ::" + downSpeed);
+        if (downSpeed < 10240) {
+            Toast.makeText(this, "Your Internet speed is very Low", Toast.LENGTH_SHORT).show();
         }
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
@@ -143,11 +142,11 @@ public class OtpActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         finishAfterTransition();
-                        Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
+                        Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
                         intent.putExtra("pos", pos);
-                        intent.putExtra("countryName",mCountryName);
-                        intent.putExtra("dialCode",mCountryDialCode);
-                        if(ward == null)
+                        intent.putExtra("countryName", mCountryName);
+                        intent.putExtra("dialCode", mCountryDialCode);
+                        if (ward == null)
                             intent.putExtra("ward", "default");
                         else
                             intent.putExtra("ward", ward.trim());
@@ -163,22 +162,19 @@ public class OtpActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 // Here we can add the code for Auto Read the OTP
-                Log.d("TAG","onVerificationCompleted:: "+phoneAuthCredential.getSmsCode());
+                Log.d("TAG", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
-                failcounter = failcounter+1;
+                failcounter = failcounter + 1;
                 progressDialog.dismiss();
-                if (failcounter != 2)
-                {
+                if (failcounter != 2) {
                     AlertDialog alertDialog = confirmation.create();
                     alertDialog.setTitle("Alert");
                     alertDialog.show();
-                }
-                else
-                {
+                } else {
                     AlertDialog dialog = verifyfail.create();
                     dialog.setTitle("Alert");
                     dialog.show();
@@ -198,12 +194,9 @@ public class OtpActivity extends AppCompatActivity {
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
 
-                                        if (counter!=0)
-                                        {
+                                        if (counter != 0) {
                                             counter--;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             resendTextView.setVisibility(View.VISIBLE);
                                             resendTextView.setText("Click here to resend OTP");
                                             resendTextView.setTextColor(Color.parseColor("#6CACFF"));
@@ -221,6 +214,7 @@ public class OtpActivity extends AppCompatActivity {
                                         }
 
                                     }
+
                                     @Override
                                     public void onFinish() {
                                         resendTextView.setText("Click here to resend OTP");
@@ -244,14 +238,13 @@ public class OtpActivity extends AppCompatActivity {
                                 mAuthVerificationId = s;
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);
-                                Log.d("OtpActivity",s);
+                                Log.d("OtpActivity", s);
                                 Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                             }
                         },
                         5000);
             }
         };
-
 
         mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -266,7 +259,7 @@ public class OtpActivity extends AppCompatActivity {
 
             @Override
             public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
+                //super.onCodeSent(s, forceResendingToken);
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
@@ -296,7 +289,7 @@ public class OtpActivity extends AppCompatActivity {
 
                 //Pasing the OTP and credentials for the Verification
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
-                Log.d("OtpActivity","credential:: "+credential.getSmsCode());
+                Log.d("OtpActivity", "credential:: " + credential.getSmsCode());
                 signInWithPhoneAuthCredential(credential);
             }
         });
@@ -326,7 +319,7 @@ public class OtpActivity extends AppCompatActivity {
                                     String string = new Gson().toJson(user);
                                     SessionStorage.saveUser(OtpActivity.this, user);
                                     sendUserToHome();
-                                    } else {
+                                } else {
                                     senduserToReg();
                                 }
                             });
@@ -389,34 +382,34 @@ public class OtpActivity extends AppCompatActivity {
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         homeIntent.putExtra("phn", phn_number);
-        homeIntent.putExtra("ward",ward);
-        homeIntent.putExtra("district",district);
+        homeIntent.putExtra("ward", ward);
+        homeIntent.putExtra("district", district);
         //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
-        Log.d("OtpActivity",ward+"::"+district);
+        Log.d("OtpActivity", ward + "::" + district);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("OtpActivity","onPause:: "+mOtpText.getText());
+        Log.d("OtpActivity", "onPause:: " + mOtpText.getText());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("OtpActivity","onResume");
+        Log.d("OtpActivity", "onResume");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
         finishAfterTransition();
-        Intent intent= new Intent(OtpActivity.this,PhoneLogin.class);
+        Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
         intent.putExtra("pos", pos);
-        intent.putExtra("countryName",mCountryName);
-        intent.putExtra("dialCode",mCountryDialCode);
-        if(ward == null)
+        intent.putExtra("countryName", mCountryName);
+        intent.putExtra("dialCode", mCountryDialCode);
+        if (ward == null)
             intent.putExtra("ward", "default");
         else
             intent.putExtra("ward", ward.trim());
