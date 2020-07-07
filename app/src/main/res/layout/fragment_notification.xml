@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Explore.NotificationFragment">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_marginTop="25dp">
         <TextView
             android:layout_width="wrap_content"
@@ -28,10 +29,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/thisweek_notifications_display"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -40,7 +41,7 @@
                     android:layout_marginBottom="10dp"
                     android:divider="@color/white">
 
-                </ListView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -54,7 +55,7 @@
                     android:textSize="14dp"></TextView>
 
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_time_notifications_display"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -64,13 +65,13 @@
                     android:layout_below="@id/prevnotifytext"
                     android:divider="@color/white">
 
-                </ListView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </RelativeLayout>
 
         </ScrollView>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>
