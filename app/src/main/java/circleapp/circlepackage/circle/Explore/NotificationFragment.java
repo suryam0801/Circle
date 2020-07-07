@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
@@ -32,7 +33,7 @@ public class NotificationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private ListView thisWeekListView, previousListView;
+    private RecyclerView thisWeekListView, previousListView;
     private List<Notification> thisWeekNotifs, previousNotifs;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
@@ -87,17 +88,23 @@ public class NotificationFragment extends Fragment {
     private void setNotifsView(Notification notification) {
         HelperMethods.OrderNotification(getContext(), prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
 
-        HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
-        HelperMethods.setListViewHeightBasedOnChildren(previousListView);
-        thisWeekListView.setOnItemClickListener((parent, view1, position, id) -> {
-            Notification curent = thisWeekNotifs.get(position);
-            FirebaseWriteHelper.NotifyOnclickListener(getContext(), getActivity(), curent, position, thisWeekNotifs.get(position).getBroadcastId());
-        });
-
-        previousListView.setOnItemClickListener((parent, view1, position, id) -> {
-            Notification curent = previousNotifs.get(position);
-            FirebaseWriteHelper.NotifyOnclickListener(getContext(), getActivity(), curent, position, previousNotifs.get(position).getBroadcastId());
-        });
+//        HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
+//        HelperMethods.setListViewHeightBasedOnChildren(previousListView);
+//        thisWeekListView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+//        thisWeekListView.setOnClickListener((parent, view1, position, id) -> {
+//            Notification curent = thisWeekNotifs.get(position);
+//            FirebaseWriteHelper.NotifyOnclickListener(getContext(), curent, position, thisWeekNotifs.get(position).getBroadcastId());
+//        });
+//
+//        previousListView.setOnItemClickListener((parent, view1, position, id) -> {
+//            Notification curent = previousNotifs.get(position);
+//            FirebaseWriteHelper.NotifyOnclickListener(getContext(), curent, position, previousNotifs.get(position).getBroadcastId());
+//        });
 
     }
 

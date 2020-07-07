@@ -373,20 +373,20 @@ public class FirebaseWriteHelper {
         STORAGE_REFERENCES.child(circleId).child("CircleIcon").setValue(imageUrl);
     }
 
-    public static void NotifyOnclickListener(Context context, Activity activity, Notification curent, int position, String broadcastId) {
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(FirebaseRetrievalViewModel.class);
+    public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
-        liveData.observe((LifecycleOwner) activity, dataSnapshot -> {
+        liveData.observe((LifecycleOwner) context, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) activity).getUserId())) {
-                    SessionStorage.saveCircle((Activity) activity, circle);
-                    Intent intent = new Intent(activity, CircleWall.class);
+                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
+                    SessionStorage.saveCircle((Activity) context, circle);
+                    Intent intent = new Intent(context, CircleWall.class);
                     intent.putExtra("broadcastPos", position);
                     intent.putExtra("broadcastId", broadcastId);
-                    activity.startActivity(intent);
-                    ((Activity) activity).finish();
+                    context.startActivity(intent);
+                    ((Activity) context).finish();
                 } else {
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                 }

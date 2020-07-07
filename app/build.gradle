@@ -79,6 +79,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.4.3'
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
+    implementation files('client-combined-3.141.59.jar')
+    implementation files('client-combined-3.141.59-sources.jar')
     testImplementation 'junit:junit:4.12'
 
     implementation 'android.arch.work:work-runtime:1.0.1'
