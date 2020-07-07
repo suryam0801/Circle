@@ -136,12 +136,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null) {
+            if (circle != null&&circle.getMembersList()!=null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())&&circle.getMembersList()!=null) {
-                    SessionStorage.saveCircle((Activity) CircleWall.this, circle);
+                if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())) {
+                        SessionStorage.saveCircle((Activity) CircleWall.this, circle);
+                    }
                 }
-            }
         });
 
         broadcastid = getIntent().getStringExtra("broadcastId");

@@ -85,7 +85,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null) {
+            if (circle != null&&circle.getMembersList()!=null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                 if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
                     SessionStorage.saveCircle((Activity) context, circle);
