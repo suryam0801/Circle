@@ -103,7 +103,7 @@ public class OtpActivity extends AppCompatActivity {
         progressDialog.setTitle("Verifying your Number...");
         progressDialog.show();
         progressDialog.setCancelable(false);
-
+        Log.d("otpactivity","started_activity");
 
         mOtpFeedback = findViewById(R.id.otp_form_feedback);
         mOtpProgress = findViewById(R.id.otp_progress_bar);
@@ -140,6 +140,7 @@ public class OtpActivity extends AppCompatActivity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Log.d("otpactivity","incorrect_number");
                         dialog.dismiss();
                         finishAfterTransition();
                         Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
@@ -162,7 +163,10 @@ public class OtpActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 // Here we can add the code for Auto Read the OTP
-                Log.d("TAG", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
+                Log.d("otpactivity", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
+                if(phoneAuthCredential.getSmsCode()!=null)
+                    mOtpText.setText(phoneAuthCredential.getSmsCode());
+
             }
 
             @Override
@@ -184,7 +188,7 @@ public class OtpActivity extends AppCompatActivity {
 
             @Override
             public void onCodeSent(final String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
+                //super.onCodeSent(s, forceResendingToken);
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
@@ -193,6 +197,7 @@ public class OtpActivity extends AppCompatActivity {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
+                                        Log.d("otpactivity","started_counter");
 
                                         if (counter != 0) {
                                             counter--;
@@ -209,6 +214,7 @@ public class OtpActivity extends AppCompatActivity {
                                                         OtpActivity.this,
                                                         mCallbacksresend
                                                 );
+                                                Log.d("otpactivity","resentotp");
 
                                             });
                                         }
@@ -249,11 +255,13 @@ public class OtpActivity extends AppCompatActivity {
         mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                Log.d("otpactivity","verificationcomplete");
                 // Here we can add the code for Auto Read the OTP
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
+                Log.d("otpactivity","verificationfailed");
                 //Display the Error msg to the user through the Textview when error occurs
             }
 
@@ -263,6 +271,7 @@ public class OtpActivity extends AppCompatActivity {
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
+                                Log.d("otpactivity","otpsent");
                                 mAuthVerificationId = s;
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
                                 Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
