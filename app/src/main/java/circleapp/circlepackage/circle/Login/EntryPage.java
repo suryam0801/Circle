@@ -47,7 +47,7 @@ public class EntryPage extends AppCompatActivity{
                 LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
                 @SuppressLint("MissingPermission")
                 Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null){
+                if (location == null){
                     locationHelper.getAddress(location);
                 }
                 else{

@@ -72,7 +72,7 @@ public class LocationHelper{
             public void onLocationChanged(Location location) {
                 //update the current location
                 getAddress(location);
-                locationManager.removeUpdates(this);
+                //locationManager.removeUpdates(this);
 //                locationManager.removeUpdates(this);
             }
 
