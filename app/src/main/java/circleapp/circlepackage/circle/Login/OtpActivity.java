@@ -72,7 +72,6 @@ public class OtpActivity extends AppCompatActivity {
     private TextView mOtpFeedback;
     private TextView resendTextView;
     private int counter = 30;
-    int failcounter;
     int pos;
 
     AlertDialog.Builder confirmation, verifyfail;
@@ -87,8 +86,6 @@ public class OtpActivity extends AppCompatActivity {
 
         //Getting Firebase instances
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut();
-        mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
@@ -101,7 +98,6 @@ public class OtpActivity extends AppCompatActivity {
         resendingToken = getIntent().getParcelableExtra("resendToken");
         progressDialog = new ProgressDialog(OtpActivity.this);
         confirmation = new AlertDialog.Builder(this);
-        verifyfail = new AlertDialog.Builder(this);
         progressDialog.setTitle("Verifying your Number...");
         progressDialog.show();
         progressDialog.setCancelable(false);
@@ -127,15 +123,6 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
-        verifyfail.setMessage("You have Entered Wrong Number 2 times so reopen the app to continue")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        finishAffinity();
-                    }
-                });
 
         confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
                 .setCancelable(false)
@@ -174,17 +161,9 @@ public class OtpActivity extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
-                failcounter = failcounter + 1;
                 progressDialog.dismiss();
-                if (failcounter != 2) {
-                    AlertDialog alertDialog = confirmation.create();
-                    alertDialog.setTitle("Alert");
-                    alertDialog.show();
-                } else {
-                    AlertDialog dialog = verifyfail.create();
-                    dialog.setTitle("Alert");
-                    dialog.show();
-                }
+                Log.d("otpactivity", "onVerificationFailed");
+
 
             }
 

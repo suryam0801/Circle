@@ -65,7 +65,16 @@ public class EntryPage extends AppCompatActivity{
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            locationHelper.getLocation();
+            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            @SuppressLint("MissingPermission")
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null){
+                locationHelper.getAddress(location);
+            }
+            else{
+                locationHelper.getLocation();
+
+            }
             Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
