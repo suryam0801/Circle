@@ -63,6 +63,7 @@ public class EntryPage extends AppCompatActivity{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
+        Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
             LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -75,7 +76,6 @@ public class EntryPage extends AppCompatActivity{
                 locationHelper.getLocation();
 
             }
-            Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

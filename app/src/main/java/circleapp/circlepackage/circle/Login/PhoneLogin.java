@@ -64,6 +64,7 @@ public class PhoneLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
+        mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
 
         mCountryCode = findViewById(R.id.country_code_text);
