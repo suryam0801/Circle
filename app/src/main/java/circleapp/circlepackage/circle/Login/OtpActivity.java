@@ -74,7 +74,7 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     int pos;
 
-    AlertDialog.Builder confirmation, verifyfail;
+    AlertDialog.Builder confirmation;
     ProgressDialog progressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -178,7 +178,7 @@ public class OtpActivity extends AppCompatActivity {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
-                                        Log.d("otpactivity","started_counter");
+                                        Log.d("otpactivitycounter",""+counter);
 
                                         if (counter != 0) {
                                             counter--;
@@ -204,6 +204,7 @@ public class OtpActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onFinish() {
+
                                         resendTextView.setText("Click here to resend OTP");
                                         resendTextView.setTextColor(Color.parseColor("#6CACFF"));
                                         resendTextView.setClickable(true);
@@ -215,8 +216,8 @@ public class OtpActivity extends AppCompatActivity {
                                                     OtpActivity.this,
                                                     mCallbacksresend
                                             );
-
                                         });
+                                        finish();
                                     }
                                 }.start();
                                 mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
@@ -347,6 +348,20 @@ public class OtpActivity extends AppCompatActivity {
             //new user
             mVerifyBtn.setText("Verify & Register");
         }
+    }
+    private void setResendOtpButton(){
+        resendTextView.setText("Click here to resend OTP");
+        resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+        resendTextView.setClickable(true);
+        resendTextView.setOnClickListener(view -> {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    phn_number,
+                    15,
+                    TimeUnit.SECONDS,
+                    OtpActivity.this,
+                    mCallbacksresend
+            );
+        });
     }
 
     //Function to send the  user to HomePage
