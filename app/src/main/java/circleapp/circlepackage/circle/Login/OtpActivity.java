@@ -145,8 +145,10 @@ public class OtpActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 // Here we can add the code for Auto Read the OTP
                 Log.d("otpactivity", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
-                if(phoneAuthCredential.getSmsCode()!=null)
+                if(phoneAuthCredential.getSmsCode()!=null){
                     mOtpText.setText(phoneAuthCredential.getSmsCode());
+                    resendTextView.setVisibility(View.GONE);
+                }
                 progressDialog.dismiss();
 
             }
