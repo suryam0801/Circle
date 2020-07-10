@@ -315,15 +315,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     public void makeCommentEntry(String commentMessage, Broadcast broadcast, User user) {
         long currentCommentTimeStamp = System.currentTimeMillis();
+        String commentId = FirebaseWriteHelper.getCommentId(circle.getId(),broadcast.getId());
+        Comment comment = new Comment(commentId,SessionStorage.getUser((Activity) mContext).getName().trim(),commentMessage,SessionStorage.getUser((Activity) mContext).getUserId(),SessionStorage.getUser((Activity) mContext).getProfileImageLink(),currentCommentTimeStamp);
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("timestamp", currentCommentTimeStamp);
-        map.put("comment", commentMessage);
-        map.put("commentorId", SessionStorage.getUser((Activity) mContext).getUserId());
-        map.put("commentorPicURL", SessionStorage.getUser((Activity) mContext).getProfileImageLink());
-        map.put("commentorName", SessionStorage.getUser((Activity) mContext).getName().trim());
-
-        FirebaseWriteHelper.makeNewComment(map, circle.getId(), broadcast.getId());
+        FirebaseWriteHelper.makeNewComment(comment, circle.getId(), broadcast.getId());
         SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage);
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);

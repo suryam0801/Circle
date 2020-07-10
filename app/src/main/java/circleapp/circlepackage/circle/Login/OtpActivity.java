@@ -112,15 +112,6 @@ public class OtpActivity extends AppCompatActivity {
         mVerifyBtn.setClickable(false);
         mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
         mVerifyBtn.setTextColor(R.color.black);
-//Intimate the user for his low internet speed
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
-        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        int downSpeed = nc.getLinkDownstreamBandwidthKbps();
-        int upSpeed = nc.getLinkUpstreamBandwidthKbps();
-        Log.d("OtpActivity", "Intenet Speed ::" + downSpeed);
-        if (downSpeed < 10240) {
-            Toast.makeText(this, "Your Internet speed is very Low", Toast.LENGTH_SHORT).show();
-        }
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
