@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Notification implements Parcelable {
-    private String circleName,creatorId, circleId, from,notify_to, state, date,broadcastId,circleIcon,type, message;
+    private String notificationId, circleName,creatorId, circleId, from, notify_to, state, date,broadcastId,circleIcon,type, message;
     private Long timestamp;
 
     public Notification () {
@@ -14,9 +14,10 @@ public class Notification implements Parcelable {
     @Override
     public String toString() {
         return "Notification{" +
-                "projectName='" + circleName + '\'' +
-                "creatorId='" + creatorId + '\'' +
-                ", projectId='" + circleId + '\'' +
+                "notificationId='" + notificationId + '\'' +
+                ", circletName='" + circleName + '\'' +
+                ", creatorId='" + creatorId + '\'' +
+                ", circleId='" + circleId + '\'' +
                 ", from='" + from + '\'' +
                 ", notify_to='" + notify_to + '\'' +
                 ", state='" + state + '\'' +
@@ -28,7 +29,7 @@ public class Notification implements Parcelable {
     }
 
 
-    public Notification(String circleName,String creatorId, String circleId, String from, String notify_to, String state, Long timestamp, String date, String broadcastId, String circleIcon, String type, String message) {
+    public Notification(String circleName,String creatorId, String circleId, String notificationId, String from, String notify_to, String state, Long timestamp, String date, String broadcastId, String circleIcon, String type, String message) {
         this.circleName = circleName;
         this.circleId = circleId;
         this.creatorId = creatorId;
@@ -41,6 +42,14 @@ public class Notification implements Parcelable {
         this.circleIcon = circleIcon;
         this.type = type;
         this.message = message;
+        this.notificationId = notificationId;
+    }
+    public String getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(String notificationId) {
+        this.notificationId = notificationId;
     }
 
     public String getCreatorId() {

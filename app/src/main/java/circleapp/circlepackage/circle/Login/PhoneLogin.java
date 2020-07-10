@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class PhoneLogin extends AppCompatActivity {
     public static final String PREF_NAME= "LOCATION";
     private Spinner ccp;
     private String ward, district,mCountryDialCode,mCountryName,failcount;
+    private FirebaseAuth mAuth;
 
     private FusedLocationProviderClient client;
     String[] options;
@@ -62,6 +64,8 @@ public class PhoneLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
