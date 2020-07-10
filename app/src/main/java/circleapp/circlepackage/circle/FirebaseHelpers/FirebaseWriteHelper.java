@@ -242,35 +242,35 @@ public class FirebaseWriteHelper {
         addCircleImageReference(circle.getId(),circle.getBackgroundImageLink());
     }
 
-    public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
+    public static void writeCommentNotifications(Notification notification, HashMap<String, Boolean> listenersList) {
         Set<String> member;
         if (listenersList != null) {
-            listenersList.remove(userId);
+            listenersList.remove(notification.getCreatorId());
             member = listenersList.keySet();
             for (String i : member)
-                NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
+                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
 
         }
 
     }
 
-    public static void writeBroadcastNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> membersList) {
+    public static void writeBroadcastNotifications(Notification notification, HashMap<String, Boolean> membersList) {
         Set<String> member;
 
         if (membersList != null) {
             member = membersList.keySet();
             for (String i : member)
-                NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
+                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
 
         }
     }
 
-    public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
-        NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus);
+    public static void writeNormalNotifications(Notification notification) {
+        NOTIFS_REF.child(notification.getNotify_to()).child(notification.getNotificationId()).setValue(notification);
     }
 
-    public static String getNotificationId(String broadcastId) {
-        String notificationId = NOTIFS_REF.child(broadcastId).push().getKey();
+    public static String getNotificationId(String objectId) {
+        String notificationId = NOTIFS_REF.child(objectId).push().getKey();
         return notificationId;
     }
 
