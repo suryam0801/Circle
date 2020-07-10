@@ -37,9 +37,8 @@ public class LocationHelper{
     LocationManager locationManager;
     Activity activity;
     private static final String TAG = EntryPage.class.getSimpleName();
-    private Button agreeContinue;
     private FusedLocationProviderClient client;
-    private String ward, district,mCountryDialCode,mCountryCode,mCountryName;
+    private String ward, district,mCountryDialCode,mCountryName;
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
@@ -72,8 +71,7 @@ public class LocationHelper{
             public void onLocationChanged(Location location) {
                 //update the current location
                 getAddress(location);
-                //locationManager.removeUpdates(this);
-//                locationManager.removeUpdates(this);
+                locationManager.removeUpdates(this);
             }
 
             @Override
@@ -93,7 +91,8 @@ public class LocationHelper{
         };
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         //for single update of the location
-        locationManager.requestSingleUpdate(criteria, locationListener, looper);
+        //locationManager.requestSingleUpdate(criteria, locationListener, looper);
+        locationManager.requestLocationUpdates(500,1000,criteria,locationListener,looper);
         //to check the location service is enabled or not
 //        locationManager.requestLocationUpdates("gps", 0, 0, locationListener);
         statusCheck();
