@@ -72,6 +72,7 @@ public class OtpActivity extends AppCompatActivity {
     private TextView mOtpFeedback;
     private TextView resendTextView;
     private int counter = 30;
+    CountDownTimer otpResendTimer;
     int pos;
 
     AlertDialog.Builder confirmation;
@@ -155,6 +156,7 @@ public class OtpActivity extends AppCompatActivity {
                 Log.d("otpactivity", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
                 if(phoneAuthCredential.getSmsCode()!=null)
                     mOtpText.setText(phoneAuthCredential.getSmsCode());
+                progressDialog.dismiss();
 
             }
 
@@ -162,6 +164,9 @@ public class OtpActivity extends AppCompatActivity {
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
                 progressDialog.dismiss();
+                AlertDialog alertDialog = confirmation.create();
+                alertDialog.setTitle("Alert");
+                alertDialog.show();
                 Log.d("otpactivity", "onVerificationFailed");
 
 
@@ -174,7 +179,7 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                new CountDownTimer(900000, 1000) {
+                                otpResendTimer = new CountDownTimer(900000, 1000) {
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
@@ -182,7 +187,9 @@ public class OtpActivity extends AppCompatActivity {
 
                                         if (counter != 0) {
                                             counter--;
-                                        } else {
+                                        }
+                                        else {
+                                            otpResendTimer.cancel();
                                             resendTextView.setVisibility(View.VISIBLE);
                                             resendTextView.setText("Click here to resend OTP");
                                             resendTextView.setTextColor(Color.parseColor("#6CACFF"));
@@ -216,8 +223,8 @@ public class OtpActivity extends AppCompatActivity {
                                                     OtpActivity.this,
                                                     mCallbacksresend
                                             );
+                                            //otpResendTimer.cancel();
                                         });
-                                        finish();
                                     }
                                 }.start();
                                 mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
