@@ -33,6 +33,7 @@ import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
@@ -231,8 +232,12 @@ public class FirebaseWriteHelper {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
     }
 
-    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId) {
-        COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(map);
+    public static void makeNewComment(Comment comment, String circleId, String broadcastId) {
+        COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(comment);
+    }
+    public static String getCommentId(String circleId, String broadcastId){
+        String commentId = COMMENTS_REF.child(circleId).child(broadcastId).push().getKey();
+        return commentId;
     }
 
     public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId) {
