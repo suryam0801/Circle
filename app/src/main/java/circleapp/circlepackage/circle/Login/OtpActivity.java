@@ -109,10 +109,6 @@ public class OtpActivity extends AppCompatActivity {
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
         mVerifyBtn = findViewById(R.id.verify_btn);
-        /*mVerifyBtn.setEnabled(false);
-        mVerifyBtn.setClickable(false);
-        mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
-        mVerifyBtn.setTextColor(R.color.black);*/
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
