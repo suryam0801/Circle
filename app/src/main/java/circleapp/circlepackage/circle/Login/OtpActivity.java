@@ -74,6 +74,7 @@ public class OtpActivity extends AppCompatActivity {
     private int counter = 30;
     CountDownTimer otpResendTimer;
     int pos;
+    boolean autofill = false;
 
     AlertDialog.Builder confirmation;
     ProgressDialog progressDialog;
@@ -108,15 +109,15 @@ public class OtpActivity extends AppCompatActivity {
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
         mVerifyBtn = findViewById(R.id.verify_btn);
-        mVerifyBtn.setEnabled(false);
+        /*mVerifyBtn.setEnabled(false);
         mVerifyBtn.setClickable(false);
         mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
-        mVerifyBtn.setTextColor(R.color.black);
+        mVerifyBtn.setTextColor(R.color.black);*/
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
 
-        confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
+        confirmation.setMessage("There was an error in verifying your number. Please try again!")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -145,8 +146,10 @@ public class OtpActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 // Here we can add the code for Auto Read the OTP
                 Log.d("otpactivity", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
-                if(phoneAuthCredential.getSmsCode()!=null)
+                if(phoneAuthCredential.getSmsCode()!=null){
                     mOtpText.setText(phoneAuthCredential.getSmsCode());
+                    autofill = true;
+                }
                 progressDialog.dismiss();
 
             }
@@ -159,8 +162,6 @@ public class OtpActivity extends AppCompatActivity {
                 alertDialog.setTitle("Alert");
                 alertDialog.show();
                 Log.d("otpactivity", "onVerificationFailed");
-
-
             }
 
             @Override
@@ -224,6 +225,10 @@ public class OtpActivity extends AppCompatActivity {
                                 mAuthVerificationId = s;
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);
+                                if(autofill==true){
+                                    mVerifyBtn.setText("Verifying OTP");
+                                    mVerifyBtn.performClick();
+                                }
                                 Log.d("OtpActivity", s);
                                 Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                             }
@@ -237,6 +242,10 @@ public class OtpActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Log.d("otpactivity","verificationcomplete");
                 // Here we can add the code for Auto Read the OTP
+                if(phoneAuthCredential.getSmsCode()!=null){
+                    mOtpText.setText(phoneAuthCredential.getSmsCode());
+                    autofill = true;
+                }
             }
 
             @Override
@@ -254,7 +263,7 @@ public class OtpActivity extends AppCompatActivity {
                                 Log.d("otpactivity","otpsent");
                                 mAuthVerificationId = s;
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "OTP Resent successfully", Toast.LENGTH_SHORT).show();
                             }
                         },
                         5000);
