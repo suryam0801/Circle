@@ -142,7 +142,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
             commentsList.add(0, tempComment); //to store timestamp values descendingly
             commentAdapter.notifyItemInserted(0);
-            holder.commentListView.scrollToPosition(0);
+            //holder.commentListView.scrollToPosition(0);
+            holder.commentListView.smoothScrollToPosition(0);
 
             if (position == initialIndex) {
                 HelperMethods.collapse(holder.broadcst_container);
