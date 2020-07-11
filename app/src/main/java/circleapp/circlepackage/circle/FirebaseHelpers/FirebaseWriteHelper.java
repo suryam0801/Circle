@@ -315,7 +315,7 @@ public class FirebaseWriteHelper {
         DatabaseReference broadcastsDB;
         broadcastsDB = database.getReference("Broadcasts");
         String id = HelperMethods.uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments,true);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
     }
@@ -325,23 +325,23 @@ public class FirebaseWriteHelper {
         Broadcast broadcast;
         Poll poll = new Poll(text, pollOptions, null);
         if (downloadUri != null)
-            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
+            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments,true);
         else
-            broadcast = new Broadcast(id, null, null, null, creatorName, null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
+            broadcast = new Broadcast(id, null, null, null, creatorName, null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments,true);
         BROADCASTS_REF.child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
         String id = HelperMethods.uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments, true);
         BROADCASTS_REF.child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public static String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
         String id = HelperMethods.uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions, true);
         CIRCLES_REF.child(id).setValue(circle);
         return id;
     }
