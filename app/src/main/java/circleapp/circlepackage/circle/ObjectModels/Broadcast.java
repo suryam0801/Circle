@@ -170,6 +170,7 @@ public class Broadcast {
                 ", latestCommentTimestamp=" + latestCommentTimestamp +
                 ", numberOfComments=" + numberOfComments +
                 ", poll=" + poll +
+                ", adminVisibility=" + adminVisibility +
                 '}';
     }
 }
