@@ -292,7 +292,7 @@ public class FirebaseWriteHelper {
     }
 
 
-    public static void writeBroadcastNotifications(Context context, Notification notification, HashMap<String, Boolean> membersList) {
+    public static void writeBroadcastNotifications(Context context, Notification notification, HashMap<String, Boolean> membersList, Broadcast broadcast) {
 
         Set<String> member;
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
@@ -313,8 +313,9 @@ public class FirebaseWriteHelper {
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
                         Api api = retrofit.create(Api.class);
-                        String body  = "New Broadcast added in "+ notification.getCircleName();
-                        Call<ResponseBody> call = api.sendpushNotification(tokenId,"Circle",body);
+                        String title  = "New Post added in "+ notification.getCircleName();
+                        String body =broadcast.getTitle();
+                        Call<ResponseBody> call = api.sendpushNotification(tokenId,title,body);
 
                         call.enqueue(new Callback<ResponseBody>() {
                             @Override

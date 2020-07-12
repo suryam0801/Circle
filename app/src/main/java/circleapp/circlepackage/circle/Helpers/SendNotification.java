@@ -2,19 +2,13 @@ package circleapp.circlepackage.circle.Helpers;
 
 import android.content.Context;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Response;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 
@@ -32,7 +26,7 @@ public class SendNotification {
         FirebaseWriteHelper.writeCommentNotifications(notif, listenersList);
     }
 
-    public static void sendBCinfo(Context context, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
+    public static void sendBCinfo(Context context, Broadcast broadcast, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
 
         String notificationId = FirebaseWriteHelper.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
@@ -42,7 +36,7 @@ public class SendNotification {
         String getDate = getCurrentDateStamp();
 
         Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
-        FirebaseWriteHelper.writeBroadcastNotifications(context,notif, membersList);
+        FirebaseWriteHelper.writeBroadcastNotifications(context,notif, membersList,broadcast);
 
     }
 
