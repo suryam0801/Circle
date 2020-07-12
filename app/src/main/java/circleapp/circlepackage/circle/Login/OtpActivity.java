@@ -113,6 +113,7 @@ public class OtpActivity extends AppCompatActivity {
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
 
+        mVerifyBtn.setText("Verify OTP");
         confirmation.setMessage("There was an error in verifying your number. Please try again!")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -178,41 +179,14 @@ public class OtpActivity extends AppCompatActivity {
                                         }
                                         else {
                                             otpResendTimer.cancel();
-                                            resendTextView.setVisibility(View.VISIBLE);
-                                            resendTextView.setText("Click here to resend OTP");
-                                            resendTextView.setTextColor(Color.parseColor("#6CACFF"));
-                                            resendTextView.setClickable(true);
-                                            resendTextView.setOnClickListener(view -> {
-                                                PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                        phn_number,
-                                                        15,
-                                                        TimeUnit.SECONDS,
-                                                        OtpActivity.this,
-                                                        mCallbacksresend
-                                                );
-                                                Log.d("otpactivity","resentotp");
-
-                                            });
+                                            setResendOtpButton();
                                         }
 
                                     }
 
                                     @Override
                                     public void onFinish() {
-
-                                        resendTextView.setText("Click here to resend OTP");
-                                        resendTextView.setTextColor(Color.parseColor("#6CACFF"));
-                                        resendTextView.setClickable(true);
-                                        resendTextView.setOnClickListener(view -> {
-                                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                    phn_number,
-                                                    15,
-                                                    TimeUnit.SECONDS,
-                                                    OtpActivity.this,
-                                                    mCallbacksresend
-                                            );
-                                            //otpResendTimer.cancel();
-                                        });
+                                        setResendOtpButton();
                                     }
                                 }.start();
                                 mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
@@ -344,13 +318,6 @@ public class OtpActivity extends AppCompatActivity {
                 mCallbacks
         );
 //        to check the user and change the BUtton text based on the user
-        if (mCurrentUser != null) {
-            //old user
-            mVerifyBtn.setText("Verify & Login");
-        } else {
-            //new user
-            mVerifyBtn.setText("Verify & Register");
-        }
     }
     private void setResendOtpButton(){
         resendTextView.setText("Click here to resend OTP");
