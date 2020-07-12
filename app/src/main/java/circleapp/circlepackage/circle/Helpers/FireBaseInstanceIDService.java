@@ -1,10 +1,13 @@
 package circleapp.circlepackage.circle.Helpers;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -53,6 +56,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                 sendNotification(messageTitle, messageBody);
 
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
 
                 Intent intent = new Intent(this, ExploreTabbedActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -66,7 +70,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                                 .setPriority(1)
                                 .setContentText(messageBody)
                                 .setAutoCancel(true)
-                                .setSound(defaultSoundUri);
+                                .setSound(notifSound);
 
 
 
@@ -110,6 +114,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
     private void sendNotification(String title,String messageBody) {
         Log.d("infunc", "NOTIF RECIEVED: "+title+"::"+messageBody);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -120,7 +125,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         .setPriority(1)
                         .setContentText(messageBody)
                         .setAutoCancel(false)
-                        .setSound(defaultSoundUri);
+                        .setSound(notifSound);
 
         notificationBuilder.setContentIntent(contentIntent);
 
@@ -129,9 +134,14 @@ private static final String channelId = String.valueOf(R.string.default_notifica
 
 //         Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build();
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.setSound(notifSound,att);
             notificationManager.createNotificationChannel(channel);
         }
 
