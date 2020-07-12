@@ -61,7 +61,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
 
                 NotificationCompat.Builder notificationBuilder =
                         new NotificationCompat.Builder(this,getString(default_notification_channel_id))
-                                .setContentTitle("Circle")
+                                .setContentTitle(messageTitle)
                                 .setSmallIcon(R.drawable.circle_logo)
                                 .setPriority(1)
                                 .setContentText(messageBody)
@@ -115,7 +115,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                 PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setContentTitle("Circle")
+                        .setContentTitle(title)
                         .setSmallIcon(R.drawable.circle_logo)
                         .setPriority(1)
                         .setContentText(messageBody)
