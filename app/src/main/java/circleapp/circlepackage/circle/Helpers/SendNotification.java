@@ -42,7 +42,7 @@ public class SendNotification {
         String getDate = getCurrentDateStamp();
 
         Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
-        FirebaseWriteHelper.writeBroadcastNotifications(notif, membersList);
+        FirebaseWriteHelper.writeBroadcastNotifications(context,notif, membersList);
 
     }
 
