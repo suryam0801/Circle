@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -258,9 +259,13 @@ public class OtpActivity extends AppCompatActivity {
                 mVerifyBtn.setClickable(false);
 
                 //Pasing the OTP and credentials for the Verification
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
+                try{
+                   PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
                 Log.d("OtpActivity", "credential:: " + credential.getSmsCode());
                 signInWithPhoneAuthCredential(credential);
+            }catch (Exception e){
+                Toast.makeText(this, "Verification Code is wrong", Toast.LENGTH_SHORT).show();
+            }
             }
         });
 
