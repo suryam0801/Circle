@@ -29,6 +29,7 @@ import static circleapp.circlepackage.circle.R.string.default_notification_chann
 
 public class FireBaseInstanceIDService extends FirebaseMessagingService {
     private static final String TAG =FireBaseInstanceIDService.class.getSimpleName();
+    int notificationId = (int) System.currentTimeMillis();
 private static final String channelId = String.valueOf(R.string.default_notification_channel_id);
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -68,7 +69,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                                 .setSound(defaultSoundUri);
 
 
-                int notificationId = (int) System.currentTimeMillis();
+
                 NotificationManager notificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -118,7 +119,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         .setSmallIcon(R.drawable.circle_logo)
                         .setPriority(1)
                         .setContentText(messageBody)
-                        .setAutoCancel(true)
+                        .setAutoCancel(false)
                         .setSound(defaultSoundUri);
 
         notificationBuilder.setContentIntent(contentIntent);
@@ -134,6 +135,6 @@ private static final String channelId = String.valueOf(R.string.default_notifica
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
     }
 }

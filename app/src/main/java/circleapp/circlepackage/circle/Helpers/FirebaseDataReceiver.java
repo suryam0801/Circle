@@ -16,6 +16,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
 
 public class FirebaseDataReceiver extends WakefulBroadcastReceiver {
+    int notifid  = (int) System.currentTimeMillis();
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("BroadcastReceiver::", "BroadcastReceiver");
@@ -26,11 +27,12 @@ public class FirebaseDataReceiver extends WakefulBroadcastReceiver {
                         .setSmallIcon(R.drawable.circle_logo)
                         .setPriority(1)
                         .setContentText(intent.getExtras().getString("body"))
-                        .setAutoCancel(true)
+                        .setAutoCancel(false)
                         .setSound(defaultSoundUri);
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+
+        notificationManager.notify(notifid+1 /* ID of notification */, notificationBuilder.build());
 
     }
 }

@@ -599,7 +599,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), description, null,
                 currentUserName, circle.getMembersList(), currentUserId, false, false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), 0, 0,true);
-        SendNotification.sendBCinfo(this, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
+        SendNotification.sendBCinfo(this,normalBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
 
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
@@ -627,7 +627,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
 
-        SendNotification.sendBCinfo(this, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
+        SendNotification.sendBCinfo(this, photoBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
@@ -649,7 +649,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
 
-        SendNotification.sendBCinfo(this,user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
         //creating poll options hashmap
         HashMap<String, Integer> options = new HashMap<>();
         if (!pollAnswerOptionsList.isEmpty()) {
@@ -671,7 +670,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
         SessionStorage.saveCircle(CircleWall.this, circle);
-
+        SendNotification.sendBCinfo(this, pollBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
