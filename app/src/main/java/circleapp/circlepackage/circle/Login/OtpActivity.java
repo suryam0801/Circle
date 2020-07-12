@@ -168,7 +168,9 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                otpResendTimer = new CountDownTimer(900000, 1000) {
+
+                                otpResendTimer = new CountDownTimer(30000, 1000) {
+
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);

@@ -6,28 +6,50 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.protobuf.StringValue;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Helpers.Api;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -39,6 +61,12 @@ import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
@@ -259,13 +287,53 @@ public class FirebaseWriteHelper {
 
     }
 
-    public static void writeBroadcastNotifications(Notification notification, HashMap<String, Boolean> membersList) {
-        Set<String> member;
 
+    public static void writeBroadcastNotifications(Notification notification, HashMap<String, Boolean> membersList) {
+
+        Set<String> member;
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
+        String apiurl = "https://circle-d8cc7.web.app/api/";
         if (membersList != null) {
             member = membersList.keySet();
             for (String i : member)
-                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
+
+            {
+                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
+                liveData.observe((LifecycleOwner) context, dataSnapshot -> {
+                    if (dataSnapshot.exists()) {
+                        User user = dataSnapshot.getValue(User.class);
+                        String tokenId = user.getToken_id();
+                        SessionStorage.saveUser((Activity) context, user);
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(apiurl)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+                        Api api = retrofit.create(Api.class);
+                        String body  = "New Broadcast added in "+ notification.circleName;
+                        Call<ResponseBody> call = api.sendpushNotification(tokenId,"Circle",body);
+
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                                try {
+                                    Log.d("Push",response.body().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+
+                        NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
+                    } else {
+                    }
+                });
+            }
+
 
         }
     }
@@ -434,4 +502,69 @@ public class FirebaseWriteHelper {
         STORAGE_REFERENCES.child(circleId).child(broadcastId).removeValue();
     }
 
+public static void sendFCMPush(String tokenId, Context context) {
+    Log.e("FCM", "Func called");
+    String SERVER_KEY = String.valueOf(R.string.serverkey);
+    String msg = "this is test message";
+    String title = "my title";
+    String token = tokenId;
+    String FCM_URL= "https://fcm-xmpp.googleapis.com:5236";
+
+    JSONObject obj = null;
+    JSONObject objData = null;
+    JSONObject dataobjData = null;
+
+    try {
+        obj = new JSONObject();
+        objData = new JSONObject();
+
+        objData.put("text", msg);
+        objData.put("title", title);
+//        objData.put("sound", "default");
+//        objData.put("icon", "icon_name"); //   icon_name
+//        objData.put("tag", token);
+//        objData.put("priority", "high");
+
+        dataobjData = new JSONObject();
+        dataobjData.put("text", msg);
+        dataobjData.put("title", title);
+
+        obj.put("to", token);
+        //obj.put("priority", "high");
+
+        obj.put("notification", objData);
+        obj.put("data", dataobjData);
+        Log.e("return here>>", obj.toString());
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+
+    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, FCM_URL, obj,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.e("True", response + "");
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("False", error + "");
+                }
+            }) {
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "key=" + SERVER_KEY);
+            params.put("Content-Type",  "application/json; charset=utf-8");
+            params.put("Connection","close");
+            return params;
+        }
+    };
+    RequestQueue requestQueue = Volley.newRequestQueue(context);
+    int socketTimeout = 1000 * 60;// 60 seconds
+    RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+    jsObjRequest.setRetryPolicy(policy);
+    requestQueue.add(jsObjRequest);
+}
 }
