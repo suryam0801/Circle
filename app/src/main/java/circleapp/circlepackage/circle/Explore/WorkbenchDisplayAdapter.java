@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 
 import java.util.HashMap;
@@ -66,13 +69,16 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         Circle circle = MycircleList.get(position);
         User user = SessionStorage.getUser((Activity) context);
 
+        char firstLetter = circle.getName().charAt(0);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        int color = generator.getColor(circle.getName());
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(firstLetter+"",color);
+
         if (!circle.getBackgroundImageLink().equals("default"))
             Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
         else {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(holder.backgroundPic);
+            holder.backgroundPic.setBackground(drawable);
         }
 
         //set the details of each circle to its respective card.

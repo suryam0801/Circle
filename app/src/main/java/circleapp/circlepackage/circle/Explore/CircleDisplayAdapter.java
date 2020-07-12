@@ -23,6 +23,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -72,13 +74,15 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         String circleCategory;
         Log.d("efljknwefwe", currentCircle.toString());
 
+        char firstLetter = currentCircle.getName().charAt(0);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        int color = generator.getColor(currentCircle.getName());
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(firstLetter+"",color);
         if (!currentCircle.getBackgroundImageLink().equals("default")) {
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
         } else {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.circleLogo);
+            viewHolder.circleLogo.setBackground(drawable);
         }
 
         //check if circle acceptance is review

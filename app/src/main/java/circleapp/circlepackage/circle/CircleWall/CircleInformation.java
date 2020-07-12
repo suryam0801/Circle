@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
@@ -77,14 +79,16 @@ public class CircleInformation extends AppCompatActivity {
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
 
+        char firstLetter = circle.getName().charAt(0);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        int color = generator.getColor(circle.getName());
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(firstLetter+"",color);
         //setting circle logo
         if (!circle.getBackgroundImageLink().equals("default")) {
             Glide.with(this).load(circle.getBackgroundImageLink()).into(logo);
         } else {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
-            Glide.with(this)
-                    .load(ContextCompat.getDrawable(this, profilePic))
-                    .into(logo);
+            logo.setBackground(drawable);
         }
 
         //back button
