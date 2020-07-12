@@ -148,7 +148,7 @@ public class FirebaseWriteHelper {
         }
     }
 
-    public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount, String userId) {
+    public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount) {
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(newCount);
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
         addBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
