@@ -598,8 +598,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         Broadcast normalBroadcast;
         normalBroadcast = new Broadcast(broadcastId, setTitleET.getText().toString(), description, null,
                 currentUserName, circle.getMembersList(), currentUserId, false, false, System.currentTimeMillis(), null,
-
-                user.getProfileImageLink(), 0, 0);
+                user.getProfileImageLink(), 0, 0,true);
         SendNotification.sendBCinfo(this, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitleET.getText().toString());
 
         //updating number of broadcasts in circle
@@ -622,11 +621,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
         Broadcast photoBroadcast = new Broadcast();
-
         if (imageExists) {
             photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadUri.toString(), currentUserName, circle.getMembersList(), currentUserId, false, true,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0,true);
         }
+
 
         SendNotification.sendBCinfo(this, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
         //updating number of broadcasts in circle
