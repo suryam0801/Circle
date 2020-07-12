@@ -67,7 +67,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         new NotificationCompat.Builder(this,getString(default_notification_channel_id))
                                 .setContentTitle("Circle")
                                 .setSmallIcon(R.drawable.circle_logo)
-                                .setPriority(1)
+                                .setPriority(Notification.PRIORITY_MAX)
                                 .setContentText(messageBody)
                                 .setAutoCancel(true)
                                 .setSound(notifSound);
@@ -122,7 +122,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                 new NotificationCompat.Builder(this, channelId)
                         .setContentTitle("Circle")
                         .setSmallIcon(R.drawable.circle_logo)
-                        .setPriority(1)
+                        .setPriority(Notification.PRIORITY_MAX)
                         .setContentText(messageBody)
                         .setAutoCancel(false)
                         .setSound(notifSound);
