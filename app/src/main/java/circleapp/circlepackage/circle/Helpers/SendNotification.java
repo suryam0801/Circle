@@ -10,11 +10,14 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 
+import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
+import circleapp.circlepackage.circle.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.ObjectModels.User;
 
 
 public class SendNotification {
-    public static void sendCommentInfo(String userID, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> listenersList, String circleIcon, String message) {
+    public static void sendCommentInfo(Context mContext, String userID, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> listenersList, String circleIcon, String message, String title) {
 
         String notificationId = FirebaseWriteHelper.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
@@ -23,7 +26,7 @@ public class SendNotification {
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         String getDate = getCurrentDateStamp();
         Notification notif = new Notification(circleName,userID,circleId,notificationId,creatorName,null,"comment_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
-        FirebaseWriteHelper.writeCommentNotifications(notif, listenersList);
+        FirebaseWriteHelper.writeCommentNotifications(mContext,notif, listenersList,message,title);
     }
 
     public static void sendBCinfo(Context context, Broadcast broadcast, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
@@ -41,7 +44,7 @@ public class SendNotification {
     }
 
 
-    public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
+    public static void sendnotification(String state, String circleId, String circleName, String toUserId, String token_id, String name) {
 //        This is the function to store the
 
         String notificationId = FirebaseWriteHelper.getNotificationId(toUserId);
@@ -49,7 +52,7 @@ public class SendNotification {
         String from = toUserId;
         String getDate = getCurrentDateStamp();
         Notification notif = new Notification(circleName,null,circleId,notificationId,from,toUserId,state,System.currentTimeMillis(),getDate,null,null,null,null);
-        FirebaseWriteHelper.writeNormalNotifications(notif);
+        FirebaseWriteHelper.writeNormalNotifications(notif,token_id,name);
     }
 
     public static String getCurrentDateStamp() {
@@ -65,6 +68,9 @@ public class SendNotification {
             return null;
         }
     }
+    public static void sendApplication(String state, User user, Circle circle, Subscriber subscriber){
+        HelperMethods.pushFCM(state, state,null,null,null,null,null,subscriber.getName(),user.getToken_id(),circle.getName());
 
+    }
 
 }

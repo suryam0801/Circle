@@ -14,8 +14,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -96,7 +94,8 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             public void onClick(View view) {
                 FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant, mContext);
                 state = "Accepted";
-                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
+//                SendNotification.sendApplication(state, circle.getId(), circle.getName(), selectedApplicant.getId(),selectedApplicant.getToken_id(),selectedApplicant.getName());
+                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(),selectedApplicant.getToken_id(),selectedApplicant.getName());
 
             }
         });
@@ -106,7 +105,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             public void onClick(View view) {
                 FirebaseWriteHelper.rejectApplicant(circle.getId(), selectedApplicant);
                 state = "Rejected";
-                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId());
+                SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(), selectedApplicant.getToken_id(), selectedApplicant.getName());
 
             }
         });

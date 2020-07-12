@@ -321,7 +321,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         Comment comment = new Comment(commentId,SessionStorage.getUser((Activity) mContext).getName().trim(),commentMessage,SessionStorage.getUser((Activity) mContext).getUserId(),SessionStorage.getUser((Activity) mContext).getProfileImageLink(),currentCommentTimeStamp);
 
         FirebaseWriteHelper.makeNewComment(comment, circle.getId(), broadcast.getId());
-        SendNotification.sendCommentInfo(user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage);
+        SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
         HelperMethods.updateUserFields(mContext, broadcast, "create", user);
