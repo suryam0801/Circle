@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,14 +48,12 @@ public class PhoneLogin extends AppCompatActivity {
     SharedPreferences.Editor editor;
     public static final String PREF_NAME= "LOCATION";
     private Spinner ccp;
-    private String ward, district,mCountryDialCode,mCountryName,failcount;
-
-    private FusedLocationProviderClient client;
+    private String ward, district,mCountryDialCode,mCountryName;
+    private FirebaseAuth mAuth;
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
     AlertDialog.Builder confirmation;
-    LocationHelper locationHelper;
 
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -62,6 +61,8 @@ public class PhoneLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
 
         mCountryCode = findViewById(R.id.country_code_text);
         mPhoneNumber = findViewById(R.id.phone_number_text);
@@ -79,7 +80,6 @@ public class PhoneLogin extends AppCompatActivity {
         mCountryDialCode = getIntent().getStringExtra("dialCode");
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
-        failcount = getIntent().getStringExtra("fail");
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         editor = pref.edit();
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
@@ -133,10 +133,6 @@ public class PhoneLogin extends AppCompatActivity {
                     mLoginFeedbackText.setVisibility(View.VISIBLE);
                 } else {
                     if (phone_number.length() ==10) {
-                        Log.d(TAG,"FailCount:: "+failcount);
-
-                        if (failcount != "1") {
-
                             mGenerateBtn.setEnabled(false);
 
                             confirmation.setMessage("Are you sure is this your number " + complete_phone_number)
@@ -174,36 +170,6 @@ public class PhoneLogin extends AppCompatActivity {
                             alertDialog.setTitle("Confirmation");
                             alertDialog.show();
                         }
-                        else
-                        {
-                            confirmation.setMessage("If you enter a wrong number this time have to reopen the Application so check twice :: "+complete_phone_number)
-                                    .setCancelable(false)
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                            Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
-                                            otpIntent.putExtra("phn_num", complete_phone_number);
-                                            otpIntent.putExtra("ward", ward);
-                                            otpIntent.putExtra("district", district);
-                                            startActivity(otpIntent);
-                                        }
-                                    })
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                            mGenerateBtn.setEnabled(true);
-                                            mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
-                                            mGenerateBtn.setTextColor(R.color.white);
-                                            mPhoneNumber.requestFocus();
-                                        }
-                                    });
-                            AlertDialog alertDialog = confirmation.create();
-                            alertDialog.setTitle("Confirmation");
-                            alertDialog.show();
-                        }
-                    }
                     else
                     {
                         Toast.makeText(getApplicationContext(), "Enter a Valid 10-digit Number", Toast.LENGTH_SHORT).show();

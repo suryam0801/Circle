@@ -115,9 +115,11 @@ public class WorkbenchFragment extends Fragment {
             String modifierType = returnArray[1];
             switch (modifierType) {
                 case "added":
-                    addCircle(circle);
+                    if(circle.isAdminVisibility()==true)
+                        addCircle(circle);
                     break;
                 case "changed":
+                    if(circle.isAdminVisibility()==true)
                     changeCircle(circle);
                     break;
                 case "removed":

@@ -12,8 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+
+import circleapp.circlepackage.circle.ObjectModels.Notification;
+
 
 public class SendNotification {
     public static void sendCommentInfo(String userID, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> listenersList, String circleIcon, String message) {
@@ -23,21 +27,9 @@ public class SendNotification {
         if (message.length() >= 60)
             message = message + "...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
-        Map<String, Object> applicationStatus = new HashMap<>();
-        String from = userID;
         String getDate = getCurrentDateStamp();
-        applicationStatus.put("state", "comment_added");
-        applicationStatus.put("circleName", circleName);
-        applicationStatus.put("circleId", circleId);
-        applicationStatus.put("circleIcon", circleIcon);
-        applicationStatus.put("broadcastId", broadcastId);
-        applicationStatus.put("from", creatorName);
-        applicationStatus.put("creatorId", userID);
-        applicationStatus.put("notificationId", notificationId);
-        applicationStatus.put("date", getDate);
-        applicationStatus.put("timestamp", System.currentTimeMillis());
-        applicationStatus.put("message", message);
-        FirebaseWriteHelper.writeCommentNotifications(notificationId, userID, applicationStatus, listenersList);
+        Notification notif = new Notification(circleName,userID,circleId,notificationId,creatorName,null,"comment_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
+        FirebaseWriteHelper.writeCommentNotifications(notif, listenersList);
     }
 
     public static void sendBCinfo(Context context, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
@@ -47,21 +39,10 @@ public class SendNotification {
         if (message.length() >= 60)
             message = message + "...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
-        Map<String, Object> applicationStatus = new HashMap<>();
-        String from = userId;
         String getDate = getCurrentDateStamp();
-        applicationStatus.put("state", "broadcast_added");
-        applicationStatus.put("circleName", circleName);
-        applicationStatus.put("circleId", circleId);
-        applicationStatus.put("circleIcon", circleIcon);
-        applicationStatus.put("broadcastId", broadcastId);
-        applicationStatus.put("from", creatorName);
-        applicationStatus.put("creatorId", userId);
-        applicationStatus.put("notificationId", notificationId);
-        applicationStatus.put("date", getDate);
-        applicationStatus.put("timestamp", System.currentTimeMillis());
-        applicationStatus.put("message", message);
-        FirebaseWriteHelper.writeBroadcastNotifications(context,notificationId, userId, applicationStatus, membersList,circleName);
+
+        Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
+        FirebaseWriteHelper.writeBroadcastNotifications(notif, membersList);
 
     }
 
@@ -71,18 +52,10 @@ public class SendNotification {
 
         String notificationId = FirebaseWriteHelper.getNotificationId(toUserId);
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
-        Map<String, Object> applicationStatus = new HashMap<>();
-        applicationStatus.put("state", state);
-        applicationStatus.put("circleId", circleId);
         String from = toUserId;
         String getDate = getCurrentDateStamp();
-        applicationStatus.put("from", from);
-        applicationStatus.put("notify_to", toUserId);
-        applicationStatus.put("circleName", circleName);
-        applicationStatus.put("notificationId", notificationId);
-        applicationStatus.put("date", getDate);
-        applicationStatus.put("timestamp", System.currentTimeMillis());
-        FirebaseWriteHelper.writeNormalNotifications(toUserId, notificationId, applicationStatus);
+        Notification notif = new Notification(circleName,null,circleId,notificationId,from,toUserId,state,System.currentTimeMillis(),getDate,null,null,null,null);
+        FirebaseWriteHelper.writeNormalNotifications(notif);
     }
 
     public static String getCurrentDateStamp() {

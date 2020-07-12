@@ -1,2 +1,4 @@
+include ':searchablespinnerlibrary'
 rootProject.name='Circle'
 include ':app'
+project(':searchablespinnerlibrary').projectDir = new File(rootDir, 'SearchableSpinner/searchablespinnerlibrary/')

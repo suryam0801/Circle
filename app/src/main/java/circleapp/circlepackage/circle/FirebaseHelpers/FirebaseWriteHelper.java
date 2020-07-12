@@ -55,6 +55,7 @@ import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.ObjectModels.Circle;
+import circleapp.circlepackage.circle.ObjectModels.Comment;
 import circleapp.circlepackage.circle.ObjectModels.Notification;
 import circleapp.circlepackage.circle.ObjectModels.Poll;
 import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
@@ -259,8 +260,12 @@ public class FirebaseWriteHelper {
         USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
     }
 
-    public static void makeNewComment(Map<String, Object> map, String circleId, String broadcastId) {
-        COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(map);
+    public static void makeNewComment(Comment comment, String circleId, String broadcastId) {
+        COMMENTS_REF.child(circleId).child(broadcastId).push().setValue(comment);
+    }
+    public static String getCommentId(String circleId, String broadcastId){
+        String commentId = COMMENTS_REF.child(circleId).child(broadcastId).push().getKey();
+        return commentId;
     }
 
     public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId) {
@@ -270,25 +275,28 @@ public class FirebaseWriteHelper {
         addCircleImageReference(circle.getId(),circle.getBackgroundImageLink());
     }
 
-    public static void writeCommentNotifications(String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> listenersList) {
+    public static void writeCommentNotifications(Notification notification, HashMap<String, Boolean> listenersList) {
         Set<String> member;
         if (listenersList != null) {
-            listenersList.remove(userId);
+            listenersList.remove(notification.getCreatorId());
             member = listenersList.keySet();
             for (String i : member)
-                NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
+                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
 
         }
 
     }
 
-    public static void writeBroadcastNotifications(Context context, String notificationId, String userId, Map<String, Object> applicationStatus, HashMap<String, Boolean> membersList, String circleName) {
+
+    public static void writeBroadcastNotifications(Notification notification, HashMap<String, Boolean> membersList) {
+
         Set<String> member;
         FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
         String apiurl = "https://circle-d8cc7.web.app/api/";
         if (membersList != null) {
             member = membersList.keySet();
             for (String i : member)
+
             {
                 LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
@@ -301,7 +309,7 @@ public class FirebaseWriteHelper {
                                 .addConverterFactory(GsonConverterFactory.create())
                                 .build();
                         Api api = retrofit.create(Api.class);
-                        String body  = "New Broadcast added in "+ circleName;
+                        String body  = "New Broadcast added in "+ notification.circleName;
                         Call<ResponseBody> call = api.sendpushNotification(tokenId,"Circle",body);
 
                         call.enqueue(new Callback<ResponseBody>() {
@@ -320,21 +328,22 @@ public class FirebaseWriteHelper {
                             }
                         });
 
-                        NOTIFS_REF.child(i).child(notificationId).setValue(applicationStatus);
+                        NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
                     } else {
                     }
                 });
             }
 
+
         }
     }
 
-    public static void writeNormalNotifications(String userId, String notificationId, Map<String, Object> applicationStatus) {
-        NOTIFS_REF.child(userId).child(notificationId).setValue(applicationStatus);
+    public static void writeNormalNotifications(Notification notification) {
+        NOTIFS_REF.child(notification.getNotify_to()).child(notification.getNotificationId()).setValue(notification);
     }
 
-    public static String getNotificationId(String broadcastId) {
-        String notificationId = NOTIFS_REF.child(broadcastId).push().getKey();
+    public static String getNotificationId(String objectId) {
+        String notificationId = NOTIFS_REF.child(objectId).push().getKey();
         return notificationId;
     }
 
@@ -374,7 +383,7 @@ public class FirebaseWriteHelper {
         DatabaseReference broadcastsDB;
         broadcastsDB = database.getReference("Broadcasts");
         String id = HelperMethods.uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments,true);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
     }
@@ -384,23 +393,23 @@ public class FirebaseWriteHelper {
         Broadcast broadcast;
         Poll poll = new Poll(text, pollOptions, null);
         if (downloadUri != null)
-            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
+            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments,true);
         else
-            broadcast = new Broadcast(id, null, null, null, creatorName, null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments);
+            broadcast = new Broadcast(id, null, null, null, creatorName, null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments,true);
         BROADCASTS_REF.child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
         String id = HelperMethods.uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments);
+        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments, true);
         BROADCASTS_REF.child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public static String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
         String id = HelperMethods.uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions, true);
         CIRCLES_REF.child(id).setValue(circle);
         return id;
     }

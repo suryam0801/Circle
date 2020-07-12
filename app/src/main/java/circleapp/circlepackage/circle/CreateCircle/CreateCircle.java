@@ -210,7 +210,7 @@ public class CreateCircle extends AppCompatActivity {
         //updating circles
         Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilty, creatorUserID, creatorName,
                 category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
-                System.currentTimeMillis(), 0, 0);
+                System.currentTimeMillis(), 0, 0,true);
 
         Subscriber creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());

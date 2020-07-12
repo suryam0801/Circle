@@ -72,10 +72,11 @@ public class OtpActivity extends AppCompatActivity {
     private TextView mOtpFeedback;
     private TextView resendTextView;
     private int counter = 30;
-    int failcounter;
+    CountDownTimer otpResendTimer;
     int pos;
+    boolean autofill = false;
 
-    AlertDialog.Builder confirmation, verifyfail;
+    AlertDialog.Builder confirmation;
     ProgressDialog progressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -86,8 +87,6 @@ public class OtpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_otp);
 
         //Getting Firebase instances
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
         ward = getIntent().getStringExtra("ward");
@@ -101,7 +100,6 @@ public class OtpActivity extends AppCompatActivity {
         resendingToken = getIntent().getParcelableExtra("resendToken");
         progressDialog = new ProgressDialog(OtpActivity.this);
         confirmation = new AlertDialog.Builder(this);
-        verifyfail = new AlertDialog.Builder(this);
         progressDialog.setTitle("Verifying your Number...");
         progressDialog.show();
         progressDialog.setCancelable(false);
@@ -111,33 +109,12 @@ public class OtpActivity extends AppCompatActivity {
         mOtpProgress = findViewById(R.id.otp_progress_bar);
         mOtpText = findViewById(R.id.otp_text_view);
         mVerifyBtn = findViewById(R.id.verify_btn);
-        mVerifyBtn.setEnabled(false);
-        mVerifyBtn.setClickable(false);
-        mVerifyBtn.setBackgroundResource(R.drawable.unpressable_button);
-        mVerifyBtn.setTextColor(R.color.black);
-//Intimate the user for his low internet speed
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
-        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        int downSpeed = nc.getLinkDownstreamBandwidthKbps();
-        int upSpeed = nc.getLinkUpstreamBandwidthKbps();
-        Log.d("OtpActivity", "Intenet Speed ::" + downSpeed);
-        if (downSpeed < 10240) {
-            Toast.makeText(this, "Your Internet speed is very Low", Toast.LENGTH_SHORT).show();
-        }
         resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
-        verifyfail.setMessage("You have Entered Wrong Number 2 times so reopen the app to continue")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        finishAffinity();
-                    }
-                });
 
-        confirmation.setMessage("Your Number seems Incorrect Enter your Number Correctly!!")
+        mVerifyBtn.setText("Verify OTP");
+        confirmation.setMessage("There was an error in verifying your number. Please try again!")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -166,26 +143,22 @@ public class OtpActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 // Here we can add the code for Auto Read the OTP
                 Log.d("otpactivity", "onVerificationCompleted:: " + phoneAuthCredential.getSmsCode());
-                if(phoneAuthCredential.getSmsCode()!=null)
+                if(phoneAuthCredential.getSmsCode()!=null){
                     mOtpText.setText(phoneAuthCredential.getSmsCode());
+                    autofill = true;
+                }
+                progressDialog.dismiss();
 
             }
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 //Display the Error msg to the user through the Textview when error occurs
-                failcounter = failcounter + 1;
                 progressDialog.dismiss();
-                if (failcounter != 2) {
-                    AlertDialog alertDialog = confirmation.create();
-                    alertDialog.setTitle("Alert");
-                    alertDialog.show();
-                } else {
-                    AlertDialog dialog = verifyfail.create();
-                    dialog.setTitle("Alert");
-                    dialog.show();
-                }
-
+                AlertDialog alertDialog = confirmation.create();
+                alertDialog.setTitle("Alert");
+                alertDialog.show();
+                Log.d("otpactivity", "onVerificationFailed");
             }
 
             @Override
@@ -195,49 +168,27 @@ public class OtpActivity extends AppCompatActivity {
                         new Runnable() {
                             public void run() {
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                new CountDownTimer(30000, 1000) {
+
+                                otpResendTimer = new CountDownTimer(30000, 1000) {
+
                                     @Override
                                     public void onTick(long millisUntilFinished) {
                                         resendTextView.setText("Resend OTP in: " + counter);
-                                        Log.d("otpactivity","started_counter");
+                                        Log.d("otpactivitycounter",""+counter);
 
                                         if (counter != 0) {
                                             counter--;
-                                        } else {
-                                            resendTextView.setVisibility(View.VISIBLE);
-                                            resendTextView.setText("Click here to resend OTP");
-                                            resendTextView.setTextColor(Color.parseColor("#6CACFF"));
-                                            resendTextView.setClickable(true);
-                                            resendTextView.setOnClickListener(view -> {
-                                                PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                        phn_number,
-                                                        15,
-                                                        TimeUnit.SECONDS,
-                                                        OtpActivity.this,
-                                                        mCallbacksresend
-                                                );
-                                                Log.d("otpactivity","resentotp");
-
-                                            });
+                                        }
+                                        else {
+                                            otpResendTimer.cancel();
+                                            setResendOtpButton();
                                         }
 
                                     }
 
                                     @Override
                                     public void onFinish() {
-                                        resendTextView.setText("Click here to resend OTP");
-                                        resendTextView.setTextColor(Color.parseColor("#6CACFF"));
-                                        resendTextView.setClickable(true);
-                                        resendTextView.setOnClickListener(view -> {
-                                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                                                    phn_number,
-                                                    15,
-                                                    TimeUnit.SECONDS,
-                                                    OtpActivity.this,
-                                                    mCallbacksresend
-                                            );
-
-                                        });
+                                        setResendOtpButton();
                                     }
                                 }.start();
                                 mVerifyBtn.setBackgroundResource(R.drawable.gradient_button);
@@ -246,6 +197,10 @@ public class OtpActivity extends AppCompatActivity {
                                 mAuthVerificationId = s;
                                 mVerifyBtn.setClickable(true);
                                 mVerifyBtn.setEnabled(true);
+                                if(autofill==true){
+                                    mVerifyBtn.setText("Verifying OTP");
+                                    mVerifyBtn.performClick();
+                                }
                                 Log.d("OtpActivity", s);
                                 Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                             }
@@ -259,6 +214,10 @@ public class OtpActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 Log.d("otpactivity","verificationcomplete");
                 // Here we can add the code for Auto Read the OTP
+                if(phoneAuthCredential.getSmsCode()!=null){
+                    mOtpText.setText(phoneAuthCredential.getSmsCode());
+                    autofill = true;
+                }
             }
 
             @Override
@@ -276,7 +235,7 @@ public class OtpActivity extends AppCompatActivity {
                                 Log.d("otpactivity","otpsent");
                                 mAuthVerificationId = s;
                                 //Opening the OtpActivity after the code(OTP) sent to the users mobile number
-                                Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "OTP Resent successfully", Toast.LENGTH_SHORT).show();
                             }
                         },
                         5000);
@@ -361,13 +320,20 @@ public class OtpActivity extends AppCompatActivity {
                 mCallbacks
         );
 //        to check the user and change the BUtton text based on the user
-        if (mCurrentUser != null) {
-            //old user
-            mVerifyBtn.setText("Verify & Login");
-        } else {
-            //new user
-            mVerifyBtn.setText("Verify & Register");
-        }
+    }
+    private void setResendOtpButton(){
+        resendTextView.setText("Click here to resend OTP");
+        resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+        resendTextView.setClickable(true);
+        resendTextView.setOnClickListener(view -> {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    phn_number,
+                    15,
+                    TimeUnit.SECONDS,
+                    OtpActivity.this,
+                    mCallbacksresend
+            );
+        });
     }
 
     //Function to send the  user to HomePage

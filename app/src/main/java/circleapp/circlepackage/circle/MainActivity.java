@@ -55,18 +55,6 @@ public class MainActivity extends AppCompatActivity {
         notificationManager = NotificationManagerCompat.from(this);
 
         database = FirebaseDatabase.getInstance();
-
-        //Intimate the user for his low internet speed
-        ConnectivityManager connectivityManager = (ConnectivityManager)this.getSystemService(CONNECTIVITY_SERVICE);
-        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        int downSpeed = nc.getLinkDownstreamBandwidthKbps();
-        int upSpeed = nc.getLinkUpstreamBandwidthKbps();
-        Log.d(TAG,"Intenet Speed ::"+ downSpeed);
-        if (downSpeed <10240)
-        {
-            Toast.makeText(this,"Your Internet speed is very Low",Toast.LENGTH_SHORT).show();
-        }
-
         SharedPreferences persistenceCheckPrefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
         if (persistenceCheckPrefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
             persistenceCheckPrefs.edit().putBoolean(MainActivity.class.getCanonicalName(),false).apply();
