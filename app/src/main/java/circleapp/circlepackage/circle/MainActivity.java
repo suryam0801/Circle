@@ -6,24 +6,16 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -62,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
-            notificationCountGetter();
+            //notificationCountGetter();
             usersDB = database.getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             usersDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -91,7 +83,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void notificationCountGetter(){
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SessionStorage.saveFilters(this, null);
+    }
+}
+/*    public void notificationCountGetter(){
         int counter = 0;
         notificationDB = database.getReference().child("Notifications").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         notificationDB.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -193,11 +191,4 @@ public class MainActivity extends AppCompatActivity {
                 .setContentIntent(contentIntent)
                 .build();
 //        notificationManager.notify(1, notification);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SessionStorage.saveFilters(this, null);
-    }
-}
+    }*/
