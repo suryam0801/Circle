@@ -137,7 +137,7 @@ public class ExploreFragment extends Fragment {
                     addCircle(circle);
                     break;
                 case "changed":
-                    if(circle.isAdminVisibility()==false)
+                    if(circle.isAdminVisibility()==true)
                     changeCircle(circle);
                     break;
                 case "removed":

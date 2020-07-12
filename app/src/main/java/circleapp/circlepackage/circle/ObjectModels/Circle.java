@@ -190,6 +190,7 @@ public class Circle {
                 ", timestamp=" + timestamp +
                 ", noOfBroadcasts=" + noOfBroadcasts +
                 ", noOfNewDiscussions=" + noOfNewDiscussions +
+                ", adminVisibility=" + adminVisibility +
                 '}';
     }
 }

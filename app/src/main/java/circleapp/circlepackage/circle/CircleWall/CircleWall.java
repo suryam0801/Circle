@@ -236,7 +236,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                         addBroadcast(broadcast);
                     break;
                 case "changed":
-                    if(broadcast.isAdminVisibility()==false)
+                    if(broadcast.isAdminVisibility()==true)
                     changeBroadcast(broadcast);
                     break;
                 case "removed":
