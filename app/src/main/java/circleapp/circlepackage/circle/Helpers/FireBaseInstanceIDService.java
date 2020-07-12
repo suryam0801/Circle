@@ -65,7 +65,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
 
                 NotificationCompat.Builder notificationBuilder =
                         new NotificationCompat.Builder(this,getString(default_notification_channel_id))
-                                .setContentTitle("Circle")
+                                .setContentTitle(data_title)
                                 .setSmallIcon(R.drawable.circle_logo)
                                 .setPriority(Notification.PRIORITY_MAX)
                                 .setContentText(messageBody)
@@ -120,7 +120,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                 PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setContentTitle("Circle")
+                        .setContentTitle(title)
                         .setSmallIcon(R.drawable.circle_logo)
                         .setPriority(Notification.PRIORITY_MAX)
                         .setContentText(messageBody)
@@ -138,11 +138,34 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                     .build();
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_HIGH);
-            channel.setSound(notifSound,att);
-            notificationManager.createNotificationChannel(channel);
+            if(title.toLowerCase().contains("comment")){
+                NotificationChannel channel1 = new NotificationChannel(channelId,
+                        "Comment Notifications",
+                        NotificationManager.IMPORTANCE_DEFAULT);
+                channel1.setSound(notifSound,att);
+                notificationManager.createNotificationChannel(channel1);
+            }
+            else if(title.toLowerCase().contains("post")){
+                NotificationChannel channel2 = new NotificationChannel(channelId,
+                        "New Post Notifications",
+                        NotificationManager.IMPORTANCE_HIGH);
+                channel2.setSound(notifSound,att);
+                notificationManager.createNotificationChannel(channel2);
+            }
+            else if(title.toLowerCase().contains("member")||title.toLowerCase().contains("application")){
+                NotificationChannel channel3 = new NotificationChannel(channelId,
+                        "Circle applicants",
+                        NotificationManager.IMPORTANCE_HIGH);
+                channel3.setSound(notifSound,att);
+                notificationManager.createNotificationChannel(channel3);
+            }
+            else {
+                NotificationChannel channel = new NotificationChannel(channelId,
+                        "General Notifications",
+                        NotificationManager.IMPORTANCE_HIGH);
+                channel.setSound(notifSound,att);
+                notificationManager.createNotificationChannel(channel);
+            }
         }
 
         notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
