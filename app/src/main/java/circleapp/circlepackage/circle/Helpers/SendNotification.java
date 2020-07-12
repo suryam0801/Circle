@@ -1,11 +1,19 @@
 package circleapp.circlepackage.circle.Helpers;
 
+import android.content.Context;
+
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class SendNotification {
     public static void sendCommentInfo(String userID, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> listenersList, String circleIcon, String message) {
@@ -32,7 +40,7 @@ public class SendNotification {
         FirebaseWriteHelper.writeCommentNotifications(notificationId, userID, applicationStatus, listenersList);
     }
 
-    public static void sendBCinfo(String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
+    public static void sendBCinfo(Context context, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
 
         String notificationId = FirebaseWriteHelper.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
@@ -53,8 +61,10 @@ public class SendNotification {
         applicationStatus.put("date", getDate);
         applicationStatus.put("timestamp", System.currentTimeMillis());
         applicationStatus.put("message", message);
-        FirebaseWriteHelper.writeBroadcastNotifications(notificationId, userId, applicationStatus, membersList);
+        FirebaseWriteHelper.writeBroadcastNotifications(context,notificationId, userId, applicationStatus, membersList,circleName);
+
     }
+
 
     public static void sendnotification(String state, String circleId, String circleName, String toUserId) {
 //        This is the function to store the

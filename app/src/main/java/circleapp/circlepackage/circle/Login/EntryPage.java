@@ -20,6 +20,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
@@ -37,6 +40,7 @@ public class EntryPage extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_page);
+        FirebaseMessaging.getInstance().subscribeToTopic("NEWS");
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
         LocationHelper locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);

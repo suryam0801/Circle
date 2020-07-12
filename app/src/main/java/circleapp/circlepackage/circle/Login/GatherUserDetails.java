@@ -55,6 +55,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.Collections;
 
 import java.util.HashMap;
@@ -504,6 +505,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         FirebaseWriteHelper.addDistrict(district);
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
+        Log.d("token",token_id);
 
         //checking the dowloadUri to store the profile pic
         //if the downloadUri id null then 'default' value is stored

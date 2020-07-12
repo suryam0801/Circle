@@ -16,6 +16,9 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
+    <string name="senderId">389814717628</string>
+    <string name="serverkey">AAAAWsLEjLw:APA91bG_-yz8SICZxUYous604SKVa0hzB3fj7zcUxroTod1Fzq3yxm8Xu7EsoVgFr6_voNV1HvBquW-pA0bYep08kW2-kqUmstvn-_fAzu_YSa5d-5GpNAeu3NSHpe1MbSrKWEqqbQHx</string>
+    <string name="FCM_URL">https://fcm.googleapis.com/fcm/send</string>
     <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
