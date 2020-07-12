@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setContentIntent(contentIntent)
                 .build();
-        notificationManager.notify(1, notification);
+//        notificationManager.notify(1, notification);
     }
 
     @Override
