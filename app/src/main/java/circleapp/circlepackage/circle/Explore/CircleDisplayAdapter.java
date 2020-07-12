@@ -6,17 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -84,6 +81,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         } else {
             viewHolder.circleLogo.setBackground(drawable);
         }
+
 
         //check if circle acceptance is review
         if (currentCircle.getAcceptanceType().equalsIgnoreCase("review"))
@@ -218,7 +216,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
 
         FirebaseWriteHelper.applyOrJoin(context, circle, user, subscriber);
-
+        SendNotification.sendApplication("new_applicant", user, circle, subscriber);
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");
             description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Enjoy being part of this circle!");

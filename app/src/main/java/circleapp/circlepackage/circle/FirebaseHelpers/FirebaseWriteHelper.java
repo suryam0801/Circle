@@ -7,8 +7,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -22,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,28 +29,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.gson.Gson;
-import com.google.protobuf.StringValue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.Helpers.Api;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -66,11 +56,6 @@ import circleapp.circlepackage.circle.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
@@ -212,7 +197,8 @@ public class FirebaseWriteHelper {
             CIRCLES_PERSONEL_REF.child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
             //adding userID to applicants list
             CIRCLES_REF.child(circle.getId()).child("applicantsList").child(user.getUserId()).setValue(true);
-            SendNotification.sendnotification("new_applicant", circle.getId(), circle.getName(), circle.getCreatorID());
+            SendNotification.sendApplication("new_applicant",user,circle,subscriber);
+            SendNotification.sendnotification("new_applicant", circle.getId(), circle.getName(), circle.getCreatorID(), subscriber.getToken_id(), subscriber.getName());
         } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
             CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             //adding userID to members list in circlesReference
@@ -279,13 +265,52 @@ public class FirebaseWriteHelper {
         addCircleImageReference(circle.getId(),circle.getBackgroundImageLink());
     }
 
-    public static void writeCommentNotifications(Notification notification, HashMap<String, Boolean> listenersList) {
+    public static void writeCommentNotifications(Context context, Notification notification, HashMap<String, Boolean> listenersList, String message, String title) {
         Set<String> member;
+        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
         if (listenersList != null) {
             listenersList.remove(notification.getCreatorId());
             member = listenersList.keySet();
             for (String i : member)
-                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
+            {
+                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
+                liveData.observe((LifecycleOwner) context, dataSnapshot -> {
+                    if (dataSnapshot.exists()) {
+                        User user = dataSnapshot.getValue(User.class);
+                        String tokenId = user.getToken_id();
+                        SessionStorage.saveUser((Activity) context, user);
+//                        Retrofit retrofit = new Retrofit.Builder()
+//                                .baseUrl(apiurl)
+//                                .addConverterFactory(GsonConverterFactory.create())
+//                                .build();
+//                        Api api = retrofit.create(Api.class);
+//                        String title  = "New Post added in "+ notification.getCircleName();
+//                        String body =broadcast.getTitle();
+//                        Call<ResponseBody> call = api.sendpushNotification(tokenId,title,body);
+//
+//                        call.enqueue(new Callback<ResponseBody>() {
+//                            @Override
+//                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+//                                try {
+//                                    Log.d("Push",response.body().string());
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//                            }
+//                        });
+                        String state = "comment";
+                        HelperMethods.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
+                        NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
+                    } else {
+                    }
+                });
+            }
+//                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
 
         }
 
@@ -307,31 +332,33 @@ public class FirebaseWriteHelper {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl(apiurl)
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-                        Api api = retrofit.create(Api.class);
-                        String title  = "New Post added in "+ notification.getCircleName();
-                        String body =broadcast.getTitle();
-                        Call<ResponseBody> call = api.sendpushNotification(tokenId,title,body);
-
-                        call.enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                                try {
-                                    Log.d("Push",response.body().string());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                            }
-                        });
-
+                        SessionStorage.saveUser((Activity) context, user);
+//                        Retrofit retrofit = new Retrofit.Builder()
+//                                .baseUrl(apiurl)
+//                                .addConverterFactory(GsonConverterFactory.create())
+//                                .build();
+//                        Api api = retrofit.create(Api.class);
+//                        String title  = "New Post added in "+ notification.getCircleName();
+//                        String body =broadcast.getTitle();
+//                        Call<ResponseBody> call = api.sendpushNotification(tokenId,title,body);
+//
+//                        call.enqueue(new Callback<ResponseBody>() {
+//                            @Override
+//                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+//                                try {
+//                                    Log.d("Push",response.body().string());
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//                            }
+//                        });
+                        String state = "broadcast";
+                        HelperMethods.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
                     } else {
                     }
@@ -342,7 +369,10 @@ public class FirebaseWriteHelper {
         }
     }
 
-    public static void writeNormalNotifications(Notification notification) {
+    public static void writeNormalNotifications(Notification notification, String token_id, String name) {
+        String state = "applicant";
+        String application_state = notification.getState();
+        HelperMethods.pushFCM(state,application_state, token_id,notification,null, null, name,null, null,null);
         NOTIFS_REF.child(notification.getNotify_to()).child(notification.getNotificationId()).setValue(notification);
     }
 
