@@ -23,7 +23,7 @@ public class FirebaseDataReceiver extends WakefulBroadcastReceiver {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context,context.getString(default_notification_channel_id))
-                        .setContentTitle("Circle")
+                        .setContentTitle(intent.getExtras().getString("title"))
                         .setSmallIcon(R.drawable.circle_logo)
                         .setPriority(1)
                         .setContentText(intent.getExtras().getString("body"))

@@ -65,7 +65,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
 
                 NotificationCompat.Builder notificationBuilder =
                         new NotificationCompat.Builder(this,getString(default_notification_channel_id))
-                                .setContentTitle(data_title)
+                                .setContentTitle(messageTitle)
                                 .setSmallIcon(R.drawable.circle_logo)
                                 .setPriority(Notification.PRIORITY_MAX)
                                 .setContentText(messageBody)
