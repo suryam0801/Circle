@@ -28,8 +28,6 @@ import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.Login.get_started_first_page;
 import circleapp.circlepackage.circle.ObjectModels.User;
 
-import static circleapp.circlepackage.circle.Helpers.InAppNotificationHelper.CHANNEL_1_ID;
-
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
