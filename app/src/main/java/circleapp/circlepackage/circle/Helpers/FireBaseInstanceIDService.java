@@ -12,6 +12,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.legacy.content.WakefulBroadcastReceiver;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -37,9 +38,11 @@ private static final String channelId = String.valueOf(R.string.default_notifica
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 JSONObject data = new JSONObject(remoteMessage.getData());
-                String jsonMessage = data.getString("extra_information");
+                String data_title = data.getString("title");
+                String data_body = data.getString("body");
+                sendNotification(data_title,data_body);
                 Log.d(TAG, "onMessageReceived: \n" +
-                        "Extra Information: " + jsonMessage);
+                        "Extra Information: " + data_title+":::"+data_body);
                 Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: ");
 
                 String messageTitle = remoteMessage.getNotification().getTitle();
@@ -84,10 +87,10 @@ private static final String channelId = String.valueOf(R.string.default_notifica
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);
+        super.onNewToken(token);
 
         sendRegistrationToServer(token);
 
-//        super.onNewToken(s);
     }
     private void scheduleJob() {
         // [START dispatch_job]
