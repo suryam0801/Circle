@@ -152,7 +152,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                 channel2.setSound(notifSound,att);
                 notificationManager.createNotificationChannel(channel2);
             }
-            else if(title.toLowerCase().contains("member")||title.toLowerCase().contains("application")){
+            else if(title.toLowerCase().contains("applicant")||title.toLowerCase().contains("application")){
                 NotificationChannel channel3 = new NotificationChannel(channelId,
                         "Circle applicants",
                         NotificationManager.IMPORTANCE_HIGH);
