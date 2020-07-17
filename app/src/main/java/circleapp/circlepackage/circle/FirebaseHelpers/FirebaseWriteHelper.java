@@ -279,30 +279,6 @@ public class FirebaseWriteHelper {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
                         SessionStorage.saveUser((Activity) context, user);
-//                        Retrofit retrofit = new Retrofit.Builder()
-//                                .baseUrl(apiurl)
-//                                .addConverterFactory(GsonConverterFactory.create())
-//                                .build();
-//                        Api api = retrofit.create(Api.class);
-//                        String title  = "New Post added in "+ notification.getCircleName();
-//                        String body =broadcast.getTitle();
-//                        Call<ResponseBody> call = api.sendpushNotification(tokenId,title,body);
-//
-//                        call.enqueue(new Callback<ResponseBody>() {
-//                            @Override
-//                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-//                                try {
-//                                    Log.d("Push",response.body().string());
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//                            }
-//                        });
                         String state = "comment";
                         HelperMethods.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
@@ -333,30 +309,6 @@ public class FirebaseWriteHelper {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
                         SessionStorage.saveUser((Activity) context, user);
-//                        Retrofit retrofit = new Retrofit.Builder()
-//                                .baseUrl(apiurl)
-//                                .addConverterFactory(GsonConverterFactory.create())
-//                                .build();
-//                        Api api = retrofit.create(Api.class);
-//                        String title  = "New Post added in "+ notification.getCircleName();
-//                        String body =broadcast.getTitle();
-//                        Call<ResponseBody> call = api.sendpushNotification(tokenId,title,body);
-//
-//                        call.enqueue(new Callback<ResponseBody>() {
-//                            @Override
-//                            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-//                                try {
-//                                    Log.d("Push",response.body().string());
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//                            }
-//                        });
                         String state = "broadcast";
                         HelperMethods.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);

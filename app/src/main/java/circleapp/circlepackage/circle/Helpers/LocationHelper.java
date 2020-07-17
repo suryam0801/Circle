@@ -13,12 +13,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,21 +24,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import circleapp.circlepackage.circle.Login.EntryPage;
-import circleapp.circlepackage.circle.Login.PhoneLogin;
+import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
+import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 import circleapp.circlepackage.circle.R;
 
 public class LocationHelper{
 
-    Location loc;
     LocationManager locationManager;
     Activity activity;
     private static final String TAG = EntryPage.class.getSimpleName();
-    private FusedLocationProviderClient client;
     private String ward, district,mCountryDialCode,mCountryName;
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
+    Criteria gpsSignalCriteria;
 //    progressDialog = new abstract ProgressDialog(activity);
     public LocationHelper(Activity activity)  {
         this.activity = activity;
@@ -53,18 +49,8 @@ public class LocationHelper{
     {
 
         //Criterias for location access
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setSpeedRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
-        criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+        setGpsSignalCriteriaParams();
 
-        //looping control for location access
-        final Looper looper = null;
         //listener class for location
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -92,9 +78,8 @@ public class LocationHelper{
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         //for single update of the location
         //locationManager.requestSingleUpdate(criteria, locationListener, looper);
-        locationManager.requestLocationUpdates(500,1000,criteria,locationListener,looper);
-        //to check the location service is enabled or not
-//        locationManager.requestLocationUpdates("gps", 0, 0, locationListener);
+        locationManager.requestLocationUpdates(500,1000,gpsSignalCriteria,locationListener, null);
+        //check if gps is available
         statusCheck();
 
     }
@@ -113,6 +98,7 @@ public class LocationHelper{
         }
     }
 
+    //fun to set current country, district and ward of user
     private void getCountry(List<Address> addresses){
         options = activity.getResources().getStringArray(R.array.countries_array);
         al = Arrays.asList(options);
@@ -191,6 +177,17 @@ public class LocationHelper{
             buildAlertMessageNoGps();
 
         }
+    }
+    private void setGpsSignalCriteriaParams(){
+        gpsSignalCriteria = new Criteria();
+        gpsSignalCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        gpsSignalCriteria.setPowerRequirement(Criteria.POWER_LOW);
+        gpsSignalCriteria.setAltitudeRequired(false);
+        gpsSignalCriteria.setBearingRequired(false);
+        gpsSignalCriteria.setSpeedRequired(false);
+        gpsSignalCriteria.setCostAllowed(true);
+        gpsSignalCriteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+        gpsSignalCriteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
     }
 
     //alert box..

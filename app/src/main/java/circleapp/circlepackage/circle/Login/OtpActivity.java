@@ -3,23 +3,15 @@ package circleapp.circlepackage.circle.Login;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.IBinder;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,25 +36,20 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-
-import static circleapp.circlepackage.circle.R.color.grey;
+import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
 public class OtpActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser mCurrentUser;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
     private String ward, district, mCountryDialCode, mCountryName;
@@ -87,9 +74,8 @@ public class OtpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
-        //Getting Firebase instances
-        mAuth = FirebaseAuth.getInstance();
-        mCurrentUser = mAuth.getCurrentUser();
+        //Getting Intents from PhoneLogin
+        FirebaseWriteHelper.getUser();
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
         phn_number = getIntent().getStringExtra("phn_num");
@@ -115,29 +101,6 @@ public class OtpActivity extends AppCompatActivity {
         resendTextView.setClickable(false);
 
         mVerifyBtn.setText("Verify OTP");
-        confirmation.setMessage("There was an error in verifying your number. Please try again!")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("otpactivity","incorrect_number");
-                        dialog.dismiss();
-                        finishAfterTransition();
-                        Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
-                        intent.putExtra("pos", pos);
-                        intent.putExtra("countryName", mCountryName);
-                        intent.putExtra("dialCode", mCountryDialCode);
-                        if (ward == null)
-                            intent.putExtra("ward", "default");
-                        else
-                            intent.putExtra("ward", ward.trim());
-                        intent.putExtra("district", district.trim());
-                        intent.putExtra("ward", ward);
-                        intent.putExtra("district", district);
-                        intent.putExtra("fail", "1");
-                        startActivity(intent);
-                    }
-                });
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -209,6 +172,16 @@ public class OtpActivity extends AppCompatActivity {
                         5000);
             }
         };
+        confirmation.setMessage("There was an error in verifying your number. Please try again!")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("otpactivity","incorrect_number");
+                        dialog.dismiss();
+                        sendBackToPhoneNumberEntry();
+                    }
+                });
 
         mCallbacksresend = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -274,7 +247,7 @@ public class OtpActivity extends AppCompatActivity {
     //Function to check the given OTP
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
 
-        mAuth.signInWithCredential(credential)
+        FirebaseWriteHelper.getAuthToken().signInWithCredential(credential)
                 .addOnCompleteListener(OtpActivity.this, new OnCompleteListener<AuthResult>() {
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
@@ -282,7 +255,7 @@ public class OtpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             //get the user instance from the firebase
-                            final FirebaseUser FBuser = task.getResult().getUser();
+                            final FirebaseUser FBuser = Objects.requireNonNull(task.getResult()).getUser();
                             final String uid = FBuser.getUid();
                             //To check the users is already registered or not
                             FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(OtpActivity.this).get(FirebaseRetrievalViewModel.class);
@@ -325,6 +298,23 @@ public class OtpActivity extends AppCompatActivity {
                 mCallbacks
         );
 //        to check the user and change the BUtton text based on the user
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void sendBackToPhoneNumberEntry(){
+        finishAfterTransition();
+        Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
+        intent.putExtra("pos", pos);
+        intent.putExtra("countryName", mCountryName);
+        intent.putExtra("dialCode", mCountryDialCode);
+        if (ward == null)
+            intent.putExtra("ward", "default");
+        else
+            intent.putExtra("ward", ward.trim());
+        intent.putExtra("district", district.trim());
+        intent.putExtra("ward", ward);
+        intent.putExtra("district", district);
+        intent.putExtra("fail", "1");
+        startActivity(intent);
     }
     private void setResendOtpButton(){
         resendTextView.setText("Click here to resend OTP");
