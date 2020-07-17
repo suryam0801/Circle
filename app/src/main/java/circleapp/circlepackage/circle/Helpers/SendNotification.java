@@ -8,12 +8,12 @@ import java.util.HashMap;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
-import circleapp.circlepackage.circle.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.Notification;
-import circleapp.circlepackage.circle.ObjectModels.Subscriber;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.Notification;
+import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 
 public class SendNotification {

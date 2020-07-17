@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -18,13 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ObjectModels.Notification;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Notification;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.data.ViewModels.NotificationsViewModel;
 
 public class NotificationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -74,7 +72,7 @@ public class NotificationFragment extends Fragment {
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
 
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+        NotificationsViewModel viewModel = ViewModelProviders.of(this).get(NotificationsViewModel.class);
 
         liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
 

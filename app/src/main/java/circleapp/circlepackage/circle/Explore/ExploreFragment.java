@@ -23,12 +23,12 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.ViewModels.ExploreCirclesViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -125,7 +125,7 @@ public class ExploreFragment extends Fragment {
     }
 
     public void fetchData() {
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+        ExploreCirclesViewModel viewModel = ViewModelProviders.of(this).get(ExploreCirclesViewModel.class);
         liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
         liveData.observe(this, returnArray -> {

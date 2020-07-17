@@ -62,18 +62,19 @@ import java.util.List;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.Poll;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.Poll;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.ViewModels.BroadcastsViewModel;
+import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -131,7 +132,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         reportAbuseDialog = new Dialog(CircleWall.this);
         user = SessionStorage.getUser(CircleWall.this);
         circle = SessionStorage.getCircle(CircleWall.this);
-        FirebaseRetrievalViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(FirebaseRetrievalViewModel.class);
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
@@ -222,7 +223,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPoll.setOnClickListener(view -> showCreatePollBroadcastDialog());
         getStartedBroadcast.setOnClickListener(view -> showCreateNormalBroadcastDialog());
 
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+        BroadcastsViewModel viewModel = ViewModelProviders.of(this).get(BroadcastsViewModel.class);
 
         LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
 

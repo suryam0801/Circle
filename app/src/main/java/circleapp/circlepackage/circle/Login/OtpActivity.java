@@ -28,7 +28,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -40,12 +39,12 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
 public class OtpActivity extends AppCompatActivity {
@@ -258,7 +257,7 @@ public class OtpActivity extends AppCompatActivity {
                             final FirebaseUser FBuser = Objects.requireNonNull(task.getResult()).getUser();
                             final String uid = FBuser.getUid();
                             //To check the users is already registered or not
-                            FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(OtpActivity.this).get(FirebaseRetrievalViewModel.class);
+                            UserViewModel viewModel = ViewModelProviders.of(OtpActivity.this).get(UserViewModel.class);
 
                             LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(uid);
                             liveData.observe(OtpActivity.this, dataSnapshot -> {
