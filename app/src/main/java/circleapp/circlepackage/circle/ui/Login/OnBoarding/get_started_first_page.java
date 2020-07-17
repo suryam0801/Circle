@@ -1,21 +1,17 @@
-package circleapp.circlepackage.circle.Login;
+package circleapp.circlepackage.circle.ui.Login.OnBoarding;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.TouchDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.MainActivity;
+import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.R;
 
 public class get_started_first_page extends AppCompatActivity {

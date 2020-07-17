@@ -304,7 +304,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             linkCircleDialog.dismiss();
             title.setText("Successfully Joined!");
-            description.setText("Congradulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Click 'Done' to be redirected to this circle's wall.");
+            description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Click 'Done' to be redirected to this circle's wall.");
         }
 
         closeDialogButton.setOnClickListener(view -> {
@@ -334,8 +334,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         liveData.observe(this, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (!popupCalled) {
-                showLinkPopup(circle);
-                popupCalled = true;
+                if(circle!=null){
+                    showLinkPopup(circle);
+                    popupCalled = true;
+                }
+                else
+                    Toast.makeText(ExploreTabbedActivity.this, "That Circle does not exist anymore",Toast.LENGTH_SHORT).show();
             }
         });
     }
