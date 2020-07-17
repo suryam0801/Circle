@@ -14,6 +14,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -50,6 +51,7 @@ import java.util.UUID;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.ImagePicker;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -73,6 +75,7 @@ public class EditProfile extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int REQUEST_IMAGE_CAPTURE = 102;
+    private static final int PICK_IMAGE_ID = 234;
     String TAG = EditProfile.class.getSimpleName();
     ImageButton editName;
     User user;
@@ -173,10 +176,10 @@ public class EditProfile extends AppCompatActivity {
         Glide.with(EditProfile.this).load(uri).into(profilePic);
         profilepicButton.setOnClickListener(view -> {
             if (ContextCompat.checkSelfPermission(EditProfile.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(EditProfile.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        new String[]{Manifest.permission.CAMERA},
                         STORAGE_PERMISSION_CODE);
             } else {
                 finalizeChange = false;
@@ -184,10 +187,9 @@ public class EditProfile extends AppCompatActivity {
                     avatarBgList[i].setVisibility(View.GONE);
                 }
                 avatar = "";
-                /*selectFile();*/
-                if (photo == 0)
-                    selectImage();
                 editUserProfiledialogue.dismiss();
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
             }
         });
         finalizeChanges.setOnClickListener(view -> {
@@ -374,69 +376,15 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    public void selectFile() {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
-    }
-
-    public void takePhoto() {
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        downloadUri = HelperMethods.getImageUri();
-        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
-        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
-    }
-
-    private void selectImage() {
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditProfile.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
-                    photo = 1;
-                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
-                    }
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        takePhoto();
-                    } else {
-                        runtimePermissionHelper.askPermission(CAMERA);
-                    }
-                } else if (options[item].equals("Choose from Gallery")) {
-                    if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        selectFile();
-                    } else {
-                        runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
-                    }
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-            builder.show();
-        }
-    }
-
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (photo == 1)
-                takePhoto();
-            else
-                selectImage();
+            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
         } else {
-            photo = 0;
             Toast.makeText(EditProfile.this,
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
@@ -444,20 +392,7 @@ public class EditProfile extends AppCompatActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
-    //code for upload the image
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        photo = 0;
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            filePath = downloadUri;
-        }
-
-        //check the path for the image
-        //if the image path is notnull the uploading process will start
+    private void uploadImage(){
         if (filePath != null) {
             ContentResolver resolver = getContentResolver();
             HelperMethods.compressImage(resolver, filePath);
@@ -517,6 +452,25 @@ public class EditProfile extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
+        }
+    }
+
+    //code for upload the image
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(downloadUri!=null){
+                    filePath = downloadUri;
+                    uploadImage();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 

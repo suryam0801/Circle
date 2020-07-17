@@ -9,10 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -57,16 +59,26 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.CompositeMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.Collections;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.ImagePicker;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -86,6 +98,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int REQUEST_IMAGE_CAPTURE = 102;
+    private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     private Uri downloadUri;
     private CircleImageView profilePic;
     private FirebaseDatabase database;
@@ -103,6 +116,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
+    private long mLastClickTime = 0; // Prevent double click
 
 
     //location services elements
@@ -155,91 +169,27 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
-        //listener for button to add the profilepic
-        avatar1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar1);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar2);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar3);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar4);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar5);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar6);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar7);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
-        avatar8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar8);
-                HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
-                downloadUri = null;
-            }
-        });
+        setAvatarOnclickListeners();
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(GatherUserDetails.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        STORAGE_PERMISSION_CODE);
+            //prevent double click to prevent windowleak
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+                return;
             }
-            if(photo==0)
-                selectImage();
-        });
+            mLastClickTime = SystemClock.elapsedRealtime();
+                    if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
+                            CAMERA)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(GatherUserDetails.this,
+                                new String[]{CAMERA},
+                                STORAGE_PERMISSION_CODE);
+                    } else {
+                        setProfile.setEnabled(false);
+                        Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                        setProfile.setEnabled(true);
+                    }
+                });
 
         // Listener for Register button
         register.setOnClickListener(new View.OnClickListener() {
@@ -263,6 +213,56 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             }
         });
     }
+    private void setAvatarOnclickListeners(){
+        avatar1.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar1);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar2.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar2);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar3.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar3);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar4.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar4);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar5.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar5);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar6.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar6);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar7.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar7);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+        avatar8.setOnClickListener(v -> {
+            //add code to unpress rest of the buttons
+            avatar = String.valueOf(R.drawable.avatar8);
+            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
+            downloadUri = null;
+        });
+    }
 
     public void readLocationDB() {
         LocationsViewModel viewModel = ViewModelProviders.of(GatherUserDetails.this).get(LocationsViewModel.class);
@@ -277,94 +277,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
     }
 
-    public void selectFile() {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
-    }
-
-    public void takePhoto() {
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        downloadUri = HelperMethods.getImageUri();
-        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
-        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void selectImage() {
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(GatherUserDetails.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
-                    photo = 1;
-                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
-                    }
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        takePhoto();
-                    } else {
-                        runtimePermissionHelper.askPermission(CAMERA);
-                    }
-                } else if (options[item].equals("Choose from Gallery")) {
-                    if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        selectFile();
-                    } else {
-                        runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
-                    }
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        if(runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)){
-            builder.show();
-        }
-    }
-
-    //Check whether the permission is granted or not for uploading the profile pic
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if(photo==1)
-                takePhoto();
-            else
-                selectImage();
-        } else {
-            Toast.makeText(GatherUserDetails.this,
-                    "Permission Denied",
-                    Toast.LENGTH_SHORT)
-                    .show();
-            photo = 0;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    //code for upload the image
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        photo = 0;
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
-            downloadUri = filePath;
-        }
-        else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            filePath = downloadUri;
-        }
-        //check the path for the image
-        //if the image path is notnull the uploading process will start
-
+    private void uploadImage(){
         if (filePath != null) {
             ContentResolver resolver = getContentResolver();
             HelperMethods.compressImage(resolver, filePath);
@@ -391,7 +304,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                             if (!task.isSuccessful()) {
-                                throw task.getException();
+                                throw Objects.requireNonNull(task.getException());
                             }
 
                             // Continue with the task to get the download URL
@@ -428,6 +341,40 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+        } else {
+            Toast.makeText(GatherUserDetails.this,
+                    "Permission Denied",
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    //code for upload the image
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(downloadUri!=null){
+                    filePath = downloadUri;
+                    uploadImage();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
@@ -538,7 +485,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                             Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
                         }
                     });
-            finish();
+            finishAfterTransition();
         });
     }
     private void sendIntentsToExploreTabbed(){
@@ -601,4 +548,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 0, studentsCircleId);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseWriteHelper.getAuthToken();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseWriteHelper.getAuthToken();
+    }
 }
