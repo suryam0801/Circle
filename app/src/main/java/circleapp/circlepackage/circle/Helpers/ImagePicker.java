@@ -211,7 +211,7 @@ public class ImagePicker {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         if(inImage!=null){
             inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-            String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+            String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title"+Math.random() * 4900 + 1, null);
             return Uri.parse(path);
         }
         else

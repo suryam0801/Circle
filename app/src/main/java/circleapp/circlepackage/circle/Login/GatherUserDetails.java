@@ -356,7 +356,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
                     .show();
-            photo = 0;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -364,7 +363,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
-        photo = 0;
         switch(requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
