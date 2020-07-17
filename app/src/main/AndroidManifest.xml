@@ -75,9 +75,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".Login.EntryPage" />
-        <activity android:name=".Login.get_started_first_page" />
-        <activity android:name=".Login.get_started_second_page" />
-        <activity android:name=".Login.get_started_third_page" />
+        <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
+        <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
+        <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
         <activity android:name=".EditProfile.EditProfile"
             android:screenOrientation="portrait"/>
         <activity android:name=".PersonelDisplay.PersonelDisplay"
@@ -91,7 +91,7 @@
         <activity android:name=".CircleWall.CircleWall"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

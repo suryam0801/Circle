@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Login;
+package circleapp.circlepackage.circle.ui.Login.OnBoarding;
 
 import android.content.Intent;
 import android.os.Build;
@@ -9,6 +9,7 @@ import android.widget.Button;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import circleapp.circlepackage.circle.Login.EntryPage;
 import circleapp.circlepackage.circle.R;
 
 public class get_started_third_page extends AppCompatActivity {
