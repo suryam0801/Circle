@@ -74,7 +74,7 @@
                     android:scheme="app" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login.EntryPage" />
+        <activity android:name=".ui.Login.EntryPage.EntryPage" />
         <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
         <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
         <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
@@ -86,7 +86,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Login.OtpActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Login.PhoneLogin"
+        <activity android:name=".ui.Login.EnterPhoneNumber.PhoneLogin"
             android:screenOrientation="portrait"/>
         <activity android:name=".CircleWall.CircleWall"
             android:screenOrientation="portrait"/>

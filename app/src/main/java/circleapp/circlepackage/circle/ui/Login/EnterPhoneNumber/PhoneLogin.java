@@ -1,7 +1,6 @@
-package circleapp.circlepackage.circle.Login;
+package circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,7 +21,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -32,14 +29,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import circleapp.circlepackage.circle.Helpers.LocationHelper;
+
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Login.OtpActivity;
 import circleapp.circlepackage.circle.R;
 
 public class PhoneLogin extends AppCompatActivity {
 
     private static final String TAG = PhoneLogin.class.getSimpleName();
-    private EditText mCountryCode;
-    private EditText mPhoneNumber;
+    private EditText countryCodeEditText;
+    private EditText phoneNumberEditText;
     private Button mGenerateBtn;
     private ProgressBar mLoginProgress;
     private TextView mLoginFeedbackText;
@@ -61,20 +60,19 @@ public class PhoneLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
-        mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut();
+        //prevent auto-sign in after uninstall
+        FirebaseWriteHelper.signOutAuth();
 
-        mCountryCode = findViewById(R.id.country_code_text);
-        mPhoneNumber = findViewById(R.id.phone_number_text);
-        mPhoneNumber.requestFocus();
+        countryCodeEditText = findViewById(R.id.country_code_text);
+        phoneNumberEditText = findViewById(R.id.phone_number_text);
+        phoneNumberEditText.requestFocus();
         mGenerateBtn = findViewById(R.id.generate_btn);
         mLoginProgress = findViewById(R.id.login_progress_bar);
         mLoginFeedbackText = findViewById(R.id.login_form_feedback);
         ccp = findViewById(R.id.ccp);
 
         confirmation = new AlertDialog.Builder(this);
-
-
+        //get intents from LocationHelper
         pos=getIntent().getIntExtra("pos",0);
         mCountryName = getIntent().getStringExtra("countryName");
         mCountryDialCode = getIntent().getStringExtra("dialCode");
@@ -85,28 +83,21 @@ public class PhoneLogin extends AppCompatActivity {
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         al = Arrays.asList(options);
         ccp.setSelection(pos);
-        mCountryCode.setText(mCountryDialCode);
+        countryCodeEditText.setText(mCountryDialCode);
         mGenerateBtn.setEnabled(true);
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //manually set country code from picker
                 String code = getCountryCode(ccp.getSelectedItem().toString());
-                String contryDialCode = null;
                 String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
-                for(int i=0; i<arrContryCode.length; i++){
-                    String[] arrDial = arrContryCode[i].split(",");
-                    if(arrDial[1].trim().equals(code.trim())){
-                        contryDialCode = arrDial[0];
-                        mCountryCode.setText("+"+contryDialCode);
-                        break;
-                    }
-                }
-
+                String contryDialCode = setCountryCode(code, arrContryCode);
+                countryCodeEditText.setText("+"+contryDialCode);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mCountryCode.setText("");
+                countryCodeEditText.setText("");
             }
         });
 
@@ -117,8 +108,8 @@ public class PhoneLogin extends AppCompatActivity {
             public void onClick(View v) {
 
                 //geting the Phone number from  user
-                String country_code = mCountryCode.getText().toString();
-                String phone_number = mPhoneNumber.getText().toString();
+                String country_code = countryCodeEditText.getText().toString();
+                String phone_number = phoneNumberEditText.getText().toString();
 
                 mGenerateBtn.setBackgroundResource(R.drawable.unpressable_button);
                 mGenerateBtn.setTextColor(R.color.black);
@@ -140,20 +131,7 @@ public class PhoneLogin extends AppCompatActivity {
                                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            finishAfterTransition();
-                                            Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
-                                            otpIntent.putExtra("pos", pos);
-                                            otpIntent.putExtra("countryName",mCountryName);
-                                            otpIntent.putExtra("dialCode",mCountryDialCode);
-                                            otpIntent.putExtra("phn_num", complete_phone_number);
-                                            otpIntent.putExtra("ward", ward);
-                                            otpIntent.putExtra("district", district);
-                                            startActivity(otpIntent);
-                                            //                                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                                            //                                        intent.addCategory(Intent.CATEGORY_APP_MESSAGING);
-                                            //                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            //                                    if (intent.resolveActivity(getPackageManager()) != null) {
-                                            //                                        startActivity(intent);}
+                                            sendIntentsToOtpActivityAndFinish();
                                         }
                                     })
                                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -163,7 +141,7 @@ public class PhoneLogin extends AppCompatActivity {
                                             mGenerateBtn.setEnabled(true);
                                             mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
                                             mGenerateBtn.setTextColor(R.color.white);
-                                            mPhoneNumber.requestFocus();
+                                            phoneNumberEditText.requestFocus();
                                         }
                                     });
                             AlertDialog alertDialog = confirmation.create();
@@ -172,17 +150,27 @@ public class PhoneLogin extends AppCompatActivity {
                         }
                     else
                     {
+                        //When Input is not a 10 digit number
                         Toast.makeText(getApplicationContext(), "Enter a Valid 10-digit Number", Toast.LENGTH_SHORT).show();
                         mGenerateBtn.setEnabled(true);
                         mGenerateBtn.setBackgroundResource(R.drawable.gradient_button);
-//                            mLoginFeedbackText.setText("Enter the 10 digit Number");
-//                            mLoginFeedbackText.setVisibility(View.VISIBLE);
                     }
 
                 }
             }
         });
 
+    }
+    private String  setCountryCode(String code, String[] arrContryCode){
+        String contryDialCode = null;
+        for(int i=0; i<arrContryCode.length; i++){
+            String[] arrDial = arrContryCode[i].split(",");
+            if(arrDial[1].trim().equals(code.trim())){
+                contryDialCode = arrDial[0];
+                break;
+            }
+        }
+        return contryDialCode;
     }
 
     public String getCountryCode(String countryName) {
@@ -207,6 +195,19 @@ public class PhoneLogin extends AppCompatActivity {
         // Here you will need some validation or better yet
         // a list of countries to give to user to choose from.
         return countryMap.get(countryName); // "NL" for Netherlands.
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void sendIntentsToOtpActivityAndFinish(){
+        finishAfterTransition();
+        Intent otpIntent = new Intent(PhoneLogin.this, OtpActivity.class);
+        otpIntent.putExtra("pos", pos);
+        otpIntent.putExtra("countryName",mCountryName);
+        otpIntent.putExtra("dialCode",mCountryDialCode);
+        otpIntent.putExtra("phn_num", complete_phone_number);
+        otpIntent.putExtra("ward", ward);
+        otpIntent.putExtra("district", district);
+        startActivity(otpIntent);
     }
 
     @Override
