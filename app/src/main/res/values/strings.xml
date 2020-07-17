@@ -26,4 +26,5 @@
 
     <string name="report_popup">You are about to report a violation on this content.
         Kindly specify what to do find wrong about this content</string>
+    <string name="pick_image_intent_text">Upload photo</string>
 </resources>
