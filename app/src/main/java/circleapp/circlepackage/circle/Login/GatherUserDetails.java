@@ -33,9 +33,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -68,6 +71,8 @@ import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.data.ViewModels.LocationsViewModel;
+import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -77,8 +82,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     private String TAG = GatherUserDetails.class.getSimpleName();
 
-    private FirebaseAuth firebaseAuth;
-    private StorageReference storageReference;
     private Uri filePath;
     private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
@@ -86,10 +89,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private Uri downloadUri;
     private CircleImageView profilePic;
     private FirebaseDatabase database;
-    private DatabaseReference broadcastsDB, circlesDB, commentsDB, usersDB, tagsDB, locationsDB;
     private User user;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private Set<String> locationList;
+    private boolean locationExists;
     ProgressDialog progressDialog;
     SharedPreferences pref;
     String Name, contact, userId;
@@ -114,19 +116,17 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
         //Getting the instance and references
-        firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
-        storageReference = FirebaseStorage.getInstance().getReference();
         name = findViewById(R.id.name);
-        locationsDB = database.getReference("Locations");
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         progressDialog = new ProgressDialog(GatherUserDetails.this);
         progressDialog.setTitle("Registering User....");
         avatar = "";
         photo = 0;
+        locationExists = false;
         avatarList[0] = avatar1 = findViewById(R.id.avatar1);
         avatarList[1] = avatar2 = findViewById(R.id.avatar2);
         avatarList[2] = avatar3 = findViewById(R.id.avatar3);
@@ -265,19 +265,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     public void readLocationDB() {
-        locationsDB.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    locationList = (Set<String>) ((HashMap<String, Boolean>) dataSnapshot.getValue()).keySet();
-                } else {
-                    locationList = Collections.<String>emptySet();
-                }
-            }
+        LocationsViewModel viewModel = ViewModelProviders.of(GatherUserDetails.this).get(LocationsViewModel.class);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
+        liveData.observe(GatherUserDetails.this, dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                locationExists=true;
+            } else {
+                return;
             }
         });
     }
@@ -380,7 +375,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
             //generating random id to store the profliepic
             String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
+            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
 
             //storing  the pic
             profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -412,7 +407,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    firebaseAuth.getCurrentUser().updateProfile(profileUpdates);
+                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates);
                     Log.d(TAG, "Profile URL: " + downloadUri.toString());
                     Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
                     filePath = null;
@@ -440,7 +435,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     @Override
     public void onBackPressed() {
         finishAfterTransition();
-        firebaseAuth.signOut();
+        FirebaseWriteHelper.signOutAuth();
 
     }
 
@@ -458,12 +453,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void UserReg() {
         Log.d(TAG, "User reg called");
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
-            userId = firebaseAuth.getInstance().getCurrentUser().getUid();
+            userId = FirebaseWriteHelper.getUser().getUid();
 
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -471,13 +467,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     .build();
 
             //update the user display name
-            firebaseAuth.getCurrentUser().updateProfile(profileUpdates)
+            FirebaseWriteHelper.getAuthToken().getCurrentUser().updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
                             //Adding the user to collection
-                            if (!locationList.contains(district))
+                            if (!locationExists){
+                                FirebaseWriteHelper.addDistrict(district);
                                 createInitialCircles();
+                            }
 
                             addUser();
                             Log.d(TAG, "User Registered success fully added");
@@ -485,9 +483,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                         } else {
                             Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             //to signout the current firebase user
-                            firebaseAuth.signOut();
+                            FirebaseWriteHelper.getAuthToken().signOut();
                             //delete the user details
-                            firebaseAuth.getCurrentUser().delete();
+                            FirebaseWriteHelper.getUser().delete();
                         }
                     });
 
@@ -497,11 +495,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     //function that adds the user to the firestore
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void addUser() {
 
-        usersDB = database.getReference("Users");
-
-        FirebaseWriteHelper.addDistrict(district);
+        DatabaseReference usersDB = database.getReference("Users");
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
         Log.d("token",token_id);
@@ -526,20 +523,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     token_id, ward, district, null, null, null, null);
         }
         //storing user as a json in file locally
-        String string = new Gson().toJson(user);
         SessionStorage.saveUser(GatherUserDetails.this, user);
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
-            Log.d(TAG, "User data success fully added realtime db");
-
-            Log.d(TAG, "User data success fully added");
-            progressDialog.cancel();
-            Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(i);
-            Log.d(TAG, "Intent lines are executed...");
-//            SendNotification.sendnotification("new_user","adminCircle","Meet the developers of Circle",firebaseAuth.getCurrentUser().getUid());
-//            sendnotify();
+            sendIntentsToExploreTabbed();
             db.collection("Users")
                     .document(userId)
                     .set(user)
@@ -554,28 +541,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             finish();
         });
     }
-/*
-    private void sendnotify() {
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("Circle")
-                        .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                                R.mipmap.ic_launcher))
-                        .setSmallIcon(R.drawable.circle_logo)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentText("Welcome to the Circle " + firebaseAuth.getCurrentUser().getDisplayName() +
-                                " You can find the people with same Interest in your Locality");
-        Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
-        // Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
+    private void sendIntentsToExploreTabbed(){
+        progressDialog.cancel();
+        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(i);
     }
- */
 
     private void createInitialCircles() {
 /*

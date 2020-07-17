@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Trace;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,7 +26,7 @@ public class EntryPage extends AppCompatActivity{
 
     private static final String TAG = EntryPage.class.getSimpleName();
     private Button agreeContinue;
-    Trace myTrace;
+    LocationHelper locationHelper;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -36,22 +35,13 @@ public class EntryPage extends AppCompatActivity{
         setContentView(R.layout.activity_entry_page);
         FirebaseMessaging.getInstance().subscribeToTopic("NEWS");
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
-        LocationHelper locationHelper = new LocationHelper(EntryPage.this);
+        locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
         agreeContinue.setOnClickListener(view -> {
             agreeContinue.setClickable(false);
             if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
                 Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
-                LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                @SuppressLint("MissingPermission")
-                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null){
-                    locationHelper.getAddress(location);
-                }
-                else{
-                    locationHelper.getLocation();
-
-                }
+               getUserLocation();
             } else {
                 runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
             }
@@ -64,18 +54,22 @@ public class EntryPage extends AppCompatActivity{
         Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-            @SuppressLint("MissingPermission")
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null){
-                locationHelper.getAddress(location);
-            }
-            else{
-                locationHelper.getLocation();
-
-            }
+            getUserLocation();
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void getUserLocation(){
+        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        @SuppressLint("MissingPermission")
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null){
+            locationHelper.getAddress(location);
+        }
+        else{
+            locationHelper.getLocation();
+
+        }
     }
 
     @Override
