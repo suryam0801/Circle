@@ -88,8 +88,6 @@ public class ImagePicker {
             bm = getImageResized(context, selectedImage);
             int rotation = getRotation(context, selectedImage, isCamera);
             bm = rotate(bm, rotation);
-            bm = rotate(bm, rotation);
-            bm = rotate(bm, rotation);
         }
         return bm;
     }
