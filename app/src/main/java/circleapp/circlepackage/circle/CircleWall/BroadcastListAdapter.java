@@ -22,7 +22,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -44,15 +43,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.Poll;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.Poll;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {
@@ -81,7 +80,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         User user = SessionStorage.getUser((Activity) context);
         //HelperMethods.initializeBroadcastListener(context, broadcast, user);
         HelperMethods.initializeNewReadComments(context, broadcast, user);
-        FirebaseRetrievalViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(FirebaseRetrievalViewModel.class);
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);

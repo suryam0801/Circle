@@ -3,18 +3,16 @@ package circleapp.circlepackage.circle.Helpers;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-import circleapp.circlepackage.circle.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.Notification;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.Notification;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class SessionStorage {
 

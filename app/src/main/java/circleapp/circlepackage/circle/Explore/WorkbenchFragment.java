@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,7 +106,7 @@ public class WorkbenchFragment extends Fragment {
                     new ExploreFragment()).commit();
         });
 
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+        MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
 
         liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 

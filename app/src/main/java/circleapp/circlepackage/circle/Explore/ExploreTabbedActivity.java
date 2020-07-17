@@ -1,6 +1,5 @@
 package circleapp.circlepackage.circle.Explore;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -10,28 +9,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,22 +32,18 @@ import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.CreateCircle.CreateCircle;
 import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseRetrievalViewModel;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Login.OtpActivity;
-import circleapp.circlepackage.circle.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ObjectModels.Subscriber;
-import circleapp.circlepackage.circle.ObjectModels.User;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
+import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
-import ru.dimorinny.showcasecard.position.Center;
-import ru.dimorinny.showcasecard.step.ShowCaseStep;
-import ru.dimorinny.showcasecard.step.ShowCaseStepDisplayer;
 
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
@@ -84,7 +69,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         location = findViewById(R.id.explore_district_name_display);
         user = SessionStorage.getUser(this);
-        FirebaseRetrievalViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(FirebaseRetrievalViewModel.class);
+        UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
             user = dataSnapshot.getValue(User.class);
@@ -327,9 +312,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     public void processUrl(String url) {
         String circleID = HelperMethods.getCircleIdFromShareURL(url);
 
-        FirebaseRetrievalViewModel viewModel = ViewModelProviders.of(this).get(FirebaseRetrievalViewModel.class);
+        MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsCircleValueCirlceLiveData(circleID);
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsCircleSingleValueLiveData(circleID);
 
         liveData.observe(this, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);

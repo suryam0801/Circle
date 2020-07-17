@@ -1,7 +1,6 @@
-package circleapp.circlepackage.circle.ObjectModels;
+package circleapp.circlepackage.circle.data.ObjectModels;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Poll {
     String question;
