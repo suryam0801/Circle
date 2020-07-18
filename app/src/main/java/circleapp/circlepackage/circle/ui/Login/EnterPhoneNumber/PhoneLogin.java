@@ -101,7 +101,7 @@ public class PhoneLogin extends AppCompatActivity {
                 mGenerateBtn.setTextColor(R.color.black);
                 if(isPhoneNumber10Digits(phone_number)){
                     mGenerateBtn.setEnabled(false);
-                    confirmation.setMessage("Are you sure is this your number " + country_code + " " + phone_number)
+                    confirmation.setMessage("Are you sure is this your number " + country_code + phone_number)
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
