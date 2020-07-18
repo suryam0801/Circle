@@ -89,6 +89,7 @@ public class NewUserRegistration {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private static void addUser(String userId, String downloadUri, String Name, String contact, String avatar, String district, String ward, Activity activity){
+        //TODO Cleanup this place with FBUtil
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
