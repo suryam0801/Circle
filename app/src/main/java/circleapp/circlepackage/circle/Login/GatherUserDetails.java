@@ -10,9 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -28,10 +26,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -39,11 +33,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -52,16 +43,15 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.ImagePicker;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -74,13 +64,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     private Uri downloadUri;
     private CircleImageView profilePic;
-    private FirebaseDatabase database;
     private User user;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private boolean locationExists;
-    ProgressDialog progressDialog;
     SharedPreferences pref;
-    String Name, contact, userId;
+    String Name, contact;
     EditText name;
     Button register;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
@@ -98,14 +85,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
         //Getting the instance and references
-        database = FirebaseDatabase.getInstance();
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
-        progressDialog = new ProgressDialog(GatherUserDetails.this);
-        progressDialog.setTitle("Registering User....");
         avatar = "";
         photo = 0;
         locationExists = false;
@@ -129,9 +113,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setProfile = findViewById(R.id.imagePreview);
 
         setLoginUserObject();
-
-        readLocationDB();
-
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -151,6 +132,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                register.setText("Logging You In...");
                 if (name.getText().equals("") || name.getText().toString().isEmpty()) {
 
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -161,8 +143,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     //The function to register the Users with their appropriate details
-                    progressDialog.show();
-                    UserReg();
+                    NewUserRegistration.userRegister(GatherUserDetails.this, Name, district, ward, downloadUri.toString(), avatar, contact);
 
                 }
             }
@@ -222,19 +203,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             avatar = String.valueOf(R.drawable.avatar8);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
             downloadUri = null;
-        });
-    }
-
-    public void readLocationDB() {
-        LocationsViewModel viewModel = ViewModelProviders.of(GatherUserDetails.this).get(LocationsViewModel.class);
-
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
-        liveData.observe(GatherUserDetails.this, dataSnapshot -> {
-            if (dataSnapshot.exists()) {
-                locationExists=true;
-            } else {
-                return;
-            }
         });
     }
 
@@ -359,154 +327,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         }
         return false; // pass on to other listeners.
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void UserReg() {
-        Log.d(TAG, "User reg called");
-        //Ensure the textboxes are not empty
-        if (!TextUtils.isEmpty(Name)) {
-            //getting the current user id
-            userId = FirebaseWriteHelper.getUser().getUid();
-
-            //Merging the fname and lname to set the displayname to the user for easy access
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(Name)
-                    .build();
-
-            //update the user display name
-            FirebaseWriteHelper.getAuthToken().getCurrentUser().updateProfile(profileUpdates)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                            //Adding the user to collection
-                            if (!locationExists){
-                                FirebaseWriteHelper.addDistrict(district);
-                                createInitialCircles();
-                            }
-
-                            addUser();
-                            Log.d(TAG, "User Registered success fully added");
-                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            //to signout the current firebase user
-                            FirebaseWriteHelper.getAuthToken().signOut();
-                            //delete the user details
-                            FirebaseWriteHelper.getUser().delete();
-                        }
-                    });
-
-        } else {
-            Toast.makeText(GatherUserDetails.this, "Enter Valid details", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    //function that adds the user to the firestore
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void addUser() {
-
-        DatabaseReference usersDB = database.getReference("Users");
-        // storing the tokenid for the notification purposes
-        String token_id = FirebaseInstanceId.getInstance().getToken();
-        Log.d("token",token_id);
-
-        //checking the dowloadUri to store the profile pic
-        //if the downloadUri id null then 'default' value is stored
-        if (downloadUri != null) {
-            //creaeting the user object
-            Log.d(TAG, "DownloadURI ::" + downloadUri);
-            HashMap<String, Boolean> interestTag = new HashMap<>();
-            interestTag.put("null", true);
-            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward,
-                    district, null, null, null, null);
-        } else if (!avatar.equals("")) {
-            HashMap<String, Boolean> interestTag = new HashMap<>();
-            interestTag.put("null", true);
-            Log.d(TAG, "Avatar :: " + avatar);
-            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district,
-                    null, null, null, null);
-        } else {
-            user = new User(Name, contact, "default", userId, 0, 0, 0,
-                    token_id, ward, district, null, null, null, null);
-        }
-        //storing user as a json in file locally
-        SessionStorage.saveUser(GatherUserDetails.this, user);
-        //store user in realtime database. (testing possible options for fastest retrieval)
-        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
-            sendIntentsToExploreTabbed();
-            db.collection("Users")
-                    .document(userId)
-                    .set(user)
-                    .addOnSuccessListener(aVoid -> {
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-                        }
-                    });
-            finishAfterTransition();
-        });
-    }
-    private void sendIntentsToExploreTabbed(){
-        progressDialog.cancel();
-        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(i);
-    }
-
-    private void createInitialCircles() {
-/*
-        //admin circle
-        String adminCircleId, adminNormalBroadcastId, adminPollBroadcastId;
-        adminCircleId = HelperMethods.createCircle("Meet The Developers", "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
-                "Automatic", "The Circle Team", "Admin World", 2, 0, "The Circle App");
-        adminNormalBroadcastId = HelperMethods.createMessageBroadcast("Hi guys, Welcome to Circle", "Use this app to form circles " +
-                "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
-                "opinions. All on a single platform!", "Admin", 1, 0, adminCircleId);
-        HashMap<String, Integer> adminPollOptions = new HashMap<>(); //creating poll options
-        adminPollOptions.put("This app is amazing!", 0);
-        adminPollOptions.put("I'd like to see some changes", 0);
-        adminPollOptions.put("meh :D", 0);
-        adminPollBroadcastId = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!", "Admin",
-                2, adminPollOptions, null, 0, adminCircleId);
-*/
-
-        //quarantine circle
-        String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
-        quarantineCircleId = FirebaseWriteHelper.createDefaultCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
-                "Automatic", "Vijay Ram", district, 2, 0, "Community Discussion");
-
-        quarantineNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
-                        " can help eachother stay safe and clarify any doubts in these uncertain times :)", "Mekkala Nair", 1,
-                0,quarantineCircleId);
-
-        HashMap<String, Integer> quarantinePollOptions = new HashMap<>(); //creating poll options
-        quarantinePollOptions.put("Lets find out at 8 PM", 0);
-        quarantinePollOptions.put("Never :(", 0);
-        quarantinePollOptions.put("Soon? Please be soon!", 0);
-        quarantinePollBroadcastId = FirebaseWriteHelper.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
-                2, quarantinePollOptions,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/modi-us-2126610f-1481508682.jpg?alt=media&token=5ff4230c-945f-4918-9c21-bff5f90c75e9"
-                , 0, quarantineCircleId);
-
-        //students circle
-        String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
-        studentsCircleId = FirebaseWriteHelper.createDefaultCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
-                        "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
-                district, 0, 0, "Students & Clubs");
-
-        studentsNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
-                "You have the support of all the students from " + district + " here!", "Srinithi", 1, 0, studentsCircleId);
-
-        HashMap<String, Integer> pollOptionsStudentsCircle = new HashMap<>(); //creating poll options
-        pollOptionsStudentsCircle.put("no! it will get cancelled!", 0);
-        pollOptionsStudentsCircle.put("im preparing :(", 0);
-        pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
-
-        studentsPollBroadcastId = FirebaseWriteHelper.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
-                pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/k9rd8iesn6ygrioen9cv.jpg?alt=media&token=220677ac-6e5f-473e-a28d-ae5c034e83e1",
-                0, studentsCircleId);
     }
 
     @Override
