@@ -27,7 +27,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.MyCirclesViewModel;
 
 /**
  * A simple {@link Fragment} subclass.

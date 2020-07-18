@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ViewModels;
+package circleapp.circlepackage.circle.ViewModels;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

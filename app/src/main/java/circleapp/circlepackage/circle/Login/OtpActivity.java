@@ -44,7 +44,7 @@ import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.UserViewModel;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
 public class OtpActivity extends AppCompatActivity {

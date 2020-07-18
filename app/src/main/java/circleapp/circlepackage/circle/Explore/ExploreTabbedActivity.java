@@ -41,8 +41,8 @@ import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.UserViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 

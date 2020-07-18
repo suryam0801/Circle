@@ -23,7 +23,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.ViewModels.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.ViewModels.CirclePersonnelViewModel;
 
 public class PersonelDisplay extends AppCompatActivity {
 
