@@ -41,15 +41,15 @@ import java.util.concurrent.TimeUnit;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
 public class OtpActivity extends AppCompatActivity {
 
-    private PhoneAuthProvider.ForceResendingToken resendingToken;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
     private String ward, district, mCountryDialCode, mCountryName;
     private String mAuthVerificationId, phn_number;
@@ -62,6 +62,7 @@ public class OtpActivity extends AppCompatActivity {
     CountDownTimer otpResendTimer;
     int pos;
     boolean autofill = false;
+    private LoginUserObject loginUserObject;
 
     AlertDialog.Builder confirmation;
     ProgressDialog progressDialog;
@@ -73,17 +74,9 @@ public class OtpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
-        //Getting Intents from PhoneLogin
         FirebaseWriteHelper.getUser();
-        ward = getIntent().getStringExtra("ward");
-        district = getIntent().getStringExtra("district");
-        phn_number = getIntent().getStringExtra("phn_num");
-        pos = getIntent().getIntExtra("pos", 0);
-        mCountryName = getIntent().getStringExtra("countryName");
-        mCountryDialCode = getIntent().getStringExtra("dialCode");
-        //Getting AuthCredentials from the PhoneLogin page
-//        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
-        resendingToken = getIntent().getParcelableExtra("resendToken");
+        setTempUserObject();
+
         progressDialog = new ProgressDialog(OtpActivity.this);
         confirmation = new AlertDialog.Builder(this);
         progressDialog.setTitle("Verifying your Number...");
@@ -242,6 +235,15 @@ public class OtpActivity extends AppCompatActivity {
         });
 
     }
+    public void setTempUserObject(){
+        loginUserObject = SessionStorage.getLoginUserObject(this);
+        ward = loginUserObject.getWard();
+        district = loginUserObject.getDistrict();
+        phn_number = loginUserObject.getCompletePhoneNumber();
+        pos = loginUserObject.getPosition();
+        mCountryName = loginUserObject.getCountryName();
+        mCountryDialCode = loginUserObject.getCountryDialCode();
+    }
 
     //Function to check the given OTP
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -282,21 +284,6 @@ public class OtpActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        phn_number = getIntent().getStringExtra("phn_num");
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phn_number,
-                60,
-                TimeUnit.SECONDS,
-                OtpActivity.this,
-                mCallbacks
-        );
-//        to check the user and change the BUtton text based on the user
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void sendBackToPhoneNumberEntry(){
@@ -352,12 +339,23 @@ public class OtpActivity extends AppCompatActivity {
         Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        homeIntent.putExtra("phn", phn_number);
-        homeIntent.putExtra("ward", ward);
-        homeIntent.putExtra("district", district);
         //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
         Log.d("OtpActivity", ward + "::" + district);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        phn_number = SessionStorage.getLoginUserObject(this).getCompletePhoneNumber();
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phn_number,
+                60,
+                TimeUnit.SECONDS,
+                OtpActivity.this,
+                mCallbacks
+        );
+//        to check the user and change the BUtton text based on the user
     }
 
     @Override
@@ -377,17 +375,6 @@ public class OtpActivity extends AppCompatActivity {
     public void onBackPressed() {
         finishAfterTransition();
         Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
-        intent.putExtra("pos", pos);
-        intent.putExtra("countryName", mCountryName);
-        intent.putExtra("dialCode", mCountryDialCode);
-        if (ward == null)
-            intent.putExtra("ward", "default");
-        else
-            intent.putExtra("ward", ward.trim());
-        intent.putExtra("district", district.trim());
-        intent.putExtra("ward", ward);
-        intent.putExtra("district", district);
-        intent.putExtra("fail", "1");
         startActivity(intent);
     }
 }
