@@ -34,7 +34,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,9 +58,10 @@ import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.ImagePicker;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ViewModels.LocationsViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -71,9 +71,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private String TAG = GatherUserDetails.class.getSimpleName();
 
     private Uri filePath;
-    private static final int PICK_IMAGE_REQUEST = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
-    private static final int REQUEST_IMAGE_CAPTURE = 102;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     private Uri downloadUri;
     private CircleImageView profilePic;
@@ -93,12 +91,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RelativeLayout setProfile;
     int photo;
     private long mLastClickTime = 0; // Prevent double click
-
-
-    //location services elements
-    private FusedLocationProviderClient client;
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private String ward, district, temp;
+    private String ward, district;
+    private LoginUserObject loginUserObject;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -136,8 +130,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
 
-        ward = getIntent().getStringExtra("ward");
-        district = getIntent().getStringExtra("district");
+        setLoginUserObject();
 
         readLocationDB();
 
@@ -177,7 +170,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 } else {
                     Name = name.getText().toString();
                     Name = Name.replaceAll("\\s+", " ");
-                    contact = pref.getString("key_name5", null);
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -188,6 +180,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 }
             }
         });
+    }
+    private void setLoginUserObject(){
+        loginUserObject = SessionStorage.getLoginUserObject(this);
+        ward = loginUserObject.getWard();
+        district = loginUserObject.getDistrict();
+        contact = loginUserObject.getCompletePhoneNumber();
     }
     private void setAvatarOnclickListeners(){
         avatar1.setOnClickListener(v -> {

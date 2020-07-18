@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ViewModels;
+package circleapp.circlepackage.circle.ViewModels.FBDatabaseReads;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -10,13 +10,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
 
-public class LocationsViewModel extends ViewModel {
+public class UserViewModel extends ViewModel {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static final DatabaseReference LOCATIONS_REF = database.getReference("/Locations");
+    private static final DatabaseReference USERS_REF = database.getReference("/Users");
 
     @NonNull
-    public LiveData<DataSnapshot> getDataSnapsLocationsSingleValueLiveData(String district) {
-        FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(LOCATIONS_REF.child(district));
+    public LiveData<DataSnapshot> getDataSnapsUserValueCirlceLiveData(String uid) {
+        FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(USERS_REF.child(uid));
         return liveUserData;
     }
 }
