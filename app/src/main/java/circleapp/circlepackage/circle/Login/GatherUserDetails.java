@@ -71,7 +71,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private String TAG = GatherUserDetails.class.getSimpleName();
 
     private Uri filePath;
-    private static final int STORAGE_PERMISSION_CODE = 101;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     private Uri downloadUri;
     private CircleImageView profilePic;
@@ -90,7 +89,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
-    private long mLastClickTime = 0; // Prevent double click
     private String ward, district;
     private LoginUserObject loginUserObject;
 
@@ -141,22 +139,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setAvatarOnclickListeners();
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-            //prevent double click to prevent windowleak
-            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
-                return;
-            }
-            mLastClickTime = SystemClock.elapsedRealtime();
-                    if (ContextCompat.checkSelfPermission(GatherUserDetails.this,
-                            CAMERA)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(GatherUserDetails.this,
-                                new String[]{CAMERA},
-                                STORAGE_PERMISSION_CODE);
+                    if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                        runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
                     } else {
-                        setProfile.setEnabled(false);
                         Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
                         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                        setProfile.setEnabled(true);
                     }
                 });
 

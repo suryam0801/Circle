@@ -74,13 +74,12 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
+import static android.Manifest.permission.CAMERA;
+
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     RuntimePermissionHelper runtimePermissionHelper;
     private Uri filePath;
-    private static final int PICK_IMAGE_REQUEST = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
-    private static final int REQUEST_IMAGE_CAPTURE = 102;
     private static final int PICK_IMAGE_ID = 234;
     private Uri downloadUri;
 
@@ -479,12 +478,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         cancelPhotoButton.setOnClickListener(view -> createPhotoBroadcastPopup.dismiss());
 
         photoUploadButtonView.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(CircleWall.this,
-                    Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(CircleWall.this,
-                        new String[]{Manifest.permission.CAMERA},
-                        STORAGE_PERMISSION_CODE);
+            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
             }
             else {
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
@@ -534,12 +529,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         pollUploadButtonView.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(CircleWall.this,
-                    Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(CircleWall.this,
-                        new String[]{Manifest.permission.CAMERA},
-                        STORAGE_PERMISSION_CODE);
+            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
             }
             else {
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());

@@ -59,6 +59,9 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+
 public class CreateCircle extends AppCompatActivity {
 
     private String TAG = CreateCircle.class.getSimpleName();
@@ -76,9 +79,6 @@ public class CreateCircle extends AppCompatActivity {
     private CircleImageView backgroundPic;
     private Uri filePath, downloadUri;
     private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
-    private static final int PICK_IMAGE_REQUEST = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
-    private static final int REQUEST_IMAGE_CAPTURE = 102;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
@@ -134,12 +134,8 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         addLogo.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(CreateCircle.this,
-                    Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(CreateCircle.this,
-                        new String[]{Manifest.permission.CAMERA},
-                        STORAGE_PERMISSION_CODE);
+            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
             }
             else {
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());

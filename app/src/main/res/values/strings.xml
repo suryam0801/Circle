@@ -6,7 +6,7 @@
     <string name="permission_message">Location permission is needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
-    <string name="camera_permission_message">Camera permissions needed to take photo</string>
+    <string name="camera_permission_message">Camera permissions needed to upload photo</string>
     <string name="storage_permission_message">Storage permissions needed to take photo</string>
     <string name="button_label_on">\u2713 on</string>
     <string name="button_label_off">off</string>
