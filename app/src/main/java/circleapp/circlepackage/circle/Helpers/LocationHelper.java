@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ViewModels.LoginViewModels.EntryPage;
+package circleapp.circlepackage.circle.Helpers;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

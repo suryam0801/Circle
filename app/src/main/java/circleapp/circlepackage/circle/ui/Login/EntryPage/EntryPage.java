@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.EntryPage.LocationHelper;
+import circleapp.circlepackage.circle.Helpers.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
 
@@ -57,6 +57,8 @@ public class EntryPage extends AppCompatActivity{
         {
             getUserLocation();
         }
+        else
+            agreeContinue.setClickable(true);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
