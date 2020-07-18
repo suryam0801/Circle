@@ -289,17 +289,6 @@ public class OtpActivity extends AppCompatActivity {
     private void sendBackToPhoneNumberEntry(){
         finishAfterTransition();
         Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
-        intent.putExtra("pos", pos);
-        intent.putExtra("countryName", mCountryName);
-        intent.putExtra("dialCode", mCountryDialCode);
-        if (ward == null)
-            intent.putExtra("ward", "default");
-        else
-            intent.putExtra("ward", ward.trim());
-        intent.putExtra("district", district.trim());
-        intent.putExtra("ward", ward);
-        intent.putExtra("district", district);
-        intent.putExtra("fail", "1");
         startActivity(intent);
     }
     private void setResendOtpButton(){
