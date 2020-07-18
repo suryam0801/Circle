@@ -33,10 +33,9 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import static circleapp.circlepackage.circle.ui.MainActivity.TAG;
 
 public class NewUserRegistration {
-    private static boolean locationExists = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void userRegister(Activity activity, String Name,  String district, String ward, String downloadUri, String avatar, String contact){
+    public static void userRegister(Activity activity, String Name,  String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists){
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
             String userId = FirebaseWriteHelper.getUser().getUid();
@@ -52,7 +51,6 @@ public class NewUserRegistration {
                         if (task.isSuccessful()) {
                             Toast.makeText(activity, "User Registered Successfully", Toast.LENGTH_LONG).show();
                             //Adding the user to collection
-                            readLocationDB(activity, district);
                             if (!locationExists){
                                 FirebaseWriteHelper.addDistrict(district);
                                 createInitialCircles(district);
@@ -73,18 +71,6 @@ public class NewUserRegistration {
         } else {
             Toast.makeText(activity, "Enter Valid details", Toast.LENGTH_LONG).show();
         }
-    }
-    private static void readLocationDB(Activity activity, String district){
-        LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) activity).get(LocationsViewModel.class);
-
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
-        liveData.observe((LifecycleOwner) activity, dataSnapshot -> {
-            if (dataSnapshot.exists()) {
-                locationExists=true;
-            } else {
-                return;
-            }
-        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Login;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,6 +27,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -33,6 +38,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.OnProgressListener;
@@ -48,9 +54,9 @@ import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.ImagePicker;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -64,7 +70,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     private Uri downloadUri;
     private CircleImageView profilePic;
-    private User user;
     private boolean locationExists;
     SharedPreferences pref;
     String Name, contact;
@@ -75,7 +80,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
-    int photo;
     private String ward, district;
     private LoginUserObject loginUserObject;
 
@@ -85,30 +89,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gather_user_details);
         //Getting the instance and references
-        avatarList = new ImageButton[8];
-        avatarBgList = new ImageView[8];
+
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
         Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         avatar = "";
-        photo = 0;
         locationExists = false;
-        avatarList[0] = avatar1 = findViewById(R.id.avatar1);
-        avatarList[1] = avatar2 = findViewById(R.id.avatar2);
-        avatarList[2] = avatar3 = findViewById(R.id.avatar3);
-        avatarList[3] = avatar4 = findViewById(R.id.avatar4);
-        avatarList[4] = avatar5 = findViewById(R.id.avatar5);
-        avatarList[5] = avatar6 = findViewById(R.id.avatar6);
-        avatarList[6] = avatar7 = findViewById(R.id.avatar7);
-        avatarList[7] = avatar8 = findViewById(R.id.avatar8);
-        avatarBgList[0] = avatar1_bg = findViewById(R.id.avatar1_State);
-        avatarBgList[1] = avatar2_bg = findViewById(R.id.avatar2_State);
-        avatarBgList[2] = avatar3_bg = findViewById(R.id.avatar3_State);
-        avatarBgList[3] = avatar4_bg = findViewById(R.id.avatar4_State);
-        avatarBgList[4] = avatar5_bg = findViewById(R.id.avatar5_State);
-        avatarBgList[5] = avatar6_bg = findViewById(R.id.avatar6_State);
-        avatarBgList[6] = avatar7_bg = findViewById(R.id.avatar7_State);
-        avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
+
+        setAvatarViews();
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
 
@@ -143,17 +131,41 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     //The function to register the Users with their appropriate details
-                    NewUserRegistration.userRegister(GatherUserDetails.this, Name, district, ward, downloadUri.toString(), avatar, contact);
+                    String imageLink = getImageLinkAsString();
+                    NewUserRegistration.userRegister(GatherUserDetails.this, Name, district, ward, imageLink, avatar, contact, locationExists);
 
                 }
             }
         });
+    }
+    private void setAvatarViews(){
+
+        avatarList = new ImageButton[8];
+        avatarBgList = new ImageView[8];
+
+        avatarList[0] = avatar1 = findViewById(R.id.avatar1);
+        avatarList[1] = avatar2 = findViewById(R.id.avatar2);
+        avatarList[2] = avatar3 = findViewById(R.id.avatar3);
+        avatarList[3] = avatar4 = findViewById(R.id.avatar4);
+        avatarList[4] = avatar5 = findViewById(R.id.avatar5);
+        avatarList[5] = avatar6 = findViewById(R.id.avatar6);
+        avatarList[6] = avatar7 = findViewById(R.id.avatar7);
+        avatarList[7] = avatar8 = findViewById(R.id.avatar8);
+        avatarBgList[0] = avatar1_bg = findViewById(R.id.avatar1_State);
+        avatarBgList[1] = avatar2_bg = findViewById(R.id.avatar2_State);
+        avatarBgList[2] = avatar3_bg = findViewById(R.id.avatar3_State);
+        avatarBgList[3] = avatar4_bg = findViewById(R.id.avatar4_State);
+        avatarBgList[4] = avatar5_bg = findViewById(R.id.avatar5_State);
+        avatarBgList[5] = avatar6_bg = findViewById(R.id.avatar6_State);
+        avatarBgList[6] = avatar7_bg = findViewById(R.id.avatar7_State);
+        avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
     }
     private void setLoginUserObject(){
         loginUserObject = SessionStorage.getLoginUserObject(this);
         ward = loginUserObject.getWard();
         district = loginUserObject.getDistrict();
         contact = loginUserObject.getCompletePhoneNumber();
+        readLocationDB();
     }
     private void setAvatarOnclickListeners(){
         avatar1.setOnClickListener(v -> {
@@ -204,6 +216,24 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
             downloadUri = null;
         });
+    }
+    private void readLocationDB(){
+        LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
+
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
+        liveData.observe((LifecycleOwner) this, dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                locationExists=true;
+            } else {
+                return;
+            }
+        });
+    }
+    private String getImageLinkAsString(){
+        if(downloadUri==null)
+            return null;
+        else
+            return downloadUri.toString();
     }
 
     private void uploadImage(){
