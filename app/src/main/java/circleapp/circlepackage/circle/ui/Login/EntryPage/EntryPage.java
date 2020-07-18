@@ -16,8 +16,7 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.LocationHelper;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.EntryPage.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
 

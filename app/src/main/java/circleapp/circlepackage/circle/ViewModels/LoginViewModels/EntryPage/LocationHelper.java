@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Helpers;
+package circleapp.circlepackage.circle.ViewModels.LoginViewModels.EntryPage;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
