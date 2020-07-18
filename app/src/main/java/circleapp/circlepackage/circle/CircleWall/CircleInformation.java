@@ -32,7 +32,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.ViewModels.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.ViewModels.CirclePersonnelViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleInformation extends AppCompatActivity {

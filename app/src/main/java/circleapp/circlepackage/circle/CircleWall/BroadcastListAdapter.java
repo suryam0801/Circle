@@ -51,7 +51,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.MyCirclesViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {

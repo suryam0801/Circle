@@ -55,7 +55,13 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             Glide.with(mContext)
                     .load(selectedApplicant.getPhotoURI())
                     .into(holder.profPic);
-        } else {
+        }
+        else if(selectedApplicant.getPhotoURI().equals("default")){
+            Glide.with(mContext)
+                    .load(ContextCompat.getDrawable(mContext, R.drawable.default_profile_pic))
+                    .into(holder.profPic);
+        }
+        else {
             propic = Integer.parseInt(selectedApplicant.getPhotoURI());
             myImageList = propic;
             Glide.with(mContext)

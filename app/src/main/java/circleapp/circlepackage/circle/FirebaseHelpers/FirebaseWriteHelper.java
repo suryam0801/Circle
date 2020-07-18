@@ -56,8 +56,8 @@ import circleapp.circlepackage.circle.data.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.UserViewModel;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
