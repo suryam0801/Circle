@@ -82,9 +82,9 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".PersonelDisplay.PersonelDisplay"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Login.GatherUserDetails"
+        <activity android:name=".ui.Login.OtpModule.GatherUserDetails"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Login.OtpActivity"
+        <activity android:name=".ui.Login.OtpModule.OtpActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.Login.EnterPhoneNumber.PhoneLogin"
             android:screenOrientation="portrait"/>

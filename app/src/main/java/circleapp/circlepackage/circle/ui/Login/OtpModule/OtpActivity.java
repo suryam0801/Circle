@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Login;
+package circleapp.circlepackage.circle.ui.Login.OtpModule;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -40,9 +40,9 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.OtpViewModel;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.PhoneCallbacksListener;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
 public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
@@ -72,7 +72,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
-        FirebaseWriteHelper.getUser();
+//        FirebaseWriteHelper.getUser();
         setTempUserObject();
 
         progressDialog = new ProgressDialog(OtpActivity.this);
@@ -271,7 +271,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
                         mAuthVerificationId = s;
                         mVerifyBtn.setClickable(true);
                         mVerifyBtn.setEnabled(true);
-                        if(autofill==true){
+                        if(autofill){
                             mVerifyBtn.setText("Verifying OTP");
                             mVerifyBtn.performClick();
                         }

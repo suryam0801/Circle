@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumb
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -12,15 +11,15 @@ import java.util.Locale;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Login.OtpActivity;
+import circleapp.circlepackage.circle.ui.Login.OtpModule.OtpActivity;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
 public class EnterPhoneNumberDriver {
     public static String  setCountryCode(String code, String[] arrContryCode){
         String contryDialCode = null;
-        for(int i=0; i<arrContryCode.length; i++){
-            String[] arrDial = arrContryCode[i].split(",");
-            if(arrDial[1].trim().equals(code.trim())){
+        for (String s : arrContryCode) {
+            String[] arrDial = s.split(",");
+            if (arrDial[1].trim().equals(code.trim())) {
                 contryDialCode = arrDial[0];
                 break;
             }
@@ -56,9 +55,7 @@ public class EnterPhoneNumberDriver {
         SessionStorage.saveLoginUserObject(activity, loginUserObject);
     }
     public static boolean isPhoneNumber10Digits(String phoneNumber){
-        if(phoneNumber.length()==10)
-            return true;
-        return false;
+        return phoneNumber.length() == 10;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
