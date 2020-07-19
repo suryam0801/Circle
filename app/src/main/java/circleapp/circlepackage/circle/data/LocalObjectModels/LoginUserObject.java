@@ -2,9 +2,17 @@ package circleapp.circlepackage.circle.data.LocalObjectModels;
 
 public class LoginUserObject {
     private int position;
-    private String ward, district,countryDialCode,countryName, completePhoneNumber;
+    private String ward, district,countryDialCode,countryName, completePhoneNumber,uid;
 
     public LoginUserObject() {
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public int getPosition() {

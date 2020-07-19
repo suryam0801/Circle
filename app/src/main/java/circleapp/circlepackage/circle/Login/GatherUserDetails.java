@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -39,8 +40,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -49,6 +52,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.ImagePicker;
@@ -58,6 +62,7 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewMo
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.data.ObjectModels.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -65,6 +70,11 @@ import static android.Manifest.permission.CAMERA;
 public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
 
     private String TAG = GatherUserDetails.class.getSimpleName();
+//
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    ProgressDialog progressDialog;
+    private FirebaseDatabase database;
+//
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -75,9 +85,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     String Name, contact;
     EditText name;
     Button register;
+    User user;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    String avatar,uid;
+    String avatar,userId, uid;
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     private String ward, district;
@@ -111,13 +122,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setAvatarOnclickListeners();
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-                    if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
-                        runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
-                    } else {
-                        Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                    }
-                });
+            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
+            } else {
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
+        });
 
         // Listener for Register button
         register.setOnClickListener(new View.OnClickListener() {
@@ -135,13 +146,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     //The function to register the Users with their appropriate details
                     String imageLink = getImageLinkAsString();
-                    NewUserRegistration.userRegister(GatherUserDetails.this, Name, district, ward, imageLink, avatar, contact, locationExists);
+                    NewUserRegistration.userRegister(GatherUserDetails.this,uid, Name, district, ward, imageLink, avatar, contact, locationExists);
 
                 }
             }
         });
     }
-    private void setAvatarViews(){
+
+    private void setAvatarViews() {
 
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
@@ -163,14 +175,16 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatarBgList[6] = avatar7_bg = findViewById(R.id.avatar7_State);
         avatarBgList[7] = avatar8_bg = findViewById(R.id.avatar8_State);
     }
-    private void setLoginUserObject(){
+
+    private void setLoginUserObject() {
         loginUserObject = SessionStorage.getLoginUserObject(this);
         ward = loginUserObject.getWard();
         district = loginUserObject.getDistrict();
         contact = loginUserObject.getCompletePhoneNumber();
         readLocationDB();
     }
-    private void setAvatarOnclickListeners(){
+
+    private void setAvatarOnclickListeners() {
         avatar1.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar1);
@@ -220,26 +234,28 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             downloadUri = null;
         });
     }
-    private void readLocationDB(){
+
+    private void readLocationDB() {
         LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
 
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
         liveData.observe((LifecycleOwner) this, dataSnapshot -> {
             if (dataSnapshot.exists()) {
-                locationExists=true;
+                locationExists = true;
             } else {
                 return;
             }
         });
     }
-    private String getImageLinkAsString(){
-        if(downloadUri==null)
+
+    private String getImageLinkAsString() {
+        if (downloadUri == null)
             return null;
         else
             return downloadUri.toString();
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         if (filePath != null) {
             ContentResolver resolver = getContentResolver();
             HelperMethods.compressImage(resolver, filePath);
@@ -321,15 +337,16 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
     //code for upload the image
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
+        switch (requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
-                if(downloadUri!=null){
+                downloadUri = ImagePicker.getImageUri(getApplicationContext(), bitmap);
+                if (downloadUri != null) {
                     filePath = downloadUri;
                     uploadImage();
                 }
@@ -361,111 +378,17 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         return false; // pass on to other listeners.
 
     }
+        @Override
+        protected void onResume () {
+            super.onResume();
+            FirebaseWriteHelper.getAuthToken();
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void UserReg() {
-        Log.d(TAG, "User reg called");
-        //Ensure the textboxes are not empty
-        if (!TextUtils.isEmpty(Name)) {
-            //getting the current user id
-//            userId = FirebaseWriteHelper.getUser().getUid();
-            userId = uid;
-            //Merging the fname and lname to set the displayname to the user for easy access
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(Name)
-                    .build();
-
-            //update the user display name
-            FirebaseWriteHelper.getAuthToken().getCurrentUser().updateProfile(profileUpdates)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                            //Adding the user to collection
-                            if (!locationExists){
-                                FirebaseWriteHelper.addDistrict(district);
-                                createInitialCircles();
-                            }
-
-                            addUser();
-                            Log.d(TAG, "User Registered success fully added");
-                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                            //to signout the current firebase user
-                            FirebaseWriteHelper.getAuthToken().signOut();
-                            //delete the user details
-                            FirebaseWriteHelper.getUser().delete();
-                        }
-                    });
-
-        } else {
-            Toast.makeText(GatherUserDetails.this, "Enter Valid details", Toast.LENGTH_LONG).show();
         }
-    }
 
-    //function that adds the user to the firestore
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void addUser() {
-
-        DatabaseReference usersDB = database.getReference("Users");
-        // storing the tokenid for the notification purposes
-        String token_id = FirebaseInstanceId.getInstance().getToken();
-        Log.d("token",token_id);
-
-        //checking the dowloadUri to store the profile pic
-        //if the downloadUri id null then 'default' value is stored
-        if (downloadUri != null) {
-            //creaeting the user object
-            Log.d(TAG, "DownloadURI ::" + downloadUri);
-            HashMap<String, Boolean> interestTag = new HashMap<>();
-            interestTag.put("null", true);
-            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward,
-                    district, null, null, null, null);
-        } else if (!avatar.equals("")) {
-            HashMap<String, Boolean> interestTag = new HashMap<>();
-            interestTag.put("null", true);
-            Log.d(TAG, "Avatar :: " + avatar);
-            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district,
-                    null, null, null, null);
-        } else {
-            user = new User(Name, contact, "default", userId, 0, 0, 0,
-                    token_id, ward, district, null, null, null, null);
+        @Override
+        protected void onStart () {
+            super.onStart();
+            FirebaseWriteHelper.getAuthToken();
         }
-        //storing user as a json in file locally
-        SessionStorage.saveUser(GatherUserDetails.this, user);
-        //store user in realtime database. (testing possible options for fastest retrieval)
-        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
-            sendIntentsToExploreTabbed();
-            db.collection("Users")
-                    .document(userId)
-                    .set(user)
-                    .addOnSuccessListener(aVoid -> {
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
-                        }
-                    });
-            finish();
-        });
-    }
-    private void sendIntentsToExploreTabbed(){
-        progressDialog.cancel();
-        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(i);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        FirebaseWriteHelper.getAuthToken();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseWriteHelper.getAuthToken();
-    }
 }
