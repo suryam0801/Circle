@@ -77,7 +77,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     Button register;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    String avatar;
+    String avatar,uid;
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     private String ward, district;
@@ -100,7 +100,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
 
+        uid = getIntent().getStringExtra("uid");
+
         setLoginUserObject();
+
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -359,10 +362,105 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void UserReg() {
+        Log.d(TAG, "User reg called");
+        //Ensure the textboxes are not empty
+        if (!TextUtils.isEmpty(Name)) {
+            //getting the current user id
+//            userId = FirebaseWriteHelper.getUser().getUid();
+            userId = uid;
+            //Merging the fname and lname to set the displayname to the user for easy access
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(Name)
+                    .build();
+
+            //update the user display name
+            FirebaseWriteHelper.getAuthToken().getCurrentUser().updateProfile(profileUpdates)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                            //Adding the user to collection
+                            if (!locationExists){
+                                FirebaseWriteHelper.addDistrict(district);
+                                createInitialCircles();
+                            }
+
+                            addUser();
+                            Log.d(TAG, "User Registered success fully added");
+                            Toast.makeText(GatherUserDetails.this, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(GatherUserDetails.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            //to signout the current firebase user
+                            FirebaseWriteHelper.getAuthToken().signOut();
+                            //delete the user details
+                            FirebaseWriteHelper.getUser().delete();
+                        }
+                    });
+
+        } else {
+            Toast.makeText(GatherUserDetails.this, "Enter Valid details", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //function that adds the user to the firestore
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void addUser() {
+
+        DatabaseReference usersDB = database.getReference("Users");
+        // storing the tokenid for the notification purposes
+        String token_id = FirebaseInstanceId.getInstance().getToken();
+        Log.d("token",token_id);
+
+        //checking the dowloadUri to store the profile pic
+        //if the downloadUri id null then 'default' value is stored
+        if (downloadUri != null) {
+            //creaeting the user object
+            Log.d(TAG, "DownloadURI ::" + downloadUri);
+            HashMap<String, Boolean> interestTag = new HashMap<>();
+            interestTag.put("null", true);
+            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward,
+                    district, null, null, null, null);
+        } else if (!avatar.equals("")) {
+            HashMap<String, Boolean> interestTag = new HashMap<>();
+            interestTag.put("null", true);
+            Log.d(TAG, "Avatar :: " + avatar);
+            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district,
+                    null, null, null, null);
+        } else {
+            user = new User(Name, contact, "default", userId, 0, 0, 0,
+                    token_id, ward, district, null, null, null, null);
+        }
+        //storing user as a json in file locally
+        SessionStorage.saveUser(GatherUserDetails.this, user);
+        //store user in realtime database. (testing possible options for fastest retrieval)
+        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
+            sendIntentsToExploreTabbed();
+            db.collection("Users")
+                    .document(userId)
+                    .set(user)
+                    .addOnSuccessListener(aVoid -> {
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "Failed to create user", Toast.LENGTH_LONG).show();
+                        }
+                    });
+            finish();
+        });
+    }
+    private void sendIntentsToExploreTabbed(){
+        progressDialog.cancel();
+        Intent i = new Intent(GatherUserDetails.this, ExploreTabbedActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(i);
+
     @Override
     protected void onResume() {
         super.onResume();
         FirebaseWriteHelper.getAuthToken();
+
     }
 
     @Override
