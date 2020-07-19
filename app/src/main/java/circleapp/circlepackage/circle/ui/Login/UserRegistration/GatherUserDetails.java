@@ -1,7 +1,5 @@
-package circleapp.circlepackage.circle.ui.Login.OtpModule;
+package circleapp.circlepackage.circle.ui.Login.UserRegistration;
 
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -23,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
@@ -32,57 +28,37 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.Objects;
-import java.util.UUID;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener {
-
-    private String TAG = GatherUserDetails.class.getSimpleName();
-//
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    ProgressDialog progressDialog;
-    private FirebaseDatabase database;
-//
+public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener, ImageUploadSuccessListener {
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-    private Uri downloadUri;
+    private Uri downloadLink;
     private CircleImageView profilePic;
     private boolean locationExists;
     SharedPreferences pref;
     String Name, contact;
     EditText name;
     Button register;
-    User user;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    String avatar,userId, uid;
+    String avatar, uid;
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     private String ward, district;
@@ -104,8 +80,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setAvatarViews();
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
-
-        uid = getIntent().getStringExtra("uid");
 
         setLoginUserObject();
 
@@ -175,6 +149,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         ward = loginUserObject.getWard();
         district = loginUserObject.getDistrict();
         contact = loginUserObject.getCompletePhoneNumber();
+        uid = loginUserObject.getUid();
         readLocationDB();
     }
 
@@ -183,49 +158,49 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar1);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar2.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar2);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar3.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar3);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar4.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar4);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar5.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar5);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar6.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar6);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar7.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar7);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
         avatar8.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar8);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
-            downloadUri = null;
+            downloadLink = null;
         });
     }
 
@@ -243,76 +218,24 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     private String getImageLinkAsString() {
-        if (downloadUri == null)
+        if (downloadLink == null)
             return null;
         else
-            return downloadUri.toString();
+            return downloadLink.toString();
     }
 
-    private void uploadImage() {
-        if (filePath != null) {
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
-            //Creating an  custom dialog to show the uploading status
-            final ProgressDialog progressDialog = new ProgressDialog(GatherUserDetails.this);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
+    private void uploadUserProfilePic(){
+        ImageUpload imageUpload = new ImageUpload();
+        imageUpload.imageUpload(this, filePath);
+        isImageUploadSuccess(downloadLink,filePath);
+    }
 
-            //generating random id to store the profliepic
-            String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
-
-            //storing  the pic
-            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                    //displaying percentage in progress dialog
-                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                }
-            })
-                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw Objects.requireNonNull(task.getException());
-                            }
-
-                            // Continue with the task to get the download URL
-                            return profileRef.getDownloadUrl();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    progressDialog.dismiss();
-                    //and displaying a success toast
-//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                    downloadUri = uri;
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(uri)
-                            .build();
-                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates);
-                    Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                    Glide.with(GatherUserDetails.this).load(filePath).into(profilePic);
-                    filePath = null;
-                    for (int i = 0; i < 8; i++) {
-                        avatarBgList[i].setVisibility(View.INVISIBLE);
-                    }
-
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
-
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
+        Glide.with(this).load(localFilePath).into(profilePic);
+        downloadLink = downloadUri;
+        filePath = null;
+        for (int i = 0; i < 8; i++) {
+            avatarBgList[i].setVisibility(View.INVISIBLE);
         }
     }
 
@@ -335,14 +258,14 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     //code for upload the image
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadUri = ImagePicker.getImageUri(getApplicationContext(), bitmap);
-                if (downloadUri != null) {
-                    filePath = downloadUri;
-                    uploadImage();
+                downloadLink = ImagePicker.getImageUri(getApplicationContext(), bitmap);
+                if (downloadLink != null) {
+                    filePath = downloadLink;
+                    uploadUserProfilePic();
                 }
                 break;
             default:

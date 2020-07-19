@@ -1,14 +1,8 @@
 package circleapp.circlepackage.circle.CreateCircle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -33,24 +26,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
@@ -59,10 +45,9 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
 
-public class CreateCircle extends AppCompatActivity {
+public class CreateCircle extends AppCompatActivity implements ImageUploadSuccessListener {
 
     private String TAG = CreateCircle.class.getSimpleName();
 
@@ -77,7 +62,7 @@ public class CreateCircle extends AppCompatActivity {
     private TextView categoryName;
     private RelativeLayout addLogo;
     private CircleImageView backgroundPic;
-    private Uri filePath, downloadUri;
+    private Uri filePath, downloadLink;
     private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     RuntimePermissionHelper runtimePermissionHelper;
@@ -190,8 +175,8 @@ public class CreateCircle extends AppCompatActivity {
 
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
         tempUserForMemberList.put(creatorUserID, true);
-        if (downloadUri != null)
-            backgroundImageLink = downloadUri.toString();
+        if (downloadLink != null)
+            backgroundImageLink = downloadLink.toString();
         else
             backgroundImageLink = "default";
 
@@ -226,70 +211,18 @@ public class CreateCircle extends AppCompatActivity {
             startActivity(intent);
         }
     }
-    private void uploadLogo(){
-        if (filePath != null) {
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
+    private void uploadCircleLogo(){
+        ImageUpload imageUpload = new ImageUpload();
+        imageUpload.imageUpload(this, filePath);
+        isImageUploadSuccess(downloadLink,filePath);
+    }
 
-            //Creating an  custom dialog to show the uploading status
-            final ProgressDialog progressDialog = new ProgressDialog(CreateCircle.this);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
-
-            //generating random id to store the backgroundpic
-            String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("BackgroundPics/" + id);
-
-            //storing  the pic
-            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                    //displaying percentage in progress dialog
-                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                }
-            })
-                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-
-                            // Continue with the task to get the download URL
-                            return profileRef.getDownloadUrl();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    progressDialog.dismiss();
-                    //and displaying a success toast
-//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                    downloadUri = uri;
-                    backgroundText.setVisibility(View.GONE);
-                    logoHelp.setVisibility(View.GONE);
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(uri)
-                            .build();
-                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
-                    Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                    Glide.with(CreateCircle.this).load(filePath).into(backgroundPic);
-                    filePath = null;
-
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-        }
+    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
+        Glide.with(this).load(localFilePath).into(backgroundPic);
+        downloadLink = downloadUri;
+        filePath = null;
+        backgroundText.setVisibility(View.GONE);
+        logoHelp.setVisibility(View.GONE);
     }
 
     //Check whether the permission is granted or not for uploading the profile pic
@@ -316,10 +249,10 @@ public class CreateCircle extends AppCompatActivity {
         switch(requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
-                if(downloadUri!=null){
-                    filePath = downloadUri;
-                    uploadLogo();
+                downloadLink = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(downloadLink !=null){
+                    filePath = downloadLink;
+                    uploadCircleLogo();
                 }
                 break;
             default:

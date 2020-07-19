@@ -1,9 +1,7 @@
 package circleapp.circlepackage.circle.CircleWall;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -12,10 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -41,27 +37,19 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
@@ -81,10 +69,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     RuntimePermissionHelper runtimePermissionHelper;
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234;
-    private Uri downloadUri;
-
-
-    private String TAG = CircleWall.class.getSimpleName();
+    private Uri downloadLink;
 
     private LinearLayout emptyDisplay;
 
@@ -437,7 +422,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createNormalBroadcastPopup.setContentView(R.layout.normal_broadcast_create_popup); //set dialog view
         createNormalBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
         createNormalBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        downloadUri = null;
+        downloadLink = null;
 
         broadcastHeader = createNormalBroadcastPopup.findViewById(R.id.broadcast_header);
         setTitleET = createNormalBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
@@ -464,7 +449,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createPhotoBroadcastPopup.setContentView(R.layout.photo_broadcast_create_popup); //set dialog view
         createPhotoBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
         createPhotoBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        downloadUri = null;
+        downloadLink = null;
 
         setTitlePhoto = createPhotoBroadcastPopup.findViewById(R.id.photoTitleEditText);
         setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -487,7 +472,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             }
         });
         btnUploadPhotoBroadcast.setOnClickListener(view -> {
-            if (downloadUri != null && !setTitlePhoto.getText().toString().isEmpty()) {
+            if (downloadLink != null && !setTitlePhoto.getText().toString().isEmpty()) {
                 imageExists = true;
                 createPhotoBroadcast();
             } else
@@ -503,7 +488,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         createPollBroadcastPopup.setContentView(R.layout.poll_broadcast_create_popup); //set dialog view
         createPollBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
         createPollBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        downloadUri = null;
+        downloadLink = null;
 
         setPollQuestionET = createPollBroadcastPopup.findViewById(R.id.poll_create_question_editText);
         setPollQuestionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -568,7 +553,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             if (pollAnswerOptionsList.isEmpty() || setPollQuestionET.getText().toString().isEmpty())
                 Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
             else {
-                if (downloadUri != null)
+                if (downloadLink != null)
                     imageExists = true;
                 createPollBroadcast();
             }
@@ -614,7 +599,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         String currentUserId = user.getUserId();
         Broadcast photoBroadcast = new Broadcast();
         if (imageExists) {
-            photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadUri.toString(), currentUserName, circle.getMembersList(), currentUserId, false, true,
+            photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, false, true,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0,true);
         }
 
@@ -652,7 +637,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
             Poll poll = new Poll(pollQuestion, options, null);
             if (imageExists) {
-                pollBroadcast = new Broadcast(broadcastId, null, null, downloadUri.toString(), currentUserName, circle.getMembersList(), currentUserId, true, true,
+                pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, true, true,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0,true);
             } else
                 pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, circle.getMembersList(), currentUserId, true, false,
@@ -705,75 +690,28 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-    private void uploadImage(){
-        if (filePath != null) {
+    private void uploadPicture(){
+        ImageUpload imageUpload = new ImageUpload();
+        imageUpload.imageUpload(this, filePath);
+        isImageUploadSuccess(downloadLink,filePath);
+    }
 
-            //Creating an  custom dialog to show the uploading status
-            final ProgressDialog progressDialog = new ProgressDialog(CircleWall.this);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
+    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
 
-            //generating random id to store the profliepic
-            String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("BroadcastImage/" + id);
-            //storing  the pic
-            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+        downloadLink = downloadUri;
+        filePath = null;
+        if (pollExists) {
+            pollUploadButtonView.setVisibility(View.GONE);
+            pollAddPhoto.setVisibility(View.VISIBLE);
 
-                    //displaying percentage in progress dialog
-                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                }
-            })
-                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-
-                            // Continue with the task to get the download URL
-                            return profileRef.getDownloadUrl();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    progressDialog.dismiss();
-                    //and displaying a success toast
-//                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
-                    downloadUri = uri;
-                    if (pollExists) {
-                        pollUploadButtonView.setVisibility(View.GONE);
-                        pollAddPhoto.setVisibility(View.VISIBLE);
-
-                    } else {
-                        photoUploadButtonView.setVisibility(View.GONE);
-                        addPhoto.setVisibility(View.VISIBLE);
-                    }
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(uri)
-                            .build();
-                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
-                    Log.d(TAG, "Profile URL: " + downloadUri.toString());
-                    if (pollExists)
-                        Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollAddPhoto);
-                    else
-                        Glide.with(CircleWall.this).load(filePath).fitCenter().into(addPhoto);
-                    filePath = null;
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+        } else {
+            photoUploadButtonView.setVisibility(View.GONE);
+            addPhoto.setVisibility(View.VISIBLE);
         }
+        if (pollExists)
+            Glide.with(CircleWall.this).load(localFilePath).fitCenter().into(pollAddPhoto);
+        else
+            Glide.with(CircleWall.this).load(localFilePath).fitCenter().into(addPhoto);
     }
 
     //code for upload the image
@@ -783,10 +721,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         switch(requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
-                if(downloadUri!=null){
-                    filePath = downloadUri;
-                    uploadImage();
+                downloadLink = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(downloadLink !=null){
+                    filePath = downloadLink;
+                    uploadPicture();
                 }
                 break;
             default:

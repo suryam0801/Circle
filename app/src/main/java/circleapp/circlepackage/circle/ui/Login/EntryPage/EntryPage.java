@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import circleapp.circlepackage.circle.Helpers.LocationHelper;
+import circleapp.circlepackage.circle.Utils.LocationHelper;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
 
@@ -41,7 +41,7 @@ public class EntryPage extends AppCompatActivity{
         agreeContinue.setOnClickListener(view -> {
             agreeContinue.setClickable(false);
             if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
-                Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
+                agreeContinue.setText("Getting Location");
                getUserLocation();
             } else {
                 runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);

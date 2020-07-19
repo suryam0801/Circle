@@ -3,15 +3,9 @@ package circleapp.circlepackage.circle.EditProfile;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,8 +14,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,23 +27,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.UUID;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -60,9 +47,8 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfile extends AppCompatActivity implements ImageUploadSuccessListener {
 
     private CircleImageView profileImageView;
     private TextView userName, userNumber, createdCircles, workingCircles;
@@ -71,7 +57,7 @@ public class EditProfile extends AppCompatActivity {
     private Uri filePath;
     private Dialog editUserNamedialogue, editUserProfiledialogue;
     private StorageReference storageReference;
-    private Uri downloadUri;
+    private Uri downloadLink;
     private static final int PICK_IMAGE_ID = 234;
     String TAG = EditProfile.class.getSimpleName();
     ImageButton editName;
@@ -187,8 +173,8 @@ public class EditProfile extends AppCompatActivity {
             }
         });
         finalizeChanges.setOnClickListener(view -> {
-            if (downloadUri != null)
-                user.setProfileImageLink(downloadUri.toString());
+            if (downloadLink != null)
+                user.setProfileImageLink(downloadLink.toString());
 
             FirebaseWriteHelper.updateUser(user, this);
             SessionStorage.saveUser(EditProfile.this, user);
@@ -205,7 +191,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar2.setOnClickListener(new View.OnClickListener() {
@@ -214,7 +200,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar2);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar3.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +209,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar4.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +218,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar5.setOnClickListener(new View.OnClickListener() {
@@ -241,7 +227,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar6.setOnClickListener(new View.OnClickListener() {
@@ -250,7 +236,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar7.setOnClickListener(new View.OnClickListener() {
@@ -259,7 +245,7 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
         avatar8.setOnClickListener(new View.OnClickListener() {
@@ -268,26 +254,26 @@ public class EditProfile extends AppCompatActivity {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar8);
                 HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
-                downloadUri = null;
+                downloadLink = null;
             }
         });
 
 
         profileuploadButton.setOnClickListener(view -> {
-            if (avatar != "" || downloadUri != null) {
+            if (avatar != "" || downloadLink != null) {
                 progressDialog.setTitle("Uploading Profile....");
                 progressDialog.show();
-                if (downloadUri != null) {
-                    Log.d(TAG, "DownloadURI ::" + downloadUri);
+                if (downloadLink != null) {
+                    Log.d(TAG, "DownloadURI ::" + downloadLink);
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(downloadUri)
+                            .setPhotoUri(downloadLink)
                             .build();
                     FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            user.setProfileImageLink(downloadUri.toString());
+                            user.setProfileImageLink(downloadLink.toString());
                             FirebaseWriteHelper.updateUser(user, EditProfile.this);
-                            Glide.with(EditProfile.this).load(downloadUri.toString()).into(profileImageView);
+                            Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
                             HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                             progressDialog.dismiss();
                             editUserProfiledialogue.dismiss();
@@ -386,67 +372,17 @@ public class EditProfile extends AppCompatActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-    private void uploadImage(){
-        if (filePath != null) {
-            ContentResolver resolver = getContentResolver();
-            HelperMethods.compressImage(resolver, filePath);
-            //Creating an  custom dialog to show the uploading status
-            final ProgressDialog progressDialog = new ProgressDialog(EditProfile.this);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
+    private void uploadUserProfilePic(){
+        ImageUpload imageUpload = new ImageUpload();
+        imageUpload.imageUpload(this, filePath);
+        isImageUploadSuccess(downloadLink,filePath);
+    }
 
-            //generating random id to store the profliepic
-            String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = storageReference.child("ProfilePics/" + id);
-
-            //storing  the pic
-            profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                    //displaying percentage in progress dialog
-                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                }
-            })
-                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-
-                            // Continue with the task to get the download URL
-                            return profileRef.getDownloadUrl();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    progressDialog.dismiss();
-                    //and displaying a success toast
-                    finalizeChanges.setVisibility(View.VISIBLE);
-                    downloadUri = uri;
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(uri)
-                            .build();
-                    FirebaseWriteHelper.updateUserProfile(profileUpdates);
-                    Glide.with(EditProfile.this).load(filePath).into(profileImageView);
-                    filePath = null;
-
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            progressDialog.dismiss();
-
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-        }
+    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
+        Glide.with(this).load(localFilePath).into(profileImageView);
+        downloadLink = downloadUri;
+        filePath = null;
+        finalizeChanges.setVisibility(View.VISIBLE);
     }
 
     //code for upload the image
@@ -456,10 +392,10 @@ public class EditProfile extends AppCompatActivity {
         switch(requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
-                if(downloadUri!=null){
-                    filePath = downloadUri;
-                    uploadImage();
+                downloadLink = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(downloadLink !=null){
+                    filePath = downloadLink;
+                    uploadUserProfilePic();
                 }
                 break;
             default:

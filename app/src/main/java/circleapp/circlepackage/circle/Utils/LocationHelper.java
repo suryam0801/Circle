@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Helpers;
+package circleapp.circlepackage.circle.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -164,6 +164,7 @@ public class LocationHelper{
         loginUserObject.setCountryDialCode(mCountryDialCode);
         loginUserObject.setDistrict(district.trim());
         loginUserObject.setCompletePhoneNumber("");
+        loginUserObject.setUid("");
         if(ward != null)
             loginUserObject.setWard(ward.trim());
         else

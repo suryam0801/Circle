@@ -66,6 +66,7 @@ public class LoginUserObject {
     public String toString() {
         return "LoginUserObject{" +
                 "position=" + position  +
+                ", uid ='" + uid + '\'' +
                 ", countryName ='" + countryName + '\'' +
                 ", countryDialCode='" + countryDialCode + '\'' +
                 ", district='" + district + '\'' +
