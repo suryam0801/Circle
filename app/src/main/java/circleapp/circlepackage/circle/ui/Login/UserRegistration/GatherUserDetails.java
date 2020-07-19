@@ -22,13 +22,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -37,17 +33,16 @@ import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.IsLocationExistsListener;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.ReadExistingLocations;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ui.Login.OtpModule.OtpActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener, ImageUploadSuccessListener {
+public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener, ImageUploadSuccessListener, IsLocationExistsListener {
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -66,6 +61,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private String ward, district;
     private LoginUserObject loginUserObject;
     public ImageUpload imageUpload;
+    public ReadExistingLocations readExistingLocations;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -87,6 +83,10 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setLoginUserObject();
         imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUpload.setImageUploadListener(GatherUserDetails.this);
+
+        readExistingLocations = ViewModelProviders.of(this).get(ReadExistingLocations.class);
+        readExistingLocations.setIsLocationExistsListener(GatherUserDetails.this);
+        getLocationAlreadyExistsResult();
 
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -155,7 +155,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         district = loginUserObject.getDistrict();
         contact = loginUserObject.getCompletePhoneNumber();
         uid = loginUserObject.getUid();
-        readLocationDB();
+    }
+
+    public void getLocationAlreadyExistsResult(){
+        readExistingLocations.readLocationDB(this, district);
+        isLocationExists(locationExists);
+    }
+    @Override
+    public void isLocationExists(boolean isLocationExisting){
+        locationExists = isLocationExisting;
     }
 
     private void setAvatarOnclickListeners() {
@@ -206,19 +214,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             avatar = String.valueOf(R.drawable.avatar8);
             HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
             downloadLink = null;
-        });
-    }
-
-    private void readLocationDB() {
-        LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
-
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
-        liveData.observe((LifecycleOwner) this, dataSnapshot -> {
-            if (dataSnapshot.exists()) {
-                locationExists = true;
-            } else {
-                return;
-            }
         });
     }
 
