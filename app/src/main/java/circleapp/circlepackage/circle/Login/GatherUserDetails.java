@@ -99,7 +99,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     Button register;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    String avatar;
+    String avatar,uid;
     RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     int photo;
@@ -148,6 +148,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         ward = getIntent().getStringExtra("ward");
         district = getIntent().getStringExtra("district");
+        uid = getIntent().getStringExtra("uid");
 
         readLocationDB();
 
@@ -459,8 +460,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //Ensure the textboxes are not empty
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
-            userId = FirebaseWriteHelper.getUser().getUid();
-
+//            userId = FirebaseWriteHelper.getUser().getUid();
+            userId = uid;
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setDisplayName(Name)

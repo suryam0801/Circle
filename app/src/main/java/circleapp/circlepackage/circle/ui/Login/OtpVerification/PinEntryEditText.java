@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Login;
+package circleapp.circlepackage.circle.ui.Login.OtpVerification;
 
 import android.annotation.TargetApi;
 import android.content.Context;
