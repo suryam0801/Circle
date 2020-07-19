@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.ui.Login.OtpVerification.OtpActivity;
+import circleapp.circlepackage.circle.Login.OtpActivity;
 import circleapp.circlepackage.circle.R;
 
 public class PhoneLogin extends AppCompatActivity {
