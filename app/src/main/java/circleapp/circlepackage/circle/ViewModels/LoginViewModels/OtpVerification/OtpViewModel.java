@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ViewModels;
+package circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification;
 
 import android.os.Build;
 
@@ -19,13 +19,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Login.OtpActivity;
+import circleapp.circlepackage.circle.ui.Login.OtpModule.OtpActivity;
 
 public class OtpViewModel extends ViewModel {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     //    public  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
-    private OtpActivity otpActivity = new OtpActivity();
     PhoneCallbacksListener phoneCallbacksListener;
 
     public void setPhoneCallbacksListener(PhoneCallbacksListener phoneCallbacksListener) {
