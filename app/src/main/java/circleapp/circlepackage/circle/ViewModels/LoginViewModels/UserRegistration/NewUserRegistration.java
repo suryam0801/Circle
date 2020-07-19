@@ -35,10 +35,10 @@ import static circleapp.circlepackage.circle.ui.MainActivity.TAG;
 public class NewUserRegistration {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void userRegister(Activity activity, String Name,  String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists){
+    public static void userRegister(Activity activity, String uid, String Name, String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists){
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
-            String userId = FirebaseWriteHelper.getUser().getUid();
+            String userId = uid;
 
             //Merging the fname and lname to set the displayname to the user for easy access
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()

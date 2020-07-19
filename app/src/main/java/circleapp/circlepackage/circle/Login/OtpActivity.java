@@ -42,9 +42,10 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ViewModels.OtpViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.data.ViewModels.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
-public class OtpActivity extends AppCompatActivity {
+public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
     private String ward, district, mCountryDialCode, mCountryName;
@@ -91,7 +92,7 @@ public class OtpActivity extends AppCompatActivity {
 
         mVerifyBtn.setText("Verify OTP");
         otpViewModel = ViewModelProviders.of(OtpActivity.this).get(OtpViewModel.class);
-        otpViewModel.setPhoneCallbacksListener(this);
+        otpViewModel.setPhoneCallbacksListener(OtpActivity.this);
 
         confirmation.setMessage("There was an error in verifying your number. Please try again!")
                 .setCancelable(false)
@@ -186,31 +187,11 @@ public class OtpActivity extends AppCompatActivity {
         Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        homeIntent.putExtra("phn", phn_number);
-        homeIntent.putExtra("ward", ward);
-        homeIntent.putExtra("district", district);
         homeIntent.putExtra("uid", uid);
-//        Log.d("user",FirebaseWriteHelper.getUser().getUid());
 
-        //homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(homeIntent);
         Log.d("OtpActivity", ward + "::" + district);
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        phn_number = SessionStorage.getLoginUserObject(this).getCompletePhoneNumber();
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phn_number,
-                60,
-                TimeUnit.SECONDS,
-                OtpActivity.this,
-                mCallbacks
-        );
-//        to check the user and change the BUtton text based on the user
-    }
-
     @Override
     protected void onPause() {
         super.onPause();

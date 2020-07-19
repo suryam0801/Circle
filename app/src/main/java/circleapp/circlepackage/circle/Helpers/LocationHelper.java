@@ -164,7 +164,7 @@ public class LocationHelper{
         loginUserObject.setCountryDialCode(mCountryDialCode);
         loginUserObject.setDistrict(district.trim());
         loginUserObject.setCompletePhoneNumber("");
-        if(ward == null)
+        if(ward != null)
             loginUserObject.setWard(ward.trim());
         else
             loginUserObject.setWard("default");
