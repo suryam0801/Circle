@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration;
 
 import android.app.Activity;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
@@ -25,7 +26,7 @@ public class ReadExistingLocations extends ViewModel {
             if (dataSnapshot.exists()) {
                 isLocationExistsListener.isLocationExists(true);
             } else {
-                isLocationExistsListener.isLocationExists(true);
+                isLocationExistsListener.isLocationExists(false);
             }
         });
     }
