@@ -22,9 +22,6 @@ public final class RuntimePermissionHelper {
     private ArrayList<String> requiredPermissions;
     private ArrayList<String> ungrantedPermissions = new ArrayList<String>();
 
-    public static final String PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    public static final String PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE;
-
     public RuntimePermissionHelper(Activity activity)  {
         this.activity = activity;
     }
@@ -74,19 +71,6 @@ public final class RuntimePermissionHelper {
     public void requestCameraPermissionsIfDenied(final String permission) {
         if (canShowPermissionRationaleDialog(permission)) {
             showMessageOKCancel(activity.getResources().getString(R.string.camera_permission_message),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            askPermission(permission);
-                        }
-                    });
-            return;
-        }
-        askPermission(permission);
-    }
-    public void requestStoragePermissionsIfDenied(final String permission) {
-        if (canShowPermissionRationaleDialog(permission)) {
-            showMessageOKCancel(activity.getResources().getString(R.string.storage_permission_message),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

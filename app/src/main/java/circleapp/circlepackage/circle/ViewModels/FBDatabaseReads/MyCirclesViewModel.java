@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ViewModels;
+package circleapp.circlepackage.circle.ViewModels.FBDatabaseReads;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

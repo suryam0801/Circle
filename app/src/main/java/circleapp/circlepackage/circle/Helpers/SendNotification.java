@@ -12,7 +12,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
-import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 

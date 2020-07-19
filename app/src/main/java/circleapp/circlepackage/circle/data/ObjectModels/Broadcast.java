@@ -2,6 +2,8 @@ package circleapp.circlepackage.circle.data.ObjectModels;
 
 import java.util.HashMap;
 
+import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
+
 public class Broadcast {
     private String id, title, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
     private boolean pollExists, imageExists, adminVisibility;

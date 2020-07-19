@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ObjectModels;
+package circleapp.circlepackage.circle.data.LocalObjectModels;
 
 public class Subscriber {
     String id, name, photoURI, token_id;

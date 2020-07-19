@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 import circleapp.circlepackage.circle.R;
@@ -38,7 +40,7 @@ public class LocationHelper{
     List<String> al = new ArrayList<String>();
     int pos;
     Criteria gpsSignalCriteria;
-//    progressDialog = new abstract ProgressDialog(activity);
+    private LoginUserObject loginUserObject;
     public LocationHelper(Activity activity)  {
         this.activity = activity;
     }
@@ -156,15 +158,17 @@ public class LocationHelper{
     public void setSessionLocation(String countryname, int position, String district, String ward, String mCountryDialCode)
     {
         Intent intent = new Intent(activity, PhoneLogin.class);
-        intent.putExtra("pos", position);
-        intent.putExtra("countryName",countryname);
-        intent.putExtra("dialCode",mCountryDialCode);
+        loginUserObject = new LoginUserObject();
+        loginUserObject.setPosition(position);
+        loginUserObject.setCountryName(countryname);
+        loginUserObject.setCountryDialCode(mCountryDialCode);
+        loginUserObject.setDistrict(district.trim());
+        loginUserObject.setCompletePhoneNumber("");
         if(ward == null)
-            intent.putExtra("ward", "default");
+            loginUserObject.setWard(ward.trim());
         else
-            intent.putExtra("ward", ward.trim());
-        intent.putExtra("district", district.trim());
-
+            loginUserObject.setWard("default");
+        SessionStorage.saveLoginUserObject(activity, loginUserObject);
         activity.startActivity(intent);
         activity.finish();
         Log.d(TAG,district+"::pos="+position+"::"+ward+"::"+mCountryDialCode);

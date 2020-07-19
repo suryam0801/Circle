@@ -36,31 +36,31 @@ import java.util.Objects;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ViewModels.OtpViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.PhoneCallbacksListener;
-import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 
-public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener{
+public class OtpActivity extends AppCompatActivity {
 
-    public PhoneAuthProvider.ForceResendingToken resendingToken;
-    public PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
-    public String ward, district, mCountryDialCode, mCountryName;
-    public String mAuthVerificationId, phn_number;
-    public PinEntryEditText mOtpText;
-    public Button mVerifyBtn;
-    public ProgressBar mOtpProgress;
-    public TextView mOtpFeedback;
-    public TextView resendTextView;
-    public int counter = 30;
-    public CountDownTimer otpResendTimer;
-    public int pos;
-    public boolean autofill = false;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
+    private String ward, district, mCountryDialCode, mCountryName;
+    private String mAuthVerificationId, phn_number;
+    private PinEntryEditText mOtpText;
+    private Button mVerifyBtn;
+    private ProgressBar mOtpProgress;
+    private TextView mOtpFeedback;
+    private TextView resendTextView;
+    private int counter = 30;
+    CountDownTimer otpResendTimer;
+    int pos;
+    boolean autofill = false;
+    private LoginUserObject loginUserObject;
     public OtpViewModel otpViewModel;
-
+  
     AlertDialog.Builder confirmation;
     public ProgressDialog progressDialog;
 
@@ -71,17 +71,9 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
 
-        //Getting Intents from PhoneLogin
         FirebaseWriteHelper.getUser();
-        ward = getIntent().getStringExtra("ward");
-        district = getIntent().getStringExtra("district");
-        phn_number = getIntent().getStringExtra("phn_num");
-        pos = getIntent().getIntExtra("pos", 0);
-        mCountryName = getIntent().getStringExtra("countryName");
-        mCountryDialCode = getIntent().getStringExtra("dialCode");
-        //Getting AuthCredentials from the PhoneLogin page
-//        mAuthVerificationId = getIntent().getStringExtra("AuthCredentials");
-        resendingToken = getIntent().getParcelableExtra("resendToken");
+        setTempUserObject();
+
         progressDialog = new ProgressDialog(OtpActivity.this);
         confirmation = new AlertDialog.Builder(this);
         progressDialog.setTitle("Verifying your Number...");
@@ -139,6 +131,15 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         });
 
     }
+    public void setTempUserObject(){
+        loginUserObject = SessionStorage.getLoginUserObject(this);
+        ward = loginUserObject.getWard();
+        district = loginUserObject.getDistrict();
+        phn_number = loginUserObject.getCompletePhoneNumber();
+        pos = loginUserObject.getPosition();
+        mCountryName = loginUserObject.getCountryName();
+        mCountryDialCode = loginUserObject.getCountryDialCode();
+    }
 
     @Override
     protected void onStart() {
@@ -146,22 +147,12 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
 //        phn_number = getIntent().getStringExtra("phn_num");
         otpViewModel.sendVerificationCode(phn_number,OtpActivity.this);
 //        to check the user and change the BUtton text based on the user
+
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void sendBackToPhoneNumberEntry(){
         finishAfterTransition();
         Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
-        intent.putExtra("pos", pos);
-        intent.putExtra("countryName", mCountryName);
-        intent.putExtra("dialCode", mCountryDialCode);
-        if (ward == null)
-            intent.putExtra("ward", "default");
-        else
-            intent.putExtra("ward", ward.trim());
-        intent.putExtra("district", district.trim());
-        intent.putExtra("ward", ward);
-        intent.putExtra("district", district);
-        intent.putExtra("fail", "1");
         startActivity(intent);
     }
     private void setResendOtpButton(){
@@ -207,6 +198,20 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        phn_number = SessionStorage.getLoginUserObject(this).getCompletePhoneNumber();
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phn_number,
+                60,
+                TimeUnit.SECONDS,
+                OtpActivity.this,
+                mCallbacks
+        );
+//        to check the user and change the BUtton text based on the user
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         Log.d("OtpActivity", "onPause:: " + mOtpText.getText());
@@ -223,17 +228,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     public void onBackPressed() {
         finishAfterTransition();
         Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
-        intent.putExtra("pos", pos);
-        intent.putExtra("countryName", mCountryName);
-        intent.putExtra("dialCode", mCountryDialCode);
-        if (ward == null)
-            intent.putExtra("ward", "default");
-        else
-            intent.putExtra("ward", ward.trim());
-        intent.putExtra("district", district.trim());
-        intent.putExtra("ward", ward);
-        intent.putExtra("district", district);
-        intent.putExtra("fail", "1");
         startActivity(intent);
     }
 

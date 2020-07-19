@@ -37,12 +37,12 @@ import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 

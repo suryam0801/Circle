@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
@@ -19,20 +20,18 @@ public class SessionStorage {
     private static final String TAG = "SessionStorage";
     public static final String PREF_NAME = "Project";
 
-    public static void saveNotify(Activity activity, Notification notification) {
+    public static void saveLoginUserObject(Activity activity, LoginUserObject loginUserObject) {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        String string = new Gson().toJson(notification);
-        editor.putString("notify", string);
+        String string = new Gson().toJson(loginUserObject);
+        editor.putString("loginUserObject", string);
         editor.apply();
-
     }
 
-    public static Notification getNotification(Activity activity) {
+    public static LoginUserObject getLoginUserObject(Activity activity) {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
-        String string = sharedPref.getString("notify", "1234");
-        //Log.d(TAG, "getCircle: "+string);
-        return new Gson().fromJson(string, Notification.class);
+        String string = sharedPref.getString("loginUserObject", "default");
+        return new Gson().fromJson(string, LoginUserObject.class);
     }
 
     public static void saveCircle(Activity activity, Circle circle) {

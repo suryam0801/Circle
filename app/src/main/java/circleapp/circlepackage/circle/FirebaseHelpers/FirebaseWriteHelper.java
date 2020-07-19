@@ -51,13 +51,13 @@ import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Comment;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
-import circleapp.circlepackage.circle.data.ObjectModels.Poll;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.ReportAbuse;
-import circleapp.circlepackage.circle.data.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
@@ -310,7 +310,6 @@ public class FirebaseWriteHelper {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
-                        SessionStorage.saveUser((Activity) context, user);
                         String state = "broadcast";
                         HelperMethods.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);

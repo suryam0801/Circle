@@ -33,6 +33,7 @@ public class EntryPage extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_page);
+        //prevent auto-sign in after uninstall
         FirebaseMessaging.getInstance().subscribeToTopic("NEWS");
         RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
         locationHelper = new LocationHelper(EntryPage.this);
@@ -56,6 +57,8 @@ public class EntryPage extends AppCompatActivity{
         {
             getUserLocation();
         }
+        else
+            agreeContinue.setClickable(true);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 

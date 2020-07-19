@@ -14,19 +14,16 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -64,28 +61,26 @@ import java.util.UUID;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.ImagePicker;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.Poll;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.ViewModels.BroadcastsViewModel;
-import circleapp.circlepackage.circle.data.ViewModels.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
 import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     RuntimePermissionHelper runtimePermissionHelper;
     private Uri filePath;
-    private static final int PICK_IMAGE_REQUEST = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
-    private static final int REQUEST_IMAGE_CAPTURE = 102;
+    private static final int PICK_IMAGE_ID = 234;
     private Uri downloadUri;
 
 
@@ -483,15 +478,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         cancelPhotoButton.setOnClickListener(view -> createPhotoBroadcastPopup.dismiss());
 
         photoUploadButtonView.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(CircleWall.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(CircleWall.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        STORAGE_PERMISSION_CODE);
+            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
             }
-            if (photo == 0)
-                selectImage();
+            else {
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
         });
         btnUploadPhotoBroadcast.setOnClickListener(view -> {
             if (downloadUri != null && !setTitlePhoto.getText().toString().isEmpty()) {
@@ -536,15 +529,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         pollUploadButtonView.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(CircleWall.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(CircleWall.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        STORAGE_PERMISSION_CODE);
+            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
+                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
             }
-            if (photo == 0)
-                selectImage();
+            else {
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
         });
 
         btnAddPollOption.setOnClickListener(view -> {
@@ -698,69 +689,15 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         return tv;
     }
 
-    public void selectFile() {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
-    }
-
-    public void takePhoto() {
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        Intent m_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        downloadUri = HelperMethods.getImageUri();
-        m_intent.putExtra(MediaStore.EXTRA_OUTPUT, downloadUri);
-        startActivityForResult(m_intent, REQUEST_IMAGE_CAPTURE);
-    }
-
-    private void selectImage() {
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(CircleWall.this);
-        builder.setTitle("Add Photo!");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take Photo")) {
-                    photo = 1;
-                    if (!runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        runtimePermissionHelper.askPermission(READ_EXTERNAL_STORAGE);
-                    }
-                    if (runtimePermissionHelper.isPermissionAvailable(CAMERA) && runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        takePhoto();
-                    } else {
-                        runtimePermissionHelper.askPermission(CAMERA);
-                    }
-                } else if (options[item].equals("Choose from Gallery")) {
-                    if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-                        selectFile();
-                    } else {
-                        runtimePermissionHelper.requestPermissionsIfDenied(READ_EXTERNAL_STORAGE);
-                    }
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        if (runtimePermissionHelper.isPermissionAvailable(READ_EXTERNAL_STORAGE)) {
-            builder.show();
-        }
-    }
-
     //Check whether the permission is granted or not for uploading the profile pic
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (photo == 1)
-                takePhoto();
-            else
-                selectImage();
+            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
         } else {
-            photo = 0;
             Toast.makeText(CircleWall.this,
                     "Permission Denied",
                     Toast.LENGTH_SHORT)
@@ -768,22 +705,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
-    //code for upload the image
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        photo = 0;
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
-        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            filePath = downloadUri;
-        }
-        //check the path for the image
-        //if the image path is notnull the uploading process will start
-        //ContentResolver resolver = getContentResolver();
-        //HelperMethods.compressImage(resolver, filePath);
-
+    private void uploadImage(){
         if (filePath != null) {
 
             //Creating an  custom dialog to show the uploading status
@@ -851,6 +773,25 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                             Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
+        }
+    }
+
+    //code for upload the image
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
+                downloadUri = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(downloadUri!=null){
+                    filePath = downloadUri;
+                    uploadImage();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
