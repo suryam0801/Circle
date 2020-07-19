@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.EditProfile;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -70,6 +71,7 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
+    public ImageUpload imageUpload;
 
     private Boolean finalizeChange = false;
 
@@ -109,7 +111,8 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
         avatarBgList = new ImageView[8];
 
         HelperMethods.setUserProfileImage(user, this, profileImageView);
-
+        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUpload.setImageUploadListener(this);
 
         editProfPic.setOnClickListener(view -> {
             editprofile(user.getProfileImageLink());
@@ -373,11 +376,11 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
     private void uploadUserProfilePic(){
-        ImageUpload imageUpload = new ImageUpload();
         imageUpload.imageUpload(this, filePath);
         isImageUploadSuccess(downloadLink,filePath);
     }
 
+    @Override
     public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
         Glide.with(this).load(localFilePath).into(profileImageView);
         downloadLink = downloadUri;
