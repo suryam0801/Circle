@@ -38,9 +38,11 @@ import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListe
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.ui.Login.OtpModule.OtpActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -63,6 +65,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RelativeLayout setProfile;
     private String ward, district;
     private LoginUserObject loginUserObject;
+    public ImageUpload imageUpload;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -82,6 +85,8 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setProfile = findViewById(R.id.imagePreview);
 
         setLoginUserObject();
+        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUpload.setImageUploadListener(GatherUserDetails.this);
 
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
@@ -225,12 +230,12 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     private void uploadUserProfilePic(){
-        ImageUpload imageUpload = new ImageUpload();
         imageUpload.imageUpload(this, filePath);
         isImageUploadSuccess(downloadLink,filePath);
     }
 
-    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
+    @Override
+    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath) {
         Glide.with(this).load(localFilePath).into(profilePic);
         downloadLink = downloadUri;
         filePath = null;

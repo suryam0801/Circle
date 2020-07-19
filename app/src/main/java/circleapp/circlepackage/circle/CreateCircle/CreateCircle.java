@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.CreateCircle;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,6 +69,7 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
     private String backgroundImageLink;
+    public ImageUpload imageUpload;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -100,6 +102,9 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
         runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
+
+        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUpload.setImageUploadListener(CreateCircle.this);
 
         visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
 
@@ -212,11 +217,11 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
         }
     }
     private void uploadCircleLogo(){
-        ImageUpload imageUpload = new ImageUpload();
         imageUpload.imageUpload(this, filePath);
         isImageUploadSuccess(downloadLink,filePath);
     }
 
+    @Override
     public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
         Glide.with(this).load(localFilePath).into(backgroundPic);
         downloadLink = downloadUri;

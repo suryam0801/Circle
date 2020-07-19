@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,8 +20,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 
-public class ImageUpload {
+public class ImageUpload extends ViewModel {
+    ImageUploadSuccessListener imageUploadSuccessListener;
+    public void setImageUploadListener(ImageUploadSuccessListener imageUploadSuccessListener) {
+        this.imageUploadSuccessListener = imageUploadSuccessListener;
+    }
     public void imageUpload(Activity activity, Uri filePath){
         if (filePath != null) {
             //Creating an  custom dialog to show the uploading status
@@ -56,7 +62,7 @@ public class ImageUpload {
                 @Override
                 public void onSuccess(Uri uri) {
                     progressDialog.dismiss();
-                    ImageUploadSuccessListener.isImageUploadSuccess(uri, filePath);
+                    imageUploadSuccessListener.isImageUploadSuccess(uri, filePath);
                     //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -72,7 +78,6 @@ public class ImageUpload {
                         public void onFailure(@NonNull Exception exception) {
                             //if the upload is not successfull
                             //hiding the progress dialog
-                            ImageUploadSuccessListener.isImageUploadFailure(exception);
                             progressDialog.dismiss();
                         }
                     });

@@ -52,6 +52,7 @@ import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
@@ -64,7 +65,7 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewMo
 
 import static android.Manifest.permission.CAMERA;
 
-public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
+public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener, ImageUploadSuccessListener {
 
     RuntimePermissionHelper runtimePermissionHelper;
     private Uri filePath;
@@ -97,6 +98,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     String broadcastid;
     int broadcastPos;
     int photo;
+    public ImageUpload imageUpload;
 
     private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto;
 
@@ -127,6 +129,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
         runtimePermissionHelper = new RuntimePermissionHelper(CircleWall.this);
+        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUpload.setImageUploadListener(CircleWall.this);
+
 
         if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
@@ -691,11 +696,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
     private void uploadPicture(){
-        ImageUpload imageUpload = new ImageUpload();
         imageUpload.imageUpload(this, filePath);
         isImageUploadSuccess(downloadLink,filePath);
     }
 
+    @Override
     public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
 
         downloadLink = downloadUri;
