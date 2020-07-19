@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Helpers;
+package circleapp.circlepackage.circle.Utils.UploadImages;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

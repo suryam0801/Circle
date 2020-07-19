@@ -34,7 +34,6 @@ import com.google.gson.Gson;
 import java.util.Objects;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -44,6 +43,7 @@ import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
+import circleapp.circlepackage.circle.ui.Login.UserRegistration.GatherUserDetails;
 
 public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
 
@@ -187,7 +187,8 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        homeIntent.putExtra("uid", uid);
+        loginUserObject.setUid(uid);
+        SessionStorage.saveLoginUserObject(this, loginUserObject);
 
         startActivity(homeIntent);
         Log.d("OtpActivity", ward + "::" + district);
