@@ -27,7 +27,7 @@ import java.util.Scanner;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
-import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
+import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 import circleapp.circlepackage.circle.R;
 
 public class LocationHelper{

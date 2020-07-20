@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber;
+package circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry;
 
 import android.annotation.SuppressLint;
 
@@ -25,11 +25,11 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumber.EnterPhoneNumberDriver.getCountryCode;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumber.EnterPhoneNumberDriver.isPhoneNumber10Digits;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumber.EnterPhoneNumberDriver.sendIntentsToOtpActivityAndFinish;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumber.EnterPhoneNumberDriver.setCompletePhoneNumber;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumber.EnterPhoneNumberDriver.setCountryCode;
+import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.getCountryCode;
+import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.isPhoneNumber10Digits;
+import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.sendIntentsToOtpActivityAndFinish;
+import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.setCompletePhoneNumber;
+import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.setCountryCode;
 
 public class PhoneLogin extends AppCompatActivity {
 

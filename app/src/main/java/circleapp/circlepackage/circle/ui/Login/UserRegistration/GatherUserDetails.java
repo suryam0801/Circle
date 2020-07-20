@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.ui.Login.UserRegistration;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -54,7 +53,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private Uri downloadLink;
     private CircleImageView profilePic;
     private boolean locationExists;
-    SharedPreferences pref;
     String Name, contact;
     EditText name;
     Button register;
@@ -77,7 +75,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
-        Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         avatar = "";
         locationExists = false;
 
@@ -86,14 +83,17 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setProfile = findViewById(R.id.imagePreview);
 
         imageUploadProgressDialog = new ProgressDialog(this);
+        //Initialize observables
         setImageUploadProgressObservable();
         setUserRegisteredObservable();
 
+        //get temp user attributes from session
         setLoginUserObject();
+        //check if current user location exists in db
         getLocationAlreadyExistsResult();
 
+        //initialise permission helper, activity passing is needed for context
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
-        pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         setAvatarOnclickListeners();
@@ -102,8 +102,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
                 runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
             } else {
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                runPhotoUploadIntent();
             }
         });
 
@@ -111,6 +110,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Check if all fields are entered
                 register.setText("Logging You In...");
                 if (name.getText().equals("") || name.getText().toString().isEmpty()) {
 
@@ -123,6 +123,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     //The function to register the Users with their appropriate details
                     String imageLink = getImageLinkAsString();
+                    //Register user in FB Db
                     newUserRegistration.userRegister(uid, Name, district, ward, imageLink, avatar, contact, locationExists);
                 }
             }
@@ -225,6 +226,11 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         });
     }
 
+    private void runPhotoUploadIntent(){
+        Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+    }
+
     private void setImageUploadProgressObservable(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
@@ -259,7 +265,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             Log.d("userreg()value",""+isUserUploaded);
             // update UI
             if(isUserUploaded==false);
-
             else {
                 goToNextActivity();
             }
@@ -282,8 +287,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            runPhotoUploadIntent();
         } else {
             Toast.makeText(GatherUserDetails.this,
                     "Permission Denied",

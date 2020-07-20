@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".ui.Login.EnterPhoneNumber.PhoneLogin">'
+    tools:context=".ui.Login.PhoneNumberEntry.PhoneLogin">'
 
     <ScrollView
         android:id="@+id/scrollView2"

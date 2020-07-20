@@ -42,7 +42,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
 import circleapp.circlepackage.circle.data.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
-import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
+import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 import circleapp.circlepackage.circle.ui.Login.UserRegistration.GatherUserDetails;
 
 public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
