@@ -30,13 +30,16 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
+
+import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.data.FBDatabaseReads.LocationsViewModel;
@@ -59,7 +62,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
     String avatar, uid;
-    RuntimePermissionHelper runtimePermissionHelper;
     RelativeLayout setProfile;
     private String ward, district;
     private LoginUserObject loginUserObject;
@@ -92,18 +94,21 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         //check if current user location exists in db
         getLocationAlreadyExistsResult();
 
-        //initialise permission helper, activity passing is needed for context
-        runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         setAvatarOnclickListeners();
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
-                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
-            } else {
-                runPhotoUploadIntent();
-            }
+            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    runPhotoUploadIntent();
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
 
         // Listener for Register button
@@ -280,21 +285,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     private void uploadUserProfilePic(){
         imageUploadModel.imageUpload(filePath);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            runPhotoUploadIntent();
-        } else {
-            Toast.makeText(GatherUserDetails.this,
-                    "Permission Denied",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //code for upload the image

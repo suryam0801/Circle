@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,8 +14,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
+
+import java.util.ArrayList;
+
 import circleapp.circlepackage.circle.Utils.LocationHelper;
-import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -30,30 +36,22 @@ public class EntryPage extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_page);
-        RuntimePermissionHelper runtimePermissionHelper = new RuntimePermissionHelper(EntryPage.this);
         locationHelper = new LocationHelper(EntryPage.this);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
         agreeContinue.setOnClickListener(view -> {
-            agreeContinue.setClickable(false);
-            if(runtimePermissionHelper.isPermissionAvailable(ACCESS_FINE_LOCATION)){
-                agreeContinue.setText("Getting Location");
-               getUserLocation();
-            } else {
-                runtimePermissionHelper.requestPermissionsIfDenied(ACCESS_FINE_LOCATION);
-            }
+            Permissions.check(this/*context*/, ACCESS_FINE_LOCATION, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    agreeContinue.setText("Getting Location");
+                    getUserLocation();
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
 
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Toast.makeText(EntryPage.this, "Getting your location. Please wait.", Toast.LENGTH_SHORT).show();
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-        {
-            getUserLocation();
-        }
-        else
-            agreeContinue.setClickable(true);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void getUserLocation(){
