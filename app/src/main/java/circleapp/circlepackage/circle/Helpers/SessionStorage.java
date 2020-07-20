@@ -34,6 +34,7 @@ public class SessionStorage {
         return new Gson().fromJson(string, LoginUserObject.class);
     }
 
+
     public static void saveCircle(Activity activity, Circle circle) {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

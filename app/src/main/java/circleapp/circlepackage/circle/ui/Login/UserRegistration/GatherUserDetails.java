@@ -24,26 +24,30 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.IsLocationExistsListener;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.ReadExistingLocations;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.LocationsViewModel;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener, IsLocationExistsListener {
+public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener{
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -61,8 +65,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RelativeLayout setProfile;
     private String ward, district;
     private LoginUserObject loginUserObject;
-    public ImageUpload imageUploadModel;
-    public ReadExistingLocations readExistingLocations;
+    private ImageUpload imageUploadModel;
     private ProgressDialog imageUploadProgressDialog;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -73,7 +76,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
-        Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         avatar = "";
         locationExists = false;
 
@@ -82,31 +84,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setProfile = findViewById(R.id.imagePreview);
 
         imageUploadProgressDialog = new ProgressDialog(this);
-        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
-            // update UI
-            if(progress==null);
-
-            else if(!progress[1].equals("100.0")){
-                imageUploadProgressDialog.setTitle("Uploading");
-                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
-                imageUploadProgressDialog.show();
-            }
-            else if(progress[1].equals("100.0")){
-                Glide.with(this).load(filePath).into(profilePic);
-                downloadLink = Uri.parse(progress[0]);
-                for (int i = 0; i < 8; i++) {
-                    avatarBgList[i].setVisibility(View.INVISIBLE);
-                }
-                imageUploadProgressDialog.dismiss();
-            }
-        });
+        setImageUploadProgressObservable();
 
         setLoginUserObject();
-
-        readExistingLocations = ViewModelProviders.of(this).get(ReadExistingLocations.class);
-        readExistingLocations.setIsLocationExistsListener(GatherUserDetails.this);
         getLocationAlreadyExistsResult();
 
         runtimePermissionHelper = new RuntimePermissionHelper(GatherUserDetails.this);
@@ -141,7 +121,6 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     //The function to register the Users with their appropriate details
                     String imageLink = getImageLinkAsString();
                     NewUserRegistration.userRegister(GatherUserDetails.this,uid, Name, district, ward, imageLink, avatar, contact, locationExists);
-
                 }
             }
         });
@@ -178,14 +157,19 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         uid = loginUserObject.getUid();
     }
 
-    public void getLocationAlreadyExistsResult(){
-        readExistingLocations.readLocationDB(this, district);
-        isLocationExists(locationExists);
+    public void getLocationAlreadyExistsResult() {
+        LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
+
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
+        liveData.observe((LifecycleOwner) this, dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                locationExists = true;
+            } else {
+                locationExists = false;
+            }
+        });
     }
-    @Override
-    public void isLocationExists(boolean isLocationExisting){
-        locationExists = isLocationExisting;
-    }
+
 
     private void setAvatarOnclickListeners() {
         avatar1.setOnClickListener(v -> {
@@ -237,6 +221,30 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             downloadLink = null;
         });
     }
+
+    private void setImageUploadProgressObservable(){
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            Log.d("progressvalue",""+progress);
+            // update UI
+            if(progress==null);
+
+            else if(!progress[1].equals("100.0")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100.0")){
+                Glide.with(this).load(filePath).into(profilePic);
+                downloadLink = Uri.parse(progress[0]);
+                for (int i = 0; i < 8; i++) {
+                    avatarBgList[i].setVisibility(View.INVISIBLE);
+                }
+                imageUploadProgressDialog.dismiss();
+            }
+        });
+    }
+
 
     private String getImageLinkAsString() {
         if (downloadLink == null)
