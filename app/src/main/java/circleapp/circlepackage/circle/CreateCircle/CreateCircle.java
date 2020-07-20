@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -37,7 +39,6 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
@@ -48,7 +49,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class CreateCircle extends AppCompatActivity implements ImageUploadSuccessListener {
+public class CreateCircle extends AppCompatActivity {
 
     private String TAG = CreateCircle.class.getSimpleName();
 
@@ -69,7 +70,8 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
     RuntimePermissionHelper runtimePermissionHelper;
     int photo;
     private String backgroundImageLink;
-    public ImageUpload imageUpload;
+    public ImageUpload imageUploadModel;
+    private ProgressDialog imageUploadProgressDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -103,8 +105,26 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
         backgroundText = findViewById(R.id.backgroundText);
         runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
 
-        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUpload.setImageUploadListener(CreateCircle.this);
+        imageUploadProgressDialog = new ProgressDialog(this);
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            Log.d("progressvalue",""+progress);
+            // update UI
+            if(progress==null);
+
+            else if(!progress[1].equals("100.0")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100.0")){
+                downloadLink = Uri.parse(progress[0]);
+                Glide.with(this).load(filePath).into(backgroundPic);
+                backgroundText.setVisibility(View.GONE);
+                logoHelp.setVisibility(View.GONE);
+                imageUploadProgressDialog.dismiss();
+            }
+        });
 
         visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
 
@@ -217,17 +237,26 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
         }
     }
     private void uploadCircleLogo(){
-        imageUpload.imageUpload(this, filePath);
-        isImageUploadSuccess(downloadLink,filePath);
-    }
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            Log.d("progressvalue",""+progress);
+            // update UI
+            if(progress==null);
 
-    @Override
-    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
-        Glide.with(this).load(localFilePath).into(backgroundPic);
-        downloadLink = downloadUri;
-        filePath = null;
-        backgroundText.setVisibility(View.GONE);
-        logoHelp.setVisibility(View.GONE);
+            else if(!progress[1].equals("100.0")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100.0")){
+                downloadLink = Uri.parse(progress[0]);
+                Glide.with(this).load(filePath).into(backgroundPic);
+                backgroundText.setVisibility(View.GONE);
+                logoHelp.setVisibility(View.GONE);
+                imageUploadProgressDialog.dismiss();
+            }
+        });
+        imageUploadModel.imageUpload(filePath);
     }
 
     //Check whether the permission is granted or not for uploading the profile pic
@@ -254,9 +283,8 @@ public class CreateCircle extends AppCompatActivity implements ImageUploadSucces
         switch(requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadLink = ImagePicker.getImageUri(getApplicationContext(),bitmap);
-                if(downloadLink !=null){
-                    filePath = downloadLink;
+                filePath = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(filePath !=null){
                     uploadCircleLogo();
                 }
                 break;

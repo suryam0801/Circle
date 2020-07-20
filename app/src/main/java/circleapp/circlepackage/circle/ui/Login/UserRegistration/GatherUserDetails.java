@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ui.Login.UserRegistration;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -30,7 +32,6 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.IsLocationExistsListener;
@@ -42,7 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener, ImageUploadSuccessListener, IsLocationExistsListener {
+public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener, IsLocationExistsListener {
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -60,9 +61,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     RelativeLayout setProfile;
     private String ward, district;
     private LoginUserObject loginUserObject;
-    public ImageUpload imageUpload;
+    public ImageUpload imageUploadModel;
     public ReadExistingLocations readExistingLocations;
-
+    private ProgressDialog imageUploadProgressDialog;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +81,29 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         profilePic = findViewById(R.id.profile_image);
         setProfile = findViewById(R.id.imagePreview);
 
+        imageUploadProgressDialog = new ProgressDialog(this);
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            Log.d("progressvalue",""+progress);
+            // update UI
+            if(progress==null);
+
+            else if(!progress[1].equals("100.0")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100.0")){
+                Glide.with(this).load(filePath).into(profilePic);
+                downloadLink = Uri.parse(progress[0]);
+                for (int i = 0; i < 8; i++) {
+                    avatarBgList[i].setVisibility(View.INVISIBLE);
+                }
+                imageUploadProgressDialog.dismiss();
+            }
+        });
+
         setLoginUserObject();
-        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUpload.setImageUploadListener(GatherUserDetails.this);
 
         readExistingLocations = ViewModelProviders.of(this).get(ReadExistingLocations.class);
         readExistingLocations.setIsLocationExistsListener(GatherUserDetails.this);
@@ -225,18 +246,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     }
 
     private void uploadUserProfilePic(){
-        imageUpload.imageUpload(this, filePath);
-        isImageUploadSuccess(downloadLink,filePath);
-    }
-
-    @Override
-    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath) {
-        Glide.with(this).load(localFilePath).into(profilePic);
-        downloadLink = downloadUri;
-        filePath = null;
-        for (int i = 0; i < 8; i++) {
-            avatarBgList[i].setVisibility(View.INVISIBLE);
-        }
+        imageUploadModel.imageUpload(filePath);
     }
 
     @Override
@@ -258,13 +268,13 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     //code for upload the image
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        filePath = null;
 
         switch (requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadLink = ImagePicker.getImageUri(getApplicationContext(), bitmap);
-                if (downloadLink != null) {
-                    filePath = downloadLink;
+                filePath = ImagePicker.getImageUri(getApplicationContext(), bitmap);
+                if (filePath != null) {
                     uploadUserProfilePic();
                 }
                 break;

@@ -1,10 +1,9 @@
 package circleapp.circlepackage.circle.Utils.UploadImages;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Continuation;
@@ -20,19 +19,22 @@ import java.util.Objects;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
-
 public class ImageUpload extends ViewModel {
-    ImageUploadSuccessListener imageUploadSuccessListener;
-    public void setImageUploadListener(ImageUploadSuccessListener imageUploadSuccessListener) {
-        this.imageUploadSuccessListener = imageUploadSuccessListener;
+
+    private MutableLiveData<String[]> progressPercentageAndLink;
+    public MutableLiveData<String[]> uploadImageWithProgress(Uri filePath) {
+        if (filePath == null) {
+            progressPercentageAndLink = new MutableLiveData<>();
+        }
+        else {
+            imageUpload(filePath);
+        }
+        return progressPercentageAndLink;
     }
-    public void imageUpload(Activity activity, Uri filePath){
+
+    public void imageUpload(Uri filePath){
         if (filePath != null) {
             //Creating an  custom dialog to show the uploading status
-            final ProgressDialog progressDialog = new ProgressDialog(activity);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
 
             //generating random id to store the profliepic
             String id = UUID.randomUUID().toString();
@@ -44,8 +46,10 @@ public class ImageUpload extends ViewModel {
                 public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
+                    String[] returnValue = {filePath.toString(), ""+progress};
+                    progressPercentageAndLink.setValue(returnValue);
+
                     //displaying percentage in progress dialog
-                    progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
                 }
             })
                     .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -61,15 +65,15 @@ public class ImageUpload extends ViewModel {
                     }).addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    progressDialog.dismiss();
-                    imageUploadSuccessListener.isImageUploadSuccess(uri, filePath);
+
                     //and displaying a success toast
 //                        Toast.makeText(getApplicationContext(), "Profile Pic Uploaded " + uri.toString(), Toast.LENGTH_LONG).show();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
                     FirebaseWriteHelper.getUser().updateProfile(profileUpdates);
-                    //Glide.with(activity).load(filePath).into(profilePic);
+                    String[] returnValue = {uri.toString(), ""+100.0};
+                    progressPercentageAndLink.setValue(returnValue);
 
                 }
             })
@@ -78,7 +82,6 @@ public class ImageUpload extends ViewModel {
                         public void onFailure(@NonNull Exception exception) {
                             //if the upload is not successfull
                             //hiding the progress dialog
-                            progressDialog.dismiss();
                         }
                     });
         }
