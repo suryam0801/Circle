@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -33,13 +34,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
+
+import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -68,7 +72,6 @@ public class EditProfile extends AppCompatActivity {
     private CircleImageView profilePic;
     RelativeLayout setProfile;
     String avatar;
-    RuntimePermissionHelper runtimePermissionHelper;
     public ImageUpload imageUploadModel;
 
     private Boolean finalizeChange = false;
@@ -86,7 +89,6 @@ public class EditProfile extends AppCompatActivity {
 
         userNameProgressDialogue = new ProgressDialog(EditProfile.this);
         userNameProgressDialogue.setCancelable(false);
-        runtimePermissionHelper = new RuntimePermissionHelper(EditProfile.this);
 
         userName = findViewById(R.id.viewProfile_name);
         userNumber = findViewById(R.id.viewProfile_email);
@@ -181,19 +183,23 @@ public class EditProfile extends AppCompatActivity {
         Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
         Glide.with(EditProfile.this).load(uri).into(profilePic);
         profilepicButton.setOnClickListener(view -> {
-            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
-                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
-            }
-            else {
-                finalizeChange = false;
-                for (int i = 0; i < 8; i++) {
-                    avatarBgList[i].setVisibility(View.GONE);
+            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    finalizeChange = false;
+                    for (int i = 0; i < 8; i++) {
+                        avatarBgList[i].setVisibility(View.GONE);
+                    }
+                    avatar = "";
+                    editUserProfiledialogue.dismiss();
+                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
                 }
-                avatar = "";
-                editUserProfiledialogue.dismiss();
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-            }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
         finalizeChanges.setOnClickListener(view -> {
             if (downloadLink != null)
@@ -379,22 +385,6 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    //Check whether the permission is granted or not for uploading the profile pic
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-        } else {
-            Toast.makeText(EditProfile.this,
-                    "Permission Denied",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
     private void uploadUserProfilePic(){
         imageUploadModel.imageUpload(filePath);
     }

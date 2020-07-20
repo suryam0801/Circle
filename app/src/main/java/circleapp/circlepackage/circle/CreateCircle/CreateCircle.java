@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,7 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -39,7 +43,6 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -67,8 +70,6 @@ public class CreateCircle extends AppCompatActivity {
     private Uri filePath, downloadLink;
     private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-    RuntimePermissionHelper runtimePermissionHelper;
-    int photo;
     private String backgroundImageLink;
     public ImageUpload imageUploadModel;
     private ProgressDialog imageUploadProgressDialog;
@@ -82,7 +83,6 @@ public class CreateCircle extends AppCompatActivity {
         setContentView(R.layout.activity_create_circle);
 
         user = SessionStorage.getUser(CreateCircle.this);
-        photo = 0;
         backgroundImageLink = "";
         //Initialize all UI elements in the CreateCircle activity
         circleNameEntry = findViewById(R.id.create_circle_Name);
@@ -103,7 +103,6 @@ public class CreateCircle extends AppCompatActivity {
         //to set invisible on adding image
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
-        runtimePermissionHelper = new RuntimePermissionHelper(CreateCircle.this);
 
         imageUploadProgressDialog = new ProgressDialog(this);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
@@ -144,13 +143,17 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         addLogo.setOnClickListener(v -> {
-            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
-                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
-            }
-            else {
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-            }
+            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
     }
 
@@ -259,22 +262,6 @@ public class CreateCircle extends AppCompatActivity {
         imageUploadModel.imageUpload(filePath);
     }
 
-    //Check whether the permission is granted or not for uploading the profile pic
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-        } else {
-            Toast.makeText(CreateCircle.this,
-                    "Permission Denied",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 
     //code for upload the image
     @Override

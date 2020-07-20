@@ -13,8 +13,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -40,6 +40,8 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
@@ -51,7 +53,6 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
@@ -67,7 +68,6 @@ import static android.Manifest.permission.CAMERA;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
-    RuntimePermissionHelper runtimePermissionHelper;
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234;
     private Uri downloadLink;
@@ -128,7 +128,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
-        runtimePermissionHelper = new RuntimePermissionHelper(CircleWall.this);
 
         imageUploadProgressDialog = new ProgressDialog(this);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
@@ -492,13 +491,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         cancelPhotoButton.setOnClickListener(view -> createPhotoBroadcastPopup.dismiss());
 
         photoUploadButtonView.setOnClickListener(v -> {
-            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
-                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
-            }
-            else {
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-            }
+            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
         btnUploadPhotoBroadcast.setOnClickListener(view -> {
             if (downloadLink != null && !setTitlePhoto.getText().toString().isEmpty()) {
@@ -542,13 +545,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         pollUploadButtonView.setOnClickListener(v -> {
-            if (!runtimePermissionHelper.isPermissionAvailable(CAMERA)) {
-                runtimePermissionHelper.requestCameraPermissionsIfDenied(CAMERA);
-            }
-            else {
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-            }
+            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
 
         btnAddPollOption.setOnClickListener(view -> {
@@ -702,22 +709,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         return tv;
     }
 
-    //Check whether the permission is granted or not for uploading the profile pic
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-            startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-        } else {
-            Toast.makeText(CircleWall.this,
-                    "Permission Denied",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
     private void uploadPicture(){
         imageUploadModel.imageUpload(filePath);
     }
