@@ -60,8 +60,8 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.BroadcastsViewModel;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.MyCirclesViewModel;
 
 import static android.Manifest.permission.CAMERA;
 

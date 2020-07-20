@@ -46,7 +46,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Comment;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.CommentsViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageBroadcastCardAdapter.ViewHolder> {

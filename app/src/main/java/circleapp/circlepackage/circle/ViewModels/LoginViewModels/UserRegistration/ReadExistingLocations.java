@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration;
 
 import android.app.Activity;
-import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
@@ -11,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.LocationsViewModel;
 
 public class ReadExistingLocations extends ViewModel {
     IsLocationExistsListener isLocationExistsListener;

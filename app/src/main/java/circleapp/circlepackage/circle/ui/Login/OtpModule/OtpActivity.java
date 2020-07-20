@@ -40,7 +40,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.EnterPhoneNumber.PhoneLogin;
 import circleapp.circlepackage.circle.ui.Login.UserRegistration.GatherUserDetails;

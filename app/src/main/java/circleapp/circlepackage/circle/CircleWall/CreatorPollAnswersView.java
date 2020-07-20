@@ -27,7 +27,7 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.CirclePersonnelViewModel;
 
 public class CreatorPollAnswersView extends AppCompatActivity {
 
