@@ -86,7 +86,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.Login.OtpModule.OtpActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.Login.EnterPhoneNumber.PhoneLogin"
+        <activity android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
             android:screenOrientation="portrait"/>
         <activity android:name=".CircleWall.CircleWall"
             android:screenOrientation="portrait"/>

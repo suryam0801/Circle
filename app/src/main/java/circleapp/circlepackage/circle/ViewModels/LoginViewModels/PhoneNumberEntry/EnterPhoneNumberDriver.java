@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ViewModels.LoginViewModels.EnterPhoneNumber;
+package circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry;
 
 import android.app.Activity;
 import android.content.Intent;
