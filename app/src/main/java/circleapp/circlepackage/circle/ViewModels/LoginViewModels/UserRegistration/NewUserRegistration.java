@@ -27,7 +27,6 @@ import java.util.HashMap;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 import static circleapp.circlepackage.circle.ui.MainActivity.TAG;

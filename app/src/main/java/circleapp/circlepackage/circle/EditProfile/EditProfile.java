@@ -39,7 +39,6 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Utils.UploadImages.ImageUploadSuccessListener;
 import circleapp.circlepackage.circle.Helpers.RuntimePermissionHelper;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -49,7 +48,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class EditProfile extends AppCompatActivity implements ImageUploadSuccessListener {
+public class EditProfile extends AppCompatActivity {
 
     private CircleImageView profileImageView;
     private TextView userName, userNumber, createdCircles, workingCircles;
@@ -63,15 +62,14 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
     String TAG = EditProfile.class.getSimpleName();
     ImageButton editName;
     User user;
-    ProgressDialog progressDialog;
+    private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
     ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
     private CircleImageView profilePic;
     RelativeLayout setProfile;
     String avatar;
     RuntimePermissionHelper runtimePermissionHelper;
-    int photo;
-    public ImageUpload imageUpload;
+    public ImageUpload imageUploadModel;
 
     private Boolean finalizeChange = false;
 
@@ -86,8 +84,8 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
 
         user = SessionStorage.getUser(EditProfile.this);
 
-        progressDialog = new ProgressDialog(EditProfile.this);
-        progressDialog.setCancelable(false);
+        userNameProgressDialogue = new ProgressDialog(EditProfile.this);
+        userNameProgressDialogue.setCancelable(false);
         runtimePermissionHelper = new RuntimePermissionHelper(EditProfile.this);
 
         userName = findViewById(R.id.viewProfile_name);
@@ -111,8 +109,31 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
         avatarBgList = new ImageView[8];
 
         HelperMethods.setUserProfileImage(user, this, profileImageView);
-        imageUpload = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUpload.setImageUploadListener(this);
+
+        userNameProgressDialogue = new ProgressDialog(this);
+        imageUploadProgressDialog = new ProgressDialog(this);
+
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            Log.d("progressvalue",""+progress);
+            // update UI
+            if(progress==null);
+
+            else if(!progress[1].equals("100.0")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100.0")){
+                Glide.with(this).load(filePath).into(profileImageView);
+                downloadLink = Uri.parse(progress[0]);
+                for (int i = 0; i < 8; i++) {
+                    avatarBgList[i].setVisibility(View.INVISIBLE);
+                }
+                finalizeChanges.setVisibility(View.VISIBLE);
+                imageUploadProgressDialog.dismiss();
+            }
+        });
 
         editProfPic.setOnClickListener(view -> {
             editprofile(user.getProfileImageLink());
@@ -156,7 +177,6 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
         avatarBgList[7] = avatar8_bg = editUserProfiledialogue.findViewById(R.id.avatar8_State);
         profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
         setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
-        photo = 0;
         Button profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
         Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
         Glide.with(EditProfile.this).load(uri).into(profilePic);
@@ -264,8 +284,8 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
 
         profileuploadButton.setOnClickListener(view -> {
             if (avatar != "" || downloadLink != null) {
-                progressDialog.setTitle("Uploading Profile....");
-                progressDialog.show();
+                userNameProgressDialogue.setTitle("Uploading Profile....");
+                userNameProgressDialogue.show();
                 if (downloadLink != null) {
                     Log.d(TAG, "DownloadURI ::" + downloadLink);
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -278,7 +298,7 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
                             FirebaseWriteHelper.updateUser(user, EditProfile.this);
                             Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
                             HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
-                            progressDialog.dismiss();
+                            userNameProgressDialogue.dismiss();
                             editUserProfiledialogue.dismiss();
                         }
                     });
@@ -296,7 +316,7 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
                             Glide.with(EditProfile.this)
                                     .load(Integer.parseInt(avatar))
                                     .into(profileImageView);
-                            progressDialog.dismiss();
+                            userNameProgressDialogue.dismiss();
                             user.setProfileImageLink(avatar);
                             SessionStorage.saveUser(EditProfile.this, user);
                             finalizeChange = true;
@@ -330,8 +350,8 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
                 String name = edit_name.getText().toString().replaceAll("\\s+", " ");
                 ;
                 if (!TextUtils.isEmpty(name)) {
-                    progressDialog.setTitle("Updating Name....");
-                    progressDialog.show();
+                    userNameProgressDialogue.setTitle("Updating Name....");
+                    userNameProgressDialogue.show();
                     String userId = FirebaseWriteHelper.getUserId();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
@@ -340,7 +360,7 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
-                            progressDialog.dismiss();
+                            userNameProgressDialogue.dismiss();
                             editUserNamedialogue.dismiss();
                             user.setName(name);
                             FirebaseWriteHelper.updateUser(user, EditProfile.this);
@@ -376,16 +396,7 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
     private void uploadUserProfilePic(){
-        imageUpload.imageUpload(this, filePath);
-        isImageUploadSuccess(downloadLink,filePath);
-    }
-
-    @Override
-    public void isImageUploadSuccess(Uri downloadUri, Uri localFilePath){
-        Glide.with(this).load(localFilePath).into(profileImageView);
-        downloadLink = downloadUri;
-        filePath = null;
-        finalizeChanges.setVisibility(View.VISIBLE);
+        imageUploadModel.imageUpload(filePath);
     }
 
     //code for upload the image
@@ -395,9 +406,8 @@ public class EditProfile extends AppCompatActivity implements ImageUploadSuccess
         switch(requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                downloadLink = ImagePicker.getImageUri(getApplicationContext(),bitmap);
-                if(downloadLink !=null){
-                    filePath = downloadLink;
+                filePath= ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                if(filePath !=null){
                     uploadUserProfilePic();
                 }
                 break;
