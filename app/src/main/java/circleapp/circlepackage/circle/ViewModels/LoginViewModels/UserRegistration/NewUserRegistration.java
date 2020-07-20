@@ -1,40 +1,42 @@
 package circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
-
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
-import static circleapp.circlepackage.circle.ui.MainActivity.TAG;
+public class NewUserRegistration extends ViewModel {
 
-public class NewUserRegistration {
+    private MutableLiveData<Boolean> isUserUploaded;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public MutableLiveData<Boolean> userObjectUploadProgress(Boolean isUserRegistered, String uid, String Name, String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists) {
+        if (!isUserRegistered) {
+            isUserUploaded = new MutableLiveData<>();
+        }
+        else {
+            userRegister(uid, Name, district, ward, downloadUri, avatar, contact, locationExists);
+        }
+        return isUserUploaded;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void userRegister(Activity activity, String uid, String Name, String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists){
+    public void userRegister(String uid, String Name, String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists){
         if (!TextUtils.isEmpty(Name)) {
             //getting the current user id
             String userId = uid;
@@ -48,18 +50,14 @@ public class NewUserRegistration {
             FirebaseWriteHelper.getAuthToken().getCurrentUser().updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(activity, "User Registered Successfully", Toast.LENGTH_LONG).show();
                             //Adding the user to collection
                             if (!locationExists){
                                 FirebaseWriteHelper.addDistrict(district);
                                 createInitialCircles(district);
                             }
 
-                            addUser(userId,downloadUri,Name,contact,avatar,district,ward,activity);
-                            Log.d(TAG, "User Registered success fully added");
-                            Toast.makeText(activity, "User Registered Successfully", Toast.LENGTH_LONG).show();
+                            uploadUserData(userId,downloadUri,Name,contact,avatar,district,ward);
                         } else {
-                            Toast.makeText(activity, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             //to signout the current firebase user
                             FirebaseWriteHelper.getAuthToken().signOut();
                             //delete the user details
@@ -67,13 +65,11 @@ public class NewUserRegistration {
                         }
                     });
 
-        } else {
-            Toast.makeText(activity, "Enter Valid details", Toast.LENGTH_LONG).show();
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private static void addUser(String userId, String downloadUri, String Name, String contact, String avatar, String district, String ward, Activity activity){
+    private void uploadUserData(String userId, String downloadUri, String Name, String contact, String avatar, String district, String ward){
         //TODO Cleanup this place with FBUtil
         FirebaseDatabase database;
         database = FirebaseDatabase.getInstance();
@@ -87,7 +83,6 @@ public class NewUserRegistration {
         //if the downloadUri id null then 'default' value is stored
         if (downloadUri != null) {
             //creaeting the user object
-            Log.d(TAG, "DownloadURI ::" + downloadUri);
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
             user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward,
@@ -95,7 +90,6 @@ public class NewUserRegistration {
         } else if (!avatar.equals("")) {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
-            Log.d(TAG, "Avatar :: " + avatar);
             user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district,
                     null, null, null, null);
         } else {
@@ -103,9 +97,9 @@ public class NewUserRegistration {
                     token_id, ward, district, null, null, null, null);
         }
         //storing user as a json in file locally
-        SessionStorage.saveUser(activity, user);
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
+            isUserUploaded.setValue(true);
             db.collection("Users")
                     .document(userId)
                     .set(user)
@@ -116,15 +110,8 @@ public class NewUserRegistration {
                         public void onFailure(@NonNull Exception e) {
                         }
                     });
-            sendIntentsToExploreTabbed(activity);
-            activity.finishAfterTransition();
+            return;
         });
-    }
-
-    private static void sendIntentsToExploreTabbed(Activity activity){
-        Intent i = new Intent(activity, ExploreTabbedActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        activity.startActivity(i);
     }
 
     public static void createInitialCircles(String district){

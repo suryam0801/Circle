@@ -66,6 +66,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private String ward, district;
     private LoginUserObject loginUserObject;
     private ImageUpload imageUploadModel;
+    private NewUserRegistration newUserRegistration;
     private ProgressDialog imageUploadProgressDialog;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,6 +77,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         name = findViewById(R.id.name);
         register = findViewById(R.id.registerButton);
+        Button profilepicButton = findViewById(R.id.profilePicSetterImage);
         avatar = "";
         locationExists = false;
 
@@ -85,6 +87,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
         imageUploadProgressDialog = new ProgressDialog(this);
         setImageUploadProgressObservable();
+        setUserRegisteredObservable();
 
         setLoginUserObject();
         getLocationAlreadyExistsResult();
@@ -120,7 +123,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     //The function to register the Users with their appropriate details
                     String imageLink = getImageLinkAsString();
-                    NewUserRegistration.userRegister(GatherUserDetails.this,uid, Name, district, ward, imageLink, avatar, contact, locationExists);
+                    newUserRegistration.userRegister(uid, Name, district, ward, imageLink, avatar, contact, locationExists);
                 }
             }
         });
@@ -244,7 +247,24 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
             }
         });
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUserRegisteredObservable(){
+        String tempLink;
+        if(downloadLink==null)
+            tempLink = "";
+        else
+            tempLink = downloadLink.toString();
+        newUserRegistration = ViewModelProviders.of(this).get(NewUserRegistration.class);
+        newUserRegistration.userObjectUploadProgress(false, uid, Name, district, ward, tempLink,avatar,contact,locationExists).observe(this, isUserUploaded -> {
+            Log.d("userreg()value",""+isUserUploaded);
+            // update UI
+            if(isUserUploaded==false);
 
+            else {
+                goToNextActivity();
+            }
+        });
+    }
 
     private String getImageLinkAsString() {
         if (downloadLink == null)
@@ -290,6 +310,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void goToNextActivity(){
+        Toast.makeText(this, "Registration Successful...",Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, ExploreTabbedActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(i);
+        finishAfterTransition();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
