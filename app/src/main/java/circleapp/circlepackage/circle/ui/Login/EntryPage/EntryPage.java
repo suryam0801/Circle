@@ -40,7 +40,7 @@ public class EntryPage extends AppCompatActivity implements LocationUpdatedListe
         super.onCreate(savedInstanceState);
 
         locationHelper = ViewModelProviders.of(this).get(LocationHelper.class);
-        locationHelper.setLocationUpdatedListener(EntryPage.this, EntryPage.this);
+        locationHelper.setLocationUpdatedListener(EntryPage.this);
 
         setContentView(R.layout.activity_entry_page);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);

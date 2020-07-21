@@ -45,9 +45,9 @@ public class LocationHelper extends ViewModel {
     private static Context mContext;
 
     LocationUpdatedListener locationUpdatedListener;
-    public void setLocationUpdatedListener(LocationUpdatedListener locationUpdatedListener, Context context) {
+    public void setLocationUpdatedListener(LocationUpdatedListener locationUpdatedListener) {
         this.locationUpdatedListener = locationUpdatedListener;
-        mContext = context;
+        mContext = (Context) locationUpdatedListener;
     }
 
 
