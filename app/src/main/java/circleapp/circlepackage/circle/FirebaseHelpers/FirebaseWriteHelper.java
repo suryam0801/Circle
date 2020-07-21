@@ -75,6 +75,10 @@ public class FirebaseWriteHelper {
     private static final DatabaseReference STORAGE_REFERENCES = database.getReference("StorageReferences");
     private static final DatabaseReference USER_FEEDBACK_REF = database.getReference("UserFeedback");
 
+    public static void setPersistenceFb(){
+        database.setPersistenceEnabled(true);
+    }
+
     public static void deleteCircle(Context context, Circle circle, User user) {
         //reducing created circle count
         int currentCreatedCount = 0;

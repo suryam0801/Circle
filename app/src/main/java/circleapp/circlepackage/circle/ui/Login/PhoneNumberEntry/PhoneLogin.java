@@ -51,23 +51,9 @@ public class PhoneLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
-        countryCodeEditText = findViewById(R.id.country_code_text);
-        phoneNumberEditText = findViewById(R.id.phone_number_text);
-        phoneNumberEditText.requestFocus();
-        mGenerateBtn = findViewById(R.id.generate_btn);
-        mLoginProgress = findViewById(R.id.login_progress_bar);
-        mLoginFeedbackText = findViewById(R.id.login_form_feedback);
-        ccp = findViewById(R.id.ccp);
 
-        confirmation = new AlertDialog.Builder(this);
+        initUIElements();
 
-        pos = getSearchableSpinnerLocation.getPositionOfSpinner(this);
-        options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
-        al = Arrays.asList(options);
-        ccp.setSelection(pos);
-        mCountryDialCode = getSearchableSpinnerLocation.getmCountryDialCode();
-        countryCodeEditText.setText(mCountryDialCode);
-        mGenerateBtn.setEnabled(true);
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -131,6 +117,25 @@ public class PhoneLogin extends AppCompatActivity {
             }
         });
 
+    }
+    private void initUIElements(){
+        countryCodeEditText = findViewById(R.id.country_code_text);
+        phoneNumberEditText = findViewById(R.id.phone_number_text);
+        phoneNumberEditText.requestFocus();
+        mGenerateBtn = findViewById(R.id.generate_btn);
+        mLoginProgress = findViewById(R.id.login_progress_bar);
+        mLoginFeedbackText = findViewById(R.id.login_form_feedback);
+        ccp = findViewById(R.id.ccp);
+
+        confirmation = new AlertDialog.Builder(this);
+
+        pos = getSearchableSpinnerLocation.getPositionOfSpinner(this);
+        options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
+        al = Arrays.asList(options);
+        ccp.setSelection(pos);
+        mCountryDialCode = getSearchableSpinnerLocation.getmCountryDialCode();
+        countryCodeEditText.setText(mCountryDialCode);
+        mGenerateBtn.setEnabled(true);
     }
 
     @Override
