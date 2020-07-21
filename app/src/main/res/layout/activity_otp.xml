@@ -79,6 +79,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:text="Verify OTP"
                 android:textAllCaps="false"
+                android:onClick="verifyOtp"
                 android:textColor="@android:color/background_light"
                 android:textSize="16sp" />
 

@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification;
 
+import android.app.Activity;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -72,12 +73,12 @@ public class OtpViewModel extends ViewModel {
 
         }
 
-        public void sendVerificationCode (String phone, OtpActivity otpActivity){
+        public void sendVerificationCode (String phone, Activity activity){
             PhoneAuthProvider.getInstance().verifyPhoneNumber(
                     phone.trim(),
                     60,
                     TimeUnit.SECONDS,
-                    otpActivity,
+                    activity,
                     mCallbacks
             );
         }

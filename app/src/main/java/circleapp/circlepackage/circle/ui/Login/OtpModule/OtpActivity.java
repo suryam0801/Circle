@@ -73,29 +73,31 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
 
 //        FirebaseWriteHelper.getUser();
         setTempUserObject();
-
-        progressDialog = new ProgressDialog(OtpActivity.this);
-        confirmation = new AlertDialog.Builder(this);
-        progressDialog.setTitle("Verifying your Number...");
-        progressDialog.show();
-        progressDialog.setCancelable(false);
+        InitUIElements();
+        initProgressbar();
+        initAlertDialog();
         Log.d("otpactivity","started_activity");
-
-        mOtpFeedback = findViewById(R.id.otp_form_feedback);
-        mOtpProgress = findViewById(R.id.otp_progress_bar);
-        mOtpText = findViewById(R.id.otp_text_view);
-        mVerifyBtn = findViewById(R.id.verify_btn);
-        resendTextView = findViewById(R.id.resend_otp_counter);
         HelperMethods.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
-
         mVerifyBtn.setText("Verify OTP");
         otpViewModel = ViewModelProviders.of(OtpActivity.this).get(OtpViewModel.class);
         otpViewModel.setPhoneCallbacksListener(OtpActivity.this);
+    }
 
+    //button click listener function
+    public void verifyOtp(View view){
+        String otp = mOtpText.getText().toString();
+        mOtpFeedback.setVisibility(View.INVISIBLE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        UpdateUI(otp);
+    }
+
+    public void initAlertDialog(){
+        confirmation = new AlertDialog.Builder(this);
         confirmation.setMessage("There was an error in verifying your number. Please try again!")
                 .setCancelable(false)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("otpactivity","incorrect_number");
@@ -103,32 +105,44 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
                         sendBackToPhoneNumberEntry();
                     }
                 });
-        mVerifyBtn.setOnClickListener(v -> {
-            String otp = mOtpText.getText().toString();
-            mOtpFeedback.setVisibility(View.INVISIBLE);
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
 
-            if (otp.isEmpty()) {
-                mOtpFeedback.setVisibility(View.VISIBLE);
-                mOtpFeedback.setText("Please fill in the form and try again.");
+    public void initProgressbar(){
+        progressDialog = new ProgressDialog(OtpActivity.this);
+        progressDialog.setTitle("Verifying your Number...");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+    }
 
-            } else {
+    public void UpdateUI(String otp){
+        if (otp.isEmpty()) {
+            mOtpFeedback.setVisibility(View.VISIBLE);
+            mOtpFeedback.setText("Please fill in the form and try again.");
 
-                mOtpProgress.setVisibility(View.VISIBLE);
-                mVerifyBtn.setEnabled(false);
-                mVerifyBtn.setClickable(false);
+        } else {
 
-                //Pasing the OTP and credentials for the Verification
-                try{
-                   PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
+            mOtpProgress.setVisibility(View.VISIBLE);
+            mVerifyBtn.setEnabled(false);
+            mVerifyBtn.setClickable(false);
+
+            //Pasing the OTP and credentials for the Verification
+            try{
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
                 Log.d("OtpActivity", "credential:: " + credential.getSmsCode());
 //                signInWithPhoneAuthCredential(credential);
-                    otpViewModel.signInWithPhoneAuthCredential(credential,this);
+                otpViewModel.signInWithPhoneAuthCredential(credential,this);
             }catch (Exception e){
                 Toast.makeText(this, "Verification Code is wrong", Toast.LENGTH_SHORT).show();
             }
-            }
-        });
+        }
+    }
+
+    public void InitUIElements(){
+        mOtpFeedback = findViewById(R.id.otp_form_feedback);
+        mOtpProgress = findViewById(R.id.otp_progress_bar);
+        mOtpText = findViewById(R.id.otp_text_view);
+        mVerifyBtn = findViewById(R.id.verify_btn);
+        resendTextView = findViewById(R.id.resend_otp_counter);
 
     }
     public void setTempUserObject(){
