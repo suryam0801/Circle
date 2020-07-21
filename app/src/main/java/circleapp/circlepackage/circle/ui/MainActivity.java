@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.data.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.OnBoarding.get_started_first_page;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -52,25 +55,18 @@ public class MainActivity extends AppCompatActivity {
 
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
             //notificationCountGetter();
-            usersDB = database.getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            usersDB.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        User user = dataSnapshot.getValue(User.class);
-                        SessionStorage.saveUser(MainActivity.this, user);
-                        startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
-                        finish();
-                    } else {
-                        startActivity(new Intent(MainActivity.this, EntryPage.class));
-                        finish();
-                    }
-                }
+            UserViewModel viewModel = ViewModelProviders.of(MainActivity.this).get(UserViewModel.class);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    startActivity(new Intent(MainActivity.this, get_started_first_page.class));
-//                    startActivity(new Intent(MainActivity.this, EntryPage.class));
+            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            liveData.observe(MainActivity.this, dataSnapshot -> {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    SessionStorage.saveUser(MainActivity.this, user);
+                    startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(MainActivity.this, EntryPage.class));
                     finish();
                 }
             });
