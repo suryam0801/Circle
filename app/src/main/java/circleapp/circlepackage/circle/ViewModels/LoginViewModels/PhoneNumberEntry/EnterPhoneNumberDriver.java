@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEnt
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -12,7 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ui.Login.OtpModule.OtpActivity;
+import circleapp.circlepackage.circle.ui.Login.OtpVerification.OtpActivity;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
 public class EnterPhoneNumberDriver {

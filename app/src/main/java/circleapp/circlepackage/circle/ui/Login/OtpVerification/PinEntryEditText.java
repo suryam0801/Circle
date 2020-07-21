@@ -1,16 +1,10 @@
-package circleapp.circlepackage.circle.ui.Login.OtpModule;
+package circleapp.circlepackage.circle.ui.Login.OtpVerification;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
-import android.os.IBinder;
-import android.os.IInterface;
-import android.os.Parcel;
-import android.os.RemoteException;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -18,12 +12,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.FileDescriptor;
 
 import circleapp.circlepackage.circle.R;
 
