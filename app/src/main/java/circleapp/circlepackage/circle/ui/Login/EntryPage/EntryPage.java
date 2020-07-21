@@ -90,6 +90,7 @@ public class EntryPage extends AppCompatActivity implements LocationUpdatedListe
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onLocationUpdated(int locationUpdated) {
+        //0 for location disabled, 1 for location successfully retrieved
         if(locationUpdated==0)
             buildAlertMessageNoGps();
         else if(locationUpdated==1)
