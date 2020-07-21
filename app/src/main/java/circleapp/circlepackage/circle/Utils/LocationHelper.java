@@ -36,10 +36,7 @@ import circleapp.circlepackage.circle.R;
 public class LocationHelper extends ViewModel {
 
     private LocationManager locationManager;
-    private String ward, district,mCountryDialCode,mCountryName;
-    private String[] options;
-    private static List<String> al = new ArrayList<String>();
-    private static int pos;
+    private String ward, district,mCountryName;
     private static Criteria gpsSignalCriteria;
     private static LoginUserObject loginUserObject;
     private static Context mContext;
@@ -107,62 +104,38 @@ public class LocationHelper extends ViewModel {
 
     //fun to set current country, district and ward of user
     private void getCountry(List<Address> addresses){
-        options = mContext.getResources().getStringArray(R.array.countries_array);
-        al = Arrays.asList(options);
+
         mCountryName = addresses.get(0).getCountryName();
         String countrycode = addresses.get(0).getCountryCode();
-
-        for (String cn : al)
-        {
-            pos = pos+1;
-            if (cn.equals(mCountryName))
-            {
-                pos = pos - 1;
-                String contryDialCode = null;
-                String[] arrContryCode=mContext.getResources().getStringArray(R.array.DialingCountryCode);
-                for(int i=0; i<arrContryCode.length; i++){
-                    String[] arrDial = arrContryCode[i].split(",");
-                    if(arrDial[1].trim().equals(countrycode.trim())){
-                        contryDialCode = arrDial[0];
-                        mCountryDialCode="+"+contryDialCode;
-                        //need to figure out different
-                        if(addresses.get(0).getCountryName().toLowerCase().equals("united states")) {
-                            district = addresses.get(0).getSubAdminArea();
-                            ward = addresses.get(0).getLocality();
-                        } else {
-                            district = addresses.get(0).getSubAdminArea();
-                            //logic to get ward from address line
-                            Scanner scan = new Scanner(addresses.get(0).getAddressLine(0));
-                            scan.useDelimiter(",");
-                            List<String> parsing = new ArrayList<>();
-                            while (scan.hasNext()) {
-                                String w = String.valueOf(scan.next());
-                                if ((!w.isEmpty() || !district.isEmpty()) ||(w !=null || district != null) )
-                                {
-                                    if(w.trim().equals(district.trim())) {
-                                        ward = parsing.get(parsing.size()-1);
-                                    } else {
-                                        parsing.add(w);
-                                    }
-                                }
-                                else
-                                    {
-                                        getLocation();
-                                    }
-                            }
-                        }
-                        setSessionLocation(mCountryName,pos,district,ward,mCountryDialCode);
-                        break;
+        if(addresses.get(0).getCountryName().toLowerCase().equals("united states")) {
+            district = addresses.get(0).getSubAdminArea();
+            ward = addresses.get(0).getLocality();
+        }else {
+            district = addresses.get(0).getSubAdminArea();
+            Scanner scan = new Scanner(addresses.get(0).getAddressLine(0));
+            scan.useDelimiter(",");
+            List<String> parsing = new ArrayList<>();
+            while (scan.hasNext()) {
+                String w = String.valueOf(scan.next());
+                if ((!w.isEmpty() || !district.isEmpty()) ||(w !=null || district != null) )
+                {
+                    if(w.trim().equals(district.trim())) {
+                        ward = parsing.get(parsing.size()-1);
+                    } else {
+                        parsing.add(w);
                     }
+                }
+                else {
+                    ward = "default";
                 }
             }
         }
+        setSessionLocation(mCountryName,district,ward,countrycode);
     }
     //intent to phone login
-    public void setSessionLocation(String countryname, int position, String district, String ward, String mCountryDialCode)
+    public void setSessionLocation(String countryname, String district, String ward, String mCountryDialCode)
     {
         loginUserObject = new LoginUserObject();
-        loginUserObject.setPosition(position);
         loginUserObject.setCountryName(countryname);
         loginUserObject.setCountryDialCode(mCountryDialCode);
         loginUserObject.setDistrict(district.trim());

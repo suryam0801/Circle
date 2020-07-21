@@ -57,7 +57,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     private TextView resendTextView;
     private int counter = 30;
     CountDownTimer otpResendTimer;
-    int pos;
     boolean autofill = false;
     private LoginUserObject loginUserObject;
     public OtpViewModel otpViewModel;
@@ -137,7 +136,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         ward = loginUserObject.getWard();
         district = loginUserObject.getDistrict();
         phn_number = loginUserObject.getCompletePhoneNumber();
-        pos = loginUserObject.getPosition();
         mCountryName = loginUserObject.getCountryName();
         mCountryDialCode = loginUserObject.getCountryDialCode();
     }

@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
 import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.getCountryCode;
 import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.isPhoneNumber10Digits;
@@ -39,15 +37,13 @@ public class PhoneLogin extends AppCompatActivity {
     private Button mGenerateBtn;
     private ProgressBar mLoginProgress;
     private TextView mLoginFeedbackText;
-    private String complete_phone_number = "";
-    public static final String PREF_NAME= "LOCATION";
     private Spinner ccp;
-    private String ward, district,mCountryDialCode,mCountryName;
+    private String mCountryDialCode;
+    private getSearchableSpinnerLocation getSearchableSpinnerLocation = new getSearchableSpinnerLocation();
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;
     AlertDialog.Builder confirmation;
-    private LoginUserObject loginUserObject;
 
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -64,11 +60,12 @@ public class PhoneLogin extends AppCompatActivity {
         ccp = findViewById(R.id.ccp);
 
         confirmation = new AlertDialog.Builder(this);
-        setLocationParams();
 
+        pos = getSearchableSpinnerLocation.getPositionOfSpinner(this);
         options = PhoneLogin.this.getResources().getStringArray(R.array.countries_array);
         al = Arrays.asList(options);
         ccp.setSelection(pos);
+        mCountryDialCode = getSearchableSpinnerLocation.getmCountryDialCode();
         countryCodeEditText.setText(mCountryDialCode);
         mGenerateBtn.setEnabled(true);
         ccp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -106,7 +103,7 @@ public class PhoneLogin extends AppCompatActivity {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    setCompletePhoneNumber(PhoneLogin.this, country_code, phone_number, loginUserObject);
+                                    setCompletePhoneNumber(PhoneLogin.this, country_code, phone_number);
                                     sendIntentsToOtpActivityAndFinish(PhoneLogin.this);
                                 }
                             })
@@ -134,14 +131,6 @@ public class PhoneLogin extends AppCompatActivity {
             }
         });
 
-    }
-    private void setLocationParams(){
-        loginUserObject = SessionStorage.getLoginUserObject(this);
-        pos = loginUserObject.getPosition();
-        mCountryName = loginUserObject.getCountryName();
-        mCountryDialCode = loginUserObject.getCountryDialCode();
-        ward = loginUserObject.getWard();
-        district = loginUserObject.getDistrict();
     }
 
     @Override
