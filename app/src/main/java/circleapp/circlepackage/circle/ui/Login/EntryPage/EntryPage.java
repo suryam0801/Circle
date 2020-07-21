@@ -21,9 +21,9 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 
-import circleapp.circlepackage.circle.Utils.LocationHelper;
+import circleapp.circlepackage.circle.Utils.LocationHelper.LocationHelper;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Utils.LocationUpdatedListener;
+import circleapp.circlepackage.circle.Utils.LocationHelper.LocationUpdatedListener;
 import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;

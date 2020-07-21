@@ -39,7 +39,7 @@ public class PhoneLogin extends AppCompatActivity {
     private TextView mLoginFeedbackText;
     private Spinner ccp;
     private String mCountryDialCode;
-    private getSearchableSpinnerLocation getSearchableSpinnerLocation = new getSearchableSpinnerLocation();
+    private GetSearchableSpinnerLocation getSearchableSpinnerLocation = new GetSearchableSpinnerLocation();
     String[] options;
     List<String> al = new ArrayList<String>();
     int pos;

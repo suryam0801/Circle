@@ -1,11 +1,8 @@
-package circleapp.circlepackage.circle.Utils;
+package circleapp.circlepackage.circle.Utils.LocationHelper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -13,25 +10,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 
 import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
-import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
-import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
-import circleapp.circlepackage.circle.R;
 
 public class LocationHelper extends ViewModel {
 
