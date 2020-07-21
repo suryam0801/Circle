@@ -39,6 +39,7 @@ public class LocationHelper extends ViewModel {
     private String ward, district,mCountryName;
     private static Criteria gpsSignalCriteria;
     private static LoginUserObject loginUserObject;
+    private LocationListener locationListener;
     private static Context mContext;
 
     LocationUpdatedListener locationUpdatedListener;
@@ -54,9 +55,18 @@ public class LocationHelper extends ViewModel {
 
         //Criterias for location access
         setGpsSignalCriteriaParams();
+        setUpLocationChangedListener();
 
+        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(500,1000,gpsSignalCriteria,locationListener, null);
+        //check if gps is available
+        statusCheck();
+
+    }
+
+    private void setUpLocationChangedListener(){
         //listener class for location
-        LocationListener locationListener = new LocationListener() {
+        locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 //update the current location
@@ -79,13 +89,6 @@ public class LocationHelper extends ViewModel {
 
             }
         };
-        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-        //for single update of the location
-        //locationManager.requestSingleUpdate(criteria, locationListener, looper);
-        locationManager.requestLocationUpdates(500,1000,gpsSignalCriteria,locationListener, null);
-        //check if gps is available
-        statusCheck();
-
     }
 
     //fun to get the address of the user
