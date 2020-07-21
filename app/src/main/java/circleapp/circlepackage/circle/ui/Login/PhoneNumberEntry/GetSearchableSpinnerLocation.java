@@ -12,7 +12,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
-public class getSearchableSpinnerLocation {
+public class GetSearchableSpinnerLocation {
     private Context mContext;
     private String[] options;
     private String mCountryName, mCountryDialCode;
