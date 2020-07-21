@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
@@ -50,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkIfUserExists(){
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+        if(FirebaseWriteHelper.getUser() != null){
             //notificationCountGetter();
             UserViewModel viewModel = ViewModelProviders.of(MainActivity.this).get(UserViewModel.class);
 
-            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(FirebaseWriteHelper.getAuthToken().getCurrentUser().getUid());
 
             liveData.observe(MainActivity.this, dataSnapshot -> {
                 if (dataSnapshot.exists()) {
