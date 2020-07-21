@@ -20,7 +20,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.ui.Login.OtpModule.OtpActivity;
 
 public class OtpViewModel extends ViewModel {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();

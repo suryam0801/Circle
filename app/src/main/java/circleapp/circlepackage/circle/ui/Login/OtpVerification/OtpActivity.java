@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.Login.OtpModule;
+package circleapp.circlepackage.circle.ui.Login.OtpVerification;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
