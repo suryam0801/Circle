@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle.data.LocalObjectModels;
 
 public class LoginUserObject {
-    private int position;
     private String ward, district,countryDialCode,countryName, completePhoneNumber,uid;
 
     public LoginUserObject() {
@@ -13,14 +12,6 @@ public class LoginUserObject {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
     public String getWard() {
@@ -65,8 +56,7 @@ public class LoginUserObject {
     @Override
     public String toString() {
         return "LoginUserObject{" +
-                "position=" + position  +
-                ", uid ='" + uid + '\'' +
+                "uid ='" + uid + '\'' +
                 ", countryName ='" + countryName + '\'' +
                 ", countryDialCode='" + countryDialCode + '\'' +
                 ", district='" + district + '\'' +
