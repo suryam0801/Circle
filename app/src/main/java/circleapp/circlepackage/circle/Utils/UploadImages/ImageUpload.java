@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -73,7 +74,7 @@ public class ImageUpload extends ViewModel {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates);
+                    FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
                     String[] returnValue = {uri.toString(), ""+100.0};
                     progressPercentageAndLink.setValue(returnValue);
 
