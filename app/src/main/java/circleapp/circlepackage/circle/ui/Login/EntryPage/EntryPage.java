@@ -3,13 +3,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,24 +20,22 @@ import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.Utils.LocationHelper.LocationHelper;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Utils.LocationHelper.LocationUpdatedListener;
 import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class EntryPage extends AppCompatActivity implements LocationUpdatedListener {
+public class EntryPage extends AppCompatActivity{
 
     private static final String TAG = EntryPage.class.getSimpleName();
     private Button agreeContinue;
+    private Boolean locationUpdateStatus = false;
     private LocationHelper locationHelper;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        locationHelper = ViewModelProviders.of(this).get(LocationHelper.class);
-        locationHelper.setLocationUpdatedListener(EntryPage.this);
+        setLocationHelperObserver();
 
         setContentView(R.layout.activity_entry_page);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
@@ -50,7 +45,7 @@ public class EntryPage extends AppCompatActivity implements LocationUpdatedListe
                 @Override
                 public void onGranted() {
                     agreeContinue.setText("Getting Location");
-                    getUserLocation();
+                    locationHelper.getLocation(EntryPage.this);
                 }
                 @Override
                 public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -60,19 +55,20 @@ public class EntryPage extends AppCompatActivity implements LocationUpdatedListe
         });
 
     }
-
-    private void getUserLocation(){
-        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        @SuppressLint("MissingPermission")
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null){
-            locationHelper.getAddress(location);
-        }
-        else{
-            locationHelper.getLocation();
-
-        }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setLocationHelperObserver(){
+        locationHelper = ViewModelProviders.of(this).get(LocationHelper.class);
+        locationHelper.listenForLocationUpdates(locationUpdateStatus, this).observe(this, locationUpdates -> {
+            if(locationUpdates==false){
+                buildAlertMessageNoGps();
+            }
+            else
+            {
+                goToNextActivity();
+            }
+        });
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void goToNextActivity(){
         Intent intent = new Intent(this, PhoneLogin.class);
@@ -87,15 +83,6 @@ public class EntryPage extends AppCompatActivity implements LocationUpdatedListe
         Log.d(TAG,"Activity Resumed");
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public void onLocationUpdated(int locationUpdated) {
-        //0 for location disabled, 1 for location successfully retrieved
-        if(locationUpdated==0)
-            buildAlertMessageNoGps();
-        else if(locationUpdated==1)
-            goToNextActivity();
-    }
     //alert box..
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
