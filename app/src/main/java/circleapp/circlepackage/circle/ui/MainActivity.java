@@ -13,10 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
@@ -27,33 +28,28 @@ import circleapp.circlepackage.circle.R;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    private FirebaseDatabase database;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //set dimensions for app
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
-        setPersistenceEnabled();
-        checkIfUserExists();
 
-    }
-    private void setPersistenceEnabled(){
+        database = FirebaseDatabase.getInstance();
         SharedPreferences persistenceCheckPrefs = getApplicationContext().getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
         if (persistenceCheckPrefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
             persistenceCheckPrefs.edit().putBoolean(MainActivity.class.getCanonicalName(),false).apply();
-            FirebaseWriteHelper.setPersistenceFb();
-        }
+            database.setPersistenceEnabled(true);
     }
 
-    private void checkIfUserExists(){
-        if(FirebaseWriteHelper.getUser() != null){
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
             //notificationCountGetter();
             UserViewModel viewModel = ViewModelProviders.of(MainActivity.this).get(UserViewModel.class);
 
-            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(FirebaseWriteHelper.getAuthToken().getCurrentUser().getUid());
+            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             liveData.observe(MainActivity.this, dataSnapshot -> {
                 if (dataSnapshot.exists()) {
