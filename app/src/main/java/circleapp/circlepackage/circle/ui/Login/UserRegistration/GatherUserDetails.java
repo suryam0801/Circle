@@ -41,9 +41,10 @@ import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
-import circleapp.circlepackage.circle.data.FBDatabaseReads.LocationsViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -67,6 +68,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
     private ImageUpload imageUploadModel;
     private NewUserRegistration newUserRegistration;
     private ProgressDialog imageUploadProgressDialog;
+    private TempLocation tempLocation;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +161,9 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
 
     private void setLoginUserObject() {
         loginUserObject = SessionStorage.getLoginUserObject(this);
-        ward = loginUserObject.getWard();
-        district = loginUserObject.getDistrict();
+        tempLocation = SessionStorage.getTempLocationObject(this);
+        ward = tempLocation.getWard();
+        district = tempLocation.getDistrict();
         contact = loginUserObject.getCompletePhoneNumber();
         uid = loginUserObject.getUid();
     }

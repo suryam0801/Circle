@@ -40,7 +40,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
-import circleapp.circlepackage.circle.data.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 import circleapp.circlepackage.circle.ui.Login.UserRegistration.GatherUserDetails;
@@ -48,7 +48,6 @@ import circleapp.circlepackage.circle.ui.Login.UserRegistration.GatherUserDetail
 public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
-    private String ward, district, mCountryDialCode, mCountryName;
     private String mAuthVerificationId, phn_number;
     private PinEntryEditText mOtpText;
     private Button mVerifyBtn;
@@ -147,11 +146,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     }
     public void setTempUserObject(){
         loginUserObject = SessionStorage.getLoginUserObject(this);
-        ward = loginUserObject.getWard();
-        district = loginUserObject.getDistrict();
         phn_number = loginUserObject.getCompletePhoneNumber();
-        mCountryName = loginUserObject.getCountryName();
-        mCountryDialCode = loginUserObject.getCountryDialCode();
     }
 
     @Override
@@ -203,7 +198,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         SessionStorage.saveLoginUserObject(this, loginUserObject);
 
         startActivity(homeIntent);
-        Log.d("OtpActivity", ward + "::" + district);
     }
     @Override
     protected void onPause() {

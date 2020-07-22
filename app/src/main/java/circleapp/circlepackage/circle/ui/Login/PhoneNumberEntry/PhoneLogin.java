@@ -26,7 +26,7 @@ import circleapp.circlepackage.circle.R;
 import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.getCountryCode;
 import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.isPhoneNumber10Digits;
 import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.sendIntentsToOtpActivityAndFinish;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.setCompletePhoneNumber;
+import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.savePhoneNumberToSession;
 import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.setCountryCode;
 
 public class PhoneLogin extends AppCompatActivity {
@@ -89,7 +89,7 @@ public class PhoneLogin extends AppCompatActivity {
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    setCompletePhoneNumber(PhoneLogin.this, country_code, phone_number);
+                                    savePhoneNumberToSession(PhoneLogin.this, country_code, phone_number);
                                     sendIntentsToOtpActivityAndFinish(PhoneLogin.this);
                                 }
                             })

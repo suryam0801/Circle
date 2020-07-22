@@ -24,6 +24,7 @@ import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
+import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
@@ -33,7 +34,7 @@ public class LocationHelper extends ViewModel {
     private Location location;
     private String ward, district,mCountryName;
     private static Criteria gpsSignalCriteria;
-    private static LoginUserObject loginUserObject;
+    private static TempLocation tempLocation;
     private LocationListener locationListener;
     private Context mContext;
 
@@ -146,17 +147,12 @@ public class LocationHelper extends ViewModel {
     //intent to phone login
     public void setSessionLocation(String countryname, String district, String ward, String mCountryDialCode)
     {
-        loginUserObject = new LoginUserObject();
-        loginUserObject.setCountryName(countryname);
-        loginUserObject.setCountryDialCode(mCountryDialCode);
-        loginUserObject.setDistrict(district.trim());
-        loginUserObject.setCompletePhoneNumber("");
-        loginUserObject.setUid("");
-        if(ward != null)
-            loginUserObject.setWard(ward.trim());
-        else
-            loginUserObject.setWard("default");
-        SessionStorage.saveLoginUserObject((Activity) mContext, loginUserObject);
+        tempLocation = new TempLocation();
+        tempLocation.setCountryName(countryname);
+        tempLocation.setCountryDialCode(mCountryDialCode);
+        tempLocation.setDistrict(district.trim());
+        tempLocation.setWard(ward);
+        SessionStorage.saveTempLocationObject((Activity) mContext, tempLocation);
         isLocationSuccess.setValue(true);
     }
 

@@ -41,8 +41,8 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.data.FBDatabaseReads.MyCirclesViewModel;
-import circleapp.circlepackage.circle.data.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 

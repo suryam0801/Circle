@@ -10,15 +10,29 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
+import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class SessionStorage {
 
     private static final String TAG = "SessionStorage";
     public static final String PREF_NAME = "Project";
+
+    public static void saveTempLocationObject(Activity activity, TempLocation tempLocation) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String string = new Gson().toJson(tempLocation);
+        editor.putString("tempLocation", string);
+        editor.apply();
+    }
+
+    public static TempLocation getTempLocationObject(Activity activity) {
+        SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
+        String string = sharedPref.getString("tempLocation", "nowhere");
+        return new Gson().fromJson(string, TempLocation.class);
+    }
 
     public static void saveLoginUserObject(Activity activity, LoginUserObject loginUserObject) {
         SharedPreferences sharedPref = activity.getSharedPreferences(PREF_NAME, Activity.MODE_PRIVATE);
