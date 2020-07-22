@@ -22,7 +22,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.FBDatabaseReads.NotificationsViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.NotificationsViewModel;
 
 public class NotificationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";

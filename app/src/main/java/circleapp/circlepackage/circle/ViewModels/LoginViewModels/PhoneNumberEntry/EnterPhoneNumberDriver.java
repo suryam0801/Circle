@@ -49,8 +49,8 @@ public class EnterPhoneNumberDriver {
         // a list of countries to give to user to choose from.
         return countryMap.get(countryName); // "NL" for Netherlands.
     }
-    public static void setCompletePhoneNumber(Activity activity, String country_code, String phone_number){
-        LoginUserObject loginUserObject = SessionStorage.getLoginUserObject(activity);
+    public static void savePhoneNumberToSession(Activity activity, String country_code, String phone_number){
+        LoginUserObject loginUserObject = new LoginUserObject();
         loginUserObject.setCompletePhoneNumber(country_code + phone_number);
         SessionStorage.saveLoginUserObject(activity, loginUserObject);
     }

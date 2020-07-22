@@ -9,9 +9,11 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
@@ -22,35 +24,52 @@ import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
+import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class LocationHelper extends ViewModel {
 
     private LocationManager locationManager;
+    private Location location;
     private String ward, district,mCountryName;
     private static Criteria gpsSignalCriteria;
-    private static LoginUserObject loginUserObject;
+    private static TempLocation tempLocation;
     private LocationListener locationListener;
-    private static Context mContext;
+    private Context mContext;
 
-    LocationUpdatedListener locationUpdatedListener;
-    public void setLocationUpdatedListener(LocationUpdatedListener locationUpdatedListener) {
-        this.locationUpdatedListener = locationUpdatedListener;
-        mContext = (Context) locationUpdatedListener;
+    private MutableLiveData<Boolean> isLocationSuccess;
+    public MutableLiveData<Boolean> listenForLocationUpdates(Boolean updatedLocationStatus, Context context) {
+        if (!updatedLocationStatus) {
+            isLocationSuccess = new MutableLiveData<>();
+        }
+        else {
+            getLocation(context);
+        }
+        return isLocationSuccess;
     }
 
 
     @SuppressLint("MissingPermission")
-    public void getLocation()
+    public void getLocation(Context context)
     {
+        mContext = context;
+        //get Last known location
+        LocationManager lm = (LocationManager)mContext.getSystemService(Context.LOCATION_SERVICE);
+        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null){
+            getAddress(location);
+        }
+        else{
+            //Criterias for location access
+            setGpsSignalCriteriaParams();
+            setUpLocationChangedListener();
 
-        //Criterias for location access
-        setGpsSignalCriteriaParams();
-        setUpLocationChangedListener();
-
-        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(500,1000,gpsSignalCriteria,locationListener, null);
-        //check if gps is available
-        statusCheck();
+            locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(500,1000,gpsSignalCriteria,locationListener, null);
+            //check if gps is available
+            statusCheck();
+        }
 
     }
 
@@ -128,25 +147,20 @@ public class LocationHelper extends ViewModel {
     //intent to phone login
     public void setSessionLocation(String countryname, String district, String ward, String mCountryDialCode)
     {
-        loginUserObject = new LoginUserObject();
-        loginUserObject.setCountryName(countryname);
-        loginUserObject.setCountryDialCode(mCountryDialCode);
-        loginUserObject.setDistrict(district.trim());
-        loginUserObject.setCompletePhoneNumber("");
-        loginUserObject.setUid("");
-        if(ward != null)
-            loginUserObject.setWard(ward.trim());
-        else
-            loginUserObject.setWard("default");
-        SessionStorage.saveLoginUserObject((Activity) mContext, loginUserObject);
-        locationUpdatedListener.onLocationUpdated(1);
+        tempLocation = new TempLocation();
+        tempLocation.setCountryName(countryname);
+        tempLocation.setCountryDialCode(mCountryDialCode);
+        tempLocation.setDistrict(district.trim());
+        tempLocation.setWard(ward);
+        SessionStorage.saveTempLocationObject((Activity) mContext, tempLocation);
+        isLocationSuccess.setValue(true);
     }
 
     public void statusCheck() {
         final LocationManager manager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            locationUpdatedListener.onLocationUpdated(0);
+            isLocationSuccess.setValue(false);
         }
     }
     private void setGpsSignalCriteriaParams(){

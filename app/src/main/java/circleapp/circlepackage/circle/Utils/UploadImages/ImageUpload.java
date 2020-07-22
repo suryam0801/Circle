@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Utils.UploadImages;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -45,6 +46,7 @@ public class ImageUpload extends ViewModel {
                 @Override
                 public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.d("ProgressBarValue", progress+"");
 
                     String[] returnValue = {filePath.toString(), ""+progress};
                     progressPercentageAndLink.setValue(returnValue);
