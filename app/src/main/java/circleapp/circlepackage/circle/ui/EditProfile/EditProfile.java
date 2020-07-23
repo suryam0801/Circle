@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.ui.EditProfile;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Dialog;
@@ -93,6 +94,7 @@ public class EditProfile extends AppCompatActivity {
         user = SessionStorage.getUser(EditProfile.this);
         InitUIElements();
         defUIValues();
+        editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             Log.d("progressvalue",""+progress);
@@ -314,7 +316,7 @@ public class EditProfile extends AppCompatActivity {
                         Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        imageUploadModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
+                        editProfileViewModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
                             if (state){
                                 user.setProfileImageLink(downloadLink.toString());
                                 Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
@@ -346,7 +348,7 @@ public class EditProfile extends AppCompatActivity {
                         Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        imageUploadModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
+                        editProfileViewModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
                             if (state){
                                 user.setProfileImageLink(avatar);
                                 Glide.with(EditProfile.this)
@@ -414,7 +416,7 @@ public class EditProfile extends AppCompatActivity {
                         Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        imageUploadModel.editprofilename(profileUpdates,user,EditProfile.this).observe(EditProfile.this,state->{
+                        editProfileViewModel.editprofilename(profileUpdates,user,EditProfile.this).observe(EditProfile.this,state->{
                             if (state){
                                 userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
                                 userNameProgressDialogue.dismiss();

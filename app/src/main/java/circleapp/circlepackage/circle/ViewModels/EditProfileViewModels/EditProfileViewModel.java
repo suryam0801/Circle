@@ -21,33 +21,29 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 public class EditProfileViewModel extends ViewModel {
-    private MutableLiveData<Boolean> isProfilepicUploaded;
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MutableLiveData<Boolean> userObjectUploadProgress(Boolean isUserRegistered, Uri downloadUri, User user, Activity activity) {
-        if (!isUserRegistered) {
-            isProfilepicUploaded = new MutableLiveData<>();
-        }
-        else {
-            uploadUserProfilePic(downloadUri,user,activity);
-        }
-        return isProfilepicUploaded;
-    }
-
-    private void uploadUserProfilePic(Uri downloadLink, User user, Activity activity) {
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setPhotoUri(downloadLink)
-                .build();
+    private MutableLiveData<Boolean> imageprogress;
+    private MutableLiveData<Boolean> nameprogress;
+    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, Activity activity) {
+        imageprogress = new MutableLiveData<>();
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                user.setProfileImageLink(downloadLink.toString());
                 FirebaseWriteHelper.updateUser(user, activity);
-//                Glide.with(activity).load(downloadLink.toString()).into(profileImageView);
-//                HelperMethods.GlideSetProfilePic(activity, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
-
+                imageprogress.setValue(true);
             }
         });
-
+        return imageprogress;
     }
 
+    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, Activity activity){
+        nameprogress = new MutableLiveData<>();
+        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                FirebaseWriteHelper.updateUser(user, activity);
+                nameprogress.setValue(true);
+            }
+        });
+        return nameprogress;
+    }
 }

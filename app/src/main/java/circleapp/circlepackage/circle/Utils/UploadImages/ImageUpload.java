@@ -29,8 +29,6 @@ import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 public class ImageUpload extends ViewModel {
 
     private MutableLiveData<String[]> progressPercentageAndLink;
-    private MutableLiveData<Boolean> imageprogress;
-    private MutableLiveData<Boolean> nameprogress;
     public MutableLiveData<String[]> uploadImageWithProgress(Uri filePath) {
         if (filePath == null) {
             progressPercentageAndLink = new MutableLiveData<>();
@@ -39,29 +37,6 @@ public class ImageUpload extends ViewModel {
             imageUpload(filePath);
         }
         return progressPercentageAndLink;
-    }
-    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, Activity activity) {
-        imageprogress = new MutableLiveData<>();
-        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user, activity);
-                imageprogress.setValue(true);
-            }
-        });
-        return imageprogress;
-    }
-
-    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, Activity activity){
-        nameprogress = new MutableLiveData<>();
-        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user, activity);
-                nameprogress.setValue(true);
-            }
-        });
-        return nameprogress;
     }
     public void imageUpload(Uri filePath){
         if (filePath != null) {
