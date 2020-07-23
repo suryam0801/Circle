@@ -85,25 +85,6 @@ public class NotificationFragment extends Fragment {
 
     private void setNotifsView(Notification notification) {
         HelperMethods.OrderNotification(getContext(), prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
-
-//        HelperMethods.setListViewHeightBasedOnChildren(thisWeekListView);
-//        HelperMethods.setListViewHeightBasedOnChildren(previousListView);
-//        thisWeekListView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-//        thisWeekListView.setOnClickListener((parent, view1, position, id) -> {
-//            Notification curent = thisWeekNotifs.get(position);
-//            FirebaseWriteHelper.NotifyOnclickListener(getContext(), curent, position, thisWeekNotifs.get(position).getBroadcastId());
-//        });
-//
-//        previousListView.setOnItemClickListener((parent, view1, position, id) -> {
-//            Notification curent = previousNotifs.get(position);
-//            FirebaseWriteHelper.NotifyOnclickListener(getContext(), curent, position, previousNotifs.get(position).getBroadcastId());
-//        });
-
     }
 
     @Override

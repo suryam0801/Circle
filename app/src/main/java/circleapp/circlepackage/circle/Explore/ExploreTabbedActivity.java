@@ -31,8 +31,10 @@ import com.google.firebase.database.DataSnapshot;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
+
 import circleapp.circlepackage.circle.ui.MainApplication.CreateCircle.CreateCircleCategoryPicker;
-import circleapp.circlepackage.circle.EditProfile.EditProfile;
+
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
