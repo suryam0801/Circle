@@ -78,7 +78,7 @@
         <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
         <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
         <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
-        <activity android:name=".EditProfile.EditProfile"
+        <activity android:name=".ui.EditProfile.EditProfile"
             android:screenOrientation="portrait"/>
         <activity android:name=".PersonelDisplay.PersonelDisplay"
             android:screenOrientation="portrait"/>

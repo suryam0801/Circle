@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.EditProfile;
+package circleapp.circlepackage.circle.ui.EditProfile;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -9,7 +9,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -44,6 +43,8 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -73,6 +74,7 @@ public class EditProfile extends AppCompatActivity {
     RelativeLayout setProfile;
     String avatar;
     public ImageUpload imageUploadModel;
+    public EditProfileViewModel editProfileViewModel;
 
     private Boolean finalizeChange = false;
 
@@ -86,35 +88,8 @@ public class EditProfile extends AppCompatActivity {
 
 
         user = SessionStorage.getUser(EditProfile.this);
-
-        userNameProgressDialogue = new ProgressDialog(EditProfile.this);
-        userNameProgressDialogue.setCancelable(false);
-
-        userName = findViewById(R.id.viewProfile_name);
-        userNumber = findViewById(R.id.viewProfile_email);
-        createdCircles = findViewById(R.id.viewProfileCreatedCirclesCount);
-        workingCircles = findViewById(R.id.viewProfileActiveCirclesCount);
-        editProfPic = findViewById(R.id.profile_view_profilePicSetterImage);
-        profileImageView = findViewById(R.id.profile_view_profile_image);
-        editName = findViewById(R.id.editName);
-        logout = findViewById(R.id.profile_logout);
-        back = findViewById(R.id.bck_view_edit_profile);
-        finalizeChanges = findViewById(R.id.profile_finalize_changes);
-
-        storageReference = FirebaseStorage.getInstance().getReference();
-
-        userName.setText(user.getName());
-        userNumber.setText(user.getContact());
-        createdCircles.setText(user.getCreatedCircles() + "");
-        workingCircles.setText(user.getActiveCircles() + "");
-        avatarList = new ImageButton[8];
-        avatarBgList = new ImageView[8];
-
-        HelperMethods.setUserProfileImage(user, this, profileImageView);
-
-        userNameProgressDialogue = new ProgressDialog(this);
-        imageUploadProgressDialog = new ProgressDialog(this);
-
+        InitUIElements();
+        defUIValues();
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             Log.d("progressvalue",""+progress);
@@ -130,7 +105,7 @@ public class EditProfile extends AppCompatActivity {
                 Glide.with(this).load(filePath).into(profileImageView);
                 downloadLink = Uri.parse(progress[0]);
                 for (int i = 0; i < 8; i++) {
-                    avatarBgList[i].setVisibility(View.INVISIBLE);
+                    avatarBgList[i].setVisibility(View.GONE);
                 }
                 finalizeChanges.setVisibility(View.VISIBLE);
                 imageUploadProgressDialog.dismiss();
@@ -156,7 +131,38 @@ public class EditProfile extends AppCompatActivity {
         });
 
     }
+    private void InitUIElements(){
+        userNameProgressDialogue = new ProgressDialog(EditProfile.this);
+        userNameProgressDialogue.setCancelable(false);
 
+        userName = findViewById(R.id.viewProfile_name);
+        userNumber = findViewById(R.id.viewProfile_email);
+        createdCircles = findViewById(R.id.viewProfileCreatedCirclesCount);
+        workingCircles = findViewById(R.id.viewProfileActiveCirclesCount);
+        editProfPic = findViewById(R.id.profile_view_profilePicSetterImage);
+        profileImageView = findViewById(R.id.profile_view_profile_image);
+        editName = findViewById(R.id.editName);
+        logout = findViewById(R.id.profile_logout);
+        back = findViewById(R.id.bck_view_edit_profile);
+        finalizeChanges = findViewById(R.id.profile_finalize_changes);
+
+        userNameProgressDialogue = new ProgressDialog(this);
+        imageUploadProgressDialog = new ProgressDialog(this);
+
+        storageReference = FirebaseStorage.getInstance().getReference();
+    }
+    private void defUIValues(){
+        userName.setText(user.getName());
+        userNumber.setText(user.getContact());
+        createdCircles.setText(user.getCreatedCircles() + "");
+        workingCircles.setText(user.getActiveCircles() + "");
+        avatarList = new ImageButton[8];
+        avatarBgList = new ImageView[8];
+
+        HelperMethods.setUserProfileImage(user, this, profileImageView);
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void editprofile(String uri) {
         editUserProfiledialogue = new Dialog(EditProfile.this);
         editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
@@ -293,7 +299,14 @@ public class EditProfile extends AppCompatActivity {
                 userNameProgressDialogue.setTitle("Uploading Profile....");
                 userNameProgressDialogue.show();
                 if (downloadLink != null) {
+                    editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
+                    editProfileViewModel.userObjectUploadProgress(false,downloadLink,user,this).observe(this,isuserprofilepic ->{
+                        if (isuserprofilepic){
+
+                        }
+                    });
                     Log.d(TAG, "DownloadURI ::" + downloadLink);
+
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(downloadLink)
                             .build();

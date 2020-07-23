@@ -76,27 +76,15 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setContentView(R.layout.activity_gather_user_details);
         //Getting the instance and references
 
-        name = findViewById(R.id.name);
-        register = findViewById(R.id.registerButton);
-        avatar = "";
-        locationExists = false;
-
+        InitUIElements();
         setAvatarViews();
-        profilePic = findViewById(R.id.profile_image);
-        setProfile = findViewById(R.id.imagePreview);
-
-        imageUploadProgressDialog = new ProgressDialog(this);
         //Initialize observables
         setImageUploadProgressObservable();
         setUserRegisteredObservable();
-
         //get temp user attributes from session
         setLoginUserObject();
         //check if current user location exists in db
         getLocationAlreadyExistsResult();
-
-        name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-
         setAvatarOnclickListeners();
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
@@ -134,6 +122,16 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
                 }
             }
         });
+    }
+    private void InitUIElements(){
+        name = findViewById(R.id.name);
+        register = findViewById(R.id.registerButton);
+        avatar = "";
+        locationExists = false;
+        profilePic = findViewById(R.id.profile_image);
+        setProfile = findViewById(R.id.imagePreview);
+        imageUploadProgressDialog = new ProgressDialog(this);
+        name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
     }
 
     private void setAvatarViews() {

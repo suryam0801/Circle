@@ -40,6 +40,7 @@ public class EntryPage extends AppCompatActivity{
         setContentView(R.layout.activity_entry_page);
         agreeContinue = findViewById(R.id.agreeandContinueEntryPage);
 
+
         agreeContinue.setOnClickListener(view -> {
             Permissions.check(this/*context*/, ACCESS_FINE_LOCATION, null, new PermissionHandler() {
                 @Override
@@ -55,6 +56,7 @@ public class EntryPage extends AppCompatActivity{
         });
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setLocationHelperObserver(){
         locationHelper = ViewModelProviders.of(this).get(LocationHelper.class);
