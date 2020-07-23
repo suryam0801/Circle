@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CreateCircle;
+package circleapp.circlepackage.circle.ui.MainApplication.CreateCircle;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -38,7 +36,7 @@ public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.category_picker_item, viewGroup, false);
-        return new circleapp.circlepackage.circle.CreateCircle.CategoryPickerAdapter.ViewHolder(view);
+        return new CategoryPickerAdapter.ViewHolder(view);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -47,13 +45,16 @@ public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAd
         holder.categoryName.setText(categoryList.get(position));
         holder.iconImageView.setBackground(iconList.get(position));
         holder.container.setOnClickListener(view -> {
-            Intent intent = new Intent(context, CreateCircle.class);
-            intent.putExtra("category_name", categoryList.get(position));
-            context.startActivity(intent);
-            ((Activity) context).finish();
+            sendCategoryToCreateCircle(position);
         });
     }
 
+    private void sendCategoryToCreateCircle(int position){
+        Intent intent = new Intent(context, CreateCircle.class);
+        intent.putExtra("category_name", categoryList.get(position));
+        context.startActivity(intent);
+        ((Activity) context).finish();
+    }
 
     @Override
     public int getItemCount() {

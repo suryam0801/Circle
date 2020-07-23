@@ -28,11 +28,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
-import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
+import circleapp.circlepackage.circle.ui.MainApplication.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
@@ -74,7 +73,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
             user = dataSnapshot.getValue(User.class);
             if (user != null) {
-                String string = new Gson().toJson(user);
                 SessionStorage.saveUser(ExploreTabbedActivity.this, user);
             }
         });
