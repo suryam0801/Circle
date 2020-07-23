@@ -164,24 +164,24 @@ public class CreateCircle extends AppCompatActivity {
                 String visibility = (String) visibilityButton.getText();
                 if (visibility.equals("Yes")){
                     visibilityType="Everybody";
-                    acceptanceType="Public";
+                    acceptanceType="Automatic";
                 }
                 else{
                     visibilityType="OnlyShare";
-                    acceptanceType="Public";
+                    acceptanceType="Automatic";
                 }
             } else {
                 String visibility = (String) visibilityButton.getText();
                 if (visibility.equals("Yes")){
                     visibilityType="Everybody";
-                    acceptanceType="Private";
+                    acceptanceType="Review";
                 }
                 else{
                     visibilityType="OnlyShare";
-                    acceptanceType="Private";
+                    acceptanceType="Review";
                 }
             }
-            createCircle(name, description, acceptanceType, visibilityType);
+            createCircle(name, description);
         } else {
             Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
             acceptanceGroup.startAnimation(animShake);
@@ -199,20 +199,12 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void createCircle(String cName, String cDescription, String acceptanceType, String visibilty) {
+    public void createCircle(String cName, String cDescription) {
 
         User user = SessionStorage.getUser(CreateCircle.this);
-
         String category = getIntent().getStringExtra("category_name");
-
         String myCircleID = FirebaseWriteHelper.getCircleId();
         String creatorUserID = user.getUserId();
-
-        if (acceptanceType.equals("Public"))
-            acceptanceType = "Automatic";
-        else if (acceptanceType.equals("Private"))
-            acceptanceType = "Review";
-
         String creatorName = user.getName();
 
         HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
@@ -223,13 +215,13 @@ public class CreateCircle extends AppCompatActivity {
             backgroundImageLink = "default";
 
         //updating circles
-        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilty, creatorUserID, creatorName,
+        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilityType, creatorUserID, creatorName,
                 category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
                 System.currentTimeMillis(), 0, 0,true);
 
         Subscriber creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
-
+        //write to firebase
         FirebaseWriteHelper.createUserMadeCircle(circle, creatorSubscriber, user.getUserId());
 
         int currentCreatedNo = user.getCreatedCircles() + 1;
@@ -238,6 +230,12 @@ public class CreateCircle extends AppCompatActivity {
 
         SessionStorage.saveCircle(CreateCircle.this, circle);
 
+        //navigate back to explore. new circle will be available in workbench
+        goToCreatedCircle();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void goToCreatedCircle(){
         //navigate back to explore. new circle will be available in workbench
         SharedPreferences prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
         if (prefs.getBoolean("firstWall", true)) {
