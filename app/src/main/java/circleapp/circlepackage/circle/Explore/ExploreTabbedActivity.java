@@ -220,6 +220,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             case "The Circle App":
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.admin_circle_banner)).centerCrop().into(bannerImage);
                 break;
+            case "General":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_general)).centerCrop().into(bannerImage);
+                break;
             default:
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);
                 break;

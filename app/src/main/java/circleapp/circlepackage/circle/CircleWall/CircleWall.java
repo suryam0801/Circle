@@ -136,6 +136,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             // update UI
             if(progress==null);
 
+            else if(progress[1].equals("-1")){
+                imageUploadProgressDialog.dismiss();
+                Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
+            }
+
             else if(!progress[1].equals("100.0")){
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");

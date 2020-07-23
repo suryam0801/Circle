@@ -42,6 +42,7 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
     }
 
     private void setCategoryValues(){
+        categoryList.add("General");
         categoryList.add("Health & Fitness");
         categoryList.add("Events");
         categoryList.add("Students & Clubs");
@@ -52,6 +53,7 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
         categoryList.add("Science & Tech");
         categoryList.add("Gaming");
 
+        iconList.add(getResources().getDrawable(R.drawable.general_icon));
         iconList.add(getResources().getDrawable(R.drawable.barbell));
         iconList.add(getResources().getDrawable(R.drawable.calendar));
         iconList.add(getResources().getDrawable(R.drawable.students));
