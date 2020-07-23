@@ -30,6 +30,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -60,6 +62,7 @@ public class EditProfile extends AppCompatActivity {
     private Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
+    private FirebaseUser firebaseAuth = FirebaseAuth.getInstance().getCurrentUser();
     private Dialog editUserNamedialogue, editUserProfiledialogue;
     private StorageReference storageReference;
     private Uri downloadLink;
@@ -148,6 +151,7 @@ public class EditProfile extends AppCompatActivity {
 
         userNameProgressDialogue = new ProgressDialog(this);
         imageUploadProgressDialog = new ProgressDialog(this);
+
 
         storageReference = FirebaseStorage.getInstance().getReference();
     }
@@ -299,50 +303,79 @@ public class EditProfile extends AppCompatActivity {
                 userNameProgressDialogue.setTitle("Uploading Profile....");
                 userNameProgressDialogue.show();
                 if (downloadLink != null) {
-                    editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
-                    editProfileViewModel.userObjectUploadProgress(false,downloadLink,user,this).observe(this,isuserprofilepic ->{
-                        if (isuserprofilepic){
-
-                        }
-                    });
                     Log.d(TAG, "DownloadURI ::" + downloadLink);
 
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(downloadLink)
                             .build();
-                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            user.setProfileImageLink(downloadLink.toString());
-                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
-                            Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
-                            HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
-                            userNameProgressDialogue.dismiss();
-                            editUserProfiledialogue.dismiss();
-                        }
-                    });
-
+                    if (FirebaseWriteHelper.getUser() == null){
+                        userNameProgressDialogue.dismiss();
+                        editUserProfiledialogue.dismiss();
+                        Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        imageUploadModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
+                            if (state){
+                                user.setProfileImageLink(downloadLink.toString());
+                                Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
+                                HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+                                userNameProgressDialogue.dismiss();
+                                editUserProfiledialogue.dismiss();
+                            }
+                        });
+//                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                FirebaseWriteHelper.updateUser(user, EditProfile.this);
+//                                user.setProfileImageLink(downloadLink.toString());
+//                                Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
+//                                HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+//                                userNameProgressDialogue.dismiss();
+//                                editUserProfiledialogue.dismiss();
+//                            }
+//                        });
+                    }
 
                 } else {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(Uri.parse(avatar))
                             .build();
-                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            user.setProfileImageLink(avatar);
-                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
-                            Glide.with(EditProfile.this)
-                                    .load(Integer.parseInt(avatar))
-                                    .into(profileImageView);
-                            userNameProgressDialogue.dismiss();
-                            user.setProfileImageLink(avatar);
-                            SessionStorage.saveUser(EditProfile.this, user);
-                            finalizeChange = true;
-                            editUserProfiledialogue.dismiss();
-
-                        }
-                    });
+                    if (FirebaseWriteHelper.getUser() == null){
+                        userNameProgressDialogue.dismiss();
+                        editUserProfiledialogue.dismiss();
+                        Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        imageUploadModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
+                            if (state){
+                                user.setProfileImageLink(avatar);
+                                Glide.with(EditProfile.this)
+                                        .load(Integer.parseInt(avatar))
+                                        .into(profileImageView);
+                                userNameProgressDialogue.dismiss();
+                                user.setProfileImageLink(avatar);
+                                SessionStorage.saveUser(EditProfile.this, user);
+                                finalizeChange = true;
+                                editUserProfiledialogue.dismiss();
+                            }
+                        });
+//                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
+//                            user.setProfileImageLink(avatar);
+//                            Glide.with(EditProfile.this)
+//                                    .load(Integer.parseInt(avatar))
+//                                    .into(profileImageView);
+//                            userNameProgressDialogue.dismiss();
+//                            user.setProfileImageLink(avatar);
+//                            SessionStorage.saveUser(EditProfile.this, user);
+//                            finalizeChange = true;
+//                            editUserProfiledialogue.dismiss();
+//
+//                        }
+//                    });
+                    }
                 }
 
             } else {
@@ -371,20 +404,35 @@ public class EditProfile extends AppCompatActivity {
                 if (!TextUtils.isEmpty(name)) {
                     userNameProgressDialogue.setTitle("Updating Name....");
                     userNameProgressDialogue.show();
-                    String userId = FirebaseWriteHelper.getUserId();
+//                    String userId = FirebaseWriteHelper.getUserId();
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
                             .build();
-                    FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
-                            userNameProgressDialogue.dismiss();
-                            editUserNamedialogue.dismiss();
-                            user.setName(name);
-                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
-                        }
-                    });
+                    if (FirebaseWriteHelper.getUser() == null){
+                        userNameProgressDialogue.dismiss();
+                        editUserNamedialogue.dismiss();
+                        Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        imageUploadModel.editprofilename(profileUpdates,user,EditProfile.this).observe(EditProfile.this,state->{
+                            if (state){
+                                userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
+                                userNameProgressDialogue.dismiss();
+                                editUserNamedialogue.dismiss();
+                                user.setName(name);
+                            }
+                        });
+//                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
+//                                userNameProgressDialogue.dismiss();
+//                                editUserNamedialogue.dismiss();
+//                                user.setName(name);
+//                                FirebaseWriteHelper.updateUser(user, EditProfile.this);
+//                            }
+//                        });
+                    }
 
                 } else {
                     Toast.makeText(EditProfile.this, "Please Enter Your Name...", Toast.LENGTH_SHORT).show();

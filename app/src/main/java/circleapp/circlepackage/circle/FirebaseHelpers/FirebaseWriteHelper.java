@@ -61,7 +61,7 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
-    private static final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private static final FirebaseUser user = authenticationToken.getCurrentUser();
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     private static final DatabaseReference CIRCLES_REF = database.getReference("/Circles");
@@ -177,7 +177,8 @@ public class FirebaseWriteHelper {
     }
 
     public static FirebaseUser getUser() {
-        return user;
+        FirebaseUser user1 = authenticationToken.getCurrentUser();
+        return user1;
     }
 
     public static void initializeNewCount(Context context, Circle c, User user) {
