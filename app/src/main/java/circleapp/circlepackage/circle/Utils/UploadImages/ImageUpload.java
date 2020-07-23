@@ -74,9 +74,15 @@ public class ImageUpload extends ViewModel {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
-                    String[] returnValue = {uri.toString(), ""+100.0};
-                    progressPercentageAndLink.setValue(returnValue);
+                    if(FirebaseWriteHelper.getUser()!=null){
+                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates);
+                        String[] returnValue = {uri.toString(), ""+100.0};
+                        progressPercentageAndLink.setValue(returnValue);
+                    }
+                    else {
+                        String[] returnValue ={"", -1+""};
+                        progressPercentageAndLink.setValue(returnValue);
+                    }
 
                 }
             })
