@@ -1,11 +1,9 @@
-package circleapp.circlepackage.circle.CreateCircle;
+package circleapp.circlepackage.circle.ui.MainApplication.CreateCircle;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;

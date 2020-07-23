@@ -1,11 +1,10 @@
-package circleapp.circlepackage.circle.CreateCircle;
+package circleapp.circlepackage.circle.ui.MainApplication.CreateCircle;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -32,7 +31,6 @@ import com.bumptech.glide.Glide;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
@@ -50,6 +48,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
+import static circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle.writeCircleToDb;
 
 public class CreateCircle extends AppCompatActivity {
 
@@ -146,7 +145,7 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         addLogo.setOnClickListener(v -> {
-            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+            Permissions.check(this, CAMERA, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     sendImageUploadIntent();
@@ -204,10 +203,7 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        //write to firebase
-        FirebaseWriteHelper.createUserMadeCircle(circle, creatorSubscriber);
-        //update user in session and db
-        updateUserObject();
+        writeCircleToDb(this,circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
     }
@@ -232,13 +228,6 @@ public class CreateCircle extends AppCompatActivity {
 
         creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
-    }
-
-    private void updateUserObject(){
-        int currentCreatedNo = user.getCreatedCircles() + 1;
-        user.setCreatedCircles(currentCreatedNo);
-        FirebaseWriteHelper.updateUser(user, this);
-        SessionStorage.saveCircle(CreateCircle.this, circle);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -284,7 +273,6 @@ public class CreateCircle extends AppCompatActivity {
         });
         imageUploadModel.imageUpload(filePath);
     }
-
 
     //code for upload the image
     @Override

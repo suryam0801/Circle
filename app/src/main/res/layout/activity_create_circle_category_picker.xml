@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="25dp"
     android:paddingRight="25dp"
-    tools:context=".CreateCircle.CreateCircleCategoryPicker">
+    tools:context=".ui.MainApplication.CreateCircle.CreateCircleCategoryPicker">
 
     <TextView
         android:layout_width="match_parent"
