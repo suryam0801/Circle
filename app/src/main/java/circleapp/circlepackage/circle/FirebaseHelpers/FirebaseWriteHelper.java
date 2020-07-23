@@ -261,9 +261,9 @@ public class FirebaseWriteHelper {
         return commentId;
     }
 
-    public static void createUserMadeCircle(Circle circle, Subscriber subscriber, String userId) {
+    public static void createUserMadeCircle(Circle circle, Subscriber subscriber) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
-        CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(userId).setValue(subscriber);
+        CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(subscriber.getId()).setValue(subscriber);
         if(!circle.getBackgroundImageLink().equals("default"))
         addCircleImageReference(circle.getId(),circle.getBackgroundImageLink());
     }

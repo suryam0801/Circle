@@ -21,7 +21,7 @@ import circleapp.circlepackage.circle.R;
 public class ExploreCategoryFilter extends AppCompatActivity {
 
     private MaterialCheckBox healthAndFitness, events, studentsAndClubs, apartmentsAndCommunities, sports,
-            friendsAndFamily, foodAndEntertainment, scienceAndTech, gaming;
+            friendsAndFamily, foodAndEntertainment, scienceAndTech, gaming, general;
 
     private ImageButton back;
     private Button applyFilter;
@@ -45,6 +45,7 @@ public class ExploreCategoryFilter extends AppCompatActivity {
         foodAndEntertainment = findViewById(R.id.food_and_entertainment_filter);
         scienceAndTech = findViewById(R.id.science_and_tech_filter);
         gaming = findViewById(R.id.gaming_filter);
+        general = findViewById(R.id.general_filter);
 
         if (SessionStorage.getFilters(this) != null)
             selectedFilters = SessionStorage.getFilters(this);
@@ -79,6 +80,10 @@ public class ExploreCategoryFilter extends AppCompatActivity {
                     case "Gaming":
                         gaming.setChecked(true);
                         break;
+                    case "General":
+                        general.setChecked(true);
+                        break;
+
                 }
             }
         }
@@ -147,6 +152,13 @@ public class ExploreCategoryFilter extends AppCompatActivity {
                 selectedFilters.add("Gaming");
             else
                 selectedFilters.remove("Gaming");
+            Log.d("CATEGORY FILTER", selectedFilters.toString());
+        });
+        general.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b)
+                selectedFilters.add("General");
+            else
+                selectedFilters.remove("General");
             Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
 

@@ -34,7 +34,7 @@
         <activity android:name=".CircleWall.FullPageBroadcastCardView"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".CreateCircle.CreateCircleCategoryPicker"
+            android:name=".ui.MainApplication.CreateCircle.CreateCircleCategoryPicker"
             android:label="@string/title_activity_create_circle_category_picker"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
@@ -98,7 +98,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateCircle.CreateCircle" />
+        <activity android:name=".ui.MainApplication.CreateCircle.CreateCircle" />
         <activity
             android:name=".Explore.CircleDisplayAdapter"
             tools:ignore="Instantiatable" />

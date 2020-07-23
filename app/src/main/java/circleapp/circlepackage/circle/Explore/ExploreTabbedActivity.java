@@ -28,12 +28,13 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
-import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
+
+import circleapp.circlepackage.circle.ui.MainApplication.CreateCircle.CreateCircleCategoryPicker;
+
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
@@ -74,7 +75,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
             user = dataSnapshot.getValue(User.class);
             if (user != null) {
-                String string = new Gson().toJson(user);
                 SessionStorage.saveUser(ExploreTabbedActivity.this, user);
             }
         });
@@ -221,6 +221,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
             case "The Circle App":
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.admin_circle_banner)).centerCrop().into(bannerImage);
+                break;
+            case "General":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_general)).centerCrop().into(bannerImage);
                 break;
             default:
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);

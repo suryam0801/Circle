@@ -168,6 +168,9 @@ public class CircleInformation extends AppCompatActivity {
             case "The Circle App":
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.admin_circle_banner)).centerCrop().into(banner);
                 break;
+            case "General":
+                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_general)).centerCrop().into(banner);
+                break;
             default:
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(banner);
                 break;
