@@ -280,7 +280,6 @@ public class FirebaseWriteHelper {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
-                        SessionStorage.saveUser((Activity) context, user);
                         String state = "comment";
                         HelperMethods.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
