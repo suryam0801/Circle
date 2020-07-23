@@ -69,9 +69,11 @@ public class CreateCircle extends AppCompatActivity {
     private Uri filePath, downloadLink;
     private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-    private String backgroundImageLink="", acceptanceType, visibilityType;
+    private String backgroundImageLink="", acceptanceType, visibilityType, cName, cDescription;
     public ImageUpload imageUploadModel;
     private ProgressDialog imageUploadProgressDialog;
+    private Circle circle;
+    private Subscriber creatorSubscriber;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -134,9 +136,9 @@ public class CreateCircle extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setButtonListeners(){
         btn_createCircle.setOnClickListener(view -> {
-            String cName = circleNameEntry.getText().toString().trim();
-            String cDescription = circleDescriptionEntry.getText().toString().trim();
-            checkIfFormIsFilled(cName, cDescription);
+            cName = circleNameEntry.getText().toString().trim();
+            cDescription = circleDescriptionEntry.getText().toString().trim();
+            checkIfFormIsFilled();
         });
 
         back.setOnClickListener(view -> {
@@ -154,7 +156,7 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void radioButtonCheck(String name, String description) {
+    public void radioButtonCheck() {
         int radioId = acceptanceGroup.getCheckedRadioButtonId();
         acceptanceButton = findViewById(radioId);
         int visibilityId = visibilityGroup.getCheckedRadioButtonId();
@@ -181,7 +183,7 @@ public class CreateCircle extends AppCompatActivity {
                     acceptanceType="Review";
                 }
             }
-            createCircle(name, description);
+            createCircle();
         } else {
             Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
             acceptanceGroup.startAnimation(animShake);
@@ -190,18 +192,28 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void checkIfFormIsFilled(String cName, String cDescription){
+    private void checkIfFormIsFilled(){
         if (!cName.isEmpty() && !cDescription.isEmpty()) {
-            radioButtonCheck(cName, cDescription);
+            radioButtonCheck();
         } else {
             Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void createCircle(String cName, String cDescription) {
+    public void createCircle() {
 
-        User user = SessionStorage.getUser(CreateCircle.this);
+        setLocalCircleObject();
+        //write to firebase
+        FirebaseWriteHelper.createUserMadeCircle(circle, creatorSubscriber);
+        //update user in session and db
+        updateUserObject();
+        //navigate back to explore. new circle will be available in workbench
+        goToCreatedCircle();
+    }
+
+    private void setLocalCircleObject(){
+        user = SessionStorage.getUser(CreateCircle.this);
         String category = getIntent().getStringExtra("category_name");
         String myCircleID = FirebaseWriteHelper.getCircleId();
         String creatorUserID = user.getUserId();
@@ -214,24 +226,19 @@ public class CreateCircle extends AppCompatActivity {
         else
             backgroundImageLink = "default";
 
-        //updating circles
-        Circle circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilityType, creatorUserID, creatorName,
+        circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilityType, creatorUserID, creatorName,
                 category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
                 System.currentTimeMillis(), 0, 0,true);
 
-        Subscriber creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
+        creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
                 user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
-        //write to firebase
-        FirebaseWriteHelper.createUserMadeCircle(circle, creatorSubscriber, user.getUserId());
+    }
 
+    private void updateUserObject(){
         int currentCreatedNo = user.getCreatedCircles() + 1;
         user.setCreatedCircles(currentCreatedNo);
         FirebaseWriteHelper.updateUser(user, this);
-
         SessionStorage.saveCircle(CreateCircle.this, circle);
-
-        //navigate back to explore. new circle will be available in workbench
-        goToCreatedCircle();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

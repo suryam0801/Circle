@@ -22,17 +22,11 @@ public class CreateCircleCategoryPicker extends AppCompatActivity {
 
     private List<String> categoryList = new ArrayList<>();
     private List<Drawable> iconList = new ArrayList<>();
-    private LinearLayout createNewTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_circle_category_picker);
-
-/*        createNewTag = findViewById(R.id.create_your_own_category);
-
-        createNewTag.setOnClickListener(view -> Toast.makeText(this, "Feature Not Available. Coming Soon.", Toast.LENGTH_SHORT).show());*/
-
         setCategoryValues();
         setRecyclerView();
 
