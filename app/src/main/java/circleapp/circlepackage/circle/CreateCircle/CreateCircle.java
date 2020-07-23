@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -70,7 +69,7 @@ public class CreateCircle extends AppCompatActivity {
     private Uri filePath, downloadLink;
     private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-    private String backgroundImageLink;
+    private String backgroundImageLink="", acceptanceType, visibilityType;
     public ImageUpload imageUploadModel;
     private ProgressDialog imageUploadProgressDialog;
 
@@ -83,7 +82,11 @@ public class CreateCircle extends AppCompatActivity {
         setContentView(R.layout.activity_create_circle);
 
         user = SessionStorage.getUser(CreateCircle.this);
-        backgroundImageLink = "";
+        setUIElements();
+        setObserverForImageUpload();
+        setButtonListeners();
+    }
+    private void setUIElements(){
         //Initialize all UI elements in the CreateCircle activity
         circleNameEntry = findViewById(R.id.create_circle_Name);
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
@@ -103,8 +106,11 @@ public class CreateCircle extends AppCompatActivity {
         //to set invisible on adding image
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
-
         imageUploadProgressDialog = new ProgressDialog(this);
+        visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
+    }
+
+    private void setObserverForImageUpload(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             Log.d("progressvalue",""+progress);
@@ -124,34 +130,24 @@ public class CreateCircle extends AppCompatActivity {
                 imageUploadProgressDialog.dismiss();
             }
         });
-
-        visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
-
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setButtonListeners(){
         btn_createCircle.setOnClickListener(view -> {
             String cName = circleNameEntry.getText().toString().trim();
             String cDescription = circleDescriptionEntry.getText().toString().trim();
-            if (!cName.isEmpty() && !cDescription.isEmpty()) {
-                radioButtonCheck(cName, cDescription);
-            } else {
-                Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
-            }
+            checkIfFormIsFilled(cName, cDescription);
         });
 
         back.setOnClickListener(view -> {
-            finishAfterTransition();
-            startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
+            sendToHome();
         });
 
         addLogo.setOnClickListener(v -> {
             Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
+                    sendImageUploadIntent();
                 }
             });
         });
@@ -166,21 +162,39 @@ public class CreateCircle extends AppCompatActivity {
         if (radioId != -1 && visibilityId != -1) {
             if (acceptanceButton.getText().equals("Anyone can join")) {
                 String visibility = (String) visibilityButton.getText();
-                if (visibility.equals("Yes"))
-                    createCircle(name, description, "Public", "Everybody");
-                else
-                    createCircle(name, description, "Public", "OnlyShare");
+                if (visibility.equals("Yes")){
+                    visibilityType="Everybody";
+                    acceptanceType="Public";
+                }
+                else{
+                    visibilityType="OnlyShare";
+                    acceptanceType="Public";
+                }
             } else {
                 String visibility = (String) visibilityButton.getText();
-                if (visibility.equals("Yes"))
-                    createCircle(name, description, "Private", "Everybody");
-                else
-                    createCircle(name, description, "Private", "OnlyShare");
+                if (visibility.equals("Yes")){
+                    visibilityType="Everybody";
+                    acceptanceType="Private";
+                }
+                else{
+                    visibilityType="OnlyShare";
+                    acceptanceType="Private";
+                }
             }
+            createCircle(name, description, acceptanceType, visibilityType);
         } else {
             Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
             acceptanceGroup.startAnimation(animShake);
             HelperMethods.vibrate(this);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void checkIfFormIsFilled(String cName, String cDescription){
+        if (!cName.isEmpty() && !cDescription.isEmpty()) {
+            radioButtonCheck(cName, cDescription);
+        } else {
+            Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -239,6 +253,10 @@ public class CreateCircle extends AppCompatActivity {
             startActivity(intent);
         }
     }
+    private void sendImageUploadIntent(){
+        Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+    }
     private void uploadCircleLogo(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
@@ -287,6 +305,11 @@ public class CreateCircle extends AppCompatActivity {
         finishAfterTransition();
         Intent about_intent = new Intent(CreateCircle.this, ExploreTabbedActivity.class);
         startActivity(about_intent);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void sendToHome(){
+        finishAfterTransition();
+        startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
     }
 
     @Override

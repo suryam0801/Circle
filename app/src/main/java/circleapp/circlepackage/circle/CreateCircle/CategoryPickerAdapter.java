@@ -47,13 +47,16 @@ public class CategoryPickerAdapter extends RecyclerView.Adapter<CategoryPickerAd
         holder.categoryName.setText(categoryList.get(position));
         holder.iconImageView.setBackground(iconList.get(position));
         holder.container.setOnClickListener(view -> {
-            Intent intent = new Intent(context, CreateCircle.class);
-            intent.putExtra("category_name", categoryList.get(position));
-            context.startActivity(intent);
-            ((Activity) context).finish();
+            sendCategoryToCreateCircle(position);
         });
     }
 
+    private void sendCategoryToCreateCircle(int position){
+        Intent intent = new Intent(context, CreateCircle.class);
+        intent.putExtra("category_name", categoryList.get(position));
+        context.startActivity(intent);
+        ((Activity) context).finish();
+    }
 
     @Override
     public int getItemCount() {

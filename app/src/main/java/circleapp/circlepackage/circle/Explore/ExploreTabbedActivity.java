@@ -74,7 +74,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
             user = dataSnapshot.getValue(User.class);
             if (user != null) {
-                String string = new Gson().toJson(user);
                 SessionStorage.saveUser(ExploreTabbedActivity.this, user);
             }
         });
