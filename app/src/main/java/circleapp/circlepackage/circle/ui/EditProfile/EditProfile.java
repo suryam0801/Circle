@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -79,6 +80,8 @@ public class EditProfile extends AppCompatActivity {
     String avatar;
     public ImageUpload imageUploadModel;
     public EditProfileViewModel editProfileViewModel;
+    public  EditUserProfileImage editUserProfileImage;
+    public EdituserName edituserName;
 
     private Boolean finalizeChange = false;
 
@@ -90,10 +93,10 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
         this.setFinishOnTouchOutside(false);
 
-
-        user = SessionStorage.getUser(EditProfile.this);
         InitUIElements();
         defUIValues();
+        editUserProfileImage = new EditUserProfileImage();
+        edituserName  = new EdituserName();
         editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
@@ -116,30 +119,27 @@ public class EditProfile extends AppCompatActivity {
                 imageUploadProgressDialog.dismiss();
             }
         });
-
         editProfPic.setOnClickListener(view -> {
-            editprofile(user.getProfileImageLink());
+            editUserProfileImage.editprofile(user.getProfileImageLink(), EditProfile.this,finalizeChanges,user,downloadLink,profileImageView);
+//            editprofile(user.getProfileImageLink());
         });
         editName.setOnClickListener(v -> {
-            edituserNamedialogue();
+            edituserName.edituserNamedialogue(EditProfile.this,user,userName);
+//            edituserNamedialogue();
         });
-
         logout.setOnClickListener(view -> {
             FirebaseWriteHelper.signOutAuth();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
         });
-
         back.setOnClickListener(view -> {
             finishAfterTransition();
             startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
         });
-
     }
     private void InitUIElements(){
         userNameProgressDialogue = new ProgressDialog(EditProfile.this);
         userNameProgressDialogue.setCancelable(false);
-
         userName = findViewById(R.id.viewProfile_name);
         userNumber = findViewById(R.id.viewProfile_email);
         createdCircles = findViewById(R.id.viewProfileCreatedCirclesCount);
@@ -150,308 +150,24 @@ public class EditProfile extends AppCompatActivity {
         logout = findViewById(R.id.profile_logout);
         back = findViewById(R.id.bck_view_edit_profile);
         finalizeChanges = findViewById(R.id.profile_finalize_changes);
-
         userNameProgressDialogue = new ProgressDialog(this);
         imageUploadProgressDialog = new ProgressDialog(this);
-
 
         storageReference = FirebaseStorage.getInstance().getReference();
     }
     private void defUIValues(){
-        userName.setText(user.getName());
-        userNumber.setText(user.getContact());
+        user = SessionStorage.getUser(EditProfile.this);
+        userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
+        userNumber.setText(FirebaseWriteHelper.getUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
-
         HelperMethods.setUserProfileImage(user, this, profileImageView);
-
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void editprofile(String uri) {
-        editUserProfiledialogue = new Dialog(EditProfile.this);
-        editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
-
-        avatarList[0] = avatar1 = editUserProfiledialogue.findViewById(R.id.avatar1);
-        avatarList[1] = avatar2 = editUserProfiledialogue.findViewById(R.id.avatar2);
-        avatarList[2] = avatar3 = editUserProfiledialogue.findViewById(R.id.avatar3);
-        avatarList[3] = avatar4 = editUserProfiledialogue.findViewById(R.id.avatar4);
-        avatarList[4] = avatar5 = editUserProfiledialogue.findViewById(R.id.avatar5);
-        avatarList[5] = avatar6 = editUserProfiledialogue.findViewById(R.id.avatar6);
-        avatarList[6] = avatar7 = editUserProfiledialogue.findViewById(R.id.avatar7);
-        avatarList[7] = avatar8 = editUserProfiledialogue.findViewById(R.id.avatar8);
-        avatarBgList[0] = avatar1_bg = editUserProfiledialogue.findViewById(R.id.avatar1_State);
-        avatarBgList[1] = avatar2_bg = editUserProfiledialogue.findViewById(R.id.avatar2_State);
-        avatarBgList[2] = avatar3_bg = editUserProfiledialogue.findViewById(R.id.avatar3_State);
-        avatarBgList[3] = avatar4_bg = editUserProfiledialogue.findViewById(R.id.avatar4_State);
-        avatarBgList[4] = avatar5_bg = editUserProfiledialogue.findViewById(R.id.avatar5_State);
-        avatarBgList[5] = avatar6_bg = editUserProfiledialogue.findViewById(R.id.avatar6_State);
-        avatarBgList[6] = avatar7_bg = editUserProfiledialogue.findViewById(R.id.avatar7_State);
-        avatarBgList[7] = avatar8_bg = editUserProfiledialogue.findViewById(R.id.avatar8_State);
-        profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
-        setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
-        Button profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
-        Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
-        Glide.with(EditProfile.this).load(uri).into(profilePic);
-        profilepicButton.setOnClickListener(view -> {
-            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    finalizeChange = false;
-                    for (int i = 0; i < 8; i++) {
-                        avatarBgList[i].setVisibility(View.GONE);
-                    }
-                    avatar = "";
-                    editUserProfiledialogue.dismiss();
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
-        });
-        finalizeChanges.setOnClickListener(view -> {
-            if (downloadLink != null)
-                user.setProfileImageLink(downloadLink.toString());
-
-            FirebaseWriteHelper.updateUser(user, this);
-            SessionStorage.saveUser(EditProfile.this, user);
-            finalizeChange = true;
-            finalizeChanges.setVisibility(View.GONE);
-
-            /*startActivity(new Intent(EditProfile.this, ExploreTabbedActivity.class));
-            finish();*/
-        });
-        //listener for button to add the profilepic
-        avatar1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar1);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar2);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar3);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar4);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar5);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar6);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar7);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-        avatar8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar8);
-                HelperMethods.setProfilePicMethod(EditProfile.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
-                downloadLink = null;
-            }
-        });
-
-
-        profileuploadButton.setOnClickListener(view -> {
-            if (avatar != "" || downloadLink != null) {
-                userNameProgressDialogue.setTitle("Uploading Profile....");
-                userNameProgressDialogue.show();
-                if (downloadLink != null) {
-                    Log.d(TAG, "DownloadURI ::" + downloadLink);
-
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(downloadLink)
-                            .build();
-                    if (FirebaseWriteHelper.getUser() == null){
-                        userNameProgressDialogue.dismiss();
-                        editUserProfiledialogue.dismiss();
-                        Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        editProfileViewModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
-                            if (state){
-                                user.setProfileImageLink(downloadLink.toString());
-                                Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
-                                HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
-                                userNameProgressDialogue.dismiss();
-                                editUserProfiledialogue.dismiss();
-                            }
-                        });
-//                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                FirebaseWriteHelper.updateUser(user, EditProfile.this);
-//                                user.setProfileImageLink(downloadLink.toString());
-//                                Glide.with(EditProfile.this).load(downloadLink.toString()).into(profileImageView);
-//                                HelperMethods.GlideSetProfilePic(EditProfile.this, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
-//                                userNameProgressDialogue.dismiss();
-//                                editUserProfiledialogue.dismiss();
-//                            }
-//                        });
-                    }
-
-                } else {
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setPhotoUri(Uri.parse(avatar))
-                            .build();
-                    if (FirebaseWriteHelper.getUser() == null){
-                        userNameProgressDialogue.dismiss();
-                        editUserProfiledialogue.dismiss();
-                        Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        editProfileViewModel.editprofileimage(profileUpdates,user,EditProfile.this).observe(this,state->{
-                            if (state){
-                                user.setProfileImageLink(avatar);
-                                Glide.with(EditProfile.this)
-                                        .load(Integer.parseInt(avatar))
-                                        .into(profileImageView);
-                                userNameProgressDialogue.dismiss();
-                                user.setProfileImageLink(avatar);
-                                SessionStorage.saveUser(EditProfile.this, user);
-                                finalizeChange = true;
-                                editUserProfiledialogue.dismiss();
-                            }
-                        });
-//                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Void> task) {
-//                            FirebaseWriteHelper.updateUser(user, EditProfile.this);
-//                            user.setProfileImageLink(avatar);
-//                            Glide.with(EditProfile.this)
-//                                    .load(Integer.parseInt(avatar))
-//                                    .into(profileImageView);
-//                            userNameProgressDialogue.dismiss();
-//                            user.setProfileImageLink(avatar);
-//                            SessionStorage.saveUser(EditProfile.this, user);
-//                            finalizeChange = true;
-//                            editUserProfiledialogue.dismiss();
-//
-//                        }
-//                    });
-                    }
-                }
-
-            } else {
-                editUserProfiledialogue.dismiss();
-                //Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
-            }
-
-        });
-        editUserProfiledialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        editUserProfiledialogue.show();
-
-    }
-
-    private void edituserNamedialogue() {
-        editUserNamedialogue = new Dialog(EditProfile.this);
-        editUserNamedialogue.setContentView(R.layout.user_name_edit_dialogue); //set dialog view
-        final Button edit_name_finalize = editUserNamedialogue.findViewById(R.id.edit_name_Button);
-        final EditText edit_name = editUserNamedialogue.findViewById(R.id.edit_name);
-        edit_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-
-        edit_name_finalize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = edit_name.getText().toString().replaceAll("\\s+", " ");
-                ;
-                if (!TextUtils.isEmpty(name)) {
-                    userNameProgressDialogue.setTitle("Updating Name....");
-                    userNameProgressDialogue.show();
-//                    String userId = FirebaseWriteHelper.getUserId();
-                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(name)
-                            .build();
-                    if (FirebaseWriteHelper.getUser() == null){
-                        userNameProgressDialogue.dismiss();
-                        editUserNamedialogue.dismiss();
-                        Toast.makeText(EditProfile.this, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        editProfileViewModel.editprofilename(profileUpdates,user,EditProfile.this).observe(EditProfile.this,state->{
-                            if (state){
-                                userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
-                                userNameProgressDialogue.dismiss();
-                                editUserNamedialogue.dismiss();
-                                user.setName(name);
-                            }
-                        });
-//                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
-//                                userNameProgressDialogue.dismiss();
-//                                editUserNamedialogue.dismiss();
-//                                user.setName(name);
-//                                FirebaseWriteHelper.updateUser(user, EditProfile.this);
-//                            }
-//                        });
-                    }
-
-                } else {
-                    Toast.makeText(EditProfile.this, "Please Enter Your Name...", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        editUserNamedialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        editUserNamedialogue.show();
-
-
-    }
-
     private void uploadUserProfilePic(){
         imageUploadModel.imageUpload(filePath);
     }
-
     //code for upload the image
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -469,7 +185,6 @@ public class EditProfile extends AppCompatActivity {
                 break;
         }
     }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
