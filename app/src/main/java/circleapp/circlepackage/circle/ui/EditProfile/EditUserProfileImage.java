@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ui.EditProfile;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -82,7 +83,7 @@ public class EditUserProfileImage {
         Button profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
         Glide.with(editProfile).load(uri).into(profilePic);
         profilepicButton.setOnClickListener(view -> {
-            Permissions.check(editProfile/*context*/, CAMERA, null, new PermissionHandler() {
+            Permissions.check(editProfile,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null,null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     finalizeChange = false;

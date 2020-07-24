@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ui.Login.UserRegistration;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -88,7 +89,7 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         setAvatarOnclickListeners();
         //listener for button to add the profilepic
         setProfile.setOnClickListener(v -> {
-            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+            Permissions.check(this,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null,null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     runPhotoUploadIntent();

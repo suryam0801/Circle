@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -145,7 +146,7 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         addLogo.setOnClickListener(v -> {
-            Permissions.check(this, CAMERA, null, new PermissionHandler() {
+            Permissions.check(this, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     sendImageUploadIntent();
