@@ -36,18 +36,35 @@
                     android:scaleX=".8"
                     android:scaleY=".8"
                     android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="220dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="70dp"
-                    android:text="Create Your Circle"
+                    android:paddingLeft="10dp"
+                    android:text="New Circle"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="20dp"></TextView>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/create_circle_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:shadowColor="@android:color/transparent"
+                    android:text="Create"
+                    android:textSize="15dp"
+                    android:textColor="@android:color/holo_blue_light"></Button>
             </LinearLayout>
 
             <View
@@ -86,14 +103,101 @@
                         android:textSize="12dp"></TextView>
 
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/circle_visibility_display"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Public"
+                        android:textColor="@color/black20"
+                        android:textSize="16dp"></TextView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/visibility_prompt_create_circle"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="23dp"
+                            android:layout_marginTop="5dp"
+                            android:text="Anyone in your area can join."
+                            android:textColor="#DEDADA"></TextView>
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+                        <com.suke.widget.SwitchButton
+                            android:id="@+id/visibilitySwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_marginRight="20dp"
+                            app:sb_checked_color="@color/green"
+                            app:sb_uncheck_color="@color/request_alert_color"></com.suke.widget.SwitchButton>
+
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/acceptanceDisplayView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Joining Restrictions"
+                        android:textColor="@color/black20"
+                        android:textSize="16dp"></TextView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="23dp"
+                            android:layout_marginTop="5dp"
+                            android:text="People can join this Circle without applying."
+                            android:textColor="#DEDADA"></TextView>
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+                        <com.suke.widget.SwitchButton
+                            android:id="@+id/joiningSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:layout_marginRight="20dp"
+                            app:sb_checked_color="@color/green"
+                            app:sb_uncheck_color="@color/request_alert_color">
+                        </com.suke.widget.SwitchButton>
+
+                    </LinearLayout>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="23dp"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="30dp"
                     android:text="Circle Logo"
-                    android:textColor="@color/grey"></TextView>
+                    android:textColor="@color/black20"
+                    android:textSize="16dp"></TextView>
 
                 <TextView
                     android:id="@+id/logo_help"
@@ -151,8 +255,8 @@
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Name"
-                    android:textColor="#9D9D9D"
-                    android:textSize="12dp"></TextView>
+                    android:textColor="@color/black20"
+                    android:textSize="16dp"></TextView>
 
                 <EditText
                     android:id="@+id/create_circle_Name"
@@ -176,9 +280,9 @@
                     android:layout_marginLeft="23dp"
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Description (200 characters)"
-                    android:textColor="#9D9D9D"
-                    android:textSize="12dp"></TextView>
+                    android:text="Purpose (200 characters)"
+                    android:textColor="@color/black20"
+                    android:textSize="16dp"></TextView>
 
                 <EditText
                     android:id="@+id/create_circle_Description"
@@ -209,134 +313,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/circle_visibility_display"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/visibility_prompt_create_circle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Visibility Prompt"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
-            <RadioGroup
-                android:id="@+id/visibilityRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/visibleToAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="43"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Yes"
-                    android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
-
-                <RadioButton
-                    android:id="@+id/visibleByOnlyShareLink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="No"
-                    android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
-            </RadioGroup>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/acceptanceDisplayView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="How do you want people to join?"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
-            <TextView
-                android:id="@+id/circle_type_tip_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Anybody can join a public circle. You choose who joins your private circle."
-                android:textColor="#806CA6FF"
-                android:textSize="12dp"
-                android:visibility="gone"></TextView>
-
-            <RadioGroup
-                android:id="@+id/acceptanceRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/acceptanceTypeAutomatic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Anyone can join"
-                    android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
-
-                <RadioButton
-                    android:id="@+id/acceptanceTypeReview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="They have to apply"
-                    android:textColor="@color/black"
-                    android:theme="@style/MyRadioButtonTwo"></RadioButton>
-            </RadioGroup>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/create_circle_submit"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/green_border_button"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Create Circle"
-            android:textAllCaps="false"
-            android:textColor="#35C80B"
-            android:textFontWeight="10"
-            android:textSize="15dp"></Button>
 
     </LinearLayout>
 
