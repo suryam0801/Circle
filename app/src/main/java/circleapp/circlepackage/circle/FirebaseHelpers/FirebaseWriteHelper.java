@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.FirebaseHelpers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -58,6 +59,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ui.MainActivity;
 
 public class FirebaseWriteHelper {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
@@ -158,6 +160,13 @@ public class FirebaseWriteHelper {
 
     public static StorageReference getStorageReference(String dbReference) {
         return mFirebaseStorage.getReference().child(dbReference);
+    }
+    public static void setPersistenceEnabled(Context context, boolean toggle){
+        SharedPreferences persistenceCheckPrefs = context.getSharedPreferences("PERSISTENCECHECK", Activity.MODE_PRIVATE);
+        if (persistenceCheckPrefs.getBoolean(MainActivity.class.getCanonicalName(), true)) {
+            persistenceCheckPrefs.edit().putBoolean(MainActivity.class.getCanonicalName(),false).apply();
+            database.setPersistenceEnabled(toggle);
+        }
     }
 
     public static void updateUserNewTimeStampComments(String userId, String broadcastId, long latestTimestamp) {
