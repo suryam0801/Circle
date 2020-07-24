@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
+import circleapp.circlepackage.circle.ui.Notifications.NotificationFragment;
+
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 

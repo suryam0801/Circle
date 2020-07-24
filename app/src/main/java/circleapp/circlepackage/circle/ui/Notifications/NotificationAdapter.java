@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.Notifications;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -32,25 +32,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private Context mContext;
     private List<Notification> NotificationList;
-//    private TextView notificationTitle, notificationDescription, timeElapsedTextView;
-//    private LinearLayout backgroundColor;
-//    private AppCompatImageView foregroundIcon;
-//    CircleImageView profilePic;
+    private SpannableStringBuilder acceptText, rejectText, newBroadCast, newComment, newuser, new_applicant, report_result_accepted, report_result_rejected, creator_report;
 
     public NotificationAdapter(Context mContext, List<Notification> NotificationList) {
         this.mContext = mContext;
         this.NotificationList = NotificationList;
     }
-
-//    @Override
-//    public int getCount() {
-//        return NotificationList.size();
-//    }
-//
-//    @Override
-//    public Object getItem(int position) {
-//        return NotificationList.get(position);
-//    }
 
     @NonNull
     @Override
@@ -61,7 +48,30 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificationAdapter.ViewHolder holder, int position) {
         Notification notif = NotificationList.get(position);
+        setSpannableText(notif);
 
+        String state = NotificationList.get(position).getState();
+        setNotificationType(state, holder, notif);
+
+    holder.container.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            FirebaseWriteHelper.NotifyOnclickListener(mContext, notif, position, NotificationList.get(position).getBroadcastId());
+        }
+        });
+    }
+    private void setSpannableText(Notification notif){
+        acceptText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
+        rejectText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
+        newBroadCast = new SpannableStringBuilder(notif.getFrom() + ": " + notif.getMessage()); //start index: 32
+        newComment = new SpannableStringBuilder(notif.getFrom() + ": " + notif.getMessage()); //start index: 30
+        newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
+        new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
+        report_result_accepted = new SpannableStringBuilder("The " + notif.getType() + " you reported has been removed. Thanks for keeping the platform safe!");
+        report_result_rejected = new SpannableStringBuilder("The " + notif.getType() + " you reported has been reviewed and found not to violate community guidelines. Thanks for keeping the platform safe!");
+        creator_report = new SpannableStringBuilder("The " + notif.getType() + " has been reviewed and found to violate community guidelines. Please refrain from posting such content in the future. Thanks for understanding!");
+    }
+    private void setNotificationType(String state, ViewHolder holder, Notification notif){
         long createdTime = notif.getTimestamp();
         long currentTime = System.currentTimeMillis();
         holder.timeElapsedTextView.setText(HelperMethods.getTimeElapsed(currentTime, createdTime));
@@ -69,20 +79,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         GradientDrawable gd = new GradientDrawable();
         gd.setShape(GradientDrawable.OVAL);
         gd.setCornerRadius(15.0f); // border corner radius
-
-        SpannableStringBuilder acceptText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been accepted. You can start a conversation with the group now.");
-        SpannableStringBuilder rejectText = new SpannableStringBuilder("Your request to join " + notif.getCircleName() + " has been rejected. Explore all the other Circles that would love to have you and your skills"); //start index: 20
-        SpannableStringBuilder newBroadCast = new SpannableStringBuilder(notif.getFrom() + ": " + notif.getMessage()); //start index: 32
-        SpannableStringBuilder newComment = new SpannableStringBuilder(notif.getFrom() + ": " + notif.getMessage()); //start index: 30
-        SpannableStringBuilder newuser = new SpannableStringBuilder("Welcome to the CIRCLE "); //start index: 32
-        SpannableStringBuilder new_applicant = new SpannableStringBuilder("New member has been added to " + notif.getCircleName() + " mobile application group."); //start index: 28
-        SpannableStringBuilder report_result_accepted = new SpannableStringBuilder("The " + notif.getType() + " you reported has been removed. Thanks for keeping the platform safe!");
-        SpannableStringBuilder report_result_rejected = new SpannableStringBuilder("The " + notif.getType() + " you reported has been reviewed and found not to violate community guidelines. Thanks for keeping the platform safe!");
-        SpannableStringBuilder creator_report = new SpannableStringBuilder("The " + notif.getType() + " has been reviewed and found to violate community guidelines. Please refrain from posting such content in the future. Thanks for understanding!");
-
         ForegroundColorSpan fcsSkyBlue = new ForegroundColorSpan(Color.parseColor("#6CACFF"));
-
-        String state = NotificationList.get(position).getState();
 
         switch (state) {
             case "Accepted":
@@ -157,13 +154,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 holder.notificationDescription.setText(creator_report);
                 break;
         }
-holder.container.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        FirebaseWriteHelper.NotifyOnclickListener(mContext, notif, position, NotificationList.get(position).getBroadcastId());
-    }
-});
-
     }
 
     @Override

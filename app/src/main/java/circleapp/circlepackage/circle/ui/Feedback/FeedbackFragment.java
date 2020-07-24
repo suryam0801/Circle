@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.Feedback;
 
 import android.app.Activity;
 import android.os.Bundle;
