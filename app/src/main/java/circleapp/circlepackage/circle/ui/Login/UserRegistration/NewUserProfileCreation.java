@@ -50,7 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class GatherUserDetails extends AppCompatActivity implements View.OnKeyListener{
+public class NewUserProfileCreation extends AppCompatActivity implements View.OnKeyListener{
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -185,49 +185,49 @@ public class GatherUserDetails extends AppCompatActivity implements View.OnKeyLi
         avatar1.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar1);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar2.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar2);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar3.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar3);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar4.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar4);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar5.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar5);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar6.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar6);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar7.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar7);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar8.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
             avatar = String.valueOf(R.drawable.avatar8);
-            HelperMethods.setProfilePicMethod(GatherUserDetails.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
+            HelperMethods.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
             downloadLink = null;
         });
     }

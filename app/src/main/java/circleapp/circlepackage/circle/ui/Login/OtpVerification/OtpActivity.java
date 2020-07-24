@@ -43,7 +43,7 @@ import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
-import circleapp.circlepackage.circle.ui.Login.UserRegistration.GatherUserDetails;
+import circleapp.circlepackage.circle.ui.Login.UserRegistration.NewUserProfileCreation;
 
 public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
 
@@ -191,7 +191,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         mOtpProgress.setVisibility(View.INVISIBLE);
         mVerifyBtn.setEnabled(true);
         finishAfterTransition();
-        Intent homeIntent = new Intent(OtpActivity.this, GatherUserDetails.class);
+        Intent homeIntent = new Intent(OtpActivity.this, NewUserProfileCreation.class);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         loginUserObject.setUid(uid);
