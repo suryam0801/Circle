@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -497,7 +498,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         cancelPhotoButton.setOnClickListener(view -> createPhotoBroadcastPopup.dismiss());
 
         photoUploadButtonView.setOnClickListener(v -> {
-            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
+            Permissions.check(this/*context*/,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
