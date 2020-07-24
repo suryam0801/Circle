@@ -65,12 +65,7 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
-        thisWeekListView = view.findViewById(R.id.thisweek_notifications_display);
-        previousListView = view.findViewById(R.id.all_time_notifications_display);
-        prevnotify = view.findViewById(R.id.prevnotifytext);
-        user = SessionStorage.getUser(getActivity());
-        thisWeekNotifs = new ArrayList<>();
-        previousNotifs = new ArrayList<>();
+        InitUIElements(view);
 
         NotificationsViewModel viewModel = ViewModelProviders.of(this).get(NotificationsViewModel.class);
 
@@ -81,6 +76,16 @@ public class NotificationFragment extends Fragment {
             setNotifsView(notification);
         });
         return view;
+    }
+
+    private void InitUIElements(View view) {
+        thisWeekListView = view.findViewById(R.id.thisweek_notifications_display);
+        previousListView = view.findViewById(R.id.all_time_notifications_display);
+        prevnotify = view.findViewById(R.id.prevnotifytext);
+        user = SessionStorage.getUser(getActivity());
+        thisWeekNotifs = new ArrayList<>();
+        previousNotifs = new ArrayList<>();
+
     }
 
     private void setNotifsView(Notification notification) {
