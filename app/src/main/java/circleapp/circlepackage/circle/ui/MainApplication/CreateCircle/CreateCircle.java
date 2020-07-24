@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +37,7 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.Utils.UserSessionHelper;
+import circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -44,15 +45,12 @@ import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
-import static circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle.writeCircleToDb;
 
 public class CreateCircle extends AppCompatActivity {
 
-    private String TAG = CreateCircle.class.getSimpleName();
-
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView visibilityPrompt, logoHelp, backgroundText;
+    private TextView visibilityPrompt, logoHelp, backgroundText, visibiltyHeading, acceptanceHeading, acceptancePrompt;
     private Button btn_createCircle;
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
@@ -61,7 +59,6 @@ public class CreateCircle extends AppCompatActivity {
     private RelativeLayout addLogo;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadLink;
-    private LinearLayout circleVisibilityDisplay, circleAcceptanceDisplay;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
     private String backgroundImageLink="", acceptanceType, visibilityType, cName, cDescription;
     public ImageUpload imageUploadModel;
@@ -69,6 +66,7 @@ public class CreateCircle extends AppCompatActivity {
     private Circle circle;
     private Subscriber creatorSubscriber;
     private UserSessionHelper userSessionHelper = new UserSessionHelper();
+    private WriteNewCircle writeNewCircle = new WriteNewCircle();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -83,6 +81,10 @@ public class CreateCircle extends AppCompatActivity {
     }
     private void setUIElements(){
         //Initialize all UI elements in the CreateCircle activity
+        user = userSessionHelper.getUserFromSession(this);
+        visibiltyHeading = findViewById(R.id.circle_visibility_heading_text);
+        acceptanceHeading = findViewById(R.id.acceptance_heading);
+        acceptancePrompt = findViewById(R.id.acceptance_textview);
         circleNameEntry = findViewById(R.id.create_circle_Name);
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         visibilitySwitchButton = findViewById(R.id.visibilitySwitch);
@@ -96,15 +98,12 @@ public class CreateCircle extends AppCompatActivity {
         circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         backgroundPic = findViewById(R.id.background_image);
         addLogo = findViewById(R.id.backgroundPreview);
-        circleVisibilityDisplay = findViewById(R.id.circle_visibility_display);
-        circleAcceptanceDisplay = findViewById(R.id.acceptanceDisplayView);
         categoryName = findViewById(R.id.category_name);
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
         imageUploadProgressDialog = new ProgressDialog(this);
-        visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can see this Circle");
     }
 
     private void setObserverForImageUpload(){
@@ -154,22 +153,36 @@ public class CreateCircle extends AppCompatActivity {
             });
         });
         visibilitySwitchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(isChecked)
+                if(isChecked){
                     visibilityType="Everybody";
-                else
+                    visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can see this Circle");
+                    visibiltyHeading.setText("Public");
+                }
+                else{
                     visibilityType="OnlyShare";
+                    visibilityPrompt.setText("Only people with Invite Link can view this Circle");
+                    visibiltyHeading.setText("Private");
+                }
                 Log.d("CreateCircleVisibility", visibilityType);
             }
         });
         acceptanceSwitchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(isChecked)
+                if(isChecked){
                     acceptanceType="Automatic";
-                else
+                    acceptanceHeading.setText("Members join freely");
+                    acceptancePrompt.setText("People can join this Circle without applying");
+                }
+                else{
                     acceptanceType="Review";
+                    acceptanceHeading.setText("Members have to apply");
+                    acceptancePrompt.setText("You have to accept member applications for them to join");
+                }
                 Log.d("CreateCircleAcceptance", acceptanceType);
             }
         });
@@ -188,7 +201,7 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        writeCircleToDb(this,circle, user, creatorSubscriber);
+        writeNewCircle.writeCircleToDb(this,circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
     }
