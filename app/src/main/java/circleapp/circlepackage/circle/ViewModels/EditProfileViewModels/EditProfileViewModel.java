@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.ViewModels.EditProfileViewModels;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -41,6 +42,7 @@ public class EditProfileViewModel extends ViewModel {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 FirebaseWriteHelper.updateUser(user, activity);
+                Log.d("edit",FirebaseWriteHelper.getUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }
         });
