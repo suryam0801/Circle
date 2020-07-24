@@ -215,8 +215,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         TextView title = circleJoinDialog.findViewById(R.id.applyConfirmationTitle);
         TextView description = circleJoinDialog.findViewById(R.id.applyConfirmationDescription);
 
-        Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
-                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
+        Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
 
         FirebaseWriteHelper.applyOrJoin(context, circle, user, subscriber);
         SendNotification.sendApplication("new_applicant", user, circle, subscriber);

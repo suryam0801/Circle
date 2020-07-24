@@ -145,7 +145,10 @@ dependencies {
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
     //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
 
+    //Permission handler
     implementation 'com.nabinbhandari.android:permissions:3.8'
+    //SwitchUI
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
 }
 
 

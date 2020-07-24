@@ -15,14 +15,10 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +26,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
+import com.suke.widget.SwitchButton;
 
 import java.util.HashMap;
 
@@ -37,14 +34,13 @@ import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Utils.UserSessionHelper;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -59,8 +55,7 @@ public class CreateCircle extends AppCompatActivity {
     private TextView visibilityPrompt, logoHelp, backgroundText;
     private Button btn_createCircle;
     private ImageButton back;
-    private RadioGroup acceptanceGroup, visibilityGroup;
-    private RadioButton acceptanceButton, visibilityButton;
+    private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
     private User user;
     private TextView categoryName;
     private RelativeLayout addLogo;
@@ -73,6 +68,7 @@ public class CreateCircle extends AppCompatActivity {
     private ProgressDialog imageUploadProgressDialog;
     private Circle circle;
     private Subscriber creatorSubscriber;
+    private UserSessionHelper userSessionHelper = new UserSessionHelper();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -81,8 +77,6 @@ public class CreateCircle extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN); //disables onscreen keyboard popup each time activity is launched
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
-
-        user = SessionStorage.getUser(CreateCircle.this);
         setUIElements();
         setObserverForImageUpload();
         setButtonListeners();
@@ -91,8 +85,10 @@ public class CreateCircle extends AppCompatActivity {
         //Initialize all UI elements in the CreateCircle activity
         circleNameEntry = findViewById(R.id.create_circle_Name);
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
-        acceptanceGroup = findViewById(R.id.acceptanceRadioGroup);
-        visibilityGroup = findViewById(R.id.visibilityRadioGroup);
+        visibilitySwitchButton = findViewById(R.id.visibilitySwitch);
+        acceptanceSwitchButton = findViewById(R.id.joiningSwitch);
+        visibilitySwitchButton.setChecked(true);
+        acceptanceSwitchButton.setChecked(true);
         btn_createCircle = findViewById(R.id.create_circle_submit);
         back = findViewById(R.id.bck_create);
         visibilityPrompt = findViewById(R.id.visibility_prompt_create_circle);
@@ -108,7 +104,7 @@ public class CreateCircle extends AppCompatActivity {
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
         imageUploadProgressDialog = new ProgressDialog(this);
-        visibilityPrompt.setText("Do you want everybody in " + user.getDistrict() + " to see your circle?");
+        visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can see this Circle");
     }
 
     private void setObserverForImageUpload(){
@@ -157,48 +153,32 @@ public class CreateCircle extends AppCompatActivity {
                 }
             });
         });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void radioButtonCheck() {
-        int radioId = acceptanceGroup.getCheckedRadioButtonId();
-        acceptanceButton = findViewById(radioId);
-        int visibilityId = visibilityGroup.getCheckedRadioButtonId();
-        visibilityButton = findViewById(visibilityId);
-        if (radioId != -1 && visibilityId != -1) {
-            if (acceptanceButton.getText().equals("Anyone can join")) {
-                String visibility = (String) visibilityButton.getText();
-                if (visibility.equals("Yes")){
+        visibilitySwitchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                if(isChecked)
                     visibilityType="Everybody";
-                    acceptanceType="Automatic";
-                }
-                else{
+                else
                     visibilityType="OnlyShare";
-                    acceptanceType="Automatic";
-                }
-            } else {
-                String visibility = (String) visibilityButton.getText();
-                if (visibility.equals("Yes")){
-                    visibilityType="Everybody";
-                    acceptanceType="Review";
-                }
-                else{
-                    visibilityType="OnlyShare";
-                    acceptanceType="Review";
-                }
+                Log.d("CreateCircleVisibility", visibilityType);
             }
-            createCircle();
-        } else {
-            Animation animShake = AnimationUtils.loadAnimation(CreateCircle.this, R.anim.shake_animation);
-            acceptanceGroup.startAnimation(animShake);
-            HelperMethods.vibrate(this);
-        }
+        });
+        acceptanceSwitchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                if(isChecked)
+                    acceptanceType="Automatic";
+                else
+                    acceptanceType="Review";
+                Log.d("CreateCircleAcceptance", acceptanceType);
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void checkIfFormIsFilled(){
         if (!cName.isEmpty() && !cDescription.isEmpty()) {
-            radioButtonCheck();
+            createCircle();
         } else {
             Toast.makeText(getApplicationContext(), "Fill All Fields", Toast.LENGTH_SHORT).show();
         }
@@ -214,7 +194,7 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     private void setLocalCircleObject(){
-        user = SessionStorage.getUser(CreateCircle.this);
+        user = userSessionHelper.getUserFromSession(this);
         String category = getIntent().getStringExtra("category_name");
         String myCircleID = FirebaseWriteHelper.getCircleId();
         String creatorUserID = user.getUserId();
@@ -231,8 +211,7 @@ public class CreateCircle extends AppCompatActivity {
                 category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
                 System.currentTimeMillis(), 0, 0,true);
 
-        creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
-                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
+        creatorSubscriber = new Subscriber(user, System.currentTimeMillis());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

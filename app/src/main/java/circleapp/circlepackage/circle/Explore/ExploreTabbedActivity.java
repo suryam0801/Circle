@@ -305,8 +305,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             circleJoinSuccessDialog.cancel();
         });
 
-        Subscriber subscriber = new Subscriber(user.getUserId(), user.getName(),
-                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
+        Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
 
         FirebaseWriteHelper.applyOrJoin(this, circle, user, subscriber);
     }
