@@ -449,14 +449,17 @@ public class FirebaseWriteHelper {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
+                if(circle.getMembersList()==null)
+                    Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
+                else if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
                     SessionStorage.saveCircle((Activity) context, circle);
                     Intent intent = new Intent(context, CircleWall.class);
                     intent.putExtra("broadcastPos", position);
                     intent.putExtra("broadcastId", broadcastId);
                     context.startActivity(intent);
                     ((Activity) context).finish();
-                } else {
+                }
+                else {
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                 }
             } else {

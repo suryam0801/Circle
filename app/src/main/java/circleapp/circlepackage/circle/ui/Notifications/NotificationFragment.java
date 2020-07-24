@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.Notifications;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
