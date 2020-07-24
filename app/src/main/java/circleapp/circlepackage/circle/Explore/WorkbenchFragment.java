@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.ui.MainApplication.CreateCircle.CreateCircleCategoryPicker;
+import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;

@@ -8,7 +8,7 @@
     android:paddingLeft="14dp"
     android:paddingRight="14dp"
     android:orientation="vertical"
-    tools:context=".ui.Login.UserRegistration.GatherUserDetails">
+    tools:context=".ui.Login.UserRegistration.NewUserProfileCreation">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

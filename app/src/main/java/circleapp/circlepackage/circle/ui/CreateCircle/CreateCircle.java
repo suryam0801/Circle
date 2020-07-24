@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.MainApplication.CreateCircle;
+package circleapp.circlepackage.circle.ui.CreateCircle;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;

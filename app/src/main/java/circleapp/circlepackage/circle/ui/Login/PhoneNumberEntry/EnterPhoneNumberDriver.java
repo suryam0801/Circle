@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry;
+package circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +15,8 @@ import circleapp.circlepackage.circle.ui.Login.OtpVerification.OtpActivity;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
 public class EnterPhoneNumberDriver {
-    public static String  setCountryCode(String code, String[] arrContryCode){
+    public void EnterPhoneNumberDriver(){}
+    public String  setCountryCode(String code, String[] arrContryCode){
         String contryDialCode = null;
         for (String s : arrContryCode) {
             String[] arrDial = s.split(",");
@@ -26,7 +27,7 @@ public class EnterPhoneNumberDriver {
         }
         return contryDialCode;
     }
-    public static String getCountryCode(String countryName) {
+    public String getCountryCode(String countryName) {
 
         // Get all country codes in a string array.
         String[] isoCountryCodes = Locale.getISOCountries();
@@ -49,17 +50,17 @@ public class EnterPhoneNumberDriver {
         // a list of countries to give to user to choose from.
         return countryMap.get(countryName); // "NL" for Netherlands.
     }
-    public static void savePhoneNumberToSession(Activity activity, String country_code, String phone_number){
+    public void savePhoneNumberToSession(Activity activity, String country_code, String phone_number){
         LoginUserObject loginUserObject = new LoginUserObject();
         loginUserObject.setCompletePhoneNumber(country_code + phone_number);
         SessionStorage.saveLoginUserObject(activity, loginUserObject);
     }
-    public static boolean isPhoneNumber10Digits(String phoneNumber){
+    public boolean isPhoneNumber10Digits(String phoneNumber){
         return phoneNumber.length() == 10;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void sendIntentsToOtpActivityAndFinish(Activity activity){
+    public void sendIntentsToOtpActivityAndFinish(Activity activity){
         activity.finishAfterTransition();
         Intent otpIntent = new Intent(activity, OtpActivity.class);
         activity.startActivity(otpIntent);

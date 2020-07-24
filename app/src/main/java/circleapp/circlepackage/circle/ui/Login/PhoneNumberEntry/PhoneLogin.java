@@ -23,12 +23,6 @@ import java.util.List;
 
 import circleapp.circlepackage.circle.R;
 
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.getCountryCode;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.isPhoneNumber10Digits;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.sendIntentsToOtpActivityAndFinish;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.savePhoneNumberToSession;
-import static circleapp.circlepackage.circle.ViewModels.LoginViewModels.PhoneNumberEntry.EnterPhoneNumberDriver.setCountryCode;
-
 public class PhoneLogin extends AppCompatActivity {
 
     private static final String TAG = PhoneLogin.class.getSimpleName();
@@ -40,10 +34,11 @@ public class PhoneLogin extends AppCompatActivity {
     private Spinner ccp;
     private String mCountryDialCode;
     private GetSearchableSpinnerLocation getSearchableSpinnerLocation = new GetSearchableSpinnerLocation();
-    String[] options;
-    List<String> al = new ArrayList<String>();
+    private EnterPhoneNumberDriver enterPhoneNumberDriver = new EnterPhoneNumberDriver();
+    private String[] options;
+    private List<String> al = new ArrayList<String>();
     int pos;
-    AlertDialog.Builder confirmation;
+    private AlertDialog.Builder confirmation;
 
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -58,9 +53,9 @@ public class PhoneLogin extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //manually set country code from picker
-                String code = getCountryCode(ccp.getSelectedItem().toString());
+                String code = enterPhoneNumberDriver.getCountryCode(ccp.getSelectedItem().toString());
                 String[] arrContryCode=PhoneLogin.this.getResources().getStringArray(R.array.DialingCountryCode);
-                String contryDialCode = setCountryCode(code, arrContryCode);
+                String contryDialCode = enterPhoneNumberDriver.setCountryCode(code, arrContryCode);
                 countryCodeEditText.setText("+"+contryDialCode);
             }
 
@@ -82,15 +77,15 @@ public class PhoneLogin extends AppCompatActivity {
 
                 mGenerateBtn.setBackgroundResource(R.drawable.unpressable_button);
                 mGenerateBtn.setTextColor(R.color.black);
-                if(isPhoneNumber10Digits(phone_number)){
+                if(enterPhoneNumberDriver.isPhoneNumber10Digits(phone_number)){
                     mGenerateBtn.setEnabled(false);
                     confirmation.setMessage("Are you sure is this your number " + country_code + phone_number)
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    savePhoneNumberToSession(PhoneLogin.this, country_code, phone_number);
-                                    sendIntentsToOtpActivityAndFinish(PhoneLogin.this);
+                                    enterPhoneNumberDriver.savePhoneNumberToSession(PhoneLogin.this, country_code, phone_number);
+                                    enterPhoneNumberDriver.sendIntentsToOtpActivityAndFinish(PhoneLogin.this);
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.MainApplication.CreateCircle;
+package circleapp.circlepackage.circle.ui.CreateCircle;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
