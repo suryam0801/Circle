@@ -36,11 +36,11 @@ import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Utils.UserSessionHelper;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -68,6 +68,7 @@ public class CreateCircle extends AppCompatActivity {
     private ProgressDialog imageUploadProgressDialog;
     private Circle circle;
     private Subscriber creatorSubscriber;
+    private UserSessionHelper userSessionHelper = new UserSessionHelper();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,8 +77,6 @@ public class CreateCircle extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN); //disables onscreen keyboard popup each time activity is launched
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_create_circle);
-
-        user = SessionStorage.getUser(CreateCircle.this);
         setUIElements();
         setObserverForImageUpload();
         setButtonListeners();
@@ -195,7 +194,7 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     private void setLocalCircleObject(){
-        user = SessionStorage.getUser(CreateCircle.this);
+        user = userSessionHelper.getUserFromSession(this);
         String category = getIntent().getStringExtra("category_name");
         String myCircleID = FirebaseWriteHelper.getCircleId();
         String creatorUserID = user.getUserId();
@@ -212,8 +211,7 @@ public class CreateCircle extends AppCompatActivity {
                 category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
                 System.currentTimeMillis(), 0, 0,true);
 
-        creatorSubscriber = new Subscriber(user.getUserId(), user.getName(),
-                user.getProfileImageLink(), user.getToken_id(), System.currentTimeMillis());
+        creatorSubscriber = new Subscriber(user, System.currentTimeMillis());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

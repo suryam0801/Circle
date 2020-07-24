@@ -1,14 +1,16 @@
 package circleapp.circlepackage.circle.data.LocalObjectModels;
 
+import circleapp.circlepackage.circle.data.ObjectModels.User;
+
 public class Subscriber {
     String id, name, photoURI, token_id;
     long timestamp;
 
-    public Subscriber(String id, String name, String photoURI, String token_id, long timestamp) {
-        this.id = id;
-        this.name = name;
-        this.photoURI = photoURI;
-        this.token_id = token_id;
+    public Subscriber(User user, long timestamp) {
+        this.id = user.getUserId();
+        this.name = user.getName();
+        this.photoURI = user.getProfileImageLink();
+        this.token_id = user.getToken_id();
         this.timestamp = timestamp;
     }
 
