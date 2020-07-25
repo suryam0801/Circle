@@ -90,7 +90,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.CircleWall.CircleWall"
+        <activity android:name=".CircleWall.CircleWall"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.MainActivity">
