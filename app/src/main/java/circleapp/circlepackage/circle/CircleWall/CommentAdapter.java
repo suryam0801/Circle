@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Comment;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -27,14 +27,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     private Context mContext;
     private List<Comment> CommentList;
-    private int count = 0;
     private User user;
     private Broadcast currentBroadcast;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public CommentAdapter(Context mContext, List<Comment> CommentList, Broadcast currentBroadcast) {
         this.mContext = mContext;
         this.CommentList = CommentList;
-        this.user = SessionStorage.getUser((Activity) mContext);
+        this.user = globalVariables.getCurrentUser();
         this.currentBroadcast = currentBroadcast;
     }
 

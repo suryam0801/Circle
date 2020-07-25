@@ -15,9 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
@@ -26,7 +23,7 @@ import java.util.List;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -46,7 +43,8 @@ public class CircleInformation extends AppCompatActivity {
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
     private ImageButton back;
-    LiveData<String[]> liveData;
+    private LiveData<String[]> liveData;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -54,8 +52,8 @@ public class CircleInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_information);
 
-        circle = SessionStorage.getCircle(CircleInformation.this);
-        user = SessionStorage.getUser(CircleInformation.this);
+        circle = globalVariables.getCurrentCircle();
+        user = globalVariables.getCurrentUser();
 
         banner = findViewById(R.id.circle_info_circle_banner);
         logo = findViewById(R.id.circle_info_circle_logo);
@@ -70,18 +68,6 @@ public class CircleInformation extends AppCompatActivity {
         creatorName.setText(circle.getCreatorName());
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
-/*
-        char firstLetter = circle.getName().charAt(0);
-        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
-        int color = generator.getColor(circle.getName());
-        TextDrawable drawable = TextDrawable.builder()
-                .buildRound(firstLetter+"",color);
-        //setting circle logo
-        if (!circle.getBackgroundImageLink().equals("default")) {
-            Glide.with(this).load(circle.getBackgroundImageLink()).into(logo);
-        } else {
-            logo.setBackground(drawable);
-        }*/
         HelperMethods.createDefaultCircleIcon(circle,this,logo);
 
         //back button

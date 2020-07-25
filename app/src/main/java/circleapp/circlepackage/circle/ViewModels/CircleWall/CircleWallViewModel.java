@@ -2,17 +2,13 @@ package circleapp.circlepackage.circle.ViewModels.CircleWall;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.view.View;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.HashMap;
-
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
@@ -20,6 +16,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class CircleWallViewModel extends ViewModel {
     private MutableLiveData<Boolean> creationState;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public MutableLiveData<Boolean> createBroadcast(String title, String description, Circle circle, User user, Activity activity){
         creationState = new MutableLiveData<>();
@@ -37,9 +34,9 @@ public class CircleWallViewModel extends ViewModel {
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
-        SessionStorage.saveCircle(activity, circle);
+        globalVariables.saveCurrentCircle(circle);
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(activity, circle.getId(), normalBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(circle.getId(), normalBroadcast, newCount);
 
         creationState.setValue(true);
         return creationState;
@@ -61,10 +58,10 @@ public class CircleWallViewModel extends ViewModel {
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
-        SessionStorage.saveCircle(activity, circle);
+        globalVariables.saveCurrentCircle(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(activity, circle.getId(), photoBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(circle.getId(), photoBroadcast, newCount);
         creationState.setValue(true);
         return creationState;
     }
@@ -90,11 +87,11 @@ public class CircleWallViewModel extends ViewModel {
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
-        SessionStorage.saveCircle(activity, circle);
+        globalVariables.saveCurrentCircle(circle);
         SendNotification.sendBCinfo(activity, pollBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(activity, circle.getId(), pollBroadcast, newCount);
+        FirebaseWriteHelper.writeBroadcast(circle.getId(), pollBroadcast, newCount);
         creationState.setValue(true);
         return creationState;
     }

@@ -19,9 +19,6 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -32,11 +29,11 @@ import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdapter.ViewHolder> {
@@ -44,6 +41,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private Context context;
     private Dialog circleJoinDialog;
     private User user;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public CircleDisplayAdapter() {
     }
@@ -55,7 +53,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         this.user = user;
         circleJoinDialog = new Dialog(context);
 
-        user = SessionStorage.getUser((Activity) context);
+        user = globalVariables.getCurrentUser();
     }
 
     @Override
@@ -70,17 +68,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Circle currentCircle = circleList.get(i);
         String circleCategory;
         Log.d("efljknwefwe", currentCircle.toString());
-/*
-        char firstLetter = currentCircle.getName().charAt(0);
-        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
-        int color = generator.getColor(currentCircle.getName());
-        TextDrawable drawable = TextDrawable.builder()
-                .buildRound(firstLetter+"",color);
-        if (!currentCircle.getBackgroundImageLink().equals("default")) {
-            Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
-        } else {
-            viewHolder.circleLogo.setBackground(drawable);
-        }*/
         HelperMethods.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
 
 
@@ -112,18 +99,18 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         });
 
         viewHolder.shareLayout.setOnClickListener(view -> {
-            SessionStorage.saveCircle((Activity) context, currentCircle);
+            globalVariables.saveCurrentCircle(currentCircle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
         viewHolder.shareButton.setOnClickListener(view -> {
-            SessionStorage.saveCircle((Activity) context, currentCircle);
+            globalVariables.saveCurrentCircle(currentCircle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         viewHolder.container.setOnClickListener(view -> {
-            SessionStorage.saveCircle((Activity) context, currentCircle);
+            globalVariables.saveCurrentCircle(currentCircle);
             Intent intent = new Intent(context, CircleInformation.class);
             intent.putExtra("exploreIndex", i);
             context.startActivity(intent);
@@ -229,7 +216,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             if (circle.getAcceptanceType().equalsIgnoreCase("review")) {
                 circleJoinDialog.dismiss();
             } else {
-                SessionStorage.saveCircle((Activity) context, circle);
+                globalVariables.saveCurrentCircle(circle);
                 context.startActivity(new Intent(context, CircleWall.class));
                 ((Activity) context).finish();
                 circleJoinDialog.dismiss();

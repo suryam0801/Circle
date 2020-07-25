@@ -20,8 +20,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
@@ -30,6 +30,7 @@ public class EdituserName {
     Dialog editUserNamedialogue, editUserProfiledialogue;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     public EditProfileViewModel editProfileViewModel;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public void edituserNamedialogue(Activity editProfile, User user, TextView userName) {
         editUserNamedialogue = new Dialog(editProfile);
@@ -59,13 +60,13 @@ public class EdituserName {
                         Toast.makeText(editProfile, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        editProfileViewModel.editprofilename(profileUpdates,user,editProfile).observe((LifecycleOwner) editProfile, state->{
+                        editProfileViewModel.editprofilename(profileUpdates,user).observe((LifecycleOwner) editProfile, state->{
                             if (state){
                                 userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
                                 userNameProgressDialogue.dismiss();
                                 editUserNamedialogue.dismiss();
                                 user.setName(name);
-                                SessionStorage.saveUser(editProfile,user);
+                                globalVariables.saveCurrentUser(user);
                             }
                         });
                     }

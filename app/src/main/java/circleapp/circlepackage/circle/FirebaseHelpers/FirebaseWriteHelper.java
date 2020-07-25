@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Comment;
@@ -76,6 +76,7 @@ public class FirebaseWriteHelper {
     private static final DatabaseReference REPORT_ABUSE_REF = database.getReference("ReportAbuse");
     private static final DatabaseReference STORAGE_REFERENCES = database.getReference("StorageReferences");
     private static final DatabaseReference USER_FEEDBACK_REF = database.getReference("UserFeedback");
+    private static GlobalVariables globalVariables = new GlobalVariables();
 
     public static void deleteCircle(Context context, Circle circle, User user) {
         //reducing created circle count
@@ -84,7 +85,7 @@ public class FirebaseWriteHelper {
             currentCreatedCount = user.getCreatedCircles() - 1;
 
         user.setCreatedCircles(currentCreatedCount);
-        SessionStorage.saveUser((Activity) context, user);
+        globalVariables.saveCurrentUser(user);
 
         CIRCLES_PERSONEL_REF.child(circle.getId()).removeValue();
         CIRCLES_REF.child(circle.getId()).removeValue();
@@ -101,7 +102,7 @@ public class FirebaseWriteHelper {
             currentActiveCount = user.getActiveCircles() - 1;
 
         user.setActiveCircles(currentActiveCount);
-        SessionStorage.saveUser((Activity) context, user);
+        globalVariables.saveCurrentUser(user);
 
         USERS_REF.child(user.getUserId()).child("activeCircles").setValue(currentActiveCount);
         CIRCLES_PERSONEL_REF.child(circle.getId()).child("members").child(user.getUserId()).removeValue();
@@ -126,7 +127,7 @@ public class FirebaseWriteHelper {
             tempListening = new ArrayList<>(user.getMutedBroadcasts());
             tempListening.remove(broadcast.getId());
             user.setMutedBroadcasts(tempListening);
-            updateUser(user, context);
+            updateUser(user);
         }
 
         //remove no of read discussions
@@ -137,7 +138,7 @@ public class FirebaseWriteHelper {
             userNoReadComments.remove(broadcast.getId());
             user.setNoOfReadDiscussions(userNoReadComments);
             Log.d("wefkjn", userNoReadComments.toString());
-            updateUser(user, context);
+            updateUser(user);
         }
 
         //remove new timestamp comments
@@ -148,11 +149,11 @@ public class FirebaseWriteHelper {
             userCommentTimestamps.remove(broadcast.getId());
             user.setNewTimeStampsComments(userCommentTimestamps);
             Log.d("wefkjn", userCommentTimestamps.toString());
-            updateUser(user, context);
+            updateUser(user);
         }
     }
 
-    public static void writeBroadcast(Context context, String circleId, Broadcast broadcast, int newCount) {
+    public static void writeBroadcast(String circleId, Broadcast broadcast, int newCount) {
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(newCount);
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
         addBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
@@ -195,12 +196,12 @@ public class FirebaseWriteHelper {
             HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
             newNotifs.put(c.getId(), 0);
             user.setNotificationsAlert(newNotifs);
-            updateUser(user, context);
+            updateUser(user);
         } else if (user.getNotificationsAlert() == null) {
             HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(c.getId(), 0);
             user.setNotificationsAlert(newNotifs);
-            updateUser(user, context);
+            updateUser(user);
         }
     }
 
@@ -218,7 +219,7 @@ public class FirebaseWriteHelper {
 
             int nowActive = user.getActiveCircles() + 1;
             user.setActiveCircles(nowActive);
-            updateUser(user, context);
+            updateUser(user);
         }
     }
 
@@ -242,24 +243,24 @@ public class FirebaseWriteHelper {
         CIRCLES_REF.child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
     }
 
-    public static void updateUser(User user, Context context) {
-        SessionStorage.saveUser((Activity) context, user);
+    public static void updateUser(User user) {
+        globalVariables.saveCurrentUser(user);
         USERS_REF.child(user.getUserId()).setValue(user);
     }
 
-    public static void updateBroadcast(Broadcast broadcast, Context context, String circleId) {
+    public static void updateBroadcast(Broadcast broadcast, String circleId) {
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).setValue(broadcast);
-        SessionStorage.saveBroadcast((Activity) context, broadcast);
+        globalVariables.saveCurrentBroadcast(broadcast);
     }
 
-    public static void updateCircle(Circle circle, Context context) {
+    public static void updateCircle(Circle circle) {
         CIRCLES_REF.child(circle.getId()).setValue(circle);
-        SessionStorage.saveCircle((Activity) context, circle);
+        globalVariables.saveCurrentCircle(circle);
     }
 
 
-    public static void makeFeedbackEntry(Context context, Map<String, Object> map) {
-        USER_FEEDBACK_REF.child(SessionStorage.getUser((Activity) context).getDistrict()).push().setValue(map);
+    public static void makeFeedbackEntry(Map<String, Object> map) {
+        USER_FEEDBACK_REF.child(globalVariables.getCurrentUser().getDistrict()).push().setValue(map);
     }
 
     public static void makeNewComment(Comment comment, String circleId, String broadcastId) {
@@ -451,8 +452,8 @@ public class FirebaseWriteHelper {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                 if(circle.getMembersList()==null)
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
-                else if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
-                    SessionStorage.saveCircle((Activity) context, circle);
+                else if (circle.getMembersList().containsKey(globalVariables.getCurrentUser().getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
                     Intent intent = new Intent(context, CircleWall.class);
                     intent.putExtra("broadcastPos", position);
                     intent.putExtra("broadcastId", broadcastId);
