@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
+import com.google.rpc.Help;
 
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         Circle circle = MycircleList.get(position);
         User user = SessionStorage.getUser((Activity) context);
-
+/*
         char firstLetter = circle.getName().charAt(0);
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
         int color = generator.getColor(circle.getName());
@@ -74,7 +75,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
         else {
             holder.backgroundPic.setBackground(drawable);
-        }
+        }*/
+        HelperMethods.createDefaultCircleIcon(circle,context,holder.backgroundPic);
 
         //set the details of each circle to its respective card.
         //holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
