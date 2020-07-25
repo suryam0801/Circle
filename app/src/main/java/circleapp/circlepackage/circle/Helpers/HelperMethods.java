@@ -43,6 +43,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
@@ -778,6 +780,19 @@ public static void pushFCM(String state, String application_state, String tokenI
             break;
 
     }
-
 }
+
+    public static void createDefaultCircleIcon(Circle circle, Context context, CircleImageView backgroundPic){
+        char firstLetter = circle.getName().charAt(0);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        int color = generator.getColor(circle.getName());
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(firstLetter +"",color);
+
+        if (!circle.getBackgroundImageLink().equals("default"))
+            Glide.with(context).load(circle.getBackgroundImageLink()).into(backgroundPic);
+        else {
+            backgroundPic.setBackground(drawable);
+        }
+    }
 }
