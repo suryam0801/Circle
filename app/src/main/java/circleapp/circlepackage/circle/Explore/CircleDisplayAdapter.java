@@ -70,7 +70,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Circle currentCircle = circleList.get(i);
         String circleCategory;
         Log.d("efljknwefwe", currentCircle.toString());
-/*
+
         char firstLetter = currentCircle.getName().charAt(0);
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
         int color = generator.getColor(currentCircle.getName());
@@ -80,8 +80,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             Glide.with(context).load(currentCircle.getBackgroundImageLink()).into(viewHolder.circleLogo);
         } else {
             viewHolder.circleLogo.setBackground(drawable);
-        }*/
-        HelperMethods.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
+        }
 
 
         //check if circle acceptance is review
