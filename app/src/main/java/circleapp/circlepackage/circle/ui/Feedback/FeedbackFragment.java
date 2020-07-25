@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 
@@ -27,6 +27,7 @@ public class FeedbackFragment extends Fragment {
     private String mParam2;
     private EditText feedbackEditText;
     private Button feedbackSend;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public FeedbackFragment() {
     }
@@ -71,7 +72,7 @@ public class FeedbackFragment extends Fragment {
     private void makeFeedbackEntry(View view) {
         long currentCommentTimeStamp = System.currentTimeMillis();
 
-        User user = SessionStorage.getUser((Activity) getContext());
+        User user = globalVariables.getCurrentUser();
 
         Map<String, Object> map = new HashMap<>();
         map.put("timestamp", currentCommentTimeStamp);
@@ -79,7 +80,7 @@ public class FeedbackFragment extends Fragment {
         map.put("userId", user.getUserId());
         map.put("userName", user.getName().trim());
 
-        FirebaseWriteHelper.makeFeedbackEntry(getContext(), map);
+        FirebaseWriteHelper.makeFeedbackEntry(map);
 
         Toast.makeText(view.getContext(), "Thanks for your feedback :)", Toast.LENGTH_SHORT).show();
     }

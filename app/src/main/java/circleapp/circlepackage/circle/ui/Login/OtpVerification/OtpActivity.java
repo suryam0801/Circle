@@ -35,10 +35,10 @@ import java.util.Objects;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
@@ -59,6 +59,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     boolean autofill = false;
     private LoginUserObject loginUserObject;
     public OtpViewModel otpViewModel;
+    private GlobalVariables globalVariables = new GlobalVariables();
   
     AlertDialog.Builder confirmation;
     public ProgressDialog progressDialog;
@@ -145,7 +146,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
 
     }
     public void setTempUserObject(){
-        loginUserObject = SessionStorage.getLoginUserObject(this);
+        loginUserObject = globalVariables.getCurrentLoginUserObject();
         phn_number = loginUserObject.getCompletePhoneNumber();
     }
 
@@ -195,7 +196,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         loginUserObject.setUid(uid);
-        SessionStorage.saveLoginUserObject(this, loginUserObject);
+        globalVariables.saveCurrentLoginUserObject(loginUserObject);
 
         startActivity(homeIntent);
     }
@@ -302,8 +303,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         liveData.observe(OtpActivity.this, dataSnapshot -> {
             if (dataSnapshot.exists()) {
                 User user = dataSnapshot.getValue(User.class);
-                String string = new Gson().toJson(user);
-                SessionStorage.saveUser(OtpActivity.this, user);
+                globalVariables.saveCurrentUser(user);
                 sendUserToHome();
             } else {
                 senduserToReg(uid);

@@ -30,8 +30,8 @@ import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -39,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class EditUserProfileImage {
+public class EditUserProfileImage{
      ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
      ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
      CircleImageView profilePic;
@@ -51,6 +51,7 @@ public class EditUserProfileImage {
     Dialog editUserNamedialogue, editUserProfiledialogue;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     public EditProfileViewModel editProfileViewModel;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public void editprofile(String uri, Activity editProfile, Button finalizeChanges, User user, Uri downloadLink1, CircleImageView profileImageView) {
         editUserProfiledialogue = new Dialog(editProfile);
@@ -105,8 +106,8 @@ public class EditUserProfileImage {
             if (downloadLink != null)
                 user.setProfileImageLink(downloadLink.toString());
 
-            FirebaseWriteHelper.updateUser(user, editProfile);
-            SessionStorage.saveUser(editProfile, user);
+            FirebaseWriteHelper.updateUser(user);
+            globalVariables.saveCurrentUser(user);
             finalizeChange = true;
             finalizeChanges.setVisibility(View.GONE);
 
@@ -204,7 +205,7 @@ public class EditUserProfileImage {
                         Toast.makeText(editProfile, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        editProfileViewModel.editprofileimage(profileUpdates,user,editProfile).observe((LifecycleOwner) editProfile, state->{
+                        editProfileViewModel.editprofileimage(profileUpdates,user).observe((LifecycleOwner) editProfile, state->{
                             if (state){
                                 user.setProfileImageLink(downloadLink.toString());
                                 Glide.with(editProfile).load(downloadLink.toString()).into(profileImageView);
@@ -225,7 +226,7 @@ public class EditUserProfileImage {
                         Toast.makeText(editProfile, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        editProfileViewModel.editprofileimage(profileUpdates,user,editProfile).observe((LifecycleOwner) editProfile, state->{
+                        editProfileViewModel.editprofileimage(profileUpdates,user).observe((LifecycleOwner) editProfile, state->{
                             if (state){
                                 user.setProfileImageLink(avatar);
                                 Glide.with(editProfile)
@@ -233,7 +234,7 @@ public class EditUserProfileImage {
                                         .into(profileImageView);
                                 userNameProgressDialogue.dismiss();
                                 user.setProfileImageLink(avatar);
-                                SessionStorage.saveUser(editProfile, user);
+                                globalVariables.saveCurrentUser(user);
                                 finalizeChange = true;
                                 editUserProfiledialogue.dismiss();
                             }

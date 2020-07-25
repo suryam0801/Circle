@@ -18,7 +18,7 @@ import java.util.List;
 
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -36,7 +36,8 @@ public class NotificationFragment extends Fragment {
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
     private User user;
-    LiveData<String[]> liveData;
+    private LiveData<String[]> liveData;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public NotificationFragment() {
         // Required empty public constructor
@@ -82,7 +83,7 @@ public class NotificationFragment extends Fragment {
         thisWeekListView = view.findViewById(R.id.thisweek_notifications_display);
         previousListView = view.findViewById(R.id.all_time_notifications_display);
         prevnotify = view.findViewById(R.id.prevnotifytext);
-        user = SessionStorage.getUser(getActivity());
+        user = globalVariables.getCurrentUser();
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
 
