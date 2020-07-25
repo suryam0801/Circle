@@ -541,7 +541,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         pollImageUploadInitiation = createPollBroadcastPopup.findViewById(R.id.poll_image_upload_initiate_layout);
         pollExists = true;
 
-
         btnUploadPollBroadcast = createPollBroadcastPopup.findViewById(R.id.upload_poll_broadcast_btn);
         cancelPollButton = createPollBroadcastPopup.findViewById(R.id.create_poll_broadcast_cancel_btn);
 
