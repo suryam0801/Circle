@@ -45,12 +45,12 @@ import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,6 +59,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private Context context;
     private Circle circle;
     private Dialog deleteBroadcastConfirmation;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     //contructor to set latestCircleList and context for Adapter
     public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
@@ -77,17 +78,17 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     public void onBindViewHolder(final BroadcastListAdapter.ViewHolder viewHolder, int i) {
 
         final Broadcast broadcast = broadcastList.get(i);
-        User user = SessionStorage.getUser((Activity) context);
+        User user = globalVariables.getCurrentUser();
         //HelperMethods.initializeBroadcastListener(context, broadcast, user);
-        HelperMethods.initializeNewReadComments(context, broadcast, user);
+        HelperMethods.initializeNewReadComments(broadcast, user);
         MyCirclesViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
             if (circle != null&&circle.getMembersList()!=null) {
                 Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(SessionStorage.getUser((Activity) context).getUserId())) {
-                    SessionStorage.saveCircle((Activity) context, circle);
+                if (circle.getMembersList().containsKey(globalVariables.getCurrentUser().getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
                 }
             }
         });
@@ -134,7 +135,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.container.setOnClickListener(view -> intentToDiscussionActivity(i));
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
-            SessionStorage.saveBroadcast((Activity) context, broadcast);
+            globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
 
@@ -151,14 +152,14 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             ifImageExistsAction(viewHolder, broadcast, i);
 
         if (broadcast.isPollExists() == true)
-            ifPollExistsAction(viewHolder, broadcast, SessionStorage.getUser((Activity) context));
+            ifPollExistsAction(viewHolder, broadcast, globalVariables.getCurrentUser());
 
 
         deleteBroadcastConfirmation = new Dialog(context);
 
         viewHolder.container.setOnLongClickListener(v -> {
             if (broadcast.getCreatorID().equals(user.getUserId())) {
-                showDeleteBroadcastDialog(broadcast, SessionStorage.getUser((Activity) context));
+                showDeleteBroadcastDialog(broadcast, globalVariables.getCurrentUser());
             } else
                 HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
@@ -185,7 +186,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     public void toggleNotif(Broadcast broadcast, ViewHolder viewHolder) {
-        User user = SessionStorage.getUser((Activity) context);
+        User user = globalVariables.getCurrentUser();
         List<String> userMutedArray;
         if (user.getMutedBroadcasts() != null)
             userMutedArray = new ArrayList<>(user.getMutedBroadcasts());
@@ -198,19 +199,19 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
             userMutedArray.remove(broadcast.getId());
             user.setMutedBroadcasts(userMutedArray);
-            FirebaseWriteHelper.updateUser(user, context);
+            FirebaseWriteHelper.updateUser(user);
             FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
         } else {
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
             userMutedArray.add(broadcast.getId());
             user.setMutedBroadcasts(userMutedArray);
-            FirebaseWriteHelper.updateUser(user, context);
+            FirebaseWriteHelper.updateUser(user);
             FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), broadcast.getId());
         }
     }
 
     public void intentToDiscussionActivity(int position) {
-        SessionStorage.saveBroadcastList((Activity) context, broadcastList);
+        globalVariables.saveCurrentBroadcastList(broadcastList);
         Intent intent = new Intent(context, FullPageBroadcastCardView.class);
         intent.putExtra("broadcastPosition", position);
         context.startActivity(intent);
@@ -289,7 +290,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 params1.putString("PollInteracted", "Radio button");
 
                 String option = button.getText().toString();
-                updatePollAnswer(option, viewHolder, poll, broadcast, SessionStorage.getUser((Activity) context));
+                updatePollAnswer(option, viewHolder, poll, broadcast, globalVariables.getCurrentUser());
             });
             viewHolder.pollOptionsDisplayGroup.addView(layout);
             button.setPressed(true);
@@ -330,7 +331,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         poll.setUserResponse(userResponseHashmap);
         broadcast.setPoll(poll);
 
-        FirebaseWriteHelper.updateBroadcast(broadcast, context, circle.getId());
+        FirebaseWriteHelper.updateBroadcast(broadcast, circle.getId());
     }
 
     public void showDeleteBroadcastDialog(Broadcast broadcast, User user) {

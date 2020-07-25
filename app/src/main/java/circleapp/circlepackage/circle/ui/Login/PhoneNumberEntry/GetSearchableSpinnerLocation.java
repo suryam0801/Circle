@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
 
 public class GetSearchableSpinnerLocation {
@@ -19,6 +19,7 @@ public class GetSearchableSpinnerLocation {
     private List<String> al = new ArrayList<String>();
     private int pos;
     private TempLocation tempLocation;
+    private GlobalVariables globalVariables = new GlobalVariables();
     public int getPositionOfSpinner(Context context) {
         mContext = context;
         getLocationFromSession();
@@ -55,7 +56,7 @@ public class GetSearchableSpinnerLocation {
     }
 
     private void getLocationFromSession(){
-        tempLocation = SessionStorage.getTempLocationObject((Activity) mContext);
+        tempLocation = globalVariables.getCurrentTempLocation();
         mCountryName = tempLocation.getCountryName();
         mCountryDialCode = tempLocation.getCountryDialCode();
         Log.d("LocationParams", mCountryName+mCountryDialCode);
