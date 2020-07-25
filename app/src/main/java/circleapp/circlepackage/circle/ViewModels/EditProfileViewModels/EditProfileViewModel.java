@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class EditProfileViewModel extends ViewModel {
@@ -25,7 +26,7 @@ public class EditProfileViewModel extends ViewModel {
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user, activity);
+                FirebaseWriteHelper.updateUser(SessionStorage.getUser(activity), activity);
                 imageprogress.setValue(true);
             }
         });

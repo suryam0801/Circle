@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.ui.EditProfile;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -59,9 +60,11 @@ import static android.Manifest.permission.CAMERA;
 
 public class EditProfile extends AppCompatActivity {
 
-    private CircleImageView profileImageView;
+    public CircleImageView profileImageView;
     private TextView userName, userNumber, createdCircles, workingCircles;
-    private Button editProfPic, logout, finalizeChanges;
+    private Button editProfPic;
+    private Button logout;
+    public Button finalizeChanges;
     private ImageButton back;
     private Uri filePath;
     private FirebaseUser firebaseAuth = FirebaseAuth.getInstance().getCurrentUser();
@@ -80,11 +83,10 @@ public class EditProfile extends AppCompatActivity {
     String avatar;
     public ImageUpload imageUploadModel;
     public EditProfileViewModel editProfileViewModel;
-    public  EditUserProfileImage editUserProfileImage;
     public EdituserName edituserName;
-
+    private MutableLiveData<Uri> LinkProf;
     private Boolean finalizeChange = false;
-
+EditProfileImage editProfileImage;
     //UI elements for location tag selector popup and interest tag selector popup
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -92,17 +94,15 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         this.setFinishOnTouchOutside(false);
-
+         LinkProf = new MutableLiveData<>();
         InitUIElements();
-        avatarList = new ImageButton[8];
-        avatarBgList = new ImageView[8];
         defUIValues();
-        editUserProfileImage = new EditUserProfileImage();
+        editProfileImage = new EditProfileImage();
         edituserName  = new EdituserName();
         editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
+            Log.d("progressvalue",""+progress[0]);
             // update UI
             if(progress==null);
 
@@ -114,16 +114,20 @@ public class EditProfile extends AppCompatActivity {
             else if(progress[1].equals("100.0")){
                 Glide.with(this).load(filePath).into(profileImageView);
                 downloadLink = Uri.parse(progress[0]);
+                user.setProfileImageLink(downloadLink.toString());
+                SessionStorage.saveUser(this,user);
+                Log.d("Link","uploaded"+SessionStorage.getUser(this).getProfileImageLink());
+                LinkProf.setValue(downloadLink);
                 for (int i = 0; i < 8; i++) {
-                    avatarBgList[i].setVisibility(View.GONE);
+//                    avatarBgList[i].setVisibility(View.GONE);
                 }
                 finalizeChanges.setVisibility(View.VISIBLE);
                 imageUploadProgressDialog.dismiss();
+
             }
         });
         editProfPic.setOnClickListener(view -> {
-            editUserProfileImage.editprofile(user.getProfileImageLink(), EditProfile.this,finalizeChanges,user,downloadLink,profileImageView);
-//            editprofile(user.getProfileImageLink());
+            editProfileImage.editProfile(EditProfile.this);
         });
         editName.setOnClickListener(v -> {
             edituserName.edituserNamedialogue(EditProfile.this,user,userName);
@@ -163,10 +167,11 @@ public class EditProfile extends AppCompatActivity {
         userNumber.setText(FirebaseWriteHelper.getUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
-
+        avatarList = new ImageButton[8];
+        avatarBgList = new ImageView[8];
         HelperMethods.setUserProfileImage(user, this, profileImageView);
     }
-    private void uploadUserProfilePic(){
+    private void uploadUserProfilePic(Uri filePath){
         imageUploadModel.imageUpload(filePath);
     }
     //code for upload the image
@@ -178,7 +183,7 @@ public class EditProfile extends AppCompatActivity {
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
                 filePath= ImagePicker.getImageUri(getApplicationContext(),bitmap);
                 if(filePath !=null){
-                    uploadUserProfilePic();
+                    uploadUserProfilePic(filePath);
                 }
                 break;
             default:
