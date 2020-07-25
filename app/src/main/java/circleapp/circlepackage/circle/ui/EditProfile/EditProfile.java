@@ -94,8 +94,6 @@ public class EditProfile extends AppCompatActivity {
         this.setFinishOnTouchOutside(false);
 
         InitUIElements();
-        avatarList = new ImageButton[8];
-        avatarBgList = new ImageView[8];
         defUIValues();
         editUserProfileImage = new EditUserProfileImage();
         edituserName  = new EdituserName();
