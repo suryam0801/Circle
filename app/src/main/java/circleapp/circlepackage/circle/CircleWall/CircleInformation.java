@@ -70,7 +70,7 @@ public class CircleInformation extends AppCompatActivity {
         creatorName.setText(circle.getCreatorName());
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
-/*
+
         char firstLetter = circle.getName().charAt(0);
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
         int color = generator.getColor(circle.getName());
@@ -81,8 +81,7 @@ public class CircleInformation extends AppCompatActivity {
             Glide.with(this).load(circle.getBackgroundImageLink()).into(logo);
         } else {
             logo.setBackground(drawable);
-        }*/
-        HelperMethods.createDefaultCircleIcon(circle,this,logo);
+        }
 
         //back button
         back.setOnClickListener(view -> {
