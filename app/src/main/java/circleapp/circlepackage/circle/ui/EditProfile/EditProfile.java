@@ -64,20 +64,12 @@ public class EditProfile extends AppCompatActivity {
     private Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
-    private FirebaseUser firebaseAuth = FirebaseAuth.getInstance().getCurrentUser();
-    private Dialog editUserNamedialogue, editUserProfiledialogue;
-    private StorageReference storageReference;
     private Uri downloadLink;
     private static final int PICK_IMAGE_ID = 234;
-    String TAG = EditProfile.class.getSimpleName();
     ImageButton editName;
     User user;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
-    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
-    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    private CircleImageView profilePic;
-    RelativeLayout setProfile;
-    String avatar;
+
     public ImageUpload imageUploadModel;
     public EditProfileViewModel editProfileViewModel;
     public  EditUserProfileImage editUserProfileImage;
@@ -94,8 +86,6 @@ public class EditProfile extends AppCompatActivity {
         this.setFinishOnTouchOutside(false);
 
         InitUIElements();
-        avatarList = new ImageButton[8];
-        avatarBgList = new ImageView[8];
         defUIValues();
         editUserProfileImage = new EditUserProfileImage();
         edituserName  = new EdituserName();
@@ -114,9 +104,8 @@ public class EditProfile extends AppCompatActivity {
             else if(progress[1].equals("100.0")){
                 Glide.with(this).load(filePath).into(profileImageView);
                 downloadLink = Uri.parse(progress[0]);
-                for (int i = 0; i < 8; i++) {
-                    avatarBgList[i].setVisibility(View.GONE);
-                }
+                user.setProfileImageLink(downloadLink.toString());
+                FirebaseWriteHelper.updateUser(user, EditProfile.this);
                 finalizeChanges.setVisibility(View.VISIBLE);
                 imageUploadProgressDialog.dismiss();
             }
@@ -154,8 +143,6 @@ public class EditProfile extends AppCompatActivity {
         finalizeChanges = findViewById(R.id.profile_finalize_changes);
         userNameProgressDialogue = new ProgressDialog(this);
         imageUploadProgressDialog = new ProgressDialog(this);
-
-        storageReference = FirebaseStorage.getInstance().getReference();
     }
     private void defUIValues(){
         user = SessionStorage.getUser(EditProfile.this);
