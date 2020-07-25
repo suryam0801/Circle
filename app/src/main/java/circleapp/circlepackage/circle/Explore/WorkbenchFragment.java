@@ -20,13 +20,13 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
 /**
@@ -45,8 +45,7 @@ public class WorkbenchFragment extends Fragment {
     private static User user;
     private LinearLayout emptyDisplay;
     private RecyclerView.Adapter wbadapter;
-    private LiveData<String[]> liveData;
-    private GlobalVariables globalVariables = new GlobalVariables();
+    LiveData<String[]> liveData;
 
     public WorkbenchFragment() {
         // Required empty public constructor
@@ -76,7 +75,7 @@ public class WorkbenchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
 
-        user = globalVariables.getCurrentUser();
+        user = SessionStorage.getUser(getActivity());
 
         emptyDisplay = view.findViewById(R.id.workbench_empty_display);
         ImageButton explore = view.findViewById(R.id.placeholder_explore_circle_layout);

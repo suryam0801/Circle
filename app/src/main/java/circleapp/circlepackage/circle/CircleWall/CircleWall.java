@@ -52,16 +52,18 @@ import java.util.List;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
+import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
@@ -97,7 +99,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private ProgressDialog imageUploadProgressDialog;
     private CircleWallViewModel circleWallViewModel;
     private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto;
-    private GlobalVariables globalVariables = new GlobalVariables();
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -106,8 +107,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
         InitUIElements();
-        user = globalVariables.getCurrentUser();
-        circle = globalVariables.getCurrentCircle();
+        user = SessionStorage.getUser(CircleWall.this);
+        circle = SessionStorage.getCircle(CircleWall.this);
         circleWallViewModel = ViewModelProviders.of(this).get(CircleWallViewModel.class);
         getLiveData();
         broadcastid = getIntent().getStringExtra("broadcastId");
@@ -207,8 +208,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
             if (circle != null&&circle.getMembersList()!=null) {
-                if (circle.getMembersList().containsKey(user.getUserId())) {
-                    globalVariables.saveCurrentCircle(circle);
+                if (circle.getMembersList().containsKey(SessionStorage.getUser(CircleWall.this).getUserId())) {
+                    SessionStorage.saveCircle((Activity) CircleWall.this, circle);
                 }
             }
         });
@@ -280,7 +281,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
         recyclerView.scrollToPosition(broadcastPos);
-        HelperMethods.initializeNewCommentsAlertTimestamp(broadcast, user);
+        HelperMethods.initializeNewCommentsAlertTimestamp(this, broadcast, user);
 
         //coming back from image display
         int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
@@ -727,13 +728,13 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
             user.setNotificationsAlert(newNotifs);
-            globalVariables.saveCurrentUser(user);
+            SessionStorage.saveUser(this, user);
             FirebaseWriteHelper.updateUserCount(user.getUserId(), c.getId(), circle.getNoOfBroadcasts());
         } else {
             HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
             user.setNotificationsAlert(newNotifs);
-            globalVariables.saveCurrentUser(user);
+            SessionStorage.saveUser(this, user);
         }
     }
 }

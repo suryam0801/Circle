@@ -29,9 +29,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
@@ -42,6 +41,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
@@ -52,18 +52,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private ImageView profPicHolder;
-    private TextView location;
+    TextView location;
     private User user;
     private Uri intentUri;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
     private BottomNavigationView bottomNav;
-    private Boolean popupCalled = false;
-    private View decorView;
+    Boolean popupCalled = false;
+    View decorView;
     boolean shownPopup;
     private FloatingActionButton btnAddCircle;
-    private GlobalVariables globalVariables = new GlobalVariables();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -72,13 +71,13 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         setContentView(R.layout.activity_explore_tabbed);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         location = findViewById(R.id.explore_district_name_display);
-        user = globalVariables.getCurrentUser();
+        user = SessionStorage.getUser(this);
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
             user = dataSnapshot.getValue(User.class);
             if (user != null) {
-                globalVariables.saveCurrentUser(user);
+                SessionStorage.saveUser(ExploreTabbedActivity.this, user);
             }
         });
         location.setText(user.getDistrict());
@@ -135,6 +134,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ExploreFragment()).commit();
         } else if (getIntent().getIntExtra("exploreIndex", -1) != -1) {
+            SessionStorage.tempIndexStore(this, getIntent().getIntExtra("exploreIndex", -1));
             bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ExploreFragment()).commit();
@@ -300,7 +300,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         closeDialogButton.setOnClickListener(view -> {
             if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
                 finishAfterTransition();
-                globalVariables.saveCurrentCircle(circle);
+                SessionStorage.saveCircle(ExploreTabbedActivity.this, circle);
                 shownPopup = false;
                 startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
             }
@@ -336,7 +336,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     //bottom sheet dialog onclick (only called when nagivating from create circle)
     @Override
     public void onButtonClicked(String text) {
-        Circle circle = globalVariables.getCurrentCircle();
+        Circle circle = SessionStorage.getCircle(this);
         switch (text) {
             case "shareLink":
                 HelperMethods.showShareCirclePopup(circle, this);

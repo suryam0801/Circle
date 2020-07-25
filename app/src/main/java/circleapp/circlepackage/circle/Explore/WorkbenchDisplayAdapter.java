@@ -20,25 +20,29 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.bumptech.glide.Glide;
+import com.google.rpc.Help;
+
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDisplayAdapter.ViewHolder> {
 
     private List<Circle> MycircleList;
     private Context context;
-    private GlobalVariables globalVariables = new GlobalVariables();
 
     //contructor to set MycircleList and context for Adapter
     public WorkbenchDisplayAdapter(List<Circle> mycircleList, Context context) {
@@ -59,7 +63,19 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     public void onBindViewHolder(@NonNull WorkbenchDisplayAdapter.ViewHolder holder, int position) {
 
         Circle circle = MycircleList.get(position);
-        User user = globalVariables.getCurrentUser();
+        User user = SessionStorage.getUser((Activity) context);
+/*
+        char firstLetter = circle.getName().charAt(0);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        int color = generator.getColor(circle.getName());
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(firstLetter+"",color);
+
+        if (!circle.getBackgroundImageLink().equals("default"))
+            Glide.with(context).load(circle.getBackgroundImageLink()).into(holder.backgroundPic);
+        else {
+            holder.backgroundPic.setBackground(drawable);
+        }*/
         HelperMethods.createDefaultCircleIcon(circle,context,holder.backgroundPic);
 
         //set the details of each circle to its respective card.
@@ -103,10 +119,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 user.setNotificationsAlert(newUserNotifStore);
             }
 
-            FirebaseWriteHelper.updateUser(user);
+            FirebaseWriteHelper.updateUser(user, context);
 
-            globalVariables.saveCurrentCircle(circle);
-            globalVariables.saveCurrentUser(user);
+            SessionStorage.saveCircle((Activity) context, circle);
+            SessionStorage.saveUser((Activity) context, user);
 
             SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
             if (prefs.getBoolean("firstWall", true)) {
@@ -121,13 +137,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         //update new notifs value
         holder.shareCirclesLayout.setOnClickListener(view -> {
-            globalVariables.saveCurrentCircle(circle);
+            SessionStorage.saveCircle((Activity) context, circle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         holder.shareCirclesButton.setOnClickListener(view -> {
-            globalVariables.saveCurrentCircle(circle);
+            SessionStorage.saveCircle((Activity) context, circle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#fcffff"
+    android:background="#fcfcfc"
     android:weightSum="100"
     tools:context=".Explore.ExploreTabbedActivity">
 
@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <TextView

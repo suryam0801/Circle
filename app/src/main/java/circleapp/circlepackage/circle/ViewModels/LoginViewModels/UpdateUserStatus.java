@@ -13,14 +13,13 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.Utils.UserSessionHelper;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class UpdateUserStatus extends ViewModel {
 
-    private GlobalVariables globalVariables = new GlobalVariables();
-
+    private UserSessionHelper userSessionHelper = new UserSessionHelper();
     private MutableLiveData<String> isUserExisting;
     public MutableLiveData<String> listenForUserUpdates(String  userStatus, Context context) {
         if (userStatus==null) {
@@ -43,7 +42,7 @@ public class UpdateUserStatus extends ViewModel {
                 if (dataSnapshot.exists()) {
                     User user = dataSnapshot.getValue(User.class);
                     isUserExisting.setValue("existing_user");
-                    globalVariables.saveCurrentUser(user);
+                    userSessionHelper.saveUserToSession(context, user);
                 } else {
                     isUserExisting.setValue("repeat_user");
                 }

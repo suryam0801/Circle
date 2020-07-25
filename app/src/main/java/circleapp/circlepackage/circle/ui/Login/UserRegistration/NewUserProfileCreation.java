@@ -38,9 +38,9 @@ import java.util.ArrayList;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
@@ -70,7 +70,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     private NewUserRegistration newUserRegistration;
     private ProgressDialog imageUploadProgressDialog;
     private TempLocation tempLocation;
-    private GlobalVariables globalVariables = new GlobalVariables();
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,8 +159,8 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     }
 
     private void setLoginUserObject() {
-        loginUserObject = globalVariables.getCurrentLoginUserObject();
-        tempLocation = globalVariables.getCurrentTempLocation();
+        loginUserObject = SessionStorage.getLoginUserObject(this);
+        tempLocation = SessionStorage.getTempLocationObject(this);
         ward = tempLocation.getWard();
         district = tempLocation.getDistrict();
         contact = loginUserObject.getCompletePhoneNumber();

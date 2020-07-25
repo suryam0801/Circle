@@ -23,24 +23,21 @@ import java.util.List;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 
 public class FullPageBroadcastCardView extends AppCompatActivity {
 
     private Circle circle;
     private List<Broadcast> broadcastList;
     int initialBroadcastPosition;
-    private TextView banner;
-    private ImageButton back;
+    TextView banner;
+    ImageButton back;
     private LinearLayout parentLayout;
     private ImageButton moreOptions, viewApplicants;
-    private RecyclerView recyclerView;
-    private GlobalVariables globalVariables = new GlobalVariables();
+    RecyclerView recyclerView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -55,8 +52,8 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         moreOptions = findViewById(R.id.full_page_broadcast_more_options);
         viewApplicants = findViewById(R.id.full_page_broadcast_applicants_display_creator);
 
-        broadcastList = globalVariables.getCurrentBroadcastList();
-        circle = globalVariables.getCurrentCircle();
+        broadcastList = SessionStorage.getBroadcastList(this);
+        circle = SessionStorage.getCircle(this);
         initialBroadcastPosition = getIntent().getIntExtra("broadcastPosition", 0);
 
 
@@ -68,7 +65,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
             startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
         });
         //set applicants button visible
-        if (circle.getCreatorID().equals(globalVariables.getCurrentUser().getUserId()))
+        if (circle.getCreatorID().equals(SessionStorage.getUser(FullPageBroadcastCardView.this).getUserId()))
             viewApplicants.setVisibility(View.VISIBLE);
 
         viewApplicants.setOnClickListener(view -> {

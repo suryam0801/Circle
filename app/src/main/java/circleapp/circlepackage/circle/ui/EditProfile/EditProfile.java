@@ -1,34 +1,61 @@
 package circleapp.circlepackage.circle.ui.EditProfile;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
+
+import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.Manifest.permission.CAMERA;
 
 public class EditProfile extends AppCompatActivity {
 
@@ -37,16 +64,24 @@ public class EditProfile extends AppCompatActivity {
     private Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
+    private FirebaseUser firebaseAuth = FirebaseAuth.getInstance().getCurrentUser();
+    private Dialog editUserNamedialogue, editUserProfiledialogue;
+    private StorageReference storageReference;
     private Uri downloadLink;
     private static final int PICK_IMAGE_ID = 234;
-    private ImageButton editName;
-    private User user;
+    String TAG = EditProfile.class.getSimpleName();
+    ImageButton editName;
+    User user;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
+    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
+    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
+    private CircleImageView profilePic;
+    RelativeLayout setProfile;
+    String avatar;
     public ImageUpload imageUploadModel;
     public EditProfileViewModel editProfileViewModel;
     public  EditUserProfileImage editUserProfileImage;
     public EdituserName edituserName;
-    private GlobalVariables globalVariables = new GlobalVariables();
 
     private Boolean finalizeChange = false;
 
@@ -77,6 +112,9 @@ public class EditProfile extends AppCompatActivity {
             else if(progress[1].equals("100.0")){
                 Glide.with(this).load(filePath).into(profileImageView);
                 downloadLink = Uri.parse(progress[0]);
+                for (int i = 0; i < 8; i++) {
+                    avatarBgList[i].setVisibility(View.GONE);
+                }
                 finalizeChanges.setVisibility(View.VISIBLE);
                 imageUploadProgressDialog.dismiss();
             }
@@ -114,13 +152,17 @@ public class EditProfile extends AppCompatActivity {
         finalizeChanges = findViewById(R.id.profile_finalize_changes);
         userNameProgressDialogue = new ProgressDialog(this);
         imageUploadProgressDialog = new ProgressDialog(this);
+
+        storageReference = FirebaseStorage.getInstance().getReference();
     }
     private void defUIValues(){
-        user = globalVariables.getCurrentUser();
+        user = SessionStorage.getUser(EditProfile.this);
         userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
         userNumber.setText(FirebaseWriteHelper.getUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
+        avatarList = new ImageButton[8];
+        avatarBgList = new ImageView[8];
         HelperMethods.setUserProfileImage(user, this, profileImageView);
     }
     private void uploadUserProfilePic(){

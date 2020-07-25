@@ -19,13 +19,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class NewUserRegistration extends ViewModel {
 
     private MutableLiveData<Boolean> isUserUploaded;
-    private GlobalVariables globalVariables = new GlobalVariables();
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MutableLiveData<Boolean> userObjectUploadProgress(Boolean isUserRegistered, String uid, String Name, String district, String ward, String downloadUri, String avatar, String contact, boolean locationExists) {
         if (!isUserRegistered) {
@@ -102,7 +100,6 @@ public class NewUserRegistration extends ViewModel {
         //store user in realtime database. (testing possible options for fastest retrieval)
         usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
             isUserUploaded.setValue(true);
-            globalVariables.saveCurrentUser(user);
             db.collection("Users")
                     .document(userId)
                     .set(user)
