@@ -94,6 +94,8 @@ public class EditProfile extends AppCompatActivity {
         this.setFinishOnTouchOutside(false);
 
         InitUIElements();
+        avatarList = new ImageButton[8];
+        avatarBgList = new ImageView[8];
         defUIValues();
         editUserProfileImage = new EditUserProfileImage();
         edituserName  = new EdituserName();
@@ -161,8 +163,7 @@ public class EditProfile extends AppCompatActivity {
         userNumber.setText(FirebaseWriteHelper.getUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
-        avatarList = new ImageButton[8];
-        avatarBgList = new ImageView[8];
+
         HelperMethods.setUserProfileImage(user, this, profileImageView);
     }
     private void uploadUserProfilePic(){

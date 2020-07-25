@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;

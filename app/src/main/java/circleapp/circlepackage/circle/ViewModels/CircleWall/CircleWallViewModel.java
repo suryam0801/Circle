@@ -2,14 +2,12 @@ package circleapp.circlepackage.circle.ViewModels.CircleWall;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.view.View;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
