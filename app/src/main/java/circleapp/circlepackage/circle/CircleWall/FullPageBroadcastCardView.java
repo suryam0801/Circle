@@ -28,6 +28,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 
 public class FullPageBroadcastCardView extends AppCompatActivity {
 
