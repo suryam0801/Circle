@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -29,10 +28,9 @@ public class MemberListAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Subscriber> memberList;
-    private TextView name, timeElapsed;
-    private CircleImageView profPic;
-    private LinearLayout container;
-    private GlobalVariables globalVariables = new GlobalVariables();
+    TextView name, timeElapsed;
+    CircleImageView profPic;
+    LinearLayout container;
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList) {
         this.mContext = mContext;
@@ -65,7 +63,7 @@ public class MemberListAdapter extends BaseAdapter {
         final Subscriber member = memberList.get(position);
         String picUrl = member.getPhotoURI();
 
-        User user = globalVariables.getCurrentUser();
+        User user = SessionStorage.getUser((Activity) mContext);
 
         HelperMethods.setUserProfileImage(user, mContext.getApplicationContext(), profPic);
 

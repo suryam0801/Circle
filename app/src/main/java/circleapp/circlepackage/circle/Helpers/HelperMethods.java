@@ -60,7 +60,6 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationAdapter;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
@@ -79,7 +78,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HelperMethods {
-    private static GlobalVariables globalVariables = new GlobalVariables();
 
     public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
         int counter = 0;
@@ -366,44 +364,50 @@ public class HelperMethods {
     }
 */
 
-    public static void initializeNewCommentsAlertTimestamp(Broadcast b, User user) {
+    public static void initializeNewCommentsAlertTimestamp(Context context, Broadcast b, User user) {
         HashMap<String, Long> commentTimeStampTemp;
         if (user.getNewTimeStampsComments() == null) {
             //first time viewing any comments
             commentTimeStampTemp = new HashMap<>();
             commentTimeStampTemp.put(b.getId(), (long) 0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
+
+            SessionStorage.saveUser((Activity) context, user);
             FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
             commentTimeStampTemp.put(b.getId(), (long) 0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
+
+            SessionStorage.saveUser((Activity) context, user);
             FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         }
-        globalVariables.saveCurrentUser(user);
     }
 
 
-    public static void initializeNewReadComments(Broadcast b, User user) {
+    public static void initializeNewReadComments(Context context, Broadcast b, User user) {
         HashMap<String, Integer> userNoReadComments;
         if (user.getNoOfReadDiscussions() == null) {
             //first time viewing any comments
             userNoReadComments = new HashMap<>();
             userNoReadComments.put(b.getId(), b.getNumberOfComments());
             user.setNoOfReadDiscussions(userNoReadComments);
+
+            SessionStorage.saveUser((Activity) context, user);
             FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
             userNoReadComments.put(b.getId(), 0);
             user.setNoOfReadDiscussions(userNoReadComments);
+
+            SessionStorage.saveUser((Activity) context, user);
             FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         }
-        globalVariables.saveCurrentUser(user);
     }
 
-    public static void updateUserFields(Broadcast broadcast, String navFrom, User user) {
+    public static void updateUserFields(Context mContext, Broadcast broadcast, String navFrom, User user) {
         HashMap<String, Integer> tempNoOfDiscussion;
         if (user.getNoOfReadDiscussions() != null)
             tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
@@ -420,13 +424,13 @@ public class HelperMethods {
                     updateDiscussionInt = 0;
                 tempNoOfDiscussion.put(broadcast.getId(), updateDiscussionInt + 1);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                FirebaseWriteHelper.updateUser(user);
+                FirebaseWriteHelper.updateUser(user, mContext);
                 break;
 
             case "view":
                 tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                FirebaseWriteHelper.updateUser(user);
+                FirebaseWriteHelper.updateUser(user, mContext);
                 break;
         }
 
@@ -439,7 +443,7 @@ public class HelperMethods {
 
         tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
         user.setNewTimeStampsComments(tempCommentTimeStamps);
-        FirebaseWriteHelper.updateUser(user);
+        FirebaseWriteHelper.updateUser(user, mContext);
     }
 
     public static Uri getImageUri() {

@@ -11,12 +11,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.Login.OtpVerification.OtpActivity;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 
 public class EnterPhoneNumberDriver {
-    private GlobalVariables globalVariables = new GlobalVariables();
     public void EnterPhoneNumberDriver(){}
     public String  setCountryCode(String code, String[] arrContryCode){
         String contryDialCode = null;
@@ -55,7 +53,7 @@ public class EnterPhoneNumberDriver {
     public void savePhoneNumberToSession(Activity activity, String country_code, String phone_number){
         LoginUserObject loginUserObject = new LoginUserObject();
         loginUserObject.setCompletePhoneNumber(country_code + phone_number);
-        globalVariables.saveCurrentLoginUserObject(loginUserObject);
+        SessionStorage.saveLoginUserObject(activity, loginUserObject);
     }
     public boolean isPhoneNumber10Digits(String phoneNumber){
         return phoneNumber.length() == 10;

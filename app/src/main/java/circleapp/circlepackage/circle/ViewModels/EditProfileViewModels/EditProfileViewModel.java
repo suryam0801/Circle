@@ -20,24 +20,24 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> imageprogress;
     private MutableLiveData<Boolean> nameprogress;
-    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user) {
+    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, Activity activity) {
         imageprogress = new MutableLiveData<>();
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user);
+                FirebaseWriteHelper.updateUser(user, activity);
                 imageprogress.setValue(true);
             }
         });
         return imageprogress;
     }
 
-    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user){
+    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, Activity activity){
         nameprogress = new MutableLiveData<>();
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user);
+                FirebaseWriteHelper.updateUser(user, activity);
                 Log.d("edit",FirebaseWriteHelper.getUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }

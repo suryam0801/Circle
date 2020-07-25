@@ -32,7 +32,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     String TAG = "APPLICANT_LIST_ADAPTER";
     private String state;
     private int propic;
-    private int myImageList;
+    int myImageList;
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;

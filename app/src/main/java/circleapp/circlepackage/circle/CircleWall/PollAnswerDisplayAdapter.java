@@ -23,8 +23,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDisplayAdapter.ViewHolder> {
     private Context mContext;
     private HashMap<Subscriber, String> list;
+    String TAG = "APPLICANT_LIST_ADAPTER";
     private int count = 0;
-    private int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
+    int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
             R.drawable.avatar2, R.drawable.avatar5};
 
 
