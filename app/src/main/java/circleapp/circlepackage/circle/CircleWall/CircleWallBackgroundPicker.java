@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 
 public class CircleWallBackgroundPicker extends AppCompatActivity {
 
