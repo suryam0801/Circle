@@ -43,6 +43,7 @@ public class CircleInformation extends AppCompatActivity {
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
     private ImageButton back;
+    private int indexValue;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
 
@@ -51,10 +52,31 @@ public class CircleInformation extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_information);
-
+        initUIElements();
+        //back button
+        back.setOnClickListener(view -> {//go back to circle wall
+            if (indexValue == -1) {
+                finishAfterTransition();
+                startActivity(new Intent(CircleInformation.this, CircleWall.class));
+            } else {//go back to postion of click in explore
+                finishAfterTransition();
+                Intent intent = new Intent(CircleInformation.this, ExploreTabbedActivity.class);
+                intent.putExtra("exploreIndex", indexValue);
+                startActivity(intent);
+            }
+        });
+    }
+    @Override
+    public void onPause() {
+        if(liveData!=null)
+        liveData.removeObservers(this);
+        super.onPause();
+    }
+    private void initUIElements(){
         circle = globalVariables.getCurrentCircle();
         user = globalVariables.getCurrentUser();
 
+        indexValue = getIntent().getIntExtra("exploreIndex", -1);
         banner = findViewById(R.id.circle_info_circle_banner);
         logo = findViewById(R.id.circle_info_circle_logo);
         creatorName = findViewById(R.id.circle_info_creator_name);
@@ -69,21 +91,6 @@ public class CircleInformation extends AppCompatActivity {
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
         HelperMethodsUI.createDefaultCircleIcon(circle,this,logo);
-
-        //back button
-        back.setOnClickListener(view -> {
-            int indexValue = getIntent().getIntExtra("exploreIndex", -1);
-            if (indexValue == -1) {
-                finishAfterTransition();
-                startActivity(new Intent(CircleInformation.this, CircleWall.class));
-            } else {
-                finishAfterTransition();
-                Intent intent = new Intent(CircleInformation.this, ExploreTabbedActivity.class);
-                intent.putExtra("exploreIndex", indexValue);
-                startActivity(intent);
-            }
-        });
-
         //setting circle banner
         setBannerBackground(circle.getCategory());
 
@@ -97,12 +104,6 @@ public class CircleInformation extends AppCompatActivity {
         } else {
             noMembersDisplay.setVisibility(View.VISIBLE);
         }
-    }
-    @Override
-    public void onPause() {
-        if(liveData!=null)
-        liveData.removeObservers(this);
-        super.onPause();
     }
 
     private void loadMembersList() {

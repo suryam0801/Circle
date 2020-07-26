@@ -110,7 +110,7 @@ public class FirebaseWriteHelper {
         CIRCLES_REF.child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
     }
 
-    public static void deleteBroadcast(Context context, String circleId, Broadcast broadcast, int noOfBroadcasts, User user) {
+    public static void deleteBroadcast(String circleId, Broadcast broadcast, int noOfBroadcasts, User user) {
         Log.d("wefkjn", "tempListening.toString()");
         if (broadcast.isImageExists())
             removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
@@ -118,10 +118,10 @@ public class FirebaseWriteHelper {
         BROADCASTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         COMMENTS_REF.child(circleId).child(broadcast.getId()).removeValue();
         CIRCLES_REF.child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts-1);
-        updateUserObjectWhenDeletingBroadcast(context, user, broadcast);
+        updateUserObjectWhenDeletingBroadcast(user, broadcast);
     }
 
-    public static void updateUserObjectWhenDeletingBroadcast(Context context, User user, Broadcast broadcast) {
+    public static void updateUserObjectWhenDeletingBroadcast(User user, Broadcast broadcast) {
         //remove listening broadcast
         List<String> tempListening;
         if (user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(broadcast.getId())) {
