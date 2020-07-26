@@ -17,7 +17,7 @@ public class GlobalVariables extends Application {
     }
 
     public static FirebaseDatabase database;
-    public static User currentUser;
+    public static User currentUser,tempUser;
     public static Circle currentCircle;
     public static Broadcast currentBroadcast;
     public static List<Broadcast> currentBroadcastList;
@@ -26,6 +26,13 @@ public class GlobalVariables extends Application {
 
     public FirebaseDatabase getDatabaseInstance(){
         return database.getInstance();
+    }
+    public User getTempUser(){
+        return tempUser;
+    }
+
+    public void saveTempUser(User user){
+        this.tempUser = user;
     }
 
     public User getCurrentUser(){

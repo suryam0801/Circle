@@ -32,6 +32,7 @@ import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -55,6 +56,7 @@ public class EditProfileImage extends AppCompatActivity {
     EditProfile EditProfileClassTemp;
     public EditProfileViewModel editProfileViewModel;
     Uri filePath;
+    GlobalVariables globalVariables = new GlobalVariables();
 
     public void editProfile(EditProfile EditProfileClass) {
         this.EditProfileClassTemp = EditProfileClass;
@@ -62,7 +64,8 @@ public class EditProfileImage extends AppCompatActivity {
         editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
         imageUploadProgressDialog = new ProgressDialog(EditProfileClass);
         InitAvatars();
-        user = SessionStorage.getUser(EditProfileClass);
+//        user = SessionStorage.getUser(EditProfileClass);
+        user = globalVariables.getTempUser();
         profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
         setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
         profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
@@ -164,8 +167,9 @@ public class EditProfileImage extends AppCompatActivity {
                     .build();
 
             user.setProfileImageLink(avatar);
-            SessionStorage.saveUser(EditProfileClassTemp, user);
-            editProfileViewModel.editprofileimage(profileUpdates, user, EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
+//            SessionStorage.saveUser(EditProfileClassTemp, user);
+            globalVariables.saveTempUser(user);
+            editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     user.setProfileImageLink(avatar);
                     Glide.with(EditProfileClassTemp)
@@ -185,9 +189,8 @@ public class EditProfileImage extends AppCompatActivity {
     }
 
     private void FinalizeChangesBtn() {
-        String tempProfUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
-        Log.d("pic", tempProfUrl + "    dgfhfhfdh");
-        String TempUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
+//        String TempUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
+        String TempUrl = globalVariables.getTempUser().getProfileImageLink();
         Log.d("TAG", "DownloadURI ::" + TempUrl);
         imageUploadProgressDialog.setTitle("Uploading Profile....");
         imageUploadProgressDialog.show();
@@ -197,9 +200,10 @@ public class EditProfileImage extends AppCompatActivity {
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setPhotoUri(Uri.parse(TempUrl))
                     .build();
-            user.setProfileImageLink(TempUrl.toString());
-            SessionStorage.saveUser(EditProfileClassTemp, user);
-            editProfileViewModel.editprofileimage(profileUpdates, user, EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
+            user.setProfileImageLink(TempUrl);
+//            SessionStorage.saveUser(EditProfileClassTemp, user);
+            globalVariables.saveTempUser(user);
+            editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     Log.d("TAG", "DownloadURI ::" + FirebaseWriteHelper.getUser().getPhotoUrl());
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);

@@ -53,7 +53,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
     private ImageView profPicHolder;
     private TextView location;
-    private User user;
+    public User user;
     private Uri intentUri;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
@@ -93,8 +93,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             url = getIntent().getData().toString();
             processUrl(url);
         }
-
-
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethods.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
