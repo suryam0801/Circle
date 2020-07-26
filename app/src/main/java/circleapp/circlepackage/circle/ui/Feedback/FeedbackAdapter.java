@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Feedback;
 import circleapp.circlepackage.circle.R;
 
@@ -51,7 +51,7 @@ public class FeedbackAdapter extends BaseAdapter {
 
         final long createdTime = feedbackList.get(position).getTimestamp();
         final long currentTime = System.currentTimeMillis();
-        String timeString = HelperMethods.getTimeElapsed(currentTime, createdTime);
+        String timeString = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
 
         userName.setText(name);
         feedback.setText(feed);

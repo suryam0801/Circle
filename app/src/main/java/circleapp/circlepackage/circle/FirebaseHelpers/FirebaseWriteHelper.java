@@ -45,7 +45,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
@@ -292,7 +293,7 @@ public class FirebaseWriteHelper {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
                         String state = "comment";
-                        HelperMethods.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
+                        HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
                     } else {
                     }
@@ -321,7 +322,7 @@ public class FirebaseWriteHelper {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
                         String state = "broadcast";
-                        HelperMethods.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
+                        HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
                         NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
                     } else {
                     }
@@ -335,7 +336,7 @@ public class FirebaseWriteHelper {
     public static void writeNormalNotifications(Notification notification, String token_id, String name) {
         String state = "applicant";
         String application_state = notification.getState();
-        HelperMethods.pushFCM(state,application_state, token_id,notification,null, null, name,null, null,null);
+        HelperMethodsBL.pushFCM(state,application_state, token_id,notification,null, null, name,null, null,null);
         NOTIFS_REF.child(notification.getNotify_to()).child(notification.getNotificationId()).setValue(notification);
     }
 
@@ -379,14 +380,14 @@ public class FirebaseWriteHelper {
         database = FirebaseDatabase.getInstance();
         DatabaseReference broadcastsDB;
         broadcastsDB = database.getReference("Broadcasts");
-        String id = HelperMethods.uuidGet();
+        String id = HelperMethodsUI.uuidGet();
         Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments,true);
         broadcastsDB.child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public static String createPollBroadcast(String text, String creatorName, int offsetTimeStamp, HashMap<String, Integer> pollOptions, String downloadUri, int noOfComments, String circleId) {
-        String id = HelperMethods.uuidGet();
+        String id = HelperMethodsUI.uuidGet();
         Broadcast broadcast;
         Poll poll = new Poll(text, pollOptions, null);
         if (downloadUri != null)
@@ -398,21 +399,21 @@ public class FirebaseWriteHelper {
     }
 
     public static String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
-        String id = HelperMethods.uuidGet();
+        String id = HelperMethodsUI.uuidGet();
         Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments, true);
         BROADCASTS_REF.child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public static String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
-        String id = HelperMethods.uuidGet();
+        String id = HelperMethodsUI.uuidGet();
         Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions, true);
         CIRCLES_REF.child(id).setValue(circle);
         return id;
     }
 
     public static void createReportAbuse(Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {
-        String id = HelperMethods.uuidGet();
+        String id = HelperMethodsUI.uuidGet();
         ReportAbuse reportAbuse = new ReportAbuse(id, circleID, broadcastID, commentID, creatorID, userID, reportType);
         if (user.getUid() == creatorID) {
             Toast.makeText(context, "Stop Reporting your own Content", Toast.LENGTH_SHORT).show();
@@ -501,69 +502,4 @@ public class FirebaseWriteHelper {
         STORAGE_REFERENCES.child(circleId).child(broadcastId).removeValue();
     }
 
-public static void sendFCMPush(String tokenId, Context context) {
-    Log.e("FCM", "Func called");
-    String SERVER_KEY = String.valueOf(R.string.serverkey);
-    String msg = "this is test message";
-    String title = "my title";
-    String token = tokenId;
-    String FCM_URL= "https://fcm-xmpp.googleapis.com:5236";
-
-    JSONObject obj = null;
-    JSONObject objData = null;
-    JSONObject dataobjData = null;
-
-    try {
-        obj = new JSONObject();
-        objData = new JSONObject();
-
-        objData.put("text", msg);
-        objData.put("title", title);
-//        objData.put("sound", "default");
-//        objData.put("icon", "icon_name"); //   icon_name
-//        objData.put("tag", token);
-//        objData.put("priority", "high");
-
-        dataobjData = new JSONObject();
-        dataobjData.put("text", msg);
-        dataobjData.put("title", title);
-
-        obj.put("to", token);
-        //obj.put("priority", "high");
-
-        obj.put("notification", objData);
-        obj.put("data", dataobjData);
-        Log.e("return here>>", obj.toString());
-    } catch (JSONException e) {
-        e.printStackTrace();
-    }
-
-    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, FCM_URL, obj,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.e("True", response + "");
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("False", error + "");
-                }
-            }) {
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "key=" + SERVER_KEY);
-            params.put("Content-Type",  "application/json; charset=utf-8");
-            params.put("Connection","close");
-            return params;
-        }
-    };
-    RequestQueue requestQueue = Volley.newRequestQueue(context);
-    int socketTimeout = 1000 * 60;// 60 seconds
-    RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-    jsObjRequest.setRetryPolicy(policy);
-    requestQueue.add(jsObjRequest);
-}
 }

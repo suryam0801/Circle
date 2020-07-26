@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -74,7 +74,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private void setNotificationType(String state, ViewHolder holder, Notification notif){
         long createdTime = notif.getTimestamp();
         long currentTime = System.currentTimeMillis();
-        holder.timeElapsedTextView.setText(HelperMethods.getTimeElapsed(currentTime, createdTime));
+        holder.timeElapsedTextView.setText(HelperMethodsUI.getTimeElapsed(currentTime, createdTime));
 
         GradientDrawable gd = new GradientDrawable();
         gd.setShape(GradientDrawable.OVAL);

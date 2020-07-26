@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -90,7 +90,7 @@ public class NotificationFragment extends Fragment {
     }
 
     private void setNotifsView(Notification notification) {
-        HelperMethods.OrderNotification(getContext(), prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
+        HelperMethodsUI.OrderNotification(getContext(), prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
     }
 
     @Override

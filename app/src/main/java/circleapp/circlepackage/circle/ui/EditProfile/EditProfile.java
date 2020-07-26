@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide;
 
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
@@ -121,7 +121,7 @@ public class EditProfile extends AppCompatActivity {
         userNumber.setText(FirebaseWriteHelper.getUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
-        HelperMethods.setUserProfileImage(user, this, profileImageView);
+        HelperMethodsUI.setUserProfileImage(user, this, profileImageView);
     }
     private void uploadUserProfilePic(){
         imageUploadModel.imageUpload(filePath);

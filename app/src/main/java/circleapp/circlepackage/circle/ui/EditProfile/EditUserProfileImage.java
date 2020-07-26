@@ -29,7 +29,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
@@ -120,7 +120,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -129,7 +129,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar2);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -138,7 +138,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -147,7 +147,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -156,7 +156,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -165,7 +165,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -174,7 +174,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -183,7 +183,7 @@ public class EditUserProfileImage{
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar8);
-                HelperMethods.setProfilePicMethod(editProfile, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -209,7 +209,7 @@ public class EditUserProfileImage{
                             if (state){
                                 user.setProfileImageLink(downloadLink.toString());
                                 Glide.with(editProfile).load(downloadLink.toString()).into(profileImageView);
-                                HelperMethods.GlideSetProfilePic(editProfile, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+                                HelperMethodsUI.GlideSetProfilePic(editProfile, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                                 userNameProgressDialogue.dismiss();
                                 editUserProfiledialogue.dismiss();
                             }

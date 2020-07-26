@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Helpers;
+package circleapp.circlepackage.circle.Utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-public class AnalyticsLogEvents {
+public class AnalyticsHelper {
     private static FirebaseAnalytics firebaseAnalytics;
     private static FirebaseCrashlytics firebaseCrashlytics;
-    public AnalyticsLogEvents()  {
+    public AnalyticsHelper()  {
     }
     public void logEvents(Context context,String id, String name, String type){
 

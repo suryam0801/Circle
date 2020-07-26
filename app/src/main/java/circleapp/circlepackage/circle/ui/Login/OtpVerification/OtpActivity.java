@@ -33,7 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.Objects;
 
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -76,7 +76,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         initProgressbar();
         initAlertDialog();
         Log.d("otpactivity","started_activity");
-        HelperMethods.increaseTouchArea(resendTextView);
+        HelperMethodsUI.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
         mVerifyBtn.setText("Verify OTP");
         otpViewModel = ViewModelProviders.of(OtpActivity.this).get(OtpViewModel.class);
