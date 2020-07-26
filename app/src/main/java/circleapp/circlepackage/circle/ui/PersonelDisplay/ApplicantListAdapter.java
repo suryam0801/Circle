@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.PersonelDisplay;
+package circleapp.circlepackage.circle.ui.PersonelDisplay;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -94,25 +94,25 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             else
                 holder.timeElapsed.setText("Applied " + days + "d ago");
         }
-
+        //send notification on accepting
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //add user to member list, update users active circle count by 1
                 FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant, mContext);
                 state = "Accepted";
-//                SendNotification.sendApplication(state, circle.getId(), circle.getName(), selectedApplicant.getId(),selectedApplicant.getToken_id(),selectedApplicant.getName());
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(),selectedApplicant.getToken_id(),selectedApplicant.getName());
 
             }
         });
-
+        //send notification on rejecting
         holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //remove user from applicants list of circle
                 FirebaseWriteHelper.rejectApplicant(circle.getId(), selectedApplicant);
                 state = "Rejected";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(), selectedApplicant.getToken_id(), selectedApplicant.getName());
-
             }
         });
  

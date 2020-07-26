@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.ui;
 
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -13,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.FirebaseApp;
 
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UpdateUserStatus;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
@@ -48,7 +48,13 @@ public class MainActivity extends AppCompatActivity {
         updateUserStatus.listenForUserUpdates(userStatus, this).observe((LifecycleOwner) this, userStatus -> {
             if(userStatus==null);
             else if(userStatus.equals("existing_user")){
-                startActivity(new Intent(MainActivity.this, ExploreTabbedActivity.class));
+                Intent i = new Intent(MainActivity.this, ExploreTabbedActivity.class);
+                Uri intentUri = getIntent().getData();
+                if (intentUri != null) {
+                    String url = getIntent().getData().toString();
+                    i.putExtra("imagelink", url);
+                }
+                startActivity(i);
                 finish();
             }
             else if(userStatus.equals("repeat_user"))

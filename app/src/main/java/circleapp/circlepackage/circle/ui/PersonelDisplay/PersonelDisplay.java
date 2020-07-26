@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.PersonelDisplay;
+package circleapp.circlepackage.circle.ui.PersonelDisplay;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +30,10 @@ public class PersonelDisplay extends AppCompatActivity {
     //    private FirebaseAuth firebaseAuth;
     private List<Subscriber> applicantsList;
     private User user;
+    private Circle circle;
     private GlobalVariables globalVariables = new GlobalVariables();
     private ImageButton back;
+    private RecyclerView.Adapter adapter;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -39,7 +41,7 @@ public class PersonelDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personel_display);
-        Circle circle = globalVariables.getCurrentCircle();
+        circle = globalVariables.getCurrentCircle();
         user = globalVariables.getCurrentUser();
 
         back = findViewById(R.id.bck_applicants_display);
@@ -53,12 +55,13 @@ public class PersonelDisplay extends AppCompatActivity {
         });
 
 
-        final RecyclerView.Adapter adapter = new ApplicantListAdapter(this, applicantsList, circle);
+        adapter = new ApplicantListAdapter(this, applicantsList, circle);
         if (user.getUserId().equalsIgnoreCase(circle.getCreatorID()))
             recyclerView.setAdapter(adapter);
-
+        setObserverForApplicants(recyclerView);
+    }
+    private void setObserverForApplicants(RecyclerView recyclerView){
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
-
         LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "applicants");
 
         liveData.observe(this, returnArray -> {
@@ -71,20 +74,23 @@ public class PersonelDisplay extends AppCompatActivity {
                     break;
                 case "removed":
                     recyclerView.setAdapter(adapter);
-                    int position = 0;
-                    List<Subscriber> tempList = new ArrayList<>(applicantsList);
-                    //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
-                    for (Subscriber sub : tempList) {
-                        if (sub.getId().equals(subscriber.getId())) {
-                            applicantsList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            break;
-                        }
-                        position = position + 1;
-                    }
+                    removeMember(subscriber);
             }
         });
+    }
 
+    private void removeMember(Subscriber subscriber){
+        int position = 0;
+        List<Subscriber> tempList = new ArrayList<>(applicantsList);
+        //when data is changed, check if object already exists. If exists delete and rewrite it to avoid duplicates.
+        for (Subscriber sub : tempList) {
+            if (sub.getId().equals(subscriber.getId())) {
+                applicantsList.remove(position);
+                adapter.notifyItemRemoved(position);
+                break;
+            }
+            position = position + 1;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
