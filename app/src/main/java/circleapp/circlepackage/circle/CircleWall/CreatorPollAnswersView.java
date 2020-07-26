@@ -34,26 +34,67 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     private HashMap<Subscriber, String> list = new HashMap<>();
     private ImageButton bckBtn;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private PieChart pieChart;
+    private PieDataSet pieDataSet;
+    private PieData pieData;
+    private Poll poll;
+    private HashMap<String, String> userResponse;
+    private RecyclerView pollResponsesRecyclerView;
+    private LiveData<String[]> liveData;
+    private CirclePersonnelViewModel circlePersonnelViewModel;
+    private Circle circle;
+    private Broadcast broadcast;
+    private RecyclerView.Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creator_poll_answers_view);
 
+        setUIElements();
+        calculatePieChartValues();
+        setResponsesObserver();
+        //init adapter
+        pollResponsesRecyclerView.setLayoutManager(new LinearLayoutManager(CreatorPollAnswersView.this));
+        adapter = new PollAnswerDisplayAdapter(CreatorPollAnswersView.this, list);
+        pollResponsesRecyclerView.setAdapter(adapter);
+
+        bckBtn.setOnClickListener(v -> {
+            onBackPressed();
+        });
+    }
+    private void setUIElements(){
+
         bckBtn = findViewById(R.id.bck_pollresults);
-        PieChart pieChart = (PieChart) findViewById(R.id.barchart);
-        RecyclerView recyclerView = findViewById(R.id.poll_answers_recycler_view);
+        pieChart = (PieChart) findViewById(R.id.barchart);
+        pollResponsesRecyclerView = findViewById(R.id.poll_answers_recycler_view);
 
-        Circle circle = globalVariables.getCurrentCircle();
-        Broadcast broadcast = globalVariables.getCurrentBroadcast();
+        circle = globalVariables.getCurrentCircle();
+        broadcast = globalVariables.getCurrentBroadcast();
 
-        Poll poll = broadcast.getPoll();
-        HashMap<String, String> userResponse;
+        poll = broadcast.getPoll();
         if (poll.getUserResponse() != null)
             userResponse = poll.getUserResponse();
         else
             userResponse = new HashMap<>();
+    }
+    private void setResponsesObserver(){
+        circlePersonnelViewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
+        liveData = circlePersonnelViewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+        liveData.observe(this, returnArray -> {
+            Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
 
+            if (userResponse != null) {
+                for (Map.Entry<String, String> entry : userResponse.entrySet()) {
+                    if (entry.getKey().equals(member.getId())) {
+                        list.put(member, entry.getValue());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+    }
+    private void calculatePieChartValues(){
         //calculating percentages
         int totalValue = 0;
         for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
@@ -67,39 +108,19 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         for (Map.Entry<String, Integer> entry : poll.getOptions().entrySet())
             pollValues.add(new PieEntry((entry.getValue() * 100) / totalValue, entry.getKey()));
 
-        PieDataSet pieDataSet = new PieDataSet(pollValues, "Poll Results");
+        pieDataSet = new PieDataSet(pollValues, "Poll Results");
         pieDataSet.setValueTextSize(15f);
-        PieData pieData = new PieData(pieDataSet);
+        pieData = new PieData(pieDataSet);
 
         pieChart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         pieChart.animateXY(1400, 1400);
         pieChart.setDrawEntryLabels(false);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(CreatorPollAnswersView.this));
-        final RecyclerView.Adapter adapter = new PollAnswerDisplayAdapter(CreatorPollAnswersView.this, list);
-        recyclerView.setAdapter(adapter);
-
-        CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
-
-        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
-
-        liveData.observe(this, returnArray -> {
-            Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
-
-            if (userResponse != null) {
-                for (Map.Entry<String, String> entry : userResponse.entrySet()) {
-                    if (entry.getKey().equals(member.getId())) {
-                        list.put(member, entry.getValue());
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        });
-
-        bckBtn.setOnClickListener(v -> {
-            onBackPressed();
-        });
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        liveData.removeObservers(this);
     }
 }
