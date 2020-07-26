@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Utils;
 
 import android.app.Application;
+import android.net.Uri;
 
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -16,13 +17,15 @@ public class GlobalVariables extends Application {
     public GlobalVariables(){
     }
 
-    public static FirebaseDatabase database;
-    public static User currentUser;
-    public static Circle currentCircle;
-    public static Broadcast currentBroadcast;
-    public static List<Broadcast> currentBroadcastList;
-    public static LoginUserObject currentLoginUserObject;
-    public static TempLocation currentTempLocation;
+    private static Uri intentUri;
+    private static FirebaseDatabase database;
+    private static User currentUser;
+    private static Circle currentCircle;
+    private static Broadcast currentBroadcast;
+    private static List<Broadcast> currentBroadcastList;
+    private static LoginUserObject currentLoginUserObject;
+    private static TempLocation currentTempLocation;
+
 
     public FirebaseDatabase getDatabaseInstance(){
         return database.getInstance();
@@ -67,4 +70,6 @@ public class GlobalVariables extends Application {
     public static void saveCurrentTempLocation(TempLocation currentTempLocation) {
         GlobalVariables.currentTempLocation = currentTempLocation;
     }
+    public Uri getIntentUri() { return intentUri; }
+    public void saveIntentUri(Uri intentUri) { this.intentUri = intentUri; }
 }

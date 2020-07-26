@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="#fcffff"
     android:weightSum="100"
-    tools:context=".Explore.ExploreTabbedActivity">
+    tools:context=".ui.ExploreTabbedActivity">
 
     <RelativeLayout
         android:id="@+id/exploreHeaderBar"

@@ -15,7 +15,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.legacy.content.WakefulBroadcastReceiver;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -25,7 +24,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.R;
 
 import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
