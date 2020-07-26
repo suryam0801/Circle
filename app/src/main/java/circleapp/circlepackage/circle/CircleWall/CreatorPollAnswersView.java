@@ -21,18 +21,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 
 public class CreatorPollAnswersView extends AppCompatActivity {
 
     private HashMap<Subscriber, String> list = new HashMap<>();
     private ImageButton bckBtn;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         PieChart pieChart = (PieChart) findViewById(R.id.barchart);
         RecyclerView recyclerView = findViewById(R.id.poll_answers_recycler_view);
 
-        Circle circle = SessionStorage.getCircle(CreatorPollAnswersView.this);
-        Broadcast broadcast = SessionStorage.getBroadcast(CreatorPollAnswersView.this);
+        Circle circle = globalVariables.getCurrentCircle();
+        Broadcast broadcast = globalVariables.getCurrentBroadcast();
 
         Poll poll = broadcast.getPoll();
         HashMap<String, String> userResponse;

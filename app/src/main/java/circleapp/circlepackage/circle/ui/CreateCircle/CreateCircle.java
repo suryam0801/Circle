@@ -31,13 +31,13 @@ import com.suke.widget.SwitchButton;
 
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Utils.UserSessionHelper;
 import circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
@@ -66,7 +66,7 @@ public class CreateCircle extends AppCompatActivity {
     private ProgressDialog imageUploadProgressDialog;
     private Circle circle;
     private Subscriber creatorSubscriber;
-    private UserSessionHelper userSessionHelper = new UserSessionHelper();
+    private GlobalVariables globalVariables = new GlobalVariables();
     private WriteNewCircle writeNewCircle = new WriteNewCircle();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -82,7 +82,7 @@ public class CreateCircle extends AppCompatActivity {
     }
     private void setUIElements(){
         //Initialize all UI elements in the CreateCircle activity
-        user = userSessionHelper.getUserFromSession(this);
+        user = globalVariables.getCurrentUser();
         visibiltyHeading = findViewById(R.id.circle_visibility_heading_text);
         acceptanceHeading = findViewById(R.id.acceptance_heading);
         acceptancePrompt = findViewById(R.id.acceptance_textview);
@@ -202,13 +202,13 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        writeNewCircle.writeCircleToDb(this,circle, user, creatorSubscriber);
+        writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
     }
 
     private void setLocalCircleObject(){
-        user = userSessionHelper.getUserFromSession(this);
+        user = globalVariables.getCurrentUser();
         String category = getIntent().getStringExtra("category_name");
         String myCircleID = FirebaseWriteHelper.getCircleId();
         String creatorUserID = user.getUserId();

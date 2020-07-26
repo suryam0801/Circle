@@ -21,8 +21,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity android:name=".CircleWall.CircleInformation"
@@ -90,7 +88,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.CircleWall.CircleWall"
+        <activity android:name=".CircleWall.CircleWall"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.MainActivity">

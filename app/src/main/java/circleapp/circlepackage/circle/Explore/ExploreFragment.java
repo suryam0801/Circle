@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -49,13 +50,14 @@ public class ExploreFragment extends Fragment {
     private RecyclerView.Adapter adapter;
 
     private User user;
-    RecyclerView exploreRecyclerView;
+    private RecyclerView exploreRecyclerView;
 
     private List<String> listOfFilters = new ArrayList<>();
-    LiveData<String[]> liveData;
+    private LiveData<String[]> liveData;
 
     private TextView filter;
     private int setIndex = 0;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -86,7 +88,7 @@ public class ExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
-        user = SessionStorage.getUser(getActivity());
+        user = globalVariables.getCurrentUser();
 
         listOfFilters = SessionStorage.getFilters(getActivity());
 
@@ -215,7 +217,6 @@ public class ExploreFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        SessionStorage.tempIndexStore(getActivity(), 0);
         super.onDestroy();
     }
     @Override

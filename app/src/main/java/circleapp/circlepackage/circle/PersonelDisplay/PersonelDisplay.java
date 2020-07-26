@@ -17,8 +17,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -30,7 +30,7 @@ public class PersonelDisplay extends AppCompatActivity {
     //    private FirebaseAuth firebaseAuth;
     private List<Subscriber> applicantsList;
     private User user;
-
+    private GlobalVariables globalVariables = new GlobalVariables();
     private ImageButton back;
 
 
@@ -39,8 +39,8 @@ public class PersonelDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personel_display);
-        Circle circle = SessionStorage.getCircle(this);
-        user = SessionStorage.getUser(this);
+        Circle circle = globalVariables.getCurrentCircle();
+        user = globalVariables.getCurrentUser();
 
         back = findViewById(R.id.bck_applicants_display);
         RecyclerView recyclerView = findViewById(R.id.allApplicants_RV);

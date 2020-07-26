@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
 
@@ -37,6 +38,7 @@ public class LocationHelper extends ViewModel {
     private static TempLocation tempLocation;
     private LocationListener locationListener;
     private Context mContext;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     private MutableLiveData<Boolean> isLocationSuccess;
     public MutableLiveData<Boolean> listenForLocationUpdates(Boolean updatedLocationStatus, Context context) {
@@ -152,7 +154,7 @@ public class LocationHelper extends ViewModel {
         tempLocation.setCountryDialCode(mCountryDialCode);
         tempLocation.setDistrict(district.trim());
         tempLocation.setWard(ward);
-        SessionStorage.saveTempLocationObject((Activity) mContext, tempLocation);
+        globalVariables.saveCurrentTempLocation(tempLocation);
         isLocationSuccess.setValue(true);
     }
 
