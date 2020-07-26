@@ -245,6 +245,7 @@ public class FirebaseWriteHelper {
     }
 
     public static void updateUser(User user) {
+        Log.d("userTag",user.toString());
         globalVariables.saveCurrentUser(user);
         USERS_REF.child(user.getUserId()).setValue(user);
     }

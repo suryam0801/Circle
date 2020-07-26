@@ -15,17 +15,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> imageprogress;
     private MutableLiveData<Boolean> nameprogress;
+    GlobalVariables globalVariables = new GlobalVariables();
     public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user) {
         imageprogress = new MutableLiveData<>();
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user);
+                Log.d("gluser",globalVariables.getCurrentUser().toString());
+                FirebaseWriteHelper.updateUser(globalVariables.getCurrentUser());
                 imageprogress.setValue(true);
             }
         });
@@ -37,7 +40,7 @@ public class EditProfileViewModel extends ViewModel {
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(user);
+                FirebaseWriteHelper.updateUser(globalVariables.getCurrentUser());
                 Log.d("edit",FirebaseWriteHelper.getUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }

@@ -27,12 +27,12 @@ public class UpdateUserStatus extends ViewModel {
             isUserExisting = new MutableLiveData<>();
         }
         else {
+//            setPersistenceEnabled(context);
             checkIfUserExists(context);
         }
         return isUserExisting;
     }
     public void checkIfUserExists(Context context){
-        setPersistenceEnabled(context);
         if(FirebaseWriteHelper.getUser() != null){
             //notificationCountGetter();
             UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);

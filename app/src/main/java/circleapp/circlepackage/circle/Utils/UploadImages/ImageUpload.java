@@ -65,7 +65,7 @@ public class ImageUpload extends ViewModel {
                             if (!task.isSuccessful()) {
                                 throw Objects.requireNonNull(task.getException());
                             }
-
+                                Log.d("pic",profileRef.getDownloadUrl().toString()+"then"+filePath.toString());
                             // Continue with the task to get the download URL
                             return profileRef.getDownloadUrl();
                         }

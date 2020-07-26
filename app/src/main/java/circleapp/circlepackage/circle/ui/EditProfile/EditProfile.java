@@ -4,7 +4,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -18,9 +20,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
@@ -32,19 +34,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {
 
-    private CircleImageView profileImageView;
+    public CircleImageView profileImageView;
     private TextView userName, userNumber, createdCircles, workingCircles;
-    private Button editProfPic, logout, finalizeChanges;
+    public Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
     private Uri downloadLink;
+    AlertDialog.Builder confirmation;
     private static final int PICK_IMAGE_ID = 234;
     private ImageButton editName;
     private User user;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     public ImageUpload imageUploadModel;
     public EditProfileViewModel editProfileViewModel;
-    public  EditUserProfileImage editUserProfileImage;
+    public  EditProfileImage editUserProfileImage;
     public EdituserName edituserName;
     private GlobalVariables globalVariables = new GlobalVariables();
 
@@ -60,7 +63,7 @@ public class EditProfile extends AppCompatActivity {
 
         InitUIElements();
         defUIValues();
-        editUserProfileImage = new EditUserProfileImage();
+        editUserProfileImage = new EditProfileImage();
         edituserName  = new EdituserName();
         editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
@@ -78,12 +81,13 @@ public class EditProfile extends AppCompatActivity {
                 Glide.with(this).load(filePath).into(profileImageView);
                 downloadLink = Uri.parse(progress[0]);
                 finalizeChanges.setVisibility(View.VISIBLE);
+                user.setProfileImageLink(downloadLink.toString());
+                globalVariables.saveCurrentUser(user);
                 imageUploadProgressDialog.dismiss();
             }
         });
         editProfPic.setOnClickListener(view -> {
-            editUserProfileImage.editprofile(user.getProfileImageLink(), EditProfile.this,finalizeChanges,user,downloadLink,profileImageView);
-//            editprofile(user.getProfileImageLink());
+            editUserProfileImage.editProfile(EditProfile.this);
         });
         editName.setOnClickListener(v -> {
             edituserName.edituserNamedialogue(EditProfile.this,user,userName);
@@ -146,8 +150,38 @@ public class EditProfile extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        finishAfterTransition();
-        Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
-        startActivity(intent);
+
+        int tempVisibility = finalizeChanges.getVisibility();
+        if (finalizeChanges.getVisibility() == View.VISIBLE){
+            alertDialog();
+            AlertDialog alertDialog = confirmation.create();
+            alertDialog.setTitle("Alert");
+            alertDialog.show();
+        }
+        else {
+            finishAfterTransition();
+            Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
+            startActivity(intent);
+        }
+    }
+    public void alertDialog(){
+        confirmation = new AlertDialog.Builder(this);
+        confirmation.setMessage("Finalize the Changes!!!")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        finishAfterTransition();
+                        Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
+                        startActivity(intent);
+                    }
+                });
     }
 }

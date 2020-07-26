@@ -411,7 +411,7 @@ public class HelperMethodsUI {
     public static void setUserProfileImage(User user, Context context, CircleImageView profileImageView) {
         if (user.getProfileImageLink().length() > 10) {
             Glide.with(context)
-                    .load(user.getProfileImageLink())
+                    .load(FirebaseWriteHelper.getUser().getPhotoUrl())
                     .into(profileImageView);
         } else if (user.getProfileImageLink().equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
