@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#fcfcfc"
-    tools:context=".Explore.ExploreFragment">
+    tools:context=".ui.Explore.ExploreFragment">
 
     <TextView
         android:id="@+id/explore_filter_btn"

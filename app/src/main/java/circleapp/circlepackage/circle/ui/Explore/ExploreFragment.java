@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.Explore;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -110,7 +110,7 @@ public class ExploreFragment extends Fragment {
 
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(exploreRecyclerView);
-
+        //Go to filter activity
         filter.setOnClickListener(view1 -> {
             Intent intent = new Intent(getActivity(), ExploreCategoryFilter.class);
             SessionStorage.saveFilters(getActivity(), listOfFilters);

@@ -27,7 +27,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".CircleWall.CircleWallBackgroundPicker"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Explore.ExploreCategoryFilter"
+        <activity android:name=".ui.Explore.ExploreCategoryFilter"
             android:screenOrientation="portrait"/>
         <activity android:name=".CircleWall.FullPageImageDisplay"
             android:screenOrientation="portrait"/>
@@ -80,7 +80,7 @@
         <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
         <activity android:name=".ui.EditProfile.EditProfile"
             android:screenOrientation="portrait"/>
-        <activity android:name=".PersonelDisplay.PersonelDisplay"
+        <activity android:name=".ui.PersonelDisplay.PersonelDisplay"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.Login.UserRegistration.NewUserProfileCreation"
             android:screenOrientation="portrait"/>
@@ -100,7 +100,7 @@
         </activity>
         <activity android:name=".ui.CreateCircle.CreateCircle" />
         <activity
-            android:name=".Explore.CircleDisplayAdapter"
+            android:name=".ui.Explore.CircleDisplayAdapter"
             tools:ignore="Instantiatable" />
 
         <service

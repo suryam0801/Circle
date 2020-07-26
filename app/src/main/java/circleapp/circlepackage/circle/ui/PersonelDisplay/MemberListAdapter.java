@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.PersonelDisplay;
+package circleapp.circlepackage.circle.ui.PersonelDisplay;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethods;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;

@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.MyCircles;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -79,7 +79,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.newApplicantsDisplay.setText(Integer.toString(circle.getApplicantsList().size()));
         }
 
-        //read for new notifs
+        //read for new notifs and set counter
         int newNotifs = HelperMethods.newNotifications(circle, user);
         if (newNotifs > 0) {
             GradientDrawable itemBackgroundNotif = HelperMethods.gradientRectangleDrawableSetter(80);
@@ -88,7 +88,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
-
+        //Read notification count updated on going to circle wall
         holder.container.setOnClickListener(view -> {
             if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 
@@ -103,11 +103,12 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 user.setNotificationsAlert(newUserNotifStore);
             }
 
+            //Save user
             FirebaseWriteHelper.updateUser(user);
-
             globalVariables.saveCurrentCircle(circle);
             globalVariables.saveCurrentUser(user);
 
+            //If user enters circle wall for first time
             SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
             if (prefs.getBoolean("firstWall", true)) {
                 context.startActivity(new Intent(context, CircleWallBackgroundPicker.class));
@@ -126,6 +127,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
+        //bring up share bottom sheet
         holder.shareCirclesButton.setOnClickListener(view -> {
             globalVariables.saveCurrentCircle(circle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();

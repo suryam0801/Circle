@@ -44,7 +44,9 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
+import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 

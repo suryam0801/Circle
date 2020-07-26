@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.MyCircles;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +28,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 
 /**
  * A simple {@link Fragment} subclass.

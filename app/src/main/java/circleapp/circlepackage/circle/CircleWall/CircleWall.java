@@ -58,7 +58,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
-import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
+import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;

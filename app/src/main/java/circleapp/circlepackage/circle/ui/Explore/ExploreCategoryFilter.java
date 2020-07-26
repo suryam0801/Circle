@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.Explore;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
 
