@@ -1,10 +1,8 @@
 package circleapp.circlepackage.circle;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,7 +21,7 @@ public class ExampleUnitTest {
     @Test
     public void process_share_url_is_correct() {
         String url = "https://worfo.app.link/8JMEs34W96/?9dff5f34-acfd-4080-b27d-3d293d367d42";
-        String returnedID = HelperMethods.getCircleIdFromShareURL(url);
+        String returnedID = HelperMethodsUI.getCircleIdFromShareURL(url);
         String EXPECTED_RESULT = "9dff5f34-acfd-4080-b27d-3d293d367d42";
         assertEquals(EXPECTED_RESULT, returnedID);
     }

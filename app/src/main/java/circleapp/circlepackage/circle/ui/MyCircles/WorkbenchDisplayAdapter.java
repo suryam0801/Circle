@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui.MyCircles;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,7 +27,7 @@ import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -60,7 +60,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         Circle circle = MycircleList.get(position);
         User user = globalVariables.getCurrentUser();
-        HelperMethods.createDefaultCircleIcon(circle,context,holder.backgroundPic);
+        HelperMethodsUI.createDefaultCircleIcon(circle,context,holder.backgroundPic);
 
         //set the details of each circle to its respective card.
         //holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
@@ -71,24 +71,24 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
 
         //setting new applicants
-        if (HelperMethods.numberOfApplicants(circle, user) > 0) {
-            GradientDrawable itemBackgroundApplicant = HelperMethods.gradientRectangleDrawableSetter(80);
+        if (HelperMethodsUI.numberOfApplicants(circle, user) > 0) {
+            GradientDrawable itemBackgroundApplicant = HelperMethodsUI.gradientRectangleDrawableSetter(80);
             itemBackgroundApplicant.setColor(context.getResources().getColor(R.color.request_alert_color));
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
             holder.newApplicantsDisplay.setBackground(itemBackgroundApplicant);
             holder.newApplicantsDisplay.setText(Integer.toString(circle.getApplicantsList().size()));
         }
 
-        //read for new notifs
-        int newNotifs = HelperMethods.newNotifications(circle, user);
+        //read for new notifs and set counter
+        int newNotifs = HelperMethodsUI.newNotifications(circle, user);
         if (newNotifs > 0) {
-            GradientDrawable itemBackgroundNotif = HelperMethods.gradientRectangleDrawableSetter(80);
+            GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
             itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
             holder.newNotifAlert.setText(newNotifs + "");
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
-
+        //Read notification count updated on going to circle wall
         holder.container.setOnClickListener(view -> {
             if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 
@@ -103,11 +103,12 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
                 user.setNotificationsAlert(newUserNotifStore);
             }
 
+            //Save user
             FirebaseWriteHelper.updateUser(user);
-
             globalVariables.saveCurrentCircle(circle);
             globalVariables.saveCurrentUser(user);
 
+            //If user enters circle wall for first time
             SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
             if (prefs.getBoolean("firstWall", true)) {
                 context.startActivity(new Intent(context, CircleWallBackgroundPicker.class));
@@ -126,13 +127,14 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
+        //bring up share bottom sheet
         holder.shareCirclesButton.setOnClickListener(view -> {
             globalVariables.saveCurrentCircle(circle);
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
-        String timeElapsed = HelperMethods.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
+        String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
         holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
 
         holder.categoryDisplay.setText(circle.getCategory());

@@ -31,7 +31,6 @@ public class EntryPage extends AppCompatActivity{
     private Boolean locationUpdateStatus = false;
     private LocationHelper locationHelper;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +56,6 @@ public class EntryPage extends AppCompatActivity{
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setLocationHelperObserver(){
         locationHelper = ViewModelProviders.of(this).get(LocationHelper.class);
         locationHelper.listenForLocationUpdates(locationUpdateStatus, this).observe(this, locationUpdates -> {
@@ -71,11 +69,10 @@ public class EntryPage extends AppCompatActivity{
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void goToNextActivity(){
         Intent intent = new Intent(this, PhoneLogin.class);
         startActivity(intent);
-        finishAfterTransition();
+        finish();
     }
 
     @Override

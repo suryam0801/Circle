@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.Explore;
+package circleapp.circlepackage.circle.ui;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +14,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -31,20 +31,23 @@ import com.google.firebase.database.DataSnapshot;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
+import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,8 +56,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
     private ImageView profPicHolder;
     private TextView location;
-    public User user;
-    private Uri intentUri;
+    private User user;
+    private String  intentUri;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private TextView locationDisplay;
@@ -64,6 +67,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     boolean shownPopup;
     private FloatingActionButton btnAddCircle;
     private GlobalVariables globalVariables = new GlobalVariables();
+    //Popup circle elements
+    private TextView tv_circleName, tv_creatorName, tv_circleDesc;
+    private Button join;
+    private ImageView bannerImage;
+    private CircleImageView profPic;
+    private boolean alreadyMember, alreadyApplicant;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -71,18 +80,42 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        initUIElements();
+        initObserverForUser();
+        setCirclePosition();
+
+        profPicHolder.setOnClickListener(v -> {
+            finishAfterTransition();
+            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
+        });
+
+        btnAddCircle.setOnClickListener(v -> {
+            finishAfterTransition();
+            startActivity(new Intent(this, CreateCircleCategoryPicker.class));
+        });
+        //set view pager adapter
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+    }
+    private void setCirclePosition(){
+        if (getIntent().getBooleanExtra("fromFilters", false)) {
+            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new ExploreFragment()).commit();
+        } else if (getIntent().getIntExtra("exploreIndex", -1) != -1) {
+            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new ExploreFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new WorkbenchFragment()).commit();
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void initUIElements(){
         location = findViewById(R.id.explore_district_name_display);
         user = globalVariables.getCurrentUser();
-        UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
-        tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
-            user = dataSnapshot.getValue(User.class);
-            if (user != null) {
-                globalVariables.saveCurrentUser(user);
-            }
-        });
         location.setText(user.getDistrict());
-        intentUri = getIntent().getData();
+        intentUri = getIntent().getStringExtra("imagelink");
         shownPopup = false;
 
         //to hide the status and nav bar
@@ -90,11 +123,14 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         //recieve ur request on opening
         if (intentUri != null) {
-            url = getIntent().getData().toString();
+            Log.d("intenturl",intentUri);
+            url = intentUri;
             processUrl(url);
         }
+
+
         profPicHolder = findViewById(R.id.explore_profilePicture);
-        HelperMethods.increaseTouchArea(profPicHolder);
+        HelperMethodsUI.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
         bottomNav = findViewById(R.id.bottom_navigation);
         btnAddCircle = findViewById(R.id.add_circle_button);
@@ -116,37 +152,17 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
                     .into(profPicHolder);
         }
-
-        profPicHolder.setOnClickListener(v -> {
-            finishAfterTransition();
-            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
-        });
-
-        btnAddCircle.setOnClickListener(v -> {
-            finishAfterTransition();
-            startActivity(new Intent(this, CreateCircleCategoryPicker.class));
-        });
-
-
-        if (getIntent().getBooleanExtra("fromFilters", false)) {
-            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new ExploreFragment()).commit();
-        } else if (getIntent().getIntExtra("exploreIndex", -1) != -1) {
-            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new ExploreFragment()).commit();
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new WorkbenchFragment()).commit();
-        }
-
-
-        //set view pager adapter
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
     }
-
-
+    private void initObserverForUser(){
+        UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
+        tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
+            user = dataSnapshot.getValue(User.class);
+            if (user != null) {
+                globalVariables.saveCurrentUser(user);
+            }
+        });
+    }
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         Fragment selectedFragment = null;
         switch (item.getItemId()) {
@@ -176,13 +192,25 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void showLinkPopup(Circle popupCircle) {
+        initPopupElements(popupCircle);
+
+        join.setOnClickListener(view -> {
+            if (!alreadyMember && !alreadyApplicant) {
+                linkCircleDialog.dismiss();
+                applyOrJoin(popupCircle);
+            } else {
+                linkCircleDialog.dismiss();
+            }
+        });
+
+        //clearing intent data so popup doesnt show each time
+        linkCircleDialog.setOnDismissListener(dialogInterface -> {
+            getIntent().setData(null);
+        });
+    }
+    private void initPopupElements(Circle popupCircle){
         linkCircleDialog = new Dialog(ExploreTabbedActivity.this);
         linkCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
-
-        TextView tv_circleName, tv_creatorName, tv_circleDesc;
-        Button join;
-        ImageView bannerImage;
-        CircleImageView profPic;
 
         tv_circleName = linkCircleDialog.findViewById(R.id.circle_name);
         tv_creatorName = linkCircleDialog.findViewById(R.id.circle_creatorName);
@@ -229,7 +257,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);
                 break;
         }
-
         if (!popupCircle.getBackgroundImageLink().equals("default"))
             Glide.with(this).load(popupCircle.getBackgroundImageLink()).into(profPic);
         else {
@@ -242,34 +269,19 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         tv_circleName.setText(popupCircle.getName());
         tv_creatorName.setText(popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
+        if(popupCircle.getAcceptanceType()!=null){
+            if (popupCircle.getAcceptanceType().equalsIgnoreCase("review"))
+                join.setText("Apply");
+        }
 
-        if (popupCircle.getAcceptanceType().equalsIgnoreCase("review"))
-            join.setText("Apply");
-
-        final boolean alreadyMember = HelperMethods.isMemberOfCircle(popupCircle, user.getUserId());
-        final boolean alreadyApplicant = HelperMethods.ifUserApplied(popupCircle, user.getUserId());
+        alreadyMember = HelperMethodsUI.isMemberOfCircle(popupCircle, user.getUserId());
+        alreadyApplicant = HelperMethodsUI.ifUserApplied(popupCircle, user.getUserId());
 
         if (alreadyApplicant)
             join.setText("Already Applied");
 
         if (alreadyMember)
             join.setText("Already Member");
-
-        join.setOnClickListener(view -> {
-            if (!alreadyMember && !alreadyApplicant) {
-                linkCircleDialog.dismiss();
-                applyOrJoin(popupCircle);
-            } else {
-                linkCircleDialog.dismiss();
-            }
-        });
-
-        //clearing intent data so popup doesnt show each time
-        linkCircleDialog.setOnDismissListener(dialogInterface -> {
-            getIntent().setData(null);
-        });
-
-
         linkCircleDialog.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.popup_height)); //width,height
         linkCircleDialog.getWindow().setGravity(Gravity.CENTER);
         linkCircleDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -312,7 +324,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void processUrl(String url) {
-        String circleID = HelperMethods.getCircleIdFromShareURL(url);
+        String circleID = HelperMethodsBL.getCircleIdFromShareURL(url);
 
         MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
 
@@ -337,10 +349,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Circle circle = globalVariables.getCurrentCircle();
         switch (text) {
             case "shareLink":
-                HelperMethods.showShareCirclePopup(circle, this);
+                HelperMethodsUI.showShareCirclePopup(circle, this);
                 break;
             case "copyLink":
-                HelperMethods.copyLinkToClipBoard(circle, this);
+                HelperMethodsUI.copyLinkToClipBoard(circle, this);
                 break;
         }
     }

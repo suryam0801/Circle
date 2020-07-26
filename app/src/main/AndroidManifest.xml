@@ -27,7 +27,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".CircleWall.CircleWallBackgroundPicker"
             android:screenOrientation="portrait"/>
-        <activity android:name=".Explore.ExploreCategoryFilter"
+        <activity android:name=".ui.Explore.ExploreCategoryFilter"
             android:screenOrientation="portrait"/>
         <activity android:name=".CircleWall.FullPageImageDisplay"
             android:screenOrientation="portrait"/>
@@ -45,8 +45,32 @@
 
         <activity android:name=".CircleWall.CreatorPollAnswersView" />
         <activity
-            android:name=".Explore.ExploreTabbedActivity"
+            android:name=".ui.ExploreTabbedActivity"
             android:noHistory="true" >
+        </activity>
+        <activity android:name=".ui.Login.EntryPage.EntryPage" />
+        <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
+        <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
+        <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
+        <activity android:name=".ui.EditProfile.EditProfile"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.PersonelDisplay.PersonelDisplay"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.Login.UserRegistration.NewUserProfileCreation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.Login.OtpVerification.OtpActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CircleWall.CircleWall"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -74,33 +98,9 @@
                     android:scheme="app" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Login.EntryPage.EntryPage" />
-        <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
-        <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
-        <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
-        <activity android:name=".ui.EditProfile.EditProfile"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PersonelDisplay.PersonelDisplay"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.Login.UserRegistration.NewUserProfileCreation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.Login.OtpVerification.OtpActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".CircleWall.CircleWall"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".ui.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity android:name=".ui.CreateCircle.CreateCircle" />
         <activity
-            android:name=".Explore.CircleDisplayAdapter"
+            android:name=".ui.Explore.CircleDisplayAdapter"
             tools:ignore="Instantiatable" />
 
         <service

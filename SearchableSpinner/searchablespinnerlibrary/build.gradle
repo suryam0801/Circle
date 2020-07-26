@@ -29,7 +29,7 @@ def gitUrl = 'https://github.com/miteshpithadiya/SearchableSpinner.git'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "29.0.2"
 
     defaultConfig {
         minSdkVersion 15

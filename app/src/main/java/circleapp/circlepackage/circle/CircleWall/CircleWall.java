@@ -47,9 +47,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
@@ -58,7 +59,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
-import circleapp.circlepackage.circle.PersonelDisplay.PersonelDisplay;
+import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
@@ -263,7 +264,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     }
 
     private void addBroadcast(Broadcast broadcast) {
-        boolean exists = HelperMethods.listContainsBroadcast(broadcastList, broadcast);
+        boolean exists = HelperMethodsUI.listContainsBroadcast(broadcastList, broadcast);
         if (!exists) {
             broadcastList.add(0, broadcast); //to store timestamp values descendingly
             adapter.notifyItemInserted(0);
@@ -271,7 +272,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
         recyclerView.scrollToPosition(broadcastPos);
-        HelperMethods.initializeNewCommentsAlertTimestamp(broadcast, user);
+        HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcast, user);
 
         //coming back from image display
         int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
@@ -282,14 +283,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     }
 
     private void changeBroadcast(Broadcast broadcast) {
-        int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
+        int position = HelperMethodsUI.returnIndexOfBroadcast(broadcastList, broadcast);
         broadcastList.set(position, broadcast);
         adapter.notifyItemChanged(position);
 
     }
 
     private void removeBroadcast(Broadcast broadcast) {
-        int position = HelperMethods.returnIndexOfBroadcast(broadcastList, broadcast);
+        int position = HelperMethodsUI.returnIndexOfBroadcast(broadcastList, broadcast);
         broadcastList.remove(position);
         adapter.notifyItemRemoved(position);
     }
@@ -316,7 +317,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
                     break;
                 case "Report Abuse":
-                    HelperMethods.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
+                    HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Exit circle":
                     showExitDialog();
@@ -750,10 +751,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         switch (text) {
             case "shareLink":
-                HelperMethods.showShareCirclePopup(circle, CircleWall.this);
+                HelperMethodsUI.showShareCirclePopup(circle, CircleWall.this);
                 break;
             case "copyLink":
-                HelperMethods.copyLinkToClipBoard(circle, CircleWall.this);
+                HelperMethodsUI.copyLinkToClipBoard(circle, CircleWall.this);
                 break;
         }
     }

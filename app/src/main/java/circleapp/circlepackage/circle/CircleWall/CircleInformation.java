@@ -21,16 +21,15 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Explore.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
-import circleapp.circlepackage.circle.PersonelDisplay.MemberListAdapter;
+import circleapp.circlepackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleInformation extends AppCompatActivity {
@@ -69,7 +68,7 @@ public class CircleInformation extends AppCompatActivity {
         creatorName.setText(circle.getCreatorName());
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
-        HelperMethods.createDefaultCircleIcon(circle,this,logo);
+        HelperMethodsUI.createDefaultCircleIcon(circle,this,logo);
 
         //back button
         back.setOnClickListener(view -> {
@@ -119,7 +118,7 @@ public class CircleInformation extends AppCompatActivity {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
             memberList.add(subscriber);
             adapter.notifyDataSetChanged();
-            HelperMethods.setListViewHeightBasedOnChildren(membersDisplay);
+            HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);
 
         });
     }
