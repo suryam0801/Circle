@@ -27,7 +27,7 @@ public class UpdateUserStatus extends ViewModel {
             isUserExisting = new MutableLiveData<>();
         }
         else {
-            setPersistenceEnabled(context);
+//            setPersistenceEnabled(context);
             checkIfUserExists(context);
         }
         return isUserExisting;
@@ -44,7 +44,6 @@ public class UpdateUserStatus extends ViewModel {
                     User user = dataSnapshot.getValue(User.class);
                     isUserExisting.setValue("existing_user");
                     globalVariables.saveCurrentUser(user);
-                    globalVariables.saveTempUser(user);
                 } else {
                     isUserExisting.setValue("repeat_user");
                 }

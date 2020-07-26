@@ -29,7 +29,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -65,7 +65,7 @@ public class EditProfileImage extends AppCompatActivity {
         imageUploadProgressDialog = new ProgressDialog(EditProfileClass);
         InitAvatars();
 //        user = SessionStorage.getUser(EditProfileClass);
-        user = globalVariables.getTempUser();
+        user = globalVariables.getCurrentUser();
         profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
         setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
         profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
@@ -86,7 +86,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar1);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -95,7 +95,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar2);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -104,7 +104,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar3);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -113,7 +113,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar4);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -122,7 +122,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar5);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -131,7 +131,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar6);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -140,7 +140,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar7);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -149,7 +149,7 @@ public class EditProfileImage extends AppCompatActivity {
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
                 avatar = String.valueOf(R.drawable.avatar8);
-                HelperMethods.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
+                HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
                 downloadLink = null;
             }
         });
@@ -168,7 +168,7 @@ public class EditProfileImage extends AppCompatActivity {
 
             user.setProfileImageLink(avatar);
 //            SessionStorage.saveUser(EditProfileClassTemp, user);
-            globalVariables.saveTempUser(user);
+            globalVariables.saveCurrentUser(user);
             editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     user.setProfileImageLink(avatar);
@@ -190,7 +190,7 @@ public class EditProfileImage extends AppCompatActivity {
 
     private void FinalizeChangesBtn() {
 //        String TempUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
-        String TempUrl = globalVariables.getTempUser().getProfileImageLink();
+        String TempUrl = globalVariables.getCurrentUser().getProfileImageLink();
         Log.d("TAG", "DownloadURI ::" + TempUrl);
         imageUploadProgressDialog.setTitle("Uploading Profile....");
         imageUploadProgressDialog.show();
@@ -202,12 +202,12 @@ public class EditProfileImage extends AppCompatActivity {
                     .build();
             user.setProfileImageLink(TempUrl);
 //            SessionStorage.saveUser(EditProfileClassTemp, user);
-            globalVariables.saveTempUser(user);
+            globalVariables.saveCurrentUser(user);
             editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     Log.d("TAG", "DownloadURI ::" + FirebaseWriteHelper.getUser().getPhotoUrl());
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);
-                    HelperMethods.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+                    HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
                 }

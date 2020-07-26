@@ -27,8 +27,8 @@ public class EditProfileViewModel extends ViewModel {
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.d("gluser",globalVariables.getTempUser().toString());
-                FirebaseWriteHelper.updateUser(globalVariables.getTempUser());
+                Log.d("gluser",globalVariables.getCurrentUser().toString());
+                FirebaseWriteHelper.updateUser(globalVariables.getCurrentUser());
                 imageprogress.setValue(true);
             }
         });
@@ -40,7 +40,7 @@ public class EditProfileViewModel extends ViewModel {
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                FirebaseWriteHelper.updateUser(globalVariables.getTempUser());
+                FirebaseWriteHelper.updateUser(globalVariables.getCurrentUser());
                 Log.d("edit",FirebaseWriteHelper.getUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }
