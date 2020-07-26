@@ -23,7 +23,7 @@ import java.util.List;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -148,14 +148,14 @@ public class WorkbenchFragment extends Fragment {
     }
 
     public void changeCircle(Circle circle) {
-        int index = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+        int index = HelperMethodsUI.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(index);
         workbenchCircleList.add(index, circle);
         wbadapter.notifyItemChanged(index);
     }
 
     public void removeCircle(Circle circle) {
-        int position = HelperMethods.returnIndexOfCircleList(workbenchCircleList, circle);
+        int position = HelperMethodsUI.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(position);
         wbadapter.notifyItemChanged(position);
     }

@@ -31,13 +31,14 @@ import com.google.firebase.database.DataSnapshot;
 
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -129,7 +130,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
 
         profPicHolder = findViewById(R.id.explore_profilePicture);
-        HelperMethods.increaseTouchArea(profPicHolder);
+        HelperMethodsUI.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
         bottomNav = findViewById(R.id.bottom_navigation);
         btnAddCircle = findViewById(R.id.add_circle_button);
@@ -273,8 +274,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 join.setText("Apply");
         }
 
-        alreadyMember = HelperMethods.isMemberOfCircle(popupCircle, user.getUserId());
-        alreadyApplicant = HelperMethods.ifUserApplied(popupCircle, user.getUserId());
+        alreadyMember = HelperMethodsUI.isMemberOfCircle(popupCircle, user.getUserId());
+        alreadyApplicant = HelperMethodsUI.ifUserApplied(popupCircle, user.getUserId());
 
         if (alreadyApplicant)
             join.setText("Already Applied");
@@ -323,7 +324,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void processUrl(String url) {
-        String circleID = HelperMethods.getCircleIdFromShareURL(url);
+        String circleID = HelperMethodsBL.getCircleIdFromShareURL(url);
 
         MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
 
@@ -348,10 +349,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Circle circle = globalVariables.getCurrentCircle();
         switch (text) {
             case "shareLink":
-                HelperMethods.showShareCirclePopup(circle, this);
+                HelperMethodsUI.showShareCirclePopup(circle, this);
                 break;
             case "copyLink":
-                HelperMethods.copyLinkToClipBoard(circle, this);
+                HelperMethodsUI.copyLinkToClipBoard(circle, this);
                 break;
         }
     }

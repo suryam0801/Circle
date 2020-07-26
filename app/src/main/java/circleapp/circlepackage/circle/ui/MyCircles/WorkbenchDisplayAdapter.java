@@ -27,7 +27,7 @@ import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -60,7 +60,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
         Circle circle = MycircleList.get(position);
         User user = globalVariables.getCurrentUser();
-        HelperMethods.createDefaultCircleIcon(circle,context,holder.backgroundPic);
+        HelperMethodsUI.createDefaultCircleIcon(circle,context,holder.backgroundPic);
 
         //set the details of each circle to its respective card.
         //holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
@@ -71,8 +71,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
 
         //setting new applicants
-        if (HelperMethods.numberOfApplicants(circle, user) > 0) {
-            GradientDrawable itemBackgroundApplicant = HelperMethods.gradientRectangleDrawableSetter(80);
+        if (HelperMethodsUI.numberOfApplicants(circle, user) > 0) {
+            GradientDrawable itemBackgroundApplicant = HelperMethodsUI.gradientRectangleDrawableSetter(80);
             itemBackgroundApplicant.setColor(context.getResources().getColor(R.color.request_alert_color));
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
             holder.newApplicantsDisplay.setBackground(itemBackgroundApplicant);
@@ -80,9 +80,9 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         }
 
         //read for new notifs and set counter
-        int newNotifs = HelperMethods.newNotifications(circle, user);
+        int newNotifs = HelperMethodsUI.newNotifications(circle, user);
         if (newNotifs > 0) {
-            GradientDrawable itemBackgroundNotif = HelperMethods.gradientRectangleDrawableSetter(80);
+            GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
             itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
             holder.newNotifAlert.setText(newNotifs + "");
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
@@ -134,7 +134,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
-        String timeElapsed = HelperMethods.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
+        String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
         holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
 
         holder.categoryDisplay.setText(circle.getCategory());

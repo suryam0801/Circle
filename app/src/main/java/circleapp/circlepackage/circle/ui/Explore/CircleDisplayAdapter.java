@@ -27,7 +27,7 @@ import circleapp.circlepackage.circle.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
@@ -66,14 +66,14 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Circle currentCircle = circleList.get(i);
         String circleCategory;
         Log.d("efljknwefwe", currentCircle.toString());
-        HelperMethods.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
+        HelperMethodsUI.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
 
 
         //check if circle acceptance is review
         if (currentCircle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
         //check if user has already applied to the circle
-        boolean isApplicant = HelperMethods.ifUserApplied(currentCircle, user.getUserId());
+        boolean isApplicant = HelperMethodsUI.ifUserApplied(currentCircle, user.getUserId());
         if (isApplicant) {
             viewHolder.join.setText("Pending Approval");
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
@@ -85,7 +85,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         viewHolder.tv_creatorName.setText(currentCircle.getCreatorName());
         viewHolder.tv_circleDesc.setText(currentCircle.getDescription());
 
-        String date = HelperMethods.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
+        String date = HelperMethodsUI.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
 
         //onclick for join and share

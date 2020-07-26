@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.R;
 
@@ -25,7 +25,7 @@ public class get_started_first_page extends AppCompatActivity {
         setContentView(R.layout.get_started_first_page);
         skip = findViewById(R.id.skip_get_started);
         start = findViewById(R.id.getStartedButton);
-        HelperMethods.increaseTouchArea(skip);
+        HelperMethodsUI.increaseTouchArea(skip);
 
         skip.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

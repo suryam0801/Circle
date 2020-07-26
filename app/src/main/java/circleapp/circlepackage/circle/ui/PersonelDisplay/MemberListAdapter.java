@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -66,7 +66,7 @@ public class MemberListAdapter extends BaseAdapter {
 
         User user = globalVariables.getCurrentUser();
 
-        HelperMethods.setUserProfileImage(user, mContext.getApplicationContext(), profPic);
+        HelperMethodsUI.setUserProfileImage(user, mContext.getApplicationContext(), profPic);
 
         //Set text for TextView
         final String nameDisplay = member.getName();

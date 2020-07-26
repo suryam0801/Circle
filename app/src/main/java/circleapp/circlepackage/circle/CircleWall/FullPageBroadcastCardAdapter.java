@@ -37,7 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
@@ -81,14 +82,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         User user = globalVariables.getCurrentUser();
 
         holder.collapseBroadcastView.setOnClickListener(view -> {
-            HelperMethods.updateUserFields(currentBroadcast, "view", user);
-            HelperMethods.initializeNewCommentsAlertTimestamp(broadcastList.get(position), user);
-            HelperMethods.collapse(holder.broadcst_container);
+            HelperMethodsBL.updateUserFields(currentBroadcast, "view", user);
+            HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcastList.get(position), user);
+            HelperMethodsUI.collapse(holder.broadcst_container);
             holder.newNotifsContainer.setVisibility(View.GONE);
         });
 
         holder.collapseCommentView.setOnClickListener(view -> {
-            HelperMethods.expand(holder.broadcst_container);
+            HelperMethodsUI.expand(holder.broadcst_container);
             globalVariables.saveCurrentBroadcast(broadcastList.get(position));
             try {
                 imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
@@ -146,9 +147,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             holder.commentListView.smoothScrollToPosition(0);
 
             if (position == initialIndex) {
-                HelperMethods.collapse(holder.broadcst_container);
-                HelperMethods.updateUserFields(currentBroadcast, "view", user);
-                HelperMethods.initializeNewCommentsAlertTimestamp(broadcastList.get(position), user);
+                HelperMethodsUI.collapse(holder.broadcst_container);
+                HelperMethodsBL.updateUserFields(currentBroadcast, "view", user);
+                HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcastList.get(position), user);
             }
         });
 
@@ -204,11 +205,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         //calculating and setting time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime = broadcast.getTimeStamp();
-        String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
+        String timeElapsed = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
         //view discussion onclick
-        viewHolder.viewComments.setOnClickListener(view -> HelperMethods.collapse(viewHolder.broadcst_container));
+        viewHolder.viewComments.setOnClickListener(view -> HelperMethodsUI.collapse(viewHolder.broadcst_container));
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
@@ -266,14 +267,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 if (totalValue != 0)
                     percentage = (int) (((double) entry.getValue() / totalValue) * 100);
 
-                RadioButton button = HelperMethods.generateRadioButton(context, entry.getKey(), percentage);
-                LinearLayout layout = HelperMethods.generateLayoutPollOptionBackground(context, button, percentage);
+                RadioButton button = HelperMethodsUI.generateRadioButton(context, entry.getKey(), percentage);
+                LinearLayout layout = HelperMethodsUI.generateLayoutPollOptionBackground(context, button, percentage);
 
                 if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
                     button.setChecked(true);
 
                 button.setOnClickListener(view -> {
-                    HelperMethods.vibrate(context);
+                    HelperMethodsUI.vibrate(context);
                     Bundle params1 = new Bundle();
                     params1.putString("PollInteracted", "Radio button");
 
@@ -324,7 +325,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
-        HelperMethods.updateUserFields(broadcast, "create", user);
+        HelperMethodsBL.updateUserFields(broadcast, "create", user);
     }
 
     @Override

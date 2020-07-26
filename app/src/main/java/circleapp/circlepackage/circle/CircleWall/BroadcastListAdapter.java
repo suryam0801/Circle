@@ -44,7 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
@@ -80,7 +81,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         final Broadcast broadcast = broadcastList.get(i);
         User user = globalVariables.getCurrentUser();
         //HelperMethods.initializeBroadcastListener(context, broadcast, user);
-        HelperMethods.initializeNewReadComments(broadcast, user);
+        HelperMethodsBL.initializeNewReadComments(broadcast, user);
         MyCirclesViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
@@ -114,7 +115,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //calculating and setting time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime = broadcast.getTimeStamp();
-        String timeElapsed = HelperMethods.getTimeElapsed(currentTime, createdTime);
+        String timeElapsed = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
         //new comments setter
@@ -161,7 +162,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             if (broadcast.getCreatorID().equals(user.getUserId())) {
                 showDeleteBroadcastDialog(broadcast, globalVariables.getCurrentUser());
             } else
-                HelperMethods.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
+                HelperMethodsUI.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
 
             return true;
         });
@@ -278,14 +279,14 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             if (totalValue != 0)
                 percentage = (int) (((double) entry.getValue() / totalValue) * 100);
 
-            RadioButton button = HelperMethods.generateRadioButton(context, entry.getKey(), percentage);
-            LinearLayout layout = HelperMethods.generateLayoutPollOptionBackground(context, button, percentage);
+            RadioButton button = HelperMethodsUI.generateRadioButton(context, entry.getKey(), percentage);
+            LinearLayout layout = HelperMethodsUI.generateLayoutPollOptionBackground(context, button, percentage);
 
             if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
                 button.setChecked(true);
 
             button.setOnClickListener(view -> {
-                HelperMethods.vibrate(context);
+                HelperMethodsUI.vibrate(context);
                 Bundle params1 = new Bundle();
                 params1.putString("PollInteracted", "Radio button");
 

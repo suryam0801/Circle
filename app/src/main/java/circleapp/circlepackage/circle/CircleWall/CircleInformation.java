@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
@@ -68,7 +68,7 @@ public class CircleInformation extends AppCompatActivity {
         creatorName.setText(circle.getCreatorName());
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
-        HelperMethods.createDefaultCircleIcon(circle,this,logo);
+        HelperMethodsUI.createDefaultCircleIcon(circle,this,logo);
 
         //back button
         back.setOnClickListener(view -> {
@@ -118,7 +118,7 @@ public class CircleInformation extends AppCompatActivity {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
             memberList.add(subscriber);
             adapter.notifyDataSetChanged();
-            HelperMethods.setListViewHeightBasedOnChildren(membersDisplay);
+            HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);
 
         });
     }

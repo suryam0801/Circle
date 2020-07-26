@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.Helpers.HelperMethods;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -151,7 +151,7 @@ public class ExploreFragment extends Fragment {
     }
 
     public void addCircle(Circle circle) {
-        boolean isMember = HelperMethods.isMemberOfCircle(circle, user.getUserId());
+        boolean isMember = HelperMethodsUI.isMemberOfCircle(circle, user.getUserId());
         boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
 
         if (!isMember && circle.getVisibility().equals("Everybody")) {
@@ -162,7 +162,7 @@ public class ExploreFragment extends Fragment {
             }
 
             if (isInLocation) {
-                boolean circleMatchesFilter = HelperMethods.circleFitsWithinFilterContraints(listOfFilters, circle);
+                boolean circleMatchesFilter = HelperMethodsUI.circleFitsWithinFilterContraints(listOfFilters, circle);
                 if (listOfFilters == null || listOfFilters.isEmpty()) {
                     exploreCircleList.add(adapter.getItemCount(), circle);
                     adapter.notifyItemInserted(adapter.getItemCount());
@@ -177,14 +177,14 @@ public class ExploreFragment extends Fragment {
 
     public void changeCircle(Circle circle) {
         //edit existing circle
-        int index = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+        int index = HelperMethodsUI.returnIndexOfCircleList(exploreCircleList, circle);
         exploreCircleList.remove(index);
         exploreCircleList.add(index, circle);
         adapter.notifyItemChanged(index);
     }
 
     public void removeCircle(Circle circle) {
-        int position = HelperMethods.returnIndexOfCircleList(exploreCircleList, circle);
+        int position = HelperMethodsUI.returnIndexOfCircleList(exploreCircleList, circle);
         if (position != -1) {
             exploreCircleList.remove(position);
             adapter.notifyItemRemoved(position);

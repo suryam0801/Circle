@@ -69,7 +69,7 @@ public class SendNotification {
         }
     }
     public static void sendApplication(String state, User user, Circle circle, Subscriber subscriber){
-        HelperMethods.pushFCM(state, state,null,null,null,null,null,subscriber.getName(),user.getToken_id(),circle.getName());
+        HelperMethodsBL.pushFCM(state, state,null,null,null,null,null,subscriber.getName(),user.getToken_id(),circle.getName());
 
     }
 
