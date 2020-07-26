@@ -73,9 +73,9 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, answer;
-        CircleImageView profPic;
-        LinearLayout container;
+        private TextView name, answer;
+        private CircleImageView profPic;
+        private LinearLayout container;
 
         public ViewHolder(View view) {
             super(view);

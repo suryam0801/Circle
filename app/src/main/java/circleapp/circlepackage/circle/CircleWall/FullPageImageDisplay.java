@@ -13,7 +13,7 @@ import circleapp.circlepackage.circle.R;
 
 public class FullPageImageDisplay extends AppCompatActivity {
 
-    int indexOfBroadcast = 0;
+    private int indexOfBroadcast = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

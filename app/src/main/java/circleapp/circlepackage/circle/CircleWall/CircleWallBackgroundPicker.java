@@ -16,7 +16,7 @@ import circleapp.circlepackage.circle.R;
 
 public class CircleWallBackgroundPicker extends AppCompatActivity {
 
-    ImageView bg1, bg2, bg3, bg4, bg5, bg6, bg7, bg8, bg9, bg10;
+    private ImageView bg1, bg2, bg3, bg4, bg5, bg6, bg7, bg8, bg9, bg10;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -24,6 +24,11 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall_background_picker);
 
+        setWallpapers();
+        wallpaperClickListeners();
+
+    }
+    private void setWallpapers(){
         bg1 = findViewById(R.id.circlWallBackground1);
         bg2 = findViewById(R.id.circlWallBackground2);
         bg3 = findViewById(R.id.circlWallBackground3);
@@ -34,7 +39,6 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
         bg8 = findViewById(R.id.circlWallBackground8);
         bg9 = findViewById(R.id.circlWallBackground9);
         bg10 = findViewById(R.id.circlWallBackground10);
-
         Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_1)).centerCrop().into(bg1);
         Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_2)).centerCrop().into(bg2);
         Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3)).centerCrop().into(bg3);
@@ -45,7 +49,9 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
         Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8)).centerCrop().into(bg8);
         Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9)).centerCrop().into(bg9);
         Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_white)).centerCrop().into(bg10);
-
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void wallpaperClickListeners(){
         bg1.setOnClickListener(view -> {
             SessionStorage.saveCircleWallBgImage(CircleWallBackgroundPicker.this, "bg1");
             backToCircleWall();
@@ -86,9 +92,7 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
             SessionStorage.saveCircleWallBgImage(CircleWallBackgroundPicker.this, "bg10");
             backToCircleWall();
         });
-
     }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void backToCircleWall(){
         finishAfterTransition();

@@ -56,7 +56,7 @@ public class InviteFriendsBottomSheet extends BottomSheetDialogFragment {
             mListener = (BottomSheetListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + " must implement BottomSheetListener");
+                    + "Listener error");
         }
     }
 }
