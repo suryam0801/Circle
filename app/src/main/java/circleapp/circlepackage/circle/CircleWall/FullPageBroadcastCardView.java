@@ -33,7 +33,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
 
     private Circle circle;
     private List<Broadcast> broadcastList;
-    int initialBroadcastPosition;
+    private int initialBroadcastPosition;
     private TextView banner;
     private ImageButton back;
     private LinearLayout parentLayout;
@@ -47,6 +47,35 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_page_broadcast_card_view);
 
+        setUIElements();
+        setParentBgImage();
+        //Go back to home
+        back.setOnClickListener(view -> {
+            finishAfterTransition();
+            startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
+        });
+        //Only for creator
+        viewApplicants.setOnClickListener(view -> {
+            finishAfterTransition();
+            startActivity(new Intent(this, PersonelDisplay.class));
+        });
+        //Drop down menu
+        moreOptions.setOnClickListener(view -> {
+            setPopupMenu();
+        });
+        //Snapping the recyclerview
+        SnapHelper snapHelper = new PagerSnapHelper();
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition);
+        recyclerView.setAdapter(adapter);
+
+        snapHelper.attachToRecyclerView(recyclerView);
+
+        recyclerView.scrollToPosition(initialBroadcastPosition);
+    }
+    private void setUIElements(){
         recyclerView = findViewById(R.id.full_page_broadcast_card_recycler_view);
         banner = findViewById(R.id.full_page_broadcast_banner_name);
         back = findViewById(R.id.bck_fullpage_broadcast);
@@ -57,63 +86,40 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         broadcastList = globalVariables.getCurrentBroadcastList();
         circle = globalVariables.getCurrentCircle();
         initialBroadcastPosition = getIntent().getIntExtra("broadcastPosition", 0);
-
-
-        setParentBgImage();
-
-        banner.setText(circle.getName());
-        back.setOnClickListener(view -> {
-            finishAfterTransition();
-            startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
-        });
         //set applicants button visible
         if (circle.getCreatorID().equals(globalVariables.getCurrentUser().getUserId()))
             viewApplicants.setVisibility(View.VISIBLE);
+        banner.setText(circle.getName());
 
-        viewApplicants.setOnClickListener(view -> {
-            finishAfterTransition();
-            startActivity(new Intent(this, PersonelDisplay.class));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setPopupMenu(){
+        PopupMenu popup = new PopupMenu(this, moreOptions);
+        popup.getMenuInflater()
+                .inflate(R.menu.circle_wall_menu, popup.getMenu());
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getTitle().toString()) {
+                case "Change wallpaper":
+                    finishAfterTransition();
+                    startActivity(new Intent(this, CircleWallBackgroundPicker.class));
+                    break;
+                case "Invite a friend":
+                    HelperMethodsUI.showShareCirclePopup(circle, this);
+                    break;
+                case "Report Abuse":
+                    break;
+                case "Exit circle":
+                    break;
+                case "Delete circle":
+                    break;
+                case "Circle Information":
+                    break;
+            }
+            return true;
         });
-
-        moreOptions.setOnClickListener(view -> {
-            PopupMenu popup = new PopupMenu(this, moreOptions);
-            popup.getMenuInflater()
-                    .inflate(R.menu.circle_wall_menu, popup.getMenu());
-            //registering popup with OnMenuItemClickListener
-            popup.setOnMenuItemClickListener(item -> {
-                switch (item.getTitle().toString()) {
-                    case "Change wallpaper":
-                        finishAfterTransition();
-                        startActivity(new Intent(this, CircleWallBackgroundPicker.class));
-                        break;
-                    case "Invite a friend":
-                        HelperMethodsUI.showShareCirclePopup(circle, this);
-                        break;
-                    case "Report Abuse":
-                        break;
-                    case "Exit circle":
-                        break;
-                    case "Delete circle":
-                        break;
-                    case "Circle Information":
-                        break;
-                }
-                return true;
-            });
-            popup.show();
-        });
-
-
-        SnapHelper snapHelper = new PagerSnapHelper();
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition);
-        recyclerView.setAdapter(adapter);
-
-        snapHelper.attachToRecyclerView(recyclerView);
-
-        recyclerView.smoothScrollToPosition(initialBroadcastPosition);
+        popup.show();
     }
 
     public void setParentBgImage() {

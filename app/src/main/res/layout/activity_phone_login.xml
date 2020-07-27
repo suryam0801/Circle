@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_black"
                 android:layout_gravity="center"
-                android:text="The Friendly Neighbourhood App"
+                android:text="Redefining Communication and Connection"
                 android:textColor="#D1D1D1"
                 android:textSize="14dp"
                  />
