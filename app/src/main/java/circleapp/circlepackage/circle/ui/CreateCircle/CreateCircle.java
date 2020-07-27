@@ -105,6 +105,8 @@ public class CreateCircle extends AppCompatActivity {
         logoHelp = findViewById(R.id.logo_help);
         backgroundText = findViewById(R.id.backgroundText);
         imageUploadProgressDialog = new ProgressDialog(this);
+        acceptanceType="Automatic";
+        visibilityType="Everybody";
     }
 
     private void setObserverForImageUpload(){
@@ -202,6 +204,7 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
+        Log.d("circledetails", circle.getAcceptanceType()+circle.getVisibility());
         writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
