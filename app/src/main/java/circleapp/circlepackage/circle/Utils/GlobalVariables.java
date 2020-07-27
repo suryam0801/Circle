@@ -1,12 +1,14 @@
 package circleapp.circlepackage.circle.Utils;
 
 import android.app.Application;
+import android.net.Uri;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.net.URI;
 import java.util.List;
 
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
@@ -28,6 +30,15 @@ public class GlobalVariables extends Application {
     public static List<Broadcast> currentBroadcastList;
     public static LoginUserObject currentLoginUserObject;
     public static TempLocation currentTempLocation;
+    public static Uri TempdownloadLink;
+
+    public Uri getTempdownloadLink() {
+        return TempdownloadLink;
+    }
+
+    public void setTempdownloadLink(Uri tempdownloadLink) {
+        TempdownloadLink = tempdownloadLink;
+    }
 
 
     public FirebaseAuth getAuthenticationToken() {
