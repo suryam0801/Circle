@@ -11,11 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
-import java.lang.reflect.Array;
-import java.util.HashMap;
 
 public class FirebaseQueryLiveData extends LiveData<String[]> {
     private static final String LOG_TAG = "FirebaseQueryLiveData";

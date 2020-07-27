@@ -73,10 +73,7 @@ public class NewUserRegistration extends ViewModel {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void uploadUserData(String userId, String downloadUri, String Name, String contact, String avatar, String district, String ward){
         //TODO Cleanup this place with FBUtil
-        FirebaseDatabase database;
-        database = FirebaseDatabase.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DatabaseReference usersDB = database.getReference("Users");
         User user;
         // storing the tokenid for the notification purposes
         String token_id = FirebaseInstanceId.getInstance().getToken();
@@ -100,7 +97,7 @@ public class NewUserRegistration extends ViewModel {
         }
         //storing user as a json in file locally
         //store user in realtime database. (testing possible options for fastest retrieval)
-        usersDB.child(userId).setValue(user).addOnCompleteListener(task -> {
+        globalVariables.getFBDatabase().getReference("Users").child(userId).setValue(user).addOnCompleteListener(task -> {
             isUserUploaded.setValue(true);
             globalVariables.saveCurrentUser(user);
             db.collection("Users")

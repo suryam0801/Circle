@@ -5,18 +5,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class UserViewModel extends ViewModel {
-    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static final DatabaseReference USERS_REF = database.getReference("/Users");
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapsUserValueCirlceLiveData(String uid) {
-        FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(USERS_REF.child(uid));
+        FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(globalVariables.getFBDatabase().getReference("/Users").child(uid));
         return liveUserData;
     }
 }

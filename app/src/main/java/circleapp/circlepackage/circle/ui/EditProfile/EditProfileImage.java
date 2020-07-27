@@ -158,6 +158,7 @@ public class EditProfileImage extends AppCompatActivity {
     }
 
     public void ProfileUploadButton() {
+
         if (avatar != "") {
             imageUploadProgressDialog.setTitle("Uploading Profile....");
             imageUploadProgressDialog.show();
@@ -167,7 +168,6 @@ public class EditProfileImage extends AppCompatActivity {
                     .build();
 
             user.setProfileImageLink(avatar);
-//            SessionStorage.saveUser(EditProfileClassTemp, user);
             globalVariables.saveCurrentUser(user);
             editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
@@ -235,6 +235,7 @@ public class EditProfileImage extends AppCompatActivity {
     }
 
     private void InitAvatars() {
+        avatar = "";
         avatarList = new ImageButton[8];
         avatarBgList = new ImageView[8];
         avatarList[0] = avatar1 = editUserProfiledialogue.findViewById(R.id.avatar1);

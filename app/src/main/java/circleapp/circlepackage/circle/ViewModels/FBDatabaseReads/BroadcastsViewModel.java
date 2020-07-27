@@ -4,18 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseQueryLiveData;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class BroadcastsViewModel extends ViewModel {
-    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static final DatabaseReference BROADCASTS_REF = database.getReference("/Broadcasts");
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     @NonNull
     public LiveData<String[]> getDataSnapsBroadcastLiveData(String circleId) {
-        FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(BROADCASTS_REF.child(circleId));
+        FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId));
         return liveExploreCircleData;
     }
 }
