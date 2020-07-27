@@ -75,11 +75,54 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     @Override
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-
+        //Init UI Elements
         Broadcast currentBroadcast = broadcastList.get(position);
         User user = globalVariables.getCurrentUser();
+        String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
+        holder.viewComments.setText(commentsDisplayText);
+        //Init muted button
+        final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
+        if (broadcastMuted) {
+            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
+        } else {
+            int noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
+            if (noOfUserUnread > 0) {
+                holder.newNotifsContainer.setVisibility(View.VISIBLE);
+                holder.newNotifsTV.setText(noOfUserUnread + "");
+            }
+        }
+        setButtonListeners(holder, currentBroadcast, user, position);
+        setBroadcastInfo(mContext, holder, currentBroadcast, user);
+        setComments(holder, position, currentBroadcast, user);
 
+    }
+
+    private void setComments(ViewHolder holder, int position, Broadcast currentBroadcast, User user){
+        CommentAdapter commentAdapter;
+        List<Comment> commentsList = new ArrayList<>();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        holder.commentListView.setLayoutManager(layoutManager);
+
+        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
+        holder.commentListView.setAdapter(commentAdapter);
+
+        CommentsViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(CommentsViewModel.class);
+        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
+
+        liveData.observe((LifecycleOwner) mContext, returnArray -> {
+            Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
+            commentsList.add(0, tempComment); //to store timestamp values descendingly
+            commentAdapter.notifyItemInserted(0);
+            holder.commentListView.smoothScrollToPosition(0);
+
+            if (position == initialIndex) {
+                HelperMethodsUI.collapse(holder.broadcst_container);
+                fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
+            }
+        });
+    }
+
+    private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
         holder.collapseBroadcastView.setOnClickListener(view -> {
             fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
             HelperMethodsUI.collapse(holder.broadcst_container);
@@ -103,54 +146,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             holder.addCommentEditText.setText("");
         });
 
-        String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
-        holder.viewComments.setText(commentsDisplayText);
-
-        setBroadcastInfo(mContext, holder, currentBroadcast, user);
-
-        final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
-
-        if (broadcastMuted) {
-            holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
-        } else {
-            int noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
-            if (noOfUserUnread > 0) {
-                holder.newNotifsContainer.setVisibility(View.VISIBLE);
-                holder.newNotifsTV.setText(noOfUserUnread + "");
-            }
-        }
-
         holder.notificationToggle.setOnClickListener(view -> {
-            toggleNotif(currentBroadcast, holder);
+            updateMutedStatus(currentBroadcast, holder);
         });
-
-
-        CommentAdapter commentAdapter;
-        List<Comment> commentsList = new ArrayList<>();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-        holder.commentListView.setLayoutManager(layoutManager);
-
-        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
-        holder.commentListView.setAdapter(commentAdapter);
-
-        CommentsViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(CommentsViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
-
-        liveData.observe((LifecycleOwner) mContext, returnArray -> {
-            Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
-            commentsList.add(0, tempComment); //to store timestamp values descendingly
-            commentAdapter.notifyItemInserted(0);
-            holder.commentListView.smoothScrollToPosition(0);
-
-            if (position == initialIndex) {
-                HelperMethodsUI.collapse(holder.broadcst_container);
-                fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
-            }
-        });
-
     }
 
-    public void toggleNotif(Broadcast broadcast, ViewHolder viewHolder) {
+    public void updateMutedStatus(Broadcast broadcast, ViewHolder viewHolder) {
         User user = globalVariables.getCurrentUser();
         List<String> userMutedArray;
         if (user.getMutedBroadcasts() != null)
@@ -175,26 +176,18 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast, User user) {
 
-        final Poll poll;
+        setCreatorProfilePic(viewHolder, context, broadcast);
+        setBroadcastUI(viewHolder, broadcast, context);
+        setImageIfExists(broadcast,viewHolder,context);
 
-        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
-            Glide.with((Activity) context)
-                    .load(broadcast.getCreatorPhotoURI())
-                    .into(viewHolder.profPicDisplay);
-        } else if (broadcast.getCreatorPhotoURI().equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
-            Glide.with((Activity) context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
+        if (broadcast.isPollExists() == true) {
+            actionsIfPollExists(viewHolder, broadcast, context, user);
         }
+    }
+
+    private void setBroadcastUI(ViewHolder viewHolder, Broadcast broadcast, Context context){
 
         viewHolder.broadcastTitle.setText(broadcast.getTitle());
-
         //calculating and setting time elapsed
         long currentTime = System.currentTimeMillis();
         long createdTime = broadcast.getTimeStamp();
@@ -216,7 +209,27 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
+    }
 
+    private void setCreatorProfilePic(ViewHolder viewHolder, Context context, Broadcast broadcast){
+        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) context)
+                    .load(broadcast.getCreatorPhotoURI())
+                    .into(viewHolder.profPicDisplay);
+        } else if (broadcast.getCreatorPhotoURI().equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
+            Glide.with((Activity) context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        }
+    }
+
+    private void setImageIfExists(Broadcast broadcast, ViewHolder viewHolder, Context context){
         if (broadcast.getAttachmentURI() != null) {
             viewHolder.imageView.setVisibility(View.VISIBLE);
             //setting imageview
@@ -232,84 +245,87 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 ((Activity) context).finish();
             });
         }
+    }
 
+    private void actionsIfPollExists(ViewHolder viewHolder, Broadcast broadcast, Context context, User user) {
+        final Poll poll;
+        poll = broadcast.getPoll();
+        viewHolder.pollOptionsDisplayGroup.setVisibility(View.VISIBLE);
+        viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+        viewHolder.broadcastTitle.setText(poll.getQuestion());
+        HashMap<String, Integer> pollOptions = poll.getOptions();
 
-        if (broadcast.isPollExists() == true) {
-            poll = broadcast.getPoll();
-            viewHolder.pollOptionsDisplayGroup.setVisibility(View.VISIBLE);
-            viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
-            viewHolder.broadcastTitle.setText(poll.getQuestion());
-            HashMap<String, Integer> pollOptions = poll.getOptions();
-
-            //Option Percentage Calculation
-            int totalValue = 0;
-            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
-                totalValue += entry.getValue();
-            }
-
-            //clear option display each time to avoid repeating options
-            if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
-                viewHolder.pollOptionsDisplayGroup.removeAllViews();
-
-            if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(user.getUserId()))
-                viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(user.getUserId()));
-
-            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
-
-                int percentage = 0;
-                if (totalValue != 0)
-                    percentage = (int) (((double) entry.getValue() / totalValue) * 100);
-
-                RadioButton button = HelperMethodsUI.generateRadioButton(context, entry.getKey(), percentage);
-                LinearLayout layout = HelperMethodsUI.generateLayoutPollOptionBackground(context, button, percentage);
-
-                if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
-                    button.setChecked(true);
-
-                button.setOnClickListener(view -> {
-                    HelperMethodsUI.vibrate(context);
-                    Bundle params1 = new Bundle();
-                    params1.putString("PollInteracted", "Radio button");
-
-                    String option = button.getText().toString();
-                    HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
-                    int currentSelectedVoteCount = poll.getOptions().get(option);
-
-                    if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
-                        ++currentSelectedVoteCount;
-                        pollOptionsTemp.put(option, currentSelectedVoteCount);
-                        viewHolder.setCurrentUserPollOption(option);
-                    } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
-                        int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
-
-                        --userPreviousVoteCount;
-                        ++currentSelectedVoteCount;
-                        pollOptionsTemp.put(option, currentSelectedVoteCount);
-                        pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
-                        viewHolder.setCurrentUserPollOption(option);
-                    }
-
-                    HashMap<String, String> userResponseHashmap;
-                    if (poll.getUserResponse() != null) {
-                        userResponseHashmap = new HashMap<>(poll.getUserResponse());
-                        userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
-                    } else {
-                        userResponseHashmap = new HashMap<>();
-                        userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
-                    }
-
-                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
-                    poll.setOptions(pollOptionsTemp);
-                    poll.setUserResponse(userResponseHashmap);
-                    broadcast.setPoll(poll);
-                    fullpageAdapterViewModel.updateBroadcastAfterPollAction(broadcast, circle.getId());
-                    setBroadcastInfo(context, viewHolder, broadcast, user);
-
-                });
-                viewHolder.pollOptionsDisplayGroup.addView(layout);
-                button.setPressed(true);
-            }
+        //Option Percentage Calculation
+        int totalValue = 0;
+        for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+            totalValue += entry.getValue();
         }
+
+        //clear option display each time to avoid repeating options
+        if (viewHolder.pollOptionsDisplayGroup.getChildCount() > 0)
+            viewHolder.pollOptionsDisplayGroup.removeAllViews();
+
+        if (poll.getUserResponse() != null && poll.getUserResponse().containsKey(user.getUserId()))
+            viewHolder.setCurrentUserPollOption(poll.getUserResponse().get(user.getUserId()));
+
+        for (Map.Entry<String, Integer> entry : pollOptions.entrySet()) {
+
+            int percentage = 0;
+            if (totalValue != 0)
+                percentage = (int) (((double) entry.getValue() / totalValue) * 100);
+
+            RadioButton button = HelperMethodsUI.generateRadioButton(context, entry.getKey(), percentage);
+            LinearLayout layout = HelperMethodsUI.generateLayoutPollOptionBackground(context, button, percentage);
+
+            if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
+                button.setChecked(true);
+
+            button.setOnClickListener(view -> {
+                HelperMethodsUI.vibrate(context);
+                Bundle params1 = new Bundle();
+                params1.putString("PollInteracted", "Radio button");
+
+                String option = button.getText().toString();
+                updatePollValues(viewHolder,broadcast,user,poll,option,context);
+            });
+            viewHolder.pollOptionsDisplayGroup.addView(layout);
+            button.setPressed(true);
+        }
+    }
+
+    private void updatePollValues(ViewHolder viewHolder, Broadcast broadcast, User user, Poll poll, String option, Context context){
+        HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
+        int currentSelectedVoteCount = poll.getOptions().get(option);
+
+        if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
+            ++currentSelectedVoteCount;
+            pollOptionsTemp.put(option, currentSelectedVoteCount);
+            viewHolder.setCurrentUserPollOption(option);
+        } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
+            int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
+
+            --userPreviousVoteCount;
+            ++currentSelectedVoteCount;
+            pollOptionsTemp.put(option, currentSelectedVoteCount);
+            pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
+            viewHolder.setCurrentUserPollOption(option);
+        }
+
+        HashMap<String, String> userResponseHashmap;
+        if (poll.getUserResponse() != null) {
+            userResponseHashmap = new HashMap<>(poll.getUserResponse());
+            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
+        } else {
+            userResponseHashmap = new HashMap<>();
+            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
+        }
+
+        Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
+        poll.setOptions(pollOptionsTemp);
+        poll.setUserResponse(userResponseHashmap);
+        broadcast.setPoll(poll);
+        fullpageAdapterViewModel.updateBroadcastAfterPollAction(broadcast, circle.getId());
+        setBroadcastInfo(context, viewHolder, broadcast, user);
     }
 
     @Override
