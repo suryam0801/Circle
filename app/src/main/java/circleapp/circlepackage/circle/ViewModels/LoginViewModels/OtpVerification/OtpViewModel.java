@@ -15,14 +15,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
 public class OtpViewModel extends ViewModel {
-    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     //    public  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     PhoneCallbacksListener phoneCallbacksListener;

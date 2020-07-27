@@ -5,32 +5,30 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseQueryLiveData;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class MyCirclesViewModel extends ViewModel {
-    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static final DatabaseReference CIRCLES_REF = database.getReference("/Circles");
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapsParticularCircleLiveData(String circleId) {
-        FirebaseSingleValueRead liveparticularCircleData = new FirebaseSingleValueRead(CIRCLES_REF.child(circleId));
+        FirebaseSingleValueRead liveparticularCircleData = new FirebaseSingleValueRead(globalVariables.getFBDatabase().getReference("/Circles").child(circleId));
         return liveparticularCircleData;
     }
 
     @NonNull
     public LiveData<String[]> getDataSnapsWorkbenchCircleLiveData(String userId) {
         String childQueryPath = "membersList/" + userId;
-        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(CIRCLES_REF.orderByChild(childQueryPath).equalTo(true));
+        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Circles").orderByChild(childQueryPath).equalTo(true));
         return liveWorkBenchCircleData;
     }
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapsCircleSingleValueLiveData(String circleId) {
-        FirebaseSingleValueRead liveWorkBenchCircleData = new FirebaseSingleValueRead(CIRCLES_REF.child(circleId));
+        FirebaseSingleValueRead liveWorkBenchCircleData = new FirebaseSingleValueRead(globalVariables.getFBDatabase().getReference("/Circles").child(circleId));
         return liveWorkBenchCircleData;
     }
 }

@@ -2,7 +2,10 @@ package circleapp.circlepackage.circle.Utils;
 
 import android.app.Application;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.List;
 
@@ -16,7 +19,9 @@ public class GlobalVariables extends Application {
     public GlobalVariables(){
     }
 
-    public static FirebaseDatabase database;
+    private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
+    private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     public static User currentUser,tempUser;
     public static Circle currentCircle;
     public static Broadcast currentBroadcast;
@@ -24,9 +29,19 @@ public class GlobalVariables extends Application {
     public static LoginUserObject currentLoginUserObject;
     public static TempLocation currentTempLocation;
 
-    public FirebaseDatabase getDatabaseInstance(){
-        return database.getInstance();
+
+    public FirebaseAuth getAuthenticationToken() {
+        return authenticationToken;
     }
+
+    public FirebaseDatabase getFBDatabase() {
+        return database;
+    }
+
+    public FirebaseStorage getFirebaseStorage() {
+        return mFirebaseStorage;
+    }
+
     public User getTempUser(){
         return tempUser;
     }
