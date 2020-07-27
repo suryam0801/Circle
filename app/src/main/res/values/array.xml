@@ -26,4 +26,14 @@
         <item>44,GB</item>
         <item>1,US</item>
     </string-array>
+    <integer-array name="AvatarValues">
+        <item>@drawable/avatar1</item>
+        <item>@drawable/avatar2</item>
+        <item>@drawable/avatar3</item>
+        <item>@drawable/avatar4</item>
+        <item>@drawable/avatar5</item>
+        <item>@drawable/avatar6</item>
+        <item>@drawable/avatar7</item>
+        <item>@drawable/avatar8</item>
+    </integer-array>
 </resources>

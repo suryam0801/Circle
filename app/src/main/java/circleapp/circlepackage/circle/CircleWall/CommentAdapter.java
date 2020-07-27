@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.CircleWall;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     .load(ContextCompat.getDrawable(mContext, profilePic))
                     .into(holder.profPic);
         } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(picUrl);
+            int index = Integer.parseInt(String.valueOf(picUrl.charAt(picUrl.length()-1)));
+            index = index-1;
+            TypedArray avatarResourcePos = mContext.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with((Activity) mContext)
                     .load(ContextCompat.getDrawable(mContext, profilePic))
                     .into(holder.profPic);

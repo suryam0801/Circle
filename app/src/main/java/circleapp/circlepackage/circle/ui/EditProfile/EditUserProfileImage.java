@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -119,7 +120,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar1);
+                avatar = "avatar1";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -128,7 +129,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar2);
+                avatar = "avatar2";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -137,7 +138,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar3);
+                avatar = "avatar3";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -146,7 +147,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar4);
+                avatar = "avatar4";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -155,7 +156,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar5);
+                avatar = "avatar5";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -164,7 +165,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar6);
+                avatar = "avatar6";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -173,7 +174,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar7);
+                avatar = "avatar7";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -182,7 +183,7 @@ public class EditUserProfileImage{
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar8);
+                avatar = "avatar8";
                 HelperMethodsUI.setProfilePicMethod(editProfile, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -228,12 +229,15 @@ public class EditUserProfileImage{
                     else {
                         editProfileViewModel.editprofileimage(profileUpdates,user).observe((LifecycleOwner) editProfile, state->{
                             if (state){
+                                int index = Integer.parseInt(String.valueOf(avatar.charAt(avatar.length()-1)));
+                                index = index-1;
+                                TypedArray avatarResourcePos = editProfile.getResources().obtainTypedArray(R.array.AvatarValues);
+                                int profilePic = avatarResourcePos.getResourceId(index, 0);
                                 user.setProfileImageLink(avatar);
                                 Glide.with(editProfile)
-                                        .load(Integer.parseInt(avatar))
+                                        .load(profilePic)
                                         .into(profileImageView);
                                 userNameProgressDialogue.dismiss();
-                                user.setProfileImageLink(avatar);
                                 globalVariables.saveCurrentUser(user);
                                 finalizeChange = true;
                                 editUserProfiledialogue.dismiss();
@@ -244,7 +248,6 @@ public class EditUserProfileImage{
 
             } else {
                 editUserProfiledialogue.dismiss();
-                //Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
             }
 
         });

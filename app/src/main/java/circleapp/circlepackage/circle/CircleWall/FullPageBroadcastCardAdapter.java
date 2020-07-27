@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.CircleWall;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -222,7 +223,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);
         } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
+            int index = Integer.parseInt(String.valueOf(broadcast.getCreatorPhotoURI().charAt(broadcast.getCreatorPhotoURI().length()-1)));
+            index = index-1;
+            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with((Activity) context)
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);

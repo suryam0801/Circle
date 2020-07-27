@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.ui.PersonelDisplay;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,10 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
                     .into(holder.profPic);
         }
         else {
-            propic = Integer.parseInt(selectedApplicant.getPhotoURI());
+            int index = Integer.parseInt(String.valueOf(selectedApplicant.getPhotoURI().charAt(selectedApplicant.getPhotoURI().length()-1)));
+            index = index-1;
+            TypedArray avatarResourcePos = mContext.getResources().obtainTypedArray(R.array.AvatarValues);
+            propic = avatarResourcePos.getResourceId(index, 0);
             myImageList = propic;
             Glide.with(mContext)
                     .load(propic)
