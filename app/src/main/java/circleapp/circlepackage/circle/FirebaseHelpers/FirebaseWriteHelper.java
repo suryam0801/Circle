@@ -59,7 +59,7 @@ public class FirebaseWriteHelper {
 
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).removeValue();
-        globalVariables.getFBDatabase().getReference("/Users").setValue(currentCreatedCount);
+        globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).child("createdCircles").setValue(currentCreatedCount);
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circle.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circle.getId()).removeValue();
         removeCircleImageReference(circle.getId(), circle.getBackgroundImageLink());
