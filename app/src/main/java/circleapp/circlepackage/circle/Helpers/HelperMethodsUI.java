@@ -194,7 +194,7 @@ public class HelperMethodsUI {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Your friendly neighborhood app");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Circle: Redefining Communication and Connection");
             String shareMessage = "\nCome join my circle: " + c.getName() + "\n\n";
             shareMessage = shareMessage + "https://worfo.app.link/8JMEs34W96/" + "?" + c.getId();
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);

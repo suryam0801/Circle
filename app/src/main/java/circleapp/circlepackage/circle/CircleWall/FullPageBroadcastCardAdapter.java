@@ -36,11 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Comment;
@@ -54,9 +52,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Context mContext;
     private List<Broadcast> broadcastList;
     private Circle circle;
+    private Broadcast currentBroadcast;
+    private User user;
     private int initialIndex;
     private InputMethodManager imm;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private FullpageAdapterViewModel fullpageAdapterViewModel = new FullpageAdapterViewModel();
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -76,40 +77,15 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     @Override
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-
-        Broadcast currentBroadcast = broadcastList.get(position);
-        User user = globalVariables.getCurrentUser();
-
-        holder.collapseBroadcastView.setOnClickListener(view -> {
-            HelperMethodsBL.updateUserFields(currentBroadcast, "view", user);
-            HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcastList.get(position), user);
-            HelperMethodsUI.collapse(holder.broadcst_container);
-            holder.newNotifsContainer.setVisibility(View.GONE);
-        });
-
-        holder.collapseCommentView.setOnClickListener(view -> {
-            HelperMethodsUI.expand(holder.broadcst_container);
-            globalVariables.saveCurrentBroadcast(broadcastList.get(position));
-            try {
-                imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
-            } catch (Exception e) {
-            }
-        });
-
-        holder.addCommentButton.setOnClickListener(view -> {
-            String commentMessage = holder.addCommentEditText.getText().toString().trim();
-            if (!commentMessage.equals("")) {
-                makeCommentEntry(commentMessage, currentBroadcast, user);
-            }
-            holder.addCommentEditText.setText("");
-        });
-
+        setUIElements(holder, position);
+        setUIButtonListeners(holder);
+        setComments(holder, position);
+    }
+    private void setUIElements(ViewHolder holder, int position){
+        currentBroadcast = broadcastList.get(position);
+        user = globalVariables.getCurrentUser();
         String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
         holder.viewComments.setText(commentsDisplayText);
-
-        setBroadcastInfo(mContext, holder, currentBroadcast, user);
-
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
 
         if (broadcastMuted) {
@@ -120,14 +96,41 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 holder.newNotifsContainer.setVisibility(View.VISIBLE);
                 holder.newNotifsTV.setText(noOfUserUnread + "");
             }
-            FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), currentBroadcast.getId());
         }
+    }
 
-        holder.notificationToggle.setOnClickListener(view -> {
-            toggleNotif(currentBroadcast, holder);
+    private void setUIButtonListeners(ViewHolder holder){
+        holder.collapseBroadcastView.setOnClickListener(view -> {
+            fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
+            HelperMethodsUI.collapse(holder.broadcst_container);
+            holder.newNotifsContainer.setVisibility(View.GONE);
         });
 
+        holder.collapseCommentView.setOnClickListener(view -> {
+            HelperMethodsUI.expand(holder.broadcst_container);
+            globalVariables.saveCurrentBroadcast(currentBroadcast);
+            try {
+                imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+            }
+        });
 
+        holder.addCommentButton.setOnClickListener(view -> {
+            String commentMessage = holder.addCommentEditText.getText().toString().trim();
+            if (!commentMessage.equals("")) {
+                fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, user, circle);
+            }
+            holder.addCommentEditText.setText("");
+        });
+
+        setBroadcastInfo(holder);
+
+        holder.notificationToggle.setOnClickListener(view -> {
+            updateMutedStatus(holder);
+        });
+    }
+
+    private void setComments(ViewHolder holder, int position){
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
@@ -148,14 +151,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
             if (position == initialIndex) {
                 HelperMethodsUI.collapse(holder.broadcst_container);
-                HelperMethodsBL.updateUserFields(currentBroadcast, "view", user);
-                HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcastList.get(position), user);
+                fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast,user,"view");
             }
         });
-
     }
 
-    public void toggleNotif(Broadcast broadcast, ViewHolder viewHolder) {
+    public void updateMutedStatus(ViewHolder viewHolder) {
         User user = globalVariables.getCurrentUser();
         List<String> userMutedArray;
         if (user.getMutedBroadcasts() != null)
@@ -163,86 +164,30 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         else
             userMutedArray = new ArrayList<>();
 
-        boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(broadcast.getId());
+        boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
 
         if (broadcastMuted) {
             viewHolder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_listening_icon));
-            userMutedArray.remove(broadcast.getId());
+            userMutedArray.remove(currentBroadcast.getId());
             user.setMutedBroadcasts(userMutedArray);
-            FirebaseWriteHelper.updateUser(user);
-            FirebaseWriteHelper.broadcastListenerList(0, user.getUserId(), circle.getId(), broadcast.getId());
+            fullpageAdapterViewModel.updateMutedList(user,circle.getId(), currentBroadcast.getId(),0);
         } else {
             viewHolder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
-            userMutedArray.add(broadcast.getId());
+            userMutedArray.add(currentBroadcast.getId());
             user.setMutedBroadcasts(userMutedArray);
-            FirebaseWriteHelper.updateUser(user);
-            FirebaseWriteHelper.broadcastListenerList(1, user.getUserId(), circle.getId(), broadcast.getId());
+            fullpageAdapterViewModel.updateMutedList(user,circle.getId(), currentBroadcast.getId(),1);
         }
     }
 
-    public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast, User user) {
+    public void setBroadcastInfo(ViewHolder viewHolder) {
 
         final Poll poll;
+        setCreatorProfilePic(viewHolder);
+        setBroadcastUI(viewHolder);
+        setBroadcastImage(viewHolder);
 
-        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
-            Glide.with((Activity) context)
-                    .load(broadcast.getCreatorPhotoURI())
-                    .into(viewHolder.profPicDisplay);
-        } else if (broadcast.getCreatorPhotoURI().equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
-            Glide.with((Activity) context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        }
-
-        viewHolder.broadcastTitle.setText(broadcast.getTitle());
-
-        //calculating and setting time elapsed
-        long currentTime = System.currentTimeMillis();
-        long createdTime = broadcast.getTimeStamp();
-        String timeElapsed = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
-        viewHolder.timeElapsedDisplay.setText(timeElapsed);
-
-        //view discussion onclick
-        viewHolder.viewComments.setOnClickListener(view -> HelperMethodsUI.collapse(viewHolder.broadcst_container));
-
-        //set the details of each circle to its respective card.
-        viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
-
-        if (broadcast.getMessage() == null)
-            viewHolder.broadcastMessageDisplay.setVisibility(View.GONE);
-        else
-            viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
-
-        viewHolder.viewPollAnswers.setOnClickListener(view -> {
-            globalVariables.saveCurrentBroadcast(broadcast);
-            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
-        });
-
-        if (broadcast.getAttachmentURI() != null) {
-            viewHolder.imageView.setVisibility(View.VISIBLE);
-            //setting imageview
-            Glide.with((Activity) context)
-                    .load(broadcast.getAttachmentURI())
-                    .into(viewHolder.imageView);
-
-            //navigate to full screen photo display when clicked
-            viewHolder.imageView.setOnClickListener(view -> {
-                Intent intent = new Intent(context, FullPageImageDisplay.class);
-                intent.putExtra("uri", broadcast.getAttachmentURI());
-                context.startActivity(intent);
-                ((Activity) context).finish();
-            });
-        }
-
-
-        if (broadcast.isPollExists() == true) {
-            poll = broadcast.getPoll();
+        if (currentBroadcast.isPollExists() == true) {
+            poll = currentBroadcast.getPoll();
             viewHolder.pollOptionsDisplayGroup.setVisibility(View.VISIBLE);
             viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
             viewHolder.broadcastTitle.setText(poll.getQuestion());
@@ -267,14 +212,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 if (totalValue != 0)
                     percentage = (int) (((double) entry.getValue() / totalValue) * 100);
 
-                RadioButton button = HelperMethodsUI.generateRadioButton(context, entry.getKey(), percentage);
-                LinearLayout layout = HelperMethodsUI.generateLayoutPollOptionBackground(context, button, percentage);
+                RadioButton button = HelperMethodsUI.generateRadioButton(mContext, entry.getKey(), percentage);
+                LinearLayout layout = HelperMethodsUI.generateLayoutPollOptionBackground(mContext, button, percentage);
 
                 if (viewHolder.currentUserPollOption != null && viewHolder.currentUserPollOption.equals(button.getText()))
                     button.setChecked(true);
 
                 button.setOnClickListener(view -> {
-                    HelperMethodsUI.vibrate(context);
+                    HelperMethodsUI.vibrate(mContext);
                     Bundle params1 = new Bundle();
                     params1.putString("PollInteracted", "Radio button");
 
@@ -305,9 +250,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                         userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
                     }
 
-                    Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
-
-                    setBroadcastInfo(context, viewHolder, broadcast, user);
+                    Toast.makeText(mContext, "Thanks for voting", Toast.LENGTH_SHORT).show();
+                    setBroadcastInfo(viewHolder);
 
                 });
                 viewHolder.pollOptionsDisplayGroup.addView(layout);
@@ -316,16 +260,65 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         }
     }
 
-    public void makeCommentEntry(String commentMessage, Broadcast broadcast, User user) {
-        long currentCommentTimeStamp = System.currentTimeMillis();
-        String commentId = FirebaseWriteHelper.getCommentId(circle.getId(),broadcast.getId());
-        Comment comment = new Comment(commentId,user.getName().trim(),commentMessage,user.getUserId(),user.getProfileImageLink(),currentCommentTimeStamp);
+    private void setCreatorProfilePic(ViewHolder viewHolder){
+        if (currentBroadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
+            Glide.with((Activity) mContext)
+                    .load(currentBroadcast.getCreatorPhotoURI())
+                    .into(viewHolder.profPicDisplay);
+        } else if (currentBroadcast.getCreatorPhotoURI().equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        } else { //checking if it is default avatar
+            int profilePic = Integer.parseInt(currentBroadcast.getCreatorPhotoURI());
+            Glide.with((Activity) mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(viewHolder.profPicDisplay);
+        }
+    }
 
-        FirebaseWriteHelper.makeNewComment(comment, circle.getId(), broadcast.getId());
-        SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());
+    private void setBroadcastImage(ViewHolder viewHolder){
+        if (currentBroadcast.getAttachmentURI() != null) {
+            viewHolder.imageView.setVisibility(View.VISIBLE);
+            //setting imageview
+            Glide.with((Activity) mContext)
+                    .load(currentBroadcast.getAttachmentURI())
+                    .into(viewHolder.imageView);
 
-        updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp);
-        HelperMethodsBL.updateUserFields(broadcast, "create", user);
+            //navigate to full screen photo display when clicked
+            viewHolder.imageView.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, FullPageImageDisplay.class);
+                intent.putExtra("uri", currentBroadcast.getAttachmentURI());
+                mContext.startActivity(intent);
+                ((Activity) mContext).finish();
+            });
+        }
+    }
+
+    private void setBroadcastUI(ViewHolder viewHolder){
+        viewHolder.broadcastTitle.setText(currentBroadcast.getTitle());
+
+        //calculating and setting time elapsed
+        long currentTime = System.currentTimeMillis();
+        long createdTime = currentBroadcast.getTimeStamp();
+        String timeElapsed = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
+        viewHolder.timeElapsedDisplay.setText(timeElapsed);
+
+        //view discussion onclick
+        viewHolder.viewComments.setOnClickListener(view -> HelperMethodsUI.collapse(viewHolder.broadcst_container));
+
+        //set the details of each circle to its respective card.
+        viewHolder.broadcastNameDisplay.setText(currentBroadcast.getCreatorName());
+
+        if (currentBroadcast.getMessage() == null)
+            viewHolder.broadcastMessageDisplay.setVisibility(View.GONE);
+        else
+            viewHolder.broadcastMessageDisplay.setText(currentBroadcast.getMessage());
+        viewHolder.viewPollAnswers.setOnClickListener(view -> {
+            globalVariables.saveCurrentBroadcast(currentBroadcast);
+            mContext.startActivity(new Intent(mContext, CreatorPollAnswersView.class));
+        });
     }
 
     @Override
@@ -336,19 +329,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     @Override
     public int getItemCount() {
         return broadcastList.size();
-    }
-
-    public void updateCommentNumbersPostCreate(Broadcast broadcast, long timetamp) {
-        //updating broadCastTimeStamp after creating the comment
-        int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
-        broadcast.setLatestCommentTimestamp(timetamp);
-        broadcast.setNumberOfComments(broacastNumberOfComments);
-        FirebaseWriteHelper.updateBroadcast(broadcast,circle.getId());
-
-        //updating number of discussions in circle
-        int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
-        circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
-        FirebaseWriteHelper.updateCircle(circle);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
