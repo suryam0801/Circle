@@ -18,7 +18,9 @@ public class FullpageAdapterViewModel {
         FirebaseWriteHelper.updateUser(user);
         FirebaseWriteHelper.broadcastListenerList(transaction, user.getUserId(), circleId, broadcastId);
     }
-
+    public void updateBroadcastAfterPollAction(Broadcast broadcast, String circleId){
+        FirebaseWriteHelper.updateBroadcast(broadcast, circleId);
+    }
     public void updateUserAfterReadingComments(Broadcast currentBroadcast, User user, String navFrom){
 
         HelperMethodsBL.updateUserFields(currentBroadcast, navFrom, user);
