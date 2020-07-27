@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +55,7 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {
@@ -121,7 +124,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);
         } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(broadcast.getCreatorPhotoURI());
+            int index = Integer.parseInt(String.valueOf(broadcast.getCreatorPhotoURI().charAt(broadcast.getCreatorPhotoURI().length()-1)));
+            index = index-1;
+            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with((Activity) context)
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(viewHolder.profPicDisplay);

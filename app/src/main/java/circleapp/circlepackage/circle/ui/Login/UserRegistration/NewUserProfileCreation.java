@@ -185,49 +185,49 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     private void setAvatarOnclickListeners() {
         avatar1.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar1);
+            avatar = "avatar1";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar2.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar2);
+            avatar = "avatar2";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar3.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar3);
+            avatar = "avatar3";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar4.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar4);
+            avatar = "avatar4";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar5.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar5);
+            avatar = "avatar5";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar6.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar6);
+            avatar = "avatar6";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar7.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar7);
+            avatar = "avatar7";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
             downloadLink = null;
         });
         avatar8.setOnClickListener(v -> {
             //add code to unpress rest of the buttons
-            avatar = String.valueOf(R.drawable.avatar8);
+            avatar = "avatar8";
             HelperMethodsUI.setProfilePicMethod(NewUserProfileCreation.this, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
             downloadLink = null;
         });

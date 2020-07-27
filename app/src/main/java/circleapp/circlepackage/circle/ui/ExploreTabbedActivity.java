@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -147,7 +148,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
                     .into(profPicHolder);
         } else { //checking if it is default avatar
-            int profilePic = Integer.parseInt(user.getProfileImageLink());
+            int index = Integer.parseInt(String.valueOf(user.getProfileImageLink().charAt(user.getProfileImageLink().length()-1)));
+            index = index-1;
+            Log.d("index", index+"");
+            TypedArray avatarResourcePos = this.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with(ExploreTabbedActivity.this)
                     .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
                     .into(profPicHolder);

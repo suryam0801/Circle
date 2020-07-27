@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -289,9 +290,18 @@ public class HelperMethodsUI {
     }
 //UI
     public static void GlideSetProfilePic(Context context, String avatar, CircleImageView profilePic) {
+        int drawableValue;
+        if(avatar.equals(String.valueOf(R.drawable.ic_account_circle_black_24dp)))
+            drawableValue = Integer.parseInt(avatar);
+        else {
+            int index = Integer.parseInt(String.valueOf(avatar.charAt(avatar.length()-1)));
+            index = index-1;
+            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
+            drawableValue = avatarResourcePos.getResourceId(index, 0);
+        }
         Glide.with(context)
-                .load(Integer.parseInt(avatar))
-                .placeholder(ContextCompat.getDrawable(context, Integer.parseInt(avatar)))
+                .load(drawableValue)
+                .placeholder(R.drawable.ic_account_circle_black_24dp)
                 .into(profilePic);
     }
 //UI
@@ -419,9 +429,13 @@ public class HelperMethodsUI {
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(profileImageView);
         } else {
-            int propic = Integer.parseInt(user.getProfileImageLink());
+            int index = Integer.parseInt(String.valueOf(user.getProfileImageLink().charAt(user.getProfileImageLink().length()-1)));
+            index = index-1;
+            Log.d("index", index+"");
+            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with(context)
-                    .load(propic)
+                    .load(profilePic)
                     .into(profileImageView);
         }
 

@@ -4,7 +4,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -16,21 +16,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.karumi.dexter.DexterBuilder;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
+import java.util.Arrays;
+import java.util.List;
+
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
@@ -85,7 +83,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar1);
+                avatar = "avatar1";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar1_bg, avatar1, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -94,7 +92,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar2);
+                avatar = "avatar2";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar2_bg, avatar2, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -103,7 +101,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar3);
+                avatar = "avatar3";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar3_bg, avatar3, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -112,7 +110,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar4);
+                avatar = "avatar4";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar4_bg, avatar4, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -121,7 +119,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar5);
+                avatar = "avatar5";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar5_bg, avatar5, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -130,7 +128,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar6);
+                avatar = "avatar6";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar6_bg, avatar6, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -139,7 +137,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar7);
+                avatar = "avatar7";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar7_bg, avatar7, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -148,7 +146,7 @@ public class EditProfileImage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //add code to unpress rest of the buttons
-                avatar = String.valueOf(R.drawable.avatar8);
+                avatar = "avatar8";
                 HelperMethodsUI.setProfilePicMethod(EditProfileClass, profilePic, avatar, avatar8_bg, avatar8, avatarBgList, avatarList);
                 downloadLink = null;
             }
@@ -172,8 +170,11 @@ public class EditProfileImage extends AppCompatActivity {
             editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     user.setProfileImageLink(avatar);
+                    int index = Integer.parseInt(String.valueOf(avatar.charAt(avatar.length()-1)));
+                    index = index-1;
+                    TypedArray avatarResourcePos = EditProfileClassTemp.getResources().obtainTypedArray(R.array.AvatarValues);
                     Glide.with(EditProfileClassTemp)
-                            .load(Integer.parseInt(avatar))
+                            .load(avatarResourcePos.getResourceId(index, 0))
                             .into(EditProfileClassTemp.profileImageView);
                     Log.d("TAG2", "DownloadURI bv::" + FirebaseWriteHelper.getUser().getPhotoUrl());
                     finalizeChange = true;
