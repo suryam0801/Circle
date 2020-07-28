@@ -14,7 +14,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -48,7 +47,7 @@ import circleapp.circlepackage.circle.ui.MainActivity;
 public class FirebaseWriteHelper {
     private static GlobalVariables globalVariables = new GlobalVariables();
 
-    public static void deleteCircle(Context context, Circle circle, User user) {
+    public static void deleteCircle(Circle circle, User user) {
         //reducing created circle count
         int currentCreatedCount = 0;
         if (user.getCreatedCircles() > 0)
@@ -65,7 +64,7 @@ public class FirebaseWriteHelper {
         removeCircleImageReference(circle.getId(), circle.getBackgroundImageLink());
     }
 
-    public static void exitCircle(Context context, Circle circle, User user) {
+    public static void exitCircle(Circle circle, User user) {
         //reducing active circle count
         int currentActiveCount = 0;
         if (user.getActiveCircles() > 0)
@@ -152,11 +151,7 @@ public class FirebaseWriteHelper {
         globalVariables.getFBDatabase().getReference("/Users").child(userId).child("notificationsAlert").child(circleId).setValue(noOfBroadcasts);
     }
 
-    public static FirebaseUser getUser() {
-        return globalVariables.getAuthenticationToken().getCurrentUser();
-    }
-
-    public static void initializeNewCount(Context context, Circle c, User user) {
+    public static void initializeNewCount(Circle c, User user) {
         if (user.getNotificationsAlert() != null && !user.getNotificationsAlert().containsKey(c.getId())) {
             HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
             newNotifs.put(c.getId(), 0);
@@ -170,7 +165,7 @@ public class FirebaseWriteHelper {
         }
     }
 
-    public static void applyOrJoin(Context context, Circle circle, User user, Subscriber subscriber) {
+    public static void applyOrJoin(Circle circle, User user, Subscriber subscriber) {
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
             //adding userID to applicants list
@@ -270,7 +265,6 @@ public class FirebaseWriteHelper {
                     }
                 });
             }
-//                NOTIFS_REF.child(i).child(notification.getNotificationId()).setValue(notification);
 
         }
 
@@ -329,10 +323,6 @@ public class FirebaseWriteHelper {
     public static String getUserId() {
         String userId = globalVariables.getFBDatabase().getReference("/Users").child(globalVariables.getAuthenticationToken().getCurrentUser().getUid()).push().getKey();
         return userId;
-    }
-
-    public static void deleteFirebaseAuth() {
-        globalVariables.getAuthenticationToken().getCurrentUser().delete();
     }
 
     public static void addDistrict(String district) {

@@ -38,7 +38,6 @@ import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
@@ -324,7 +323,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
 
-        FirebaseWriteHelper.applyOrJoin(this, circle, user, subscriber);
+        HelperMethodsBL.sendUserApplicationToCreator(user, subscriber, circle);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

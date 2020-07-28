@@ -74,7 +74,7 @@ public class EdituserName {
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setDisplayName(name)
                     .build();
-            if (FirebaseWriteHelper.getUser() == null){
+            if (globalVariables.getAuthenticationToken().getCurrentUser() == null){
                 userNameProgressDialogue.dismiss();
                 editUserNamedialogue.dismiss();
                 Toast.makeText(EditProfileClassTemp, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
@@ -83,7 +83,7 @@ public class EdituserName {
                 user.setName(name);
                 editProfileViewModel.editprofilename(profileUpdates,user,EditProfileClassTemp).observe(EditProfileClassTemp, state->{
                     if (state){
-                        EditProfileClassTemp.userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
+                        EditProfileClassTemp.userName.setText(globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName());
                         userNameProgressDialogue.dismiss();
                         editUserNamedialogue.dismiss();
 

@@ -9,11 +9,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -23,10 +21,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
-import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class ImageUpload extends ViewModel {
+
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     private MutableLiveData<String[]> progressPercentageAndLink;
     public MutableLiveData<String[]> uploadImageWithProgress(Uri filePath) {
@@ -78,8 +77,8 @@ public class ImageUpload extends ViewModel {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri)
                             .build();
-                    if(FirebaseWriteHelper.getUser()!=null){
-                        FirebaseWriteHelper.getUser().updateProfile(profileUpdates);
+                    if(globalVariables.getAuthenticationToken().getCurrentUser()!=null){
+                        globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates);
                         String[] returnValue = {uri.toString(), ""+100.0};
                         progressPercentageAndLink.setValue(returnValue);
                     }

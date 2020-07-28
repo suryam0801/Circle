@@ -63,7 +63,7 @@ public class NewUserRegistration extends ViewModel {
                             //to signout the current firebase user
                             FirebaseWriteHelper.getAuthToken().signOut();
                             //delete the user details
-                            FirebaseWriteHelper.getUser().delete();
+                            globalVariables.getAuthenticationToken().getCurrentUser().delete();
                         }
                     });
 

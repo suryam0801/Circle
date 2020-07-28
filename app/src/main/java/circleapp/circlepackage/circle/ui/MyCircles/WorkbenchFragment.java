@@ -143,7 +143,7 @@ public class WorkbenchFragment extends Fragment {
         //add new circle to list
         workbenchCircleList.add(circle);
         wbadapter.notifyDataSetChanged();
-        FirebaseWriteHelper.initializeNewCount(getContext(), circle, user);
+        FirebaseWriteHelper.initializeNewCount( circle, user);
         emptyDisplay.setVisibility(View.GONE);
     }
 

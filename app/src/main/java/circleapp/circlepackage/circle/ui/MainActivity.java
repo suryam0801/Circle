@@ -30,17 +30,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initFirebaseApp();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
 
         setUserUpdatesObserver();
         updateUserStatus.checkIfUserExists(this);
-    }
-    private void initFirebaseApp(){
-        if (FirebaseApp.getApps(this)==null) {
-            FirebaseApp.initializeApp(this);
-        }
     }
     private void setUserUpdatesObserver(){
 

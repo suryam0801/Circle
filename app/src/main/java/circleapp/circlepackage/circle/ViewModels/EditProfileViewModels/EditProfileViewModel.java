@@ -34,7 +34,7 @@ public class EditProfileViewModel extends ViewModel {
     public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp) {
         imageprogress = new MutableLiveData<>();
         this.editProfileClassTemp = editProfileClassTemp;
-        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+        globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.d("gluser",globalVariables.getCurrentUser().toString());
@@ -58,11 +58,11 @@ public class EditProfileViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp){
         nameprogress = new MutableLiveData<>();
-        FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+        globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 FirebaseWriteHelper.updateUser(globalVariables.getCurrentUser());
-                Log.d("edit",FirebaseWriteHelper.getUser().getDisplayName()+"stored");
+                Log.d("edit",globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }
         });

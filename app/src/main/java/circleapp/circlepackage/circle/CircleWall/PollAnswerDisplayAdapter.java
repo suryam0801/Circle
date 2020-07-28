@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -27,8 +28,7 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
     private Context mContext;
     private HashMap<Subscriber, String> list;
     private int count = 0;
-    private int[] myImageList = new int[]{R.drawable.avatar1, R.drawable.avatar3, R.drawable.avatar4,
-            R.drawable.avatar2, R.drawable.avatar5};
+    GlobalVariables globalVariables = new GlobalVariables();
 
 
     public PollAnswerDisplayAdapter(Context mContext, HashMap<Subscriber, String> list) {
@@ -50,7 +50,7 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
         final String answer = (String) list.values().toArray()[position];
         if (member.getPhotoURI().length() > 10) {
             Glide.with(mContext)
-                    .load(FirebaseWriteHelper.getUser().getPhotoUrl())
+                    .load(globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl())
                     .into(holder.profPic);
         } else if (member.getPhotoURI().equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));

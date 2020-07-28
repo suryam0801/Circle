@@ -124,8 +124,8 @@ public class EditProfile extends AppCompatActivity {
     }
     private void defUIValues(){
         user = globalVariables.getCurrentUser();
-        userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
-        userNumber.setText(FirebaseWriteHelper.getUser().getPhoneNumber());
+        userName.setText(globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName());
+        userNumber.setText(globalVariables.getAuthenticationToken().getCurrentUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
         workingCircles.setText(user.getActiveCircles() + "");
         HelperMethodsUI.setUserProfileImage(user, this, profileImageView);
