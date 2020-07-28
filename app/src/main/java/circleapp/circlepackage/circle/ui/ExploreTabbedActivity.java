@@ -358,4 +358,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
+    @Override
+    public void onBackPressed(){
+        //close app
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+    }
 }

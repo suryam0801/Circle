@@ -12,18 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.google.firebase.FirebaseApp;
-
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UpdateUserStatus;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.MainActivityViewModel;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.OnBoarding.get_started_first_page;
 import circleapp.circlepackage.circle.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String userStatus;
-    private UpdateUserStatus updateUserStatus;
+    private MainActivityViewModel mainActivityViewModel;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -34,14 +31,14 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFormat(PixelFormat.RGB_565);
 
         setUserUpdatesObserver();
-        updateUserStatus.checkIfUserExists(this);
+        mainActivityViewModel.checkIfUserExists(this);
     }
     private void setUserUpdatesObserver(){
 
-        updateUserStatus = ViewModelProviders.of( this).get(UpdateUserStatus.class);
-        updateUserStatus.listenForUserUpdates(userStatus, this).observe((LifecycleOwner) this, userStatus -> {
-            if(userStatus==null);
-            else if(userStatus.equals("existing_user")){
+        mainActivityViewModel = ViewModelProviders.of( this).get(MainActivityViewModel.class);
+        mainActivityViewModel.getUserData(this).observe((LifecycleOwner) this, userStatus -> {
+
+            if(userStatus.equals("existing_user")){
                 Intent i = new Intent(MainActivity.this, ExploreTabbedActivity.class);
                 Uri intentUri = getIntent().getData();
                 if (intentUri != null) {

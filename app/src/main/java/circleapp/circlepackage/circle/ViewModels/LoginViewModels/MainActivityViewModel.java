@@ -15,20 +15,15 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.DataRepository.UserRepository;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 
-public class UpdateUserStatus extends ViewModel {
+public class MainActivityViewModel extends ViewModel {
 
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    private MutableLiveData<String> isUserExisting;
-    public MutableLiveData<String> listenForUserUpdates(String  userStatus, Context context) {
-        if (userStatus==null) {
-            isUserExisting = new MutableLiveData<>();
-        }
-        else {
+    private MutableLiveData<String> isUserExisting = new MutableLiveData<>();;
+    public MutableLiveData<String> getUserData(Context context) {
             setPersistenceEnabled(context);
             checkIfUserExists(context);
-        }
-        return isUserExisting;
+            return isUserExisting;
     }
     public void checkIfUserExists(Context context){
         if(globalVariables.getAuthenticationToken().getCurrentUser() != null){
@@ -52,7 +47,7 @@ public class UpdateUserStatus extends ViewModel {
     private void setPersistenceEnabled(Context context){
         if (FirebaseApp.getApps(context)==null) {
             FirebaseApp.initializeApp(context);
+            FirebaseWriteHelper.setPersistenceEnabled(context, true);
         }
-        FirebaseWriteHelper.setPersistenceEnabled(context, true);
     }
 }
