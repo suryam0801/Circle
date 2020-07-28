@@ -1,6 +1,8 @@
 package circleapp.circlepackage.circle.CircleWall;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.HashMap;
 
+import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -45,12 +48,25 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
 
         final Subscriber member = (Subscriber) list.keySet().toArray()[position];
         final String answer = (String) list.values().toArray()[position];
-
-        Glide.with(mContext)
-                .load(member.getPhotoURI())
-                .placeholder(ContextCompat.getDrawable(mContext, myImageList[count]))
-                .into(holder.profPic);
-
+        if (member.getPhotoURI().length() > 10) {
+            Glide.with(mContext)
+                    .load(FirebaseWriteHelper.getUser().getPhotoUrl())
+                    .into(holder.profPic);
+        } else if (member.getPhotoURI().equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(mContext)
+                    .load(ContextCompat.getDrawable(mContext, profilePic))
+                    .into(holder.profPic);
+        } else {
+            int index = Integer.parseInt(String.valueOf(member.getPhotoURI().charAt(member.getPhotoURI().length()-1)));
+            index = index-1;
+            Log.d("index", index+"");
+            TypedArray avatarResourcePos = mContext.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
+            Glide.with(mContext)
+                    .load(profilePic)
+                    .into(holder.profPic);
+        }
         ++count;
         if(count == 4) count = 0;
 

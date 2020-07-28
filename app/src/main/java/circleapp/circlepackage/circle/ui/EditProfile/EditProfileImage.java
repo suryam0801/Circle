@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.ui.EditProfile;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,13 +15,18 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.gson.Gson;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -33,6 +39,9 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,21 +64,12 @@ public class EditProfileImage extends AppCompatActivity {
     public EditProfileViewModel editProfileViewModel;
     Uri filePath;
     GlobalVariables globalVariables = new GlobalVariables();
+    private LiveData<String[]> liveData;
 
     public void editProfile(EditProfile EditProfileClass) {
         this.EditProfileClassTemp = EditProfileClass;
-        editUserProfiledialogue = new Dialog(EditProfileClass);
-        editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
-        imageUploadProgressDialog = new ProgressDialog(EditProfileClass);
+        InitUI();
         InitAvatars();
-//        user = SessionStorage.getUser(EditProfileClass);
-        user = globalVariables.getCurrentUser();
-        profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
-        setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
-        profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
-        profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
-        Glide.with(EditProfileClass).load(FirebaseWriteHelper.getUser().getPhotoUrl()).into(profilePic);
-        editProfileViewModel = ViewModelProviders.of(EditProfileClass).get(EditProfileViewModel.class);
         profileuploadButton.setOnClickListener(view -> {
             ProfileUploadButton();
         });
@@ -154,6 +154,20 @@ public class EditProfileImage extends AppCompatActivity {
         editUserProfiledialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         editUserProfiledialogue.show();
     }
+    private void InitUI() {
+        editUserProfiledialogue = new Dialog(EditProfileClassTemp);
+        editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
+        imageUploadProgressDialog = new ProgressDialog(EditProfileClassTemp);
+//        user = SessionStorage.getUser(EditProfileClass);
+        user = globalVariables.getCurrentUser();
+        profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
+        setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
+        profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
+        profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
+        Glide.with(EditProfileClassTemp).load(FirebaseWriteHelper.getUser().getPhotoUrl()).into(profilePic);
+        editProfileViewModel = ViewModelProviders.of(EditProfileClassTemp).get(EditProfileViewModel.class);
+
+    }
 
     public void ProfileUploadButton() {
 
@@ -177,6 +191,7 @@ public class EditProfileImage extends AppCompatActivity {
                             .load(avatarResourcePos.getResourceId(index, 0))
                             .into(EditProfileClassTemp.profileImageView);
                     Log.d("TAG2", "DownloadURI bv::" + FirebaseWriteHelper.getUser().getPhotoUrl());
+                    updateCirclePersonal(EditProfileClassTemp,globalVariables.getCurrentUser());
                     finalizeChange = true;
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
@@ -203,10 +218,11 @@ public class EditProfileImage extends AppCompatActivity {
                     .build();
             user.setProfileImageLink(TempUrl);
 //            SessionStorage.saveUser(EditProfileClassTemp, user);
-            globalVariables.saveCurrentUser(user);
             editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     Log.d("TAG", "DownloadURI ::" + FirebaseWriteHelper.getUser().getPhotoUrl());
+                    globalVariables.saveCurrentUser(user);
+                    updateCirclePersonal(EditProfileClassTemp,globalVariables.getCurrentUser());
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                     imageUploadProgressDialog.dismiss();
@@ -217,7 +233,20 @@ public class EditProfileImage extends AppCompatActivity {
         finalizeChange = true;
         EditProfileClassTemp.finalizeChanges.setVisibility(View.GONE);
     }
+    public void updateCirclePersonal(Activity editProfile, User currentUser){
+        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) EditProfileClassTemp).get(MyCirclesViewModel.class);
 
+        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(currentUser.getUserId());
+        Log.d("12345","Func Called");
+        liveData.observe((LifecycleOwner) EditProfileClassTemp, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            Log.d("12345",circle.toString());
+            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
+            editProfileViewModel.updateCirclePersonal(circle,temp_subscriber).observe((LifecycleOwner) EditProfileClassTemp, state1->{
+                Toast.makeText(EditProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
+            });
+        });
+    }
     private void ImagePickerIntent() {
         Permissions.check(EditProfileClassTemp, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, null, null, new PermissionHandler() {
 
