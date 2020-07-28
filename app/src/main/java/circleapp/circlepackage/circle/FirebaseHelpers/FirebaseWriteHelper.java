@@ -186,8 +186,8 @@ public class FirebaseWriteHelper {
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
-        UserRepository tempViewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueLiveData(selectedApplicant.getId());
+        UserRepository userRepository = new UserRepository();
+        LiveData<DataSnapshot> tempLiveData = userRepository.getDataSnapsUserValueLiveData(selectedApplicant.getId());
         AtomicInteger noOfActiveCircles = new AtomicInteger();
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             User tempUser = dataSnapshot.getValue(User.class);
@@ -245,13 +245,13 @@ public class FirebaseWriteHelper {
 
     public static void writeCommentNotifications(Context context, Notification notification, HashMap<String, Boolean> listenersList, String message, String title) {
         Set<String> member;
-        UserRepository viewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
+        UserRepository userRepository = new UserRepository();
         if (listenersList != null) {
             listenersList.remove(notification.getCreatorId());
             member = listenersList.keySet();
             for (String i : member)
             {
-                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueLiveData(i);
+                LiveData<DataSnapshot> liveData = userRepository.getDataSnapsUserValueLiveData(i);
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
@@ -272,14 +272,14 @@ public class FirebaseWriteHelper {
     public static void writeBroadcastNotifications(Context context, Notification notification, HashMap<String, Boolean> membersList, Broadcast broadcast) {
 
         Set<String> member;
-        UserRepository viewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
+        UserRepository userRepository = new UserRepository();
         String apiurl = "https://circle-d8cc7.web.app/api/";
         if (membersList != null) {
             member = membersList.keySet();
             for (String i : member)
 
             {
-                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueLiveData(i);
+                LiveData<DataSnapshot> liveData = userRepository.getDataSnapsUserValueLiveData(i);
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);

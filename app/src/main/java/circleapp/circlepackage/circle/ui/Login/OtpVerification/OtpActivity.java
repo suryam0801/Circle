@@ -296,9 +296,9 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         final FirebaseUser FBuser = Objects.requireNonNull(task.getResult()).getUser();
         final String uid = FBuser.getUid();
         //To check the users is already registered or not
-        UserRepository viewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
+        UserRepository userRepository = new UserRepository();
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueLiveData(uid);
+        LiveData<DataSnapshot> liveData = userRepository.getDataSnapsUserValueLiveData(uid);
         liveData.observe(OtpActivity.this, dataSnapshot -> {
             if (dataSnapshot.exists()) {
                 User user = dataSnapshot.getValue(User.class);

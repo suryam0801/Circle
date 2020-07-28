@@ -4,8 +4,12 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
@@ -14,6 +18,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,11 +32,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
 
+import circleapp.circlepackage.circle.ViewModels.ParticularCircleViewModel;
+import circleapp.circlepackage.circle.ViewModels.UserViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.DataRepository.ParticularCirclesRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
@@ -43,7 +48,6 @@ import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.DataRepository.UserRepository;
 import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
 import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
@@ -157,12 +161,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         }
     }
     private void initObserverForUser(){
-        UserRepository tempViewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueLiveData(user.getUserId());
-        tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
-            user = dataSnapshot.getValue(User.class);
-            if (user != null) {
-                globalVariables.saveCurrentUser(user);
+        UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        userViewModel.getUserObject(this).observe((LifecycleOwner)this, userObject -> {
+            if(userObject != null)
+            {
+                user = userObject;
             }
         });
     }
@@ -328,12 +331,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void processUrl(String url) {
         String circleID = HelperMethodsBL.getCircleIdFromShareURL(url);
-        ParticularCirclesRepository particularCirclesRepository = new ParticularCirclesRepository();
+        ParticularCircleViewModel particularCircleViewModel = new ParticularCircleViewModel();
 
-        LiveData<DataSnapshot> liveData = particularCirclesRepository.getDataSnapsParticularCircleLiveData(circleID);
+        MutableLiveData<Circle> liveData = particularCircleViewModel.getParticularCircle(this, circleID);
 
-        liveData.observe(this, dataSnapshot -> {
-            Circle circle = dataSnapshot.getValue(Circle.class);
+        liveData.observe(this, circleObject -> {
+            Circle circle = circleObject;
             if (!popupCalled) {
                 if(circle!=null){
                     showLinkPopup(circle);

@@ -12,10 +12,6 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
     public class UserRepository extends FirebaseSingleValueRead {
 
         private GlobalVariables globalVariables = new GlobalVariables();
-
-    public UserRepository(Query ref) {
-        super(ref);
-    }
     public UserRepository(){
         super("/Users");
     }
