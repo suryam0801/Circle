@@ -27,17 +27,16 @@ public class UpdateUserStatus extends ViewModel {
             isUserExisting = new MutableLiveData<>();
         }
         else {
-//            setPersistenceEnabled(context);
+            setPersistenceEnabled(context);
             checkIfUserExists(context);
         }
         return isUserExisting;
     }
     public void checkIfUserExists(Context context){
-        if(FirebaseWriteHelper.getUser() != null){
-            //notificationCountGetter();
+        if(globalVariables.getAuthenticationToken().getCurrentUser() != null){
             UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
 
-            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(FirebaseWriteHelper.getUser().getUid());
+            LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(globalVariables.getAuthenticationToken().getCurrentUser().getUid());
 
             liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                 if (dataSnapshot.exists()) {
@@ -54,7 +53,9 @@ public class UpdateUserStatus extends ViewModel {
         }
     }
     private void setPersistenceEnabled(Context context){
-        FirebaseApp.initializeApp(context);
+        if (FirebaseApp.getApps(context)==null) {
+            FirebaseApp.initializeApp(context);
+        }
         FirebaseWriteHelper.setPersistenceEnabled(context, true);
     }
 }

@@ -86,7 +86,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         if (broadcastMuted) {
             holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         } else {
-            int noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
+            int noOfUserUnread = 0;
+            try {
+                noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (noOfUserUnread > 0) {
                 holder.newNotifsContainer.setVisibility(View.VISIBLE);
                 holder.newNotifsTV.setText(noOfUserUnread + "");

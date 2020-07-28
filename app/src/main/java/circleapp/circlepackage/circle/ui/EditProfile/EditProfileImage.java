@@ -161,7 +161,7 @@ public class EditProfileImage extends AppCompatActivity {
         setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
         profilepicButton = editUserProfiledialogue.findViewById(R.id.profilePicSetterImage);
         profileuploadButton = editUserProfiledialogue.findViewById(R.id.edit_profile_Button);
-        Glide.with(EditProfileClassTemp).load(FirebaseWriteHelper.getUser().getPhotoUrl()).into(profilePic);
+        Glide.with(EditProfileClassTemp).load(globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl()).into(profilePic);
         editProfileViewModel = ViewModelProviders.of(EditProfileClassTemp).get(EditProfileViewModel.class);
 
     }
@@ -187,7 +187,7 @@ public class EditProfileImage extends AppCompatActivity {
                     Glide.with(EditProfileClassTemp)
                             .load(avatarResourcePos.getResourceId(index, 0))
                             .into(EditProfileClassTemp.profileImageView);
-                    Log.d("TAG2", "DownloadURI bv::" + FirebaseWriteHelper.getUser().getPhotoUrl());
+                    Log.d("TAG2", "DownloadURI bv::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     finalizeChange = true;
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
@@ -215,7 +215,7 @@ public class EditProfileImage extends AppCompatActivity {
             user.setProfileImageLink(TempUrl);
             editProfileViewModel.editprofileimage(profileUpdates, user, EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
                 if (state) {
-                    Log.d("TAG", "DownloadURI ::" + FirebaseWriteHelper.getUser().getPhotoUrl());
+                    Log.d("TAG", "DownloadURI ::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     globalVariables.saveCurrentUser(user);
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);

@@ -436,7 +436,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         closeDialogButton.setOnClickListener(view -> {
             finishAfterTransition();
-            FirebaseWriteHelper.exitCircle(this, circle, user);
+            FirebaseWriteHelper.exitCircle(circle, user);
             confirmationDialog.dismiss();
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         });
@@ -456,7 +456,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         closeDialogButton.setOnClickListener(view -> {
             finishAfterTransition();
-            FirebaseWriteHelper.deleteCircle(this, circle, user);
+            FirebaseWriteHelper.deleteCircle(circle, user);
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
             confirmationDialog.dismiss();
         });

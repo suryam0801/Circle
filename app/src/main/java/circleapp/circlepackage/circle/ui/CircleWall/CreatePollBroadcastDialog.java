@@ -93,7 +93,6 @@ public class CreatePollBroadcastDialog {
             Toast.makeText(activity, "Fill out all fields", Toast.LENGTH_SHORT).show();
         else {
             downloadLink = globalVariables.getTempdownloadLink();
-            Log.d("downloadLink",downloadLink.toString());
             if (downloadLink != null)
                 imageExists = true;
             createPollBroadcast();

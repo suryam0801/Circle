@@ -7,7 +7,9 @@ import java.util.HashMap;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import okhttp3.ResponseBody;
@@ -196,5 +198,8 @@ public class HelperMethodsBL {
                 break;
 
         }
+    }
+    public static void sendUserApplicationToCreator(User user, Subscriber subscriber, Circle circle){
+        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
     }
 }
