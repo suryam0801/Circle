@@ -1,19 +1,27 @@
-package circleapp.circlepackage.circle.ViewModels.FBDatabaseReads;
+package circleapp.circlepackage.circle.DataRepository;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Query;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
-public class UserViewModel extends ViewModel {
-    private GlobalVariables globalVariables = new GlobalVariables();
+    public class UserRepository extends FirebaseSingleValueRead {
+
+        private GlobalVariables globalVariables = new GlobalVariables();
+
+    public UserRepository(Query ref) {
+        super(ref);
+    }
+    public UserRepository(){
+        super("/Users");
+    }
 
     @NonNull
-    public LiveData<DataSnapshot> getDataSnapsUserValueCirlceLiveData(String uid) {
+    public LiveData<DataSnapshot> getDataSnapsUserValueLiveData(String uid) {
         FirebaseSingleValueRead liveUserData = new FirebaseSingleValueRead(globalVariables.getFBDatabase().getReference("/Users").child(uid));
         return liveUserData;
     }

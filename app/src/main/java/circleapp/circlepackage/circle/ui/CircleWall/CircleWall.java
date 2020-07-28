@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,10 +47,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataRepository.ParticularCirclesRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
-import circleapp.circlepackage.circle.ui.CircleWall.CreateNormalBroadcastDialog;
-import circleapp.circlepackage.circle.ui.CircleWall.CreatePhotoBroadcastDialog;
-import circleapp.circlepackage.circle.ui.CircleWall.CreatePollBroadcastDialog;
+import circleapp.circlepackage.circle.ui.CircleWallDialogs.CreateNormalBroadcastDialog;
+import circleapp.circlepackage.circle.ui.CircleWallDialogs.CreatePhotoBroadcastDialog;
+import circleapp.circlepackage.circle.ui.CircleWallDialogs.CreatePollBroadcastDialog;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
@@ -65,8 +66,8 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.DataRepository.BroadcastsRepository;
+import circleapp.circlepackage.circle.DataRepository.CirclesRepository;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -126,8 +127,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         normalBroadcastDialog = new CreateNormalBroadcastDialog();
         photoBroadcastDialog = new CreatePhotoBroadcastDialog();
         pollBroadcastDialog = new CreatePollBroadcastDialog();
-        MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        CirclesRepository tempViewModel = ViewModelProviders.of(CircleWall.this).get(CirclesRepository.class);
+        ParticularCirclesRepository particularCirclesRepository = new ParticularCirclesRepository();
+        LiveData<DataSnapshot> tempLiveData = particularCirclesRepository.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
             if (circle != null&&circle.getMembersList()!=null) {
@@ -254,9 +256,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
         getStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
 
-        BroadcastsViewModel viewModel = ViewModelProviders.of(this).get(BroadcastsViewModel.class);
+        BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
 
-        LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
+        LiveData<String[]> liveData = broadcastsRepository.getDataSnapsBroadcastLiveData(circle.getId());
 
         liveData.observe(this, returnArray -> {
             Broadcast broadcast = new Gson().fromJson(returnArray[0], Broadcast.class);

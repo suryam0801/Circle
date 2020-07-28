@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -42,7 +41,7 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
+import circleapp.circlepackage.circle.DataRepository.LocationsRepository;
 import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
@@ -169,9 +168,9 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     }
 
     public void getLocationAlreadyExistsResult() {
-        LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
+        LocationsRepository locationsRepository = new LocationsRepository();
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
+        LiveData<DataSnapshot> liveData = locationsRepository.getDataSnapsLocationsSingleValueLiveData(district);
         liveData.observe((LifecycleOwner) this, dataSnapshot -> {
             if (dataSnapshot.exists()) {
                 locationExists = true;

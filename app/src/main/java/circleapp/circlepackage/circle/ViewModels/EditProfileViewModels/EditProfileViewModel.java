@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.DataRepository.CirclesRepository;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
@@ -42,9 +42,9 @@ public class EditProfileViewModel extends ViewModel {
                 imageprogress.setValue(true);
             }
         });
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(MyCirclesViewModel.class);
+        CirclesRepository viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(CirclesRepository.class);
 
-        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+        liveData = viewModel.getDataSnapsMultipleCircles(user.getUserId());
 
         liveData.observe((LifecycleOwner) editProfileClassTemp, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
@@ -66,9 +66,9 @@ public class EditProfileViewModel extends ViewModel {
                 nameprogress.setValue(true);
             }
         });
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(MyCirclesViewModel.class);
+        CirclesRepository viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(CirclesRepository.class);
 
-        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+        liveData = viewModel.getDataSnapsMultipleCircles(user.getUserId());
 
         liveData.observe((LifecycleOwner) editProfileClassTemp, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);

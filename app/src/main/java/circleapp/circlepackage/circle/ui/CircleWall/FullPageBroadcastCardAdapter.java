@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,10 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,7 +44,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Comment;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
+import circleapp.circlepackage.circle.DataRepository.CommentsRepository;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageBroadcastCardAdapter.ViewHolder> {
@@ -112,8 +110,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
         holder.commentListView.setAdapter(commentAdapter);
 
-        CommentsViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(CommentsViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
+        CommentsRepository commentsRepository = new CommentsRepository();
+        LiveData<String[]> liveData = commentsRepository.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
 
         liveData.observe((LifecycleOwner) mContext, returnArray -> {
             Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
