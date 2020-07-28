@@ -1,10 +1,9 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Build;
@@ -29,7 +28,7 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.DataRepository.CirclePersonnelRepository;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleInformation extends AppCompatActivity {
@@ -111,9 +110,9 @@ public class CircleInformation extends AppCompatActivity {
         final MemberListAdapter adapter = new MemberListAdapter(this, memberList);
         membersDisplay.setAdapter(adapter);
 
-        CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
+        CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
 
-        liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+        liveData = circlePersonnelRepository.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
 
         liveData.observe(this, returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);

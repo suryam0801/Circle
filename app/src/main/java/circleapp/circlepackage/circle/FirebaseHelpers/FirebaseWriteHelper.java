@@ -8,10 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.DataRepository.ParticularCirclesRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
@@ -40,8 +39,7 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.DataRepository.UserRepository;
 import circleapp.circlepackage.circle.ui.MainActivity;
 
 public class FirebaseWriteHelper {
@@ -188,8 +186,8 @@ public class FirebaseWriteHelper {
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(selectedApplicant.getId()).setValue(selectedApplicant);
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
-        UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(selectedApplicant.getId());
+        UserRepository tempViewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueLiveData(selectedApplicant.getId());
         AtomicInteger noOfActiveCircles = new AtomicInteger();
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             User tempUser = dataSnapshot.getValue(User.class);
@@ -247,13 +245,13 @@ public class FirebaseWriteHelper {
 
     public static void writeCommentNotifications(Context context, Notification notification, HashMap<String, Boolean> listenersList, String message, String title) {
         Set<String> member;
-        UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
+        UserRepository viewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
         if (listenersList != null) {
             listenersList.remove(notification.getCreatorId());
             member = listenersList.keySet();
             for (String i : member)
             {
-                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
+                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueLiveData(i);
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
@@ -274,14 +272,14 @@ public class FirebaseWriteHelper {
     public static void writeBroadcastNotifications(Context context, Notification notification, HashMap<String, Boolean> membersList, Broadcast broadcast) {
 
         Set<String> member;
-        UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
+        UserRepository viewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
         String apiurl = "https://circle-d8cc7.web.app/api/";
         if (membersList != null) {
             member = membersList.keySet();
             for (String i : member)
 
             {
-                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
+                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueLiveData(i);
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
@@ -403,8 +401,8 @@ public class FirebaseWriteHelper {
     }
 
     public static void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
+        ParticularCirclesRepository particularCirclesRepository = new ParticularCirclesRepository();
+        LiveData<DataSnapshot> liveData = particularCirclesRepository.getDataSnapsParticularCircleLiveData(curent.getCircleId());
         liveData.observe((LifecycleOwner) context, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {

@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.ui.PersonelDisplay;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,13 +16,13 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.DataRepository.CirclePersonnelRepository;
 
 public class PersonelDisplay extends AppCompatActivity {
 
@@ -61,8 +60,8 @@ public class PersonelDisplay extends AppCompatActivity {
         setObserverForApplicants(recyclerView);
     }
     private void setObserverForApplicants(RecyclerView recyclerView){
-        CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "applicants");
+        CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
+        LiveData<String[]> liveData = circlePersonnelRepository.getDataSnapsCirclePersonelLiveData(circle.getId(), "applicants");
 
         liveData.observe(this, returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
