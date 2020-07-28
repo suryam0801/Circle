@@ -62,16 +62,91 @@ public class CreatePollBroadcastDialog {
     private GlobalVariables globalVariables = new GlobalVariables();
     private LinearLayout pollOptionsDisplay, pollImageUploadInitiation;
     public ImageView pollAddPhoto;
-    public void showCreatePollBroadcastDialog(Activity activity, Circle circle, User user) {
-        this.circleWall = new CircleWall();
-        this.circle = circle;
-        this.user = user;
+    public void showCreatePollBroadcastDialog(Activity activity) {
         this.activity = activity;
+        InitUI();
+        cancelPollButton.setOnClickListener(view -> createPollBroadcastPopup.dismiss());
+
+        pollImageUploadInitiation.setOnClickListener(view -> {
+            pollImageUploadInitiation.setVisibility(View.GONE);
+            pollUploadButtonView.setVisibility(View.VISIBLE);
+        });
+
+        pollUploadButtonView.setOnClickListener(v -> {
+            permissionCheck();
+        });
+
+        btnAddPollOption.setOnClickListener(view -> {
+            addPollOption();
+
+        });
+
+        btnUploadPollBroadcast.setOnClickListener(view -> {
+            uploadPoll();
+
+        });
+        createPollBroadcastPopup.show();
+    }
+
+    private void uploadPoll() {
+        if (pollAnswerOptionsList.isEmpty() || setPollQuestionET.getText().toString().isEmpty())
+            Toast.makeText(activity, "Fill out all fields", Toast.LENGTH_SHORT).show();
+        else {
+            downloadLink = globalVariables.getTempdownloadLink();
+            Log.d("downloadLink",downloadLink.toString());
+            if (downloadLink != null)
+                imageExists = true;
+            createPollBroadcast();
+        }
+    }
+
+    private void addPollOption() {
+        String option = setPollOptionET.getText().toString();
+        if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]") || option.isEmpty())) {
+            //checking for invalid characters
+            Toast.makeText(activity, "Option cannot use special characters or be empty", Toast.LENGTH_SHORT).show();
+        } else {
+            if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
+
+                final TextView tv = generatePollOptionTV(option);
+
+                tv.setOnClickListener(view1 -> {
+                    pollOptionsDisplay.removeView(tv);
+                    pollAnswerOptionsList.remove(tv.getText());
+                });
+
+                pollAnswerOptionsList.add(option);
+                pollOptionsDisplay.addView(tv);
+                setPollOptionET.setText("");
+            } else {
+                Toast.makeText(activity, "Fill out all fields", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void permissionCheck() {
+
+        Permissions.check(activity/*context*/, CAMERA, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
+                activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
+            @Override
+            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                // permission denied, block the feature.
+            }
+        });
+    }
+
+    private void InitUI() {
         createPollBroadcastPopup = new Dialog(activity);
         createPollBroadcastPopup.setContentView(R.layout.poll_broadcast_create_popup); //set dialog view
         createPollBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
         createPollBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        circleWall = new CircleWall();
+        user = globalVariables.getCurrentUser();
+        circle = globalVariables.getCurrentCircle();
         setPollQuestionET = createPollBroadcastPopup.findViewById(R.id.poll_create_question_editText);
         setPollQuestionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         setPollOptionET = createPollBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
@@ -86,67 +161,8 @@ public class CreatePollBroadcastDialog {
 
         btnUploadPollBroadcast = createPollBroadcastPopup.findViewById(R.id.upload_poll_broadcast_btn);
         cancelPollButton = createPollBroadcastPopup.findViewById(R.id.create_poll_broadcast_cancel_btn);
-
-        cancelPollButton.setOnClickListener(view -> createPollBroadcastPopup.dismiss());
-
-        pollImageUploadInitiation.setOnClickListener(view -> {
-            pollImageUploadInitiation.setVisibility(View.GONE);
-            pollUploadButtonView.setVisibility(View.VISIBLE);
-        });
-
-        pollUploadButtonView.setOnClickListener(v -> {
-            Permissions.check(activity/*context*/, CAMERA, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
-                    activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
-        });
-
-        btnAddPollOption.setOnClickListener(view -> {
-
-            String option = setPollOptionET.getText().toString();
-
-            if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]") || option.isEmpty())) {
-                //checking for invalid characters
-                Toast.makeText(activity, "Option cannot use special characters or be empty", Toast.LENGTH_SHORT).show();
-            } else {
-                if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
-
-                    final TextView tv = generatePollOptionTV(option);
-
-                    tv.setOnClickListener(view1 -> {
-                        pollOptionsDisplay.removeView(tv);
-                        pollAnswerOptionsList.remove(tv.getText());
-                    });
-
-                    pollAnswerOptionsList.add(option);
-                    pollOptionsDisplay.addView(tv);
-                    setPollOptionET.setText("");
-                } else {
-                    Toast.makeText(activity, "Fill out all fields", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnUploadPollBroadcast.setOnClickListener(view -> {
-            if (pollAnswerOptionsList.isEmpty() || setPollQuestionET.getText().toString().isEmpty())
-                Toast.makeText(activity, "Fill out all fields", Toast.LENGTH_SHORT).show();
-            else {
-                downloadLink = globalVariables.getTempdownloadLink();
-                Log.d("downloadLink",downloadLink.toString());
-                if (downloadLink != null)
-                    imageExists = true;
-                createPollBroadcast();
-            }
-        });
-        createPollBroadcastPopup.show();
     }
+
     public TextView generatePollOptionTV(String option) {
         LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
         lparams.setMargins(0, 10, 20, 0);
@@ -189,6 +205,7 @@ public class CreatePollBroadcastDialog {
                         System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0,true);
         }
         //updating number of broadcasts in circle
+        circle = globalVariables.getCurrentCircle();
         int newCount = circle.getNoOfBroadcasts() + 1;
         circle.setNoOfBroadcasts(newCount);
         globalVariables.saveCurrentCircle(circle);

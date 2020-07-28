@@ -224,16 +224,16 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         poll.setOnClickListener(view -> {
 //            showCreatePollBroadcastDialog();
-            pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this,circle,user);
+            pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this);
             floatingActionMenu.close(true);
         });
         newPost.setOnClickListener(view -> {
-            normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this,circle,user);
+            normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this);
             floatingActionMenu.close(true);
         });
         imagePost.setOnClickListener(view -> {
 //            showCreatePhotoBroadcastDialog();
-            photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this,circle,user);
+            photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this);
             floatingActionMenu.close(true);
         });
 
@@ -250,9 +250,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             makeMenuPopup();
         });
 
-        getStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this,circle,user));
-        getStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this,circle,user));
-        getStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this,circle,user));
+        getStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
+        getStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
+        getStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
 
         BroadcastsViewModel viewModel = ViewModelProviders.of(this).get(BroadcastsViewModel.class);
 

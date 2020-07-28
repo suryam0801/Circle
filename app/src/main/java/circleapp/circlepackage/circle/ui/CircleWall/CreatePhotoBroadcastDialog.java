@@ -51,37 +51,16 @@ public class CreatePhotoBroadcastDialog {
     GlobalVariables globalVariables;
     private CircleWallViewModel circleWallViewModel;
     public RelativeLayout photoUploadButtonView;
-    public void showCreatePhotoBroadcastDialog(Activity activity,Circle circle, User user) {
-        createPhotoBroadcastPopup = new Dialog(activity);
-        createPhotoBroadcastPopup.setContentView(R.layout.photo_broadcast_create_popup); //set dialog view
-        createPhotoBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
-        createPhotoBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    User user;
+    Circle circle;
+    public void showCreatePhotoBroadcastDialog(Activity activity) {
         globalVariables = new GlobalVariables();
         this.activity = activity;
-        circleWall = new CircleWall();
-        setTitlePhoto = createPhotoBroadcastPopup.findViewById(R.id.photoTitleEditText);
-        setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        addPhoto = createPhotoBroadcastPopup.findViewById(R.id.photo_display_photo_add_broadcast);
-        photoUploadButtonView = createPhotoBroadcastPopup.findViewById(R.id.photo_add_photo_view);
-        addPhotoText = createPhotoBroadcastPopup.findViewById(R.id.photo_upload_photo);
-
-        btnUploadPhotoBroadcast = createPhotoBroadcastPopup.findViewById(R.id.upload_photo_broadcast_btn);
-        cancelPhotoButton = createPhotoBroadcastPopup.findViewById(R.id.create_photo_broadcast_cancel_btn);
-
+        InitUI();
         cancelPhotoButton.setOnClickListener(view -> createPhotoBroadcastPopup.dismiss());
 
         photoUploadButtonView.setOnClickListener(v -> {
-            Permissions.check(activity/*context*/,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
-                    activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
+            permissionCheck();
         });
         btnUploadPhotoBroadcast.setOnClickListener(view -> {
             this.downloadLink = globalVariables.getTempdownloadLink();
@@ -107,5 +86,38 @@ public class CreatePhotoBroadcastDialog {
 
         });
         createPhotoBroadcastPopup.show();
+    }
+
+    private void permissionCheck() {
+        Permissions.check(activity/*context*/,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
+                activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
+            @Override
+            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                // permission denied, block the feature.
+            }
+        });
+    }
+
+    private void InitUI() {
+        createPhotoBroadcastPopup = new Dialog(activity);
+        createPhotoBroadcastPopup.setContentView(R.layout.photo_broadcast_create_popup); //set dialog view
+        createPhotoBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
+        createPhotoBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        circleWall = new CircleWall();
+        user = globalVariables.getCurrentUser();
+        circle = globalVariables.getCurrentCircle();
+        setTitlePhoto = createPhotoBroadcastPopup.findViewById(R.id.photoTitleEditText);
+        setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        addPhoto = createPhotoBroadcastPopup.findViewById(R.id.photo_display_photo_add_broadcast);
+        photoUploadButtonView = createPhotoBroadcastPopup.findViewById(R.id.photo_add_photo_view);
+        addPhotoText = createPhotoBroadcastPopup.findViewById(R.id.photo_upload_photo);
+
+        btnUploadPhotoBroadcast = createPhotoBroadcastPopup.findViewById(R.id.upload_photo_broadcast_btn);
+        cancelPhotoButton = createPhotoBroadcastPopup.findViewById(R.id.create_photo_broadcast_cancel_btn);
+
     }
 }
