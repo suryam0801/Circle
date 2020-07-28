@@ -80,13 +80,13 @@ public class EdituserName {
                 Toast.makeText(EditProfileClassTemp, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
             }
             else {
+                user.setName(name);
                 editProfileViewModel.editprofilename(profileUpdates,user,EditProfileClassTemp).observe(EditProfileClassTemp, state->{
                     if (state){
                         EditProfileClassTemp.userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
                         userNameProgressDialogue.dismiss();
                         editUserNamedialogue.dismiss();
-                        user.setName(name);
-                        globalVariables.saveCurrentUser(user);
+
                     }
                 });
             }

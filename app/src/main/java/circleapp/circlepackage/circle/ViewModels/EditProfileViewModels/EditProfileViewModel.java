@@ -51,9 +51,8 @@ public class EditProfileViewModel extends ViewModel {
             Log.d("12345",circle.toString());
             Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
             FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
-            Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
-
         });
+        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return imageprogress;
     }
 
@@ -76,9 +75,8 @@ public class EditProfileViewModel extends ViewModel {
             Log.d("12345",circle.toString());
             Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
             FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
-            Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
-
         });
+        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return nameprogress;
     }
 }
