@@ -1,21 +1,28 @@
 package circleapp.circlepackage.circle.ViewModels.EditProfileViewModels;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.gson.Gson;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> imageprogress;
@@ -23,8 +30,10 @@ public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> circlcePersonalprogress;
     GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<String[]> liveData;
-    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user) {
+    EditProfile editProfileClassTemp;
+    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp) {
         imageprogress = new MutableLiveData<>();
+        this.editProfileClassTemp = editProfileClassTemp;
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -33,14 +42,21 @@ public class EditProfileViewModel extends ViewModel {
                 imageprogress.setValue(true);
             }
         });
+        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(MyCirclesViewModel.class);
+
+        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+
+        liveData.observe((LifecycleOwner) editProfileClassTemp, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            Log.d("12345",circle.toString());
+            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
+            FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
+        });
+        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return imageprogress;
     }
-    public MutableLiveData<Boolean> updateCirclePersonal(Circle circle, Subscriber temp_subscriber){
-        circlcePersonalprogress = new MutableLiveData<>();
-        FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
-        return circlcePersonalprogress;
-    }
-    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user){
+
+    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp){
         nameprogress = new MutableLiveData<>();
         FirebaseWriteHelper.getUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -50,6 +66,17 @@ public class EditProfileViewModel extends ViewModel {
                 nameprogress.setValue(true);
             }
         });
+        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(MyCirclesViewModel.class);
+
+        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
+
+        liveData.observe((LifecycleOwner) editProfileClassTemp, returnArray -> {
+            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            Log.d("12345",circle.toString());
+            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
+            FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
+        });
+        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return nameprogress;
     }
 }
