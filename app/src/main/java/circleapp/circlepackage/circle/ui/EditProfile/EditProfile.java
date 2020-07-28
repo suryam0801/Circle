@@ -35,7 +35,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfile extends AppCompatActivity {
 
     public CircleImageView profileImageView;
-    private TextView userName, userNumber, createdCircles, workingCircles;
+    public TextView userName;
+    private TextView userNumber;
+    private TextView createdCircles;
+    private TextView workingCircles;
     public Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
@@ -90,7 +93,7 @@ public class EditProfile extends AppCompatActivity {
             editUserProfileImage.editProfile(EditProfile.this);
         });
         editName.setOnClickListener(v -> {
-            edituserName.edituserNamedialogue(EditProfile.this,user,userName);
+            edituserName.edituserNamedialogue(EditProfile.this);
 //            edituserNamedialogue();
         });
         logout.setOnClickListener(view -> {

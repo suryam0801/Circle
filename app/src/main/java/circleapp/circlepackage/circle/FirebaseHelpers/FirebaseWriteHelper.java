@@ -212,6 +212,12 @@ public class FirebaseWriteHelper {
         Log.d("userTag",user.toString());
         globalVariables.saveCurrentUser(user);
         globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).setValue(user);
+
+    }
+
+    public static void updateCirclePersonnel(User user, Circle circle, Subscriber subscriber){
+        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+        Log.d("123457","JobDone!!!!!!");
     }
 
     public static void updateBroadcast(Broadcast broadcast, String circleId) {
