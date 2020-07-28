@@ -30,9 +30,6 @@ import com.google.gson.Gson;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
-import java.util.Arrays;
-import java.util.List;
-
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.R;
@@ -181,7 +178,7 @@ public class EditProfileImage extends AppCompatActivity {
 
             user.setProfileImageLink(avatar);
             globalVariables.saveCurrentUser(user);
-            editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
+            editProfileViewModel.editprofileimage(profileUpdates, user,EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     user.setProfileImageLink(avatar);
                     int index = Integer.parseInt(String.valueOf(avatar.charAt(avatar.length()-1)));
@@ -191,7 +188,6 @@ public class EditProfileImage extends AppCompatActivity {
                             .load(avatarResourcePos.getResourceId(index, 0))
                             .into(EditProfileClassTemp.profileImageView);
                     Log.d("TAG2", "DownloadURI bv::" + FirebaseWriteHelper.getUser().getPhotoUrl());
-                    updateCirclePersonal(EditProfileClassTemp,globalVariables.getCurrentUser());
                     finalizeChange = true;
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
@@ -217,12 +213,10 @@ public class EditProfileImage extends AppCompatActivity {
                     .setPhotoUri(Uri.parse(TempUrl))
                     .build();
             user.setProfileImageLink(TempUrl);
-//            SessionStorage.saveUser(EditProfileClassTemp, user);
-            editProfileViewModel.editprofileimage(profileUpdates, user).observe(EditProfileClassTemp, state -> {
+            editProfileViewModel.editprofileimage(profileUpdates, user, EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     Log.d("TAG", "DownloadURI ::" + FirebaseWriteHelper.getUser().getPhotoUrl());
                     globalVariables.saveCurrentUser(user);
-                    updateCirclePersonal(EditProfileClassTemp,globalVariables.getCurrentUser());
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                     imageUploadProgressDialog.dismiss();
@@ -232,20 +226,6 @@ public class EditProfileImage extends AppCompatActivity {
         }
         finalizeChange = true;
         EditProfileClassTemp.finalizeChanges.setVisibility(View.GONE);
-    }
-    public void updateCirclePersonal(Activity editProfile, User currentUser){
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) EditProfileClassTemp).get(MyCirclesViewModel.class);
-
-        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(currentUser.getUserId());
-        Log.d("12345","Func Called");
-        liveData.observe((LifecycleOwner) EditProfileClassTemp, returnArray -> {
-            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
-            Log.d("12345",circle.toString());
-            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
-            editProfileViewModel.updateCirclePersonal(circle,temp_subscriber).observe((LifecycleOwner) EditProfileClassTemp, state1->{
-                Toast.makeText(EditProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
-            });
-        });
     }
     private void ImagePickerIntent() {
         Permissions.check(EditProfileClassTemp, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, null, null, new PermissionHandler() {

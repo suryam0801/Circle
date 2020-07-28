@@ -80,14 +80,13 @@ public class EdituserName {
                 Toast.makeText(EditProfileClassTemp, "Error try Again!!!!",Toast.LENGTH_SHORT).show();
             }
             else {
-                editProfileViewModel.editprofilename(profileUpdates,user).observe(EditProfileClassTemp, state->{
+                editProfileViewModel.editprofilename(profileUpdates,user,EditProfileClassTemp).observe(EditProfileClassTemp, state->{
                     if (state){
                         EditProfileClassTemp.userName.setText(FirebaseWriteHelper.getUser().getDisplayName());
                         userNameProgressDialogue.dismiss();
                         editUserNamedialogue.dismiss();
                         user.setName(name);
                         globalVariables.saveCurrentUser(user);
-                        updateCirclePersonal(globalVariables.getCurrentUser());
                     }
                 });
             }
@@ -95,20 +94,5 @@ public class EdituserName {
         } else {
             Toast.makeText(EditProfileClassTemp, "Please Enter Your Name...", Toast.LENGTH_SHORT).show();
         }
-    }
-    public void updateCirclePersonal(User currentUser){
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) EditProfileClassTemp).get(MyCirclesViewModel.class);
-
-        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(currentUser.getUserId());
-
-        liveData.observe(EditProfileClassTemp, returnArray -> {
-            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
-            Log.d("12345",circle.toString());
-            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
-            editProfileViewModel.updateCirclePersonal(circle,temp_subscriber).observe(EditProfileClassTemp, state1->{
-                Toast.makeText(EditProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
-            });
-
-        });
     }
 }
