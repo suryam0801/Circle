@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ViewModels;
+package circleapp.circlepackage.circle.ViewModels.Generic;
 
 import android.content.Context;
 

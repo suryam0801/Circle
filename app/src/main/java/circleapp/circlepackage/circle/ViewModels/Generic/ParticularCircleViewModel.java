@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ViewModels;
+package circleapp.circlepackage.circle.ViewModels.Generic;
 
 import android.content.Context;
 
@@ -9,12 +9,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.DataRepository.CirclesRepository;
 import circleapp.circlepackage.circle.DataRepository.ParticularCirclesRepository;
-import circleapp.circlepackage.circle.DataRepository.UserRepository;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class ParticularCircleViewModel extends ViewModel {
     private GlobalVariables globalVariables = new GlobalVariables();
