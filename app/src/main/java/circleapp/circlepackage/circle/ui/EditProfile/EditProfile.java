@@ -54,7 +54,6 @@ public class EditProfile extends AppCompatActivity {
     public EdituserName edituserName;
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    private Boolean finalizeChange = false;
 
     //UI elements for location tag selector popup and interest tag selector popup
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -94,7 +93,6 @@ public class EditProfile extends AppCompatActivity {
         });
         editName.setOnClickListener(v -> {
             edituserName.edituserNamedialogue(EditProfile.this);
-//            edituserNamedialogue();
         });
         logout.setOnClickListener(view -> {
             FirebaseWriteHelper.signOutAuth();
@@ -153,8 +151,6 @@ public class EditProfile extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-
-        int tempVisibility = finalizeChanges.getVisibility();
         if (finalizeChanges.getVisibility() == View.VISIBLE){
             alertDialog();
             AlertDialog alertDialog = confirmation.create();
@@ -175,13 +171,13 @@ public class EditProfile extends AppCompatActivity {
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        editUserProfileImage.FinalizeChangesBtn();
                         dialog.dismiss();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        finishAfterTransition();
                         Intent intent = new Intent(EditProfile.this, ExploreTabbedActivity.class);
                         startActivity(intent);
                     }

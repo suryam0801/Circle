@@ -174,7 +174,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         private TextView tv_circleName, tv_creatorName, tv_circleDesc, tv_createdDate, categoryDisplay;
         private LinearLayout container, shareLayout;
         private ImageView bannerImage;
-        private ImageButton shareButton, reportAbuseBroadcast;
+        private ImageButton shareButton;
         ;
         private Button join;
         CircleImageView circleLogo;

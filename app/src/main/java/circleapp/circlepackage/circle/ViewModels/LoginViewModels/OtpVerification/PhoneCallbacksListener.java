@@ -6,7 +6,6 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 //interface code
 public interface PhoneCallbacksListener {
-     void onVerificationCompleted();
      void onVerificationCodeDetected(String code);
      void onVerificationFailed(String message);
      void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken token);
