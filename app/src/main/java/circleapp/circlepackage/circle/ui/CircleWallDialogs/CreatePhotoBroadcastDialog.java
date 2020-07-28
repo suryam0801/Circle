@@ -40,11 +40,12 @@ import static android.Manifest.permission.CAMERA;
 public class CreatePhotoBroadcastDialog {
     private static final int PICK_IMAGE_ID = 234;
     private Dialog createPhotoBroadcastPopup;
-    private EditText setTitlePhoto;
+    private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
     public TextView addPhotoText;
     private Button btnUploadPhotoBroadcast, cancelPhotoButton;
     Activity activity;
     public ImageView addPhoto;
+    private ImageView pollAddPhoto;
     CircleWall circleWall;
     Uri downloadLink;
     GlobalVariables globalVariables;

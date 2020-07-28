@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -22,10 +23,11 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class EdituserName {
 
-    Dialog editUserNamedialogue;
-    private ProgressDialog userNameProgressDialogue;
+    Dialog editUserNamedialogue, editUserProfiledialogue;
+    private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     public EditProfileViewModel editProfileViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private LiveData<String[]> liveData;
     EditProfile EditProfileClassTemp;
     User user;
 
@@ -37,6 +39,7 @@ public class EdituserName {
         final EditText edit_name = editUserNamedialogue.findViewById(R.id.edit_name);
         edit_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         userNameProgressDialogue = new ProgressDialog(EditProfileClassTemp);
+        imageUploadProgressDialog = new ProgressDialog(EditProfileClassTemp);
         editProfileViewModel = ViewModelProviders.of(EditProfileClassTemp).get(EditProfileViewModel.class);
 
         edit_name_finalize.setOnClickListener(new View.OnClickListener() {

@@ -46,6 +46,7 @@ import circleapp.circlepackage.circle.ui.Login.UserRegistration.NewUserProfileCr
 
 public class OtpActivity extends AppCompatActivity implements PhoneCallbacksListener {
 
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksresend, mCallbacks;
     private String mAuthVerificationId, phn_number;
     private PinEntryEditText mOtpText;
     private Button mVerifyBtn;
@@ -216,6 +217,11 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         finishAfterTransition();
         Intent intent = new Intent(OtpActivity.this, PhoneLogin.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onVerificationCompleted() {
+
     }
 
     @Override

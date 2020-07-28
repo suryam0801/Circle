@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
 
 public class OtpViewModel extends ViewModel {
+    //    public  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private PhoneAuthProvider.ForceResendingToken resendingToken;
     PhoneCallbacksListener phoneCallbacksListener;
 
@@ -28,7 +29,8 @@ public class OtpViewModel extends ViewModel {
         this.phoneCallbacksListener = phoneCallbacksListener;
     }
 
-
+    //    public void callbacklistener(){
+//    public void PhoneAuth() {
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
@@ -44,12 +46,12 @@ public class OtpViewModel extends ViewModel {
 
             @Override
             public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-
+//            super.onCodeSent(s, forceResendingToken);
                 resendingToken = forceResendingToken;
                 phoneCallbacksListener.onCodeSent(s, forceResendingToken);
             }
         };
-
+//}
 
         public void signInWithPhoneAuthCredential (PhoneAuthCredential
         credential, PhoneCallbacksListener listener){

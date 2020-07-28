@@ -48,6 +48,7 @@ public class CreatePollBroadcastDialog {
     private Dialog createPollBroadcastPopup;
     private EditText setPollQuestionET, setPollOptionET;
     private Button btnAddPollOption,btnUploadPollBroadcast, cancelPollButton;
+    private TextView pollAddPhotoText;
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     CircleWall circleWall;
     public RelativeLayout pollUploadButtonView;
@@ -152,6 +153,7 @@ public class CreatePollBroadcastDialog {
         btnAddPollOption = createPollBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
         pollAddPhoto = createPollBroadcastPopup.findViewById(R.id.poll_display_photo_add_broadcast);
         pollUploadButtonView = createPollBroadcastPopup.findViewById(R.id.poll_add_photo_view);
+        pollAddPhotoText = createPollBroadcastPopup.findViewById(R.id.poll_upload_photo);
         pollImageUploadInitiation = createPollBroadcastPopup.findViewById(R.id.poll_image_upload_initiate_layout);
         pollExists = true;
 

@@ -50,6 +50,7 @@ public class EditProfileImage extends AppCompatActivity {
     User user;
     EditProfile EditProfileClassTemp;
     public EditProfileViewModel editProfileViewModel;
+    Uri filePath;
     GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<String[]> liveData;
 
@@ -145,6 +146,7 @@ public class EditProfileImage extends AppCompatActivity {
         editUserProfiledialogue = new Dialog(EditProfileClassTemp);
         editUserProfiledialogue.setContentView(R.layout.user_profile_edit_dialogue);
         imageUploadProgressDialog = new ProgressDialog(EditProfileClassTemp);
+//        user = SessionStorage.getUser(EditProfileClass);
         user = globalVariables.getCurrentUser();
         profilePic = editUserProfiledialogue.findViewById(R.id.profile_image);
         setProfile = editUserProfiledialogue.findViewById(R.id.imagePreview);
@@ -166,6 +168,7 @@ public class EditProfileImage extends AppCompatActivity {
                     .build();
 
             user.setProfileImageLink(avatar);
+            globalVariables.saveCurrentUser(user);
             editProfileViewModel.editprofileimage(profileUpdates, user,EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
                 if (state) {
                     user.setProfileImageLink(avatar);
@@ -184,10 +187,12 @@ public class EditProfileImage extends AppCompatActivity {
 
         } else {
             editUserProfiledialogue.dismiss();
+            //Toast.makeText(getApplicationContext(), "Select a Profile Picture to Continue....", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void FinalizeChangesBtn() {
+    private void FinalizeChangesBtn() {
+//        String TempUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
         String TempUrl = globalVariables.getCurrentUser().getProfileImageLink();
         Log.d("TAG", "DownloadURI ::" + TempUrl);
         imageUploadProgressDialog.setTitle("Uploading Profile....");

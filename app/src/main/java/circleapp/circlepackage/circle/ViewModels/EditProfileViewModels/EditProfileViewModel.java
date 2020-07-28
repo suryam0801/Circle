@@ -27,6 +27,7 @@ import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> imageprogress;
     private MutableLiveData<Boolean> nameprogress;
+    private MutableLiveData<Boolean> circlcePersonalprogress;
     GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<String[]> liveData;
     EditProfile editProfileClassTemp;
