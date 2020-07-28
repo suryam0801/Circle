@@ -25,7 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -34,17 +34,18 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.DataRepository.ParticularCirclesRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.BroadcastListViewModel;
-import circleapp.circlepackage.circle.ViewModels.Generic.ParticularCircleViewModel;
 import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
@@ -59,6 +60,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private User user;
     private Dialog deleteBroadcastConfirmation;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private LiveData<DataSnapshot> currentCircleLiveData;
     private boolean broadcastMuted;
     private BroadcastListViewModel broadcastListViewModel = new BroadcastListViewModel();
 
@@ -93,17 +95,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
     private void getLiveCircleData(){
-        ParticularCircleViewModel particularCircleViewModel = new ParticularCircleViewModel();
-
-        MutableLiveData<Circle> liveData = particularCircleViewModel.getParticularCircle(context, circle.getId());
-
-        liveData.observe((LifecycleOwner) context, circleObject -> {
-            if(circleObject!=null){
-                circle = circleObject;
-                if (circle.getMembersList()!=null) {
-                    if (circle.getMembersList().containsKey(user.getUserId())) {
-                        globalVariables.saveCurrentCircle(circle);
-                    }
+        ParticularCirclesRepository particularCirclesRepository = new ParticularCirclesRepository();
+        currentCircleLiveData = particularCirclesRepository.getDataSnapsParticularCircleLiveData(circle.getId());
+        currentCircleLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
+            circle = dataSnapshot.getValue(Circle.class);
+            if (circle != null&&circle.getMembersList()!=null) {
+                if (circle.getMembersList().containsKey(user.getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
                 }
             }
         });
