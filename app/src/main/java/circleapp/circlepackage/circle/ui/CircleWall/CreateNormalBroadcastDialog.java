@@ -36,34 +36,24 @@ public class CreateNormalBroadcastDialog {
     CircleWall circleWall;
     GlobalVariables globalVariables;
     private CircleWallViewModel circleWallViewModel;
-    public void showCreateNormalBroadcastDialog(Activity activity, Circle circle, User user) {
-        createNormalBroadcastPopup = new Dialog(activity);
-        createNormalBroadcastPopup.setContentView(R.layout.normal_broadcast_create_popup); //set dialog view
-        createNormalBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
-        createNormalBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    User user;
+    Circle circle;
+    public void showCreateNormalBroadcastDialog(Activity activity) {
         this.activity = activity;
-        circleWall = new CircleWall();
-        globalVariables = new GlobalVariables();
-        broadcastHeader = createNormalBroadcastPopup.findViewById(R.id.broadcast_header);
-        setTitleET = createNormalBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
-        setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        setMessageET = createNormalBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
-        setMessageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-
-        btnUploadNormalBroadcast = createNormalBroadcastPopup.findViewById(R.id.upload_normal_broadcast_btn);
-        cancelNormalButton = createNormalBroadcastPopup.findViewById(R.id.create_normal_broadcast_cancel_btn);
-
+        InitUI();
         cancelNormalButton.setOnClickListener(view -> createNormalBroadcastPopup.dismiss());
         btnUploadNormalBroadcast.setOnClickListener(view -> {
             if (setTitleET.getText().toString().isEmpty())
                 Toast.makeText(activity, "The Post cant be empty", Toast.LENGTH_SHORT).show();
             else
-            { String description,title;
+            {
+                String description,title;
                 title = setTitleET.getText().toString();
                 if(setMessageET.getText()==null)
                     description=null;
                 else
                     description=setMessageET.getText().toString();
+
                 circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
                 circleWallViewModel.createBroadcast(title,description,circle,user,activity).observe((LifecycleOwner) activity, state->{
                     if (state){
@@ -77,6 +67,25 @@ public class CreateNormalBroadcastDialog {
                 });}
         });
         createNormalBroadcastPopup.show();
+    }
+
+    private void InitUI() {
+        createNormalBroadcastPopup = new Dialog(activity);
+        createNormalBroadcastPopup.setContentView(R.layout.normal_broadcast_create_popup); //set dialog view
+        createNormalBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
+        createNormalBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        circleWall = new CircleWall();
+        globalVariables = new GlobalVariables();
+        user = globalVariables.getCurrentUser();
+        circle = globalVariables.getCurrentCircle();
+        broadcastHeader = createNormalBroadcastPopup.findViewById(R.id.broadcast_header);
+        btnUploadNormalBroadcast = createNormalBroadcastPopup.findViewById(R.id.upload_normal_broadcast_btn);
+        cancelNormalButton = createNormalBroadcastPopup.findViewById(R.id.create_normal_broadcast_cancel_btn);
+        setTitleET = createNormalBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
+        setTitleET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        setMessageET = createNormalBroadcastPopup.findViewById(R.id.broadcastDescriptionEditText);
+        setMessageET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
     }
 
     private void livedataobserver(User user, Circle circle) {
