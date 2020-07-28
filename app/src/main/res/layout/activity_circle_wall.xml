@@ -6,7 +6,7 @@
     android:id="@+id/circle_wall_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CircleWallDialogs.CircleWall">
+    tools:context=".ui.CircleWall.CircleWall">
 
     <LinearLayout
         android:id="@+id/circle_wall_empty_display"

@@ -27,7 +27,7 @@ import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.DataRepository.CirclesRepository;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 
 /**
@@ -108,9 +108,9 @@ public class WorkbenchFragment extends Fragment {
                     new ExploreFragment()).commit();
         });
 
-        CirclesRepository viewModel = ViewModelProviders.of(this).get(CirclesRepository.class);
+        MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
 
-        liveData = viewModel.getDataSnapsMultipleCircles(user.getUserId());
+        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
 
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);

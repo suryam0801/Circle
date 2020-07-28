@@ -11,14 +11,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-
 public class FirebaseSingleValueRead extends LiveData<DataSnapshot> {
     private static final String LOG_TAG = "FirebaseQueryLiveData";
 
     private final Query query;
     private final MyChildValueListener listener = new MyChildValueListener();
-    private GlobalVariables globalVariables = new GlobalVariables();
 
     public FirebaseSingleValueRead(Query query) {
         this.query = query;
@@ -26,10 +23,6 @@ public class FirebaseSingleValueRead extends LiveData<DataSnapshot> {
 
     public FirebaseSingleValueRead(DatabaseReference ref) {
         this.query = ref;
-    }
-
-    public FirebaseSingleValueRead(String ref){
-        this.query = globalVariables.getFBDatabase().getReference(ref);
     }
 
     @Override

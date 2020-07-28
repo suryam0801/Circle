@@ -1,7 +1,8 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.CircleWall;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +27,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.DataRepository.CirclePersonnelRepository;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 
 public class CreatorPollAnswersView extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     private HashMap<String, String> userResponse;
     private RecyclerView pollResponsesRecyclerView;
     private LiveData<String[]> liveData;
-    private CirclePersonnelRepository circlePersonnelRepository;
+    private CirclePersonnelViewModel circlePersonnelViewModel;
     private Circle circle;
     private Broadcast broadcast;
     private RecyclerView.Adapter adapter;
@@ -78,8 +79,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
             userResponse = new HashMap<>();
     }
     private void setResponsesObserver(){
-        circlePersonnelRepository = new CirclePersonnelRepository();
-        liveData = circlePersonnelRepository.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+        circlePersonnelViewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
+        liveData = circlePersonnelViewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
         liveData.observe(this, returnArray -> {
             Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
 

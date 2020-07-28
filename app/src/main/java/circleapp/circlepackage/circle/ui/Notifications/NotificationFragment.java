@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -21,7 +22,7 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.data.ObjectModels.Notification;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.DataRepository.NotificationsRepository;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.NotificationsViewModel;
 
 public class NotificationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -66,8 +67,10 @@ public class NotificationFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
         InitUIElements(view);
-        NotificationsRepository notificationsRepository = new NotificationsRepository();
-        liveData = notificationsRepository.getDataSnapsNotificationsLiveData(user.getUserId());
+
+        NotificationsViewModel viewModel = ViewModelProviders.of(this).get(NotificationsViewModel.class);
+
+        liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
 
         liveData.observe(this, returnArray -> {
             Notification notification = new Gson().fromJson(returnArray[0], Notification.class);

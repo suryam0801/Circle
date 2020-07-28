@@ -13,16 +13,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.gson.Gson;
 
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-
 public class FirebaseQueryLiveData extends LiveData<String[]> {
     private static final String LOG_TAG = "FirebaseQueryLiveData";
-    private GlobalVariables globalVariables = new GlobalVariables();
 
     private final Query query;
     private final MyValueEventListener listener = new MyValueEventListener();
-
-    public FirebaseQueryLiveData(String ref){ this.query = globalVariables.getFBDatabase().getReference(ref); }
 
     public FirebaseQueryLiveData(Query query) {
         this.query = query;

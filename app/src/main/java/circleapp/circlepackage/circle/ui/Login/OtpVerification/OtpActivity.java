@@ -39,7 +39,7 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.data.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.OtpViewModel;
-import circleapp.circlepackage.circle.DataRepository.UserRepository;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.OtpVerification.PhoneCallbacksListener;
 import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 import circleapp.circlepackage.circle.ui.Login.UserRegistration.NewUserProfileCreation;
@@ -296,9 +296,9 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         final FirebaseUser FBuser = Objects.requireNonNull(task.getResult()).getUser();
         final String uid = FBuser.getUid();
         //To check the users is already registered or not
-        UserRepository viewModel = new UserRepository(globalVariables.getFBDatabase().getReference("/Users"));
+        UserViewModel viewModel = ViewModelProviders.of(OtpActivity.this).get(UserViewModel.class);
 
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueLiveData(uid);
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(uid);
         liveData.observe(OtpActivity.this, dataSnapshot -> {
             if (dataSnapshot.exists()) {
                 User user = dataSnapshot.getValue(User.class);

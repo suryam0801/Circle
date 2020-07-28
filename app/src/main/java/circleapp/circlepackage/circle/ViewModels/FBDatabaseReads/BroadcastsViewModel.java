@@ -1,17 +1,14 @@
-package circleapp.circlepackage.circle.DataRepository;
+package circleapp.circlepackage.circle.ViewModels.FBDatabaseReads;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseQueryLiveData;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
-public class BroadcastsRepository extends FirebaseQueryLiveData {
+public class BroadcastsViewModel extends ViewModel {
     private GlobalVariables globalVariables = new GlobalVariables();
-
-    public BroadcastsRepository() {
-        super("/Broadcasts");
-    }
 
     @NonNull
     public LiveData<String[]> getDataSnapsBroadcastLiveData(String circleId) {
