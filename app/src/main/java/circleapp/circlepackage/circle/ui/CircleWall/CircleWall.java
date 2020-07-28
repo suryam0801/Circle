@@ -79,7 +79,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private Circle circle;
 
-    private List<String> pollAnswerOptionsList = new ArrayList<>();
     public boolean pollExists = false;
     public boolean imageExists = false;
 
@@ -87,14 +86,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private User user;
 
     //create broadcast popup ui elements
-    private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
-    private LinearLayout pollOptionsDisplay, pollImageUploadInitiation;
-    private TextView circleBannerName, broadcastHeader, addPhotoText, pollAddPhotoText;
-    private Button btnAddPollOption, btnUploadNormalBroadcast, cancelNormalButton, btnUploadPollBroadcast, cancelPollButton, btnUploadPhotoBroadcast, cancelPhotoButton;
-    private Dialog createNormalBroadcastPopup, createPhotoBroadcastPopup, createPollBroadcastPopup, confirmationDialog, reportAbuseDialog;
-    private ImageView addPhoto, pollAddPhoto;
+    private TextView circleBannerName;
+    private Dialog confirmationDialog, reportAbuseDialog;
     private ImageButton viewApplicants;
-    private RelativeLayout pollUploadButtonView, parentLayout;
+    private RelativeLayout parentLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     FloatingActionMenu floatingActionMenu;
@@ -221,7 +216,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         poll.setOnClickListener(view -> {
-//            showCreatePollBroadcastDialog();
             pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this);
             floatingActionMenu.close(true);
         });
@@ -230,7 +224,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             floatingActionMenu.close(true);
         });
         imagePost.setOnClickListener(view -> {
-//            showCreatePhotoBroadcastDialog();
             photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this);
             floatingActionMenu.close(true);
         });
@@ -464,210 +457,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         confirmationDialog.show();
     }
-    private void showCreatePhotoBroadcastDialog() {
-        createPhotoBroadcastPopup = new Dialog(CircleWall.this);
-        createPhotoBroadcastPopup.setContentView(R.layout.photo_broadcast_create_popup); //set dialog view
-        createPhotoBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
-        createPhotoBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        downloadLink = null;
-
-        setTitlePhoto = createPhotoBroadcastPopup.findViewById(R.id.photoTitleEditText);
-        setTitlePhoto.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        addPhoto = createPhotoBroadcastPopup.findViewById(R.id.photo_display_photo_add_broadcast);
-//        photoUploadButtonView = createPhotoBroadcastPopup.findViewById(R.id.photo_add_photo_view);
-        addPhotoText = createPhotoBroadcastPopup.findViewById(R.id.photo_upload_photo);
-
-        btnUploadPhotoBroadcast = createPhotoBroadcastPopup.findViewById(R.id.upload_photo_broadcast_btn);
-        cancelPhotoButton = createPhotoBroadcastPopup.findViewById(R.id.create_photo_broadcast_cancel_btn);
-
-        cancelPhotoButton.setOnClickListener(view -> createPhotoBroadcastPopup.dismiss());
-
-        photoBroadcastDialog.photoUploadButtonView.setOnClickListener(v -> {
-            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
-        });
-        btnUploadPhotoBroadcast.setOnClickListener(view -> {
-            if (downloadLink != null && !setTitlePhoto.getText().toString().isEmpty()) {
-                imageExists = true;
-                createPhotoBroadcast();
-            } else
-                Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
-
-        });
-        createPhotoBroadcastPopup.show();
-    }
-
-    private void showCreatePollBroadcastDialog() {
-        createPollBroadcastPopup = new Dialog(CircleWall.this);
-        createPollBroadcastPopup.setContentView(R.layout.poll_broadcast_create_popup); //set dialog view
-        createPollBroadcastPopup.getWindow().setLayout(ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.WRAP_CONTENT);
-        createPollBroadcastPopup.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        downloadLink = null;
-
-        setPollQuestionET = createPollBroadcastPopup.findViewById(R.id.poll_create_question_editText);
-        setPollQuestionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        setPollOptionET = createPollBroadcastPopup.findViewById(R.id.poll_create_answer_option_editText);
-        setPollOptionET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        pollOptionsDisplay = createPollBroadcastPopup.findViewById(R.id.poll_create_answer_option_display);
-        btnAddPollOption = createPollBroadcastPopup.findViewById(R.id.poll_create_answer_option_add_btn);
-        pollAddPhoto = createPollBroadcastPopup.findViewById(R.id.poll_display_photo_add_broadcast);
-        pollUploadButtonView = createPollBroadcastPopup.findViewById(R.id.poll_add_photo_view);
-        pollAddPhotoText = createPollBroadcastPopup.findViewById(R.id.poll_upload_photo);
-        pollImageUploadInitiation = createPollBroadcastPopup.findViewById(R.id.poll_image_upload_initiate_layout);
-        pollExists = true;
-
-        btnUploadPollBroadcast = createPollBroadcastPopup.findViewById(R.id.upload_poll_broadcast_btn);
-        cancelPollButton = createPollBroadcastPopup.findViewById(R.id.create_poll_broadcast_cancel_btn);
-
-        cancelPollButton.setOnClickListener(view -> createPollBroadcastPopup.dismiss());
-
-        pollImageUploadInitiation.setOnClickListener(view -> {
-            pollImageUploadInitiation.setVisibility(View.GONE);
-            pollUploadButtonView.setVisibility(View.VISIBLE);
-        });
-
-        pollUploadButtonView.setOnClickListener(v -> {
-            Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
-        });
-
-        btnAddPollOption.setOnClickListener(view -> {
-
-            String option = setPollOptionET.getText().toString();
-
-            if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]") || option.isEmpty())) {
-                //checking for invalid characters
-                Toast.makeText(getApplicationContext(), "Option cannot use special characters or be empty", Toast.LENGTH_SHORT).show();
-            } else {
-                if (!option.isEmpty() && !setPollQuestionET.getText().toString().isEmpty()) {
-
-                    final TextView tv = generatePollOptionTV(option);
-
-                    tv.setOnClickListener(view1 -> {
-                        pollOptionsDisplay.removeView(tv);
-                        pollAnswerOptionsList.remove(tv.getText());
-                    });
-
-                    pollAnswerOptionsList.add(option);
-                    pollOptionsDisplay.addView(tv);
-                    setPollOptionET.setText("");
-                } else {
-                    Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnUploadPollBroadcast.setOnClickListener(view -> {
-            if (pollAnswerOptionsList.isEmpty() || setPollQuestionET.getText().toString().isEmpty())
-                Toast.makeText(getApplicationContext(), "Fill out all fields", Toast.LENGTH_SHORT).show();
-            else {
-                if (downloadLink != null)
-                    imageExists = true;
-                createPollBroadcast();
-            }
-        });
-        createPollBroadcastPopup.show();
-    }
-    private void createPhotoBroadcast() {
-        String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
-        String currentUserName = user.getName();
-        String currentUserId = user.getUserId();
-        Broadcast photoBroadcast = new Broadcast();
-        if (imageExists) {
-            photoBroadcast = new Broadcast(broadcastId, setTitlePhoto.getText().toString(), null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, false, true,
-                    System.currentTimeMillis(), null, user.getProfileImageLink(), 0, 0,true);
-        }
-
-
-        SendNotification.sendBCinfo(this, photoBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), setTitlePhoto.getText().toString());
-        //updating number of broadcasts in circle
-        int newCount = circle.getNoOfBroadcasts() + 1;
-        circle.setNoOfBroadcasts(newCount);
-        globalVariables.saveCurrentCircle(circle);
-
-        updateUserCount(circle);
-        //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), photoBroadcast, newCount);
-        pollExists = false;
-        imageExists = false;
-        createPhotoBroadcastPopup.dismiss();
-    }
-
-    private void createPollBroadcast() {
-        String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
-        String pollQuestion = setPollQuestionET.getText().toString();
-        Broadcast pollBroadcast = new Broadcast();
-        String currentUserName = user.getName();
-        String currentUserId = user.getUserId();
-
-        //creating poll options hashmap
-        HashMap<String, Integer> options = new HashMap<>();
-        if (!pollAnswerOptionsList.isEmpty()) {
-            for (String option : pollAnswerOptionsList)
-                options.put(option, 0);
-        }
-
-        if (pollExists) {
-
-            Poll poll = new Poll(pollQuestion, options, null);
-            if (imageExists) {
-                pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, true, true,
-                        System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0,true);
-            } else
-                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, circle.getMembersList(), currentUserId, true, false,
-                        System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0,true);
-        }
-        //updating number of broadcasts in circle
-        int newCount = circle.getNoOfBroadcasts() + 1;
-        circle.setNoOfBroadcasts(newCount);
-        globalVariables.saveCurrentCircle(circle);
-        SendNotification.sendBCinfo(this, pollBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
-        updateUserCount(circle);
-
-        //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), pollBroadcast, newCount);
-        pollExists = false;
-        imageExists = false;
-        pollAnswerOptionsList.clear();
-        createPollBroadcastPopup.dismiss();
-    }
-
-    public TextView generatePollOptionTV(String option) {
-        LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 110);
-        lparams.setMargins(0, 10, 20, 0);
-
-        final TextView tv = new TextView(CircleWall.this);
-        tv.setLayoutParams(lparams);
-        tv.setText(option);
-        tv.setTextColor(Color.WHITE);
-        tv.setGravity(Gravity.CENTER_VERTICAL);
-        tv.setBackground(getResources().getDrawable(R.drawable.poll_creation_item_option_background));
-        tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_white_24dp, 0);
-        tv.setPaddingRelative(40, 10, 40, 10);
-
-        return tv;
-    }
-
     private void uploadPicture(){
         imageUploadModel.imageUpload(filePath);
     }

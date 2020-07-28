@@ -115,21 +115,6 @@ public class NewUserRegistration extends ViewModel {
     }
 
     public static void createInitialCircles(String district){
-        /*
-        //admin circle
-        String adminCircleId, adminNormalBroadcastId, adminPollBroadcastId;
-        adminCircleId = HelperMethods.createCircle("Meet The Developers", "Get started by joining this circle to connect with the creators and get a crashcourse on how to use The Circle App.",
-                "Automatic", "The Circle Team", "Admin World", 2, 0, "The Circle App");
-        adminNormalBroadcastId = HelperMethods.createMessageBroadcast("Hi guys, Welcome to Circle", "Use this app to form circles " +
-                "to find people around you that enjoy doing the same things as you. Organise events, make announcements and get " +
-                "opinions. All on a single platform!", "Admin", 1, 0, adminCircleId);
-        HashMap<String, Integer> adminPollOptions = new HashMap<>(); //creating poll options
-        adminPollOptions.put("This app is amazing!", 0);
-        adminPollOptions.put("I'd like to see some changes", 0);
-        adminPollOptions.put("meh :D", 0);
-        adminPollBroadcastId = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!", "Admin",
-                2, adminPollOptions, null, 0, adminCircleId);
-*/
 
         //quarantine circle
         String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;

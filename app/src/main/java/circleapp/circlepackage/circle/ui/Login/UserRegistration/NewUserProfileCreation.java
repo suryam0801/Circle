@@ -331,7 +331,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        EditText myEditText = (EditText) v;
 
         if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
                 keyCode == EditorInfo.IME_ACTION_DONE ||

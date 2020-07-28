@@ -27,8 +27,7 @@ import circleapp.circlepackage.circle.data.ObjectModels.User;
 
 public class CreateNormalBroadcastDialog {
     private Dialog createNormalBroadcastPopup;
-    private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
-    private TextView broadcastHeader;
+    private EditText setTitleET, setMessageET;
     private Button btnUploadNormalBroadcast, cancelNormalButton;
     Activity activity;
     CircleWall circleWall;
@@ -76,7 +75,6 @@ public class CreateNormalBroadcastDialog {
         globalVariables = new GlobalVariables();
         user = globalVariables.getCurrentUser();
         circle = globalVariables.getCurrentCircle();
-        broadcastHeader = createNormalBroadcastPopup.findViewById(R.id.broadcast_header);
         btnUploadNormalBroadcast = createNormalBroadcastPopup.findViewById(R.id.upload_normal_broadcast_btn);
         cancelNormalButton = createNormalBroadcastPopup.findViewById(R.id.create_normal_broadcast_cancel_btn);
         setTitleET = createNormalBroadcastPopup.findViewById(R.id.broadcastTitleEditText);
