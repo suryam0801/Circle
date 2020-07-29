@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_weight="100"
     android:orientation="vertical"
-    tools:context=".CircleWall.FullPageBroadcastCardView">
+    tools:context=".ui.CircleWall.FullPageBroadcastCardView">
 
     <RelativeLayout
         android:layout_width="match_parent"

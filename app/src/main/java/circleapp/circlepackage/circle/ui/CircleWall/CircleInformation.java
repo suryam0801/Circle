@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,9 +24,9 @@ import java.util.List;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;

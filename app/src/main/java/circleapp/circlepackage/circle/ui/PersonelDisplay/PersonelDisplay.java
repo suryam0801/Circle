@@ -17,11 +17,11 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 

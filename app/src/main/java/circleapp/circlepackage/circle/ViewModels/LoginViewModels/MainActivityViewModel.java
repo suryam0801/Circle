@@ -4,21 +4,13 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class MainActivityViewModel extends AndroidViewModel {
 

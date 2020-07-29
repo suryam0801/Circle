@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ObjectModels;
+package circleapp.circlepackage.circle.Model.ObjectModels;
 
 import android.os.Parcel;
 import android.os.Parcelable;

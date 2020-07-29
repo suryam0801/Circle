@@ -1,18 +1,14 @@
 package circleapp.circlepackage.circle.ViewModels.FBDatabaseReads;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.gson.Gson;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseQueryLiveData;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
+import circleapp.circlepackage.circle.DataLayer.FirebaseQueryLiveData;
+import circleapp.circlepackage.circle.DataLayer.FirebaseSingleValueRead;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
 
 public class MyCirclesViewModel extends ViewModel {
     private GlobalVariables globalVariables = new GlobalVariables();

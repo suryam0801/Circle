@@ -19,10 +19,10 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 

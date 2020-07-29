@@ -22,9 +22,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.data.ObjectModels.Notification;
+import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 

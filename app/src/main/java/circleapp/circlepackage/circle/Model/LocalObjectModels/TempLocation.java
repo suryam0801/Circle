@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.LocalObjectModels;
+package circleapp.circlepackage.circle.Model.LocalObjectModels;
 
 public class TempLocation {
     public TempLocation() {

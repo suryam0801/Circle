@@ -8,14 +8,13 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class CircleWallViewModel extends ViewModel {
     private MutableLiveData<Boolean> creationState;

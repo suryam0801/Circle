@@ -6,14 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.Notification;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 
 public class SendNotification {

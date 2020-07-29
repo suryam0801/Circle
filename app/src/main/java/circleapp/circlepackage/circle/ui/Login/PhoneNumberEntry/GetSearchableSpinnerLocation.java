@@ -1,6 +1,5 @@
 package circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -10,7 +9,7 @@ import java.util.List;
 
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 
 public class GetSearchableSpinnerLocation {
     private Context mContext;

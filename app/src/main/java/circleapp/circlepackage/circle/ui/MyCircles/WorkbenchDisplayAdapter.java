@@ -23,14 +23,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
-import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 

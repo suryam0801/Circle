@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 

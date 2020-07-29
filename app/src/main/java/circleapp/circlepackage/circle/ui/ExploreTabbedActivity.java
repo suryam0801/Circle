@@ -30,8 +30,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
@@ -39,9 +39,9 @@ import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;

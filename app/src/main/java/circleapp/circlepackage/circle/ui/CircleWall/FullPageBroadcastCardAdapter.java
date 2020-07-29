@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,11 +40,11 @@ import java.util.Map;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.Comment;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
+import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import de.hdodenhof.circleimageview.CircleImageView;

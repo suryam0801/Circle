@@ -1,8 +1,6 @@
-package circleapp.circlepackage.circle.data.ObjectModels;
+package circleapp.circlepackage.circle.Model.ObjectModels;
 
 import java.util.HashMap;
-
-import circleapp.circlepackage.circle.data.LocalObjectModels.Poll;
 
 public class Broadcast {
     private String id, title, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;

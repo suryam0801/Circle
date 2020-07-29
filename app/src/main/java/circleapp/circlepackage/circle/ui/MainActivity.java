@@ -20,7 +20,7 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.MainActivityViewModel;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.OnBoarding.get_started_first_page;
 import circleapp.circlepackage.circle.R;

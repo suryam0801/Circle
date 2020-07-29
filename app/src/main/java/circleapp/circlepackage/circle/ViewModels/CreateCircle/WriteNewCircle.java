@@ -1,14 +1,10 @@
 package circleapp.circlepackage.circle.ViewModels.CreateCircle;
 
-import android.app.Activity;
-import android.content.Context;
-
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class WriteNewCircle {
     public WriteNewCircle(){}

@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle.Utils.LocationHelper;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.location.Address;
@@ -10,14 +9,12 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,12 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
-import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
-
-import static androidx.core.content.ContextCompat.getSystemService;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 
 public class LocationHelper extends AndroidViewModel {
 
