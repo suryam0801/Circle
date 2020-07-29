@@ -238,7 +238,8 @@ public class EditProfileImage extends AppCompatActivity {
                 }
                 avatar = "";
                 editUserProfiledialogue.dismiss();
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditProfileClassTemp);
+                ImagePicker imagePicker = new ImagePicker(EditProfileClassTemp.getApplication());
+                Intent chooseImageIntent = imagePicker.getPickImageIntent();
                 EditProfileClassTemp.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
             }
         });

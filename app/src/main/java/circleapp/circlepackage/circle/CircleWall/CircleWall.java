@@ -488,8 +488,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                    pickImageIntent();
                 }
                 @Override
                 public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -541,8 +540,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             Permissions.check(this/*context*/, CAMERA, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
-                    Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
-                    startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+                    pickImageIntent();
                 }
                 @Override
                 public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -587,6 +585,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             }
         });
         createPollBroadcastPopup.show();
+    }
+
+    private void pickImageIntent(){
+        ImagePicker imagePicker = new ImagePicker(getApplication());
+        Intent chooseImageIntent = imagePicker.getPickImageIntent();
+        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
     private void createPhotoBroadcast() {
         String currentCircleId = circle.getId();
@@ -680,8 +684,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case PICK_IMAGE_ID:
-                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                filePath = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath = imagePicker.getImageUri(bitmap);
                 if(filePath !=null){
                     uploadPicture();
                 }

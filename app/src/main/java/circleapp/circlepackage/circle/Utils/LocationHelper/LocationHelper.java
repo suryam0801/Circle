@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.Utils.LocationHelper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.location.Address;
 import android.location.Criteria;
@@ -13,6 +14,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -29,7 +32,7 @@ import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
-public class LocationHelper extends ViewModel {
+public class LocationHelper extends AndroidViewModel {
 
     private LocationManager locationManager;
     private Location location;
@@ -40,22 +43,27 @@ public class LocationHelper extends ViewModel {
     private Context mContext;
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    private MutableLiveData<Boolean> isLocationSuccess;
-    public MutableLiveData<Boolean> listenForLocationUpdates(Boolean updatedLocationStatus, Context context) {
+    private MutableLiveData<Boolean> isLocationSuccess = new MutableLiveData<>();
+
+    public LocationHelper(@NonNull Application application) {
+        super(application);
+        mContext = application;
+    }
+
+    public MutableLiveData<Boolean> listenForLocationUpdates(Boolean updatedLocationStatus) {
         if (!updatedLocationStatus) {
             isLocationSuccess = new MutableLiveData<>();
         }
         else {
-            getLocation(context);
+            getLocation();
         }
         return isLocationSuccess;
     }
 
 
     @SuppressLint("MissingPermission")
-    public void getLocation(Context context)
+    public void getLocation()
     {
-        mContext = context;
         //get Last known location
         LocationManager lm = (LocationManager)mContext.getSystemService(Context.LOCATION_SERVICE);
         location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);

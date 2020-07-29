@@ -40,19 +40,18 @@ import static android.Manifest.permission.CAMERA;
 public class CreatePhotoBroadcastDialog {
     private static final int PICK_IMAGE_ID = 234;
     private Dialog createPhotoBroadcastPopup;
-    private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
-    public TextView addPhotoText;
+    private EditText setTitlePhoto;
+    private TextView addPhotoText;
     private Button btnUploadPhotoBroadcast, cancelPhotoButton;
-    Activity activity;
+    private Activity activity;
     public ImageView addPhoto;
-    private ImageView pollAddPhoto;
-    CircleWall circleWall;
-    Uri downloadLink;
-    GlobalVariables globalVariables;
+    private CircleWall circleWall;
+    private Uri downloadLink;
+    private GlobalVariables globalVariables;
     private CircleWallViewModel circleWallViewModel;
     public RelativeLayout photoUploadButtonView;
-    User user;
-    Circle circle;
+    private User user;
+    private Circle circle;
     public void showCreatePhotoBroadcastDialog(Activity activity) {
         globalVariables = new GlobalVariables();
         this.activity = activity;
@@ -69,7 +68,7 @@ public class CreatePhotoBroadcastDialog {
                 circleWall.imageExists = true;
                 String title = setTitlePhoto.getText().toString();
                 circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
-                circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,circleWall.imageExists,activity).observe((LifecycleOwner) activity, state->{
+                circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,circleWall.imageExists, activity).observe((LifecycleOwner) activity, state->{
                     if (state){
                         circleWall.pollExists = false;
                         circleWall.imageExists = false;
@@ -92,7 +91,8 @@ public class CreatePhotoBroadcastDialog {
         Permissions.check(activity/*context*/,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
+                ImagePicker imagePicker = new ImagePicker(activity.getApplication());
+                Intent chooseImageIntent = imagePicker.getPickImageIntent();
                 activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
             }
             @Override

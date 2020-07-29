@@ -249,7 +249,8 @@ public class CreateCircle extends AppCompatActivity {
         }
     }
     private void sendImageUploadIntent(){
-        Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+        ImagePicker imagePicker = new ImagePicker(getApplication());
+        Intent chooseImageIntent = imagePicker.getPickImageIntent();
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
     private void uploadCircleLogo(){
@@ -281,8 +282,9 @@ public class CreateCircle extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case PICK_IMAGE_ID:
-                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                filePath = ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath = imagePicker.getImageUri(bitmap);
                 if(filePath !=null){
                     uploadCircleLogo();
                 }
