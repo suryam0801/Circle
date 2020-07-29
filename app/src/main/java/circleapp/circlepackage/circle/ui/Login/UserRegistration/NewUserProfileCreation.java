@@ -234,7 +234,8 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     }
 
     private void runPhotoUploadIntent(){
-        Intent chooseImageIntent = ImagePicker.getPickImageIntent(getApplicationContext());
+        ImagePicker imagePicker = new ImagePicker(getApplication());
+        Intent chooseImageIntent = imagePicker.getPickImageIntent();
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
 
@@ -301,8 +302,9 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
 
         switch (requestCode) {
             case PICK_IMAGE_ID:
-                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                filePath = ImagePicker.getImageUri(getApplicationContext(), bitmap);
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath = imagePicker.getImageUri(bitmap);
                 if (filePath != null) {
                     uploadUserProfilePic();
                 }

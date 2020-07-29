@@ -51,12 +51,12 @@ public class CreatePollBroadcastDialog {
     private Button btnAddPollOption,btnUploadPollBroadcast, cancelPollButton;
     private TextView pollAddPhotoText;
     private List<String> pollAnswerOptionsList = new ArrayList<>();
-    CircleWall circleWall;
+    private CircleWall circleWall;
     public RelativeLayout pollUploadButtonView;
-    Circle circle;
-    User user;
-    Activity activity;
-    Uri downloadLink;
+    private Circle circle;
+    private User user;
+    private Activity activity;
+    private Uri downloadLink;
 
 
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -128,7 +128,8 @@ public class CreatePollBroadcastDialog {
         Permissions.check(activity/*context*/, CAMERA, null, new PermissionHandler() {
             @Override
             public void onGranted() {
-                Intent chooseImageIntent = ImagePicker.getPickImageIntent(activity);
+                ImagePicker imagePicker= new ImagePicker(activity.getApplication());
+                Intent chooseImageIntent = imagePicker.getPickImageIntent();
                 activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
             }
             @Override

@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -29,7 +28,7 @@ public class EntryPage extends AppCompatActivity{
     private static final String TAG = EntryPage.class.getSimpleName();
     private Button agreeContinue;
     private Boolean locationUpdateStatus = false;
-    private LocationHelper locationHelper;
+    private LocationHelper locationHelper = new LocationHelper(getApplication());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class EntryPage extends AppCompatActivity{
                 @Override
                 public void onGranted() {
                     agreeContinue.setText("Getting Location");
-                    locationHelper.getLocation(EntryPage.this);
+                    locationHelper.getLocation();
                 }
                 @Override
                 public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -58,11 +57,11 @@ public class EntryPage extends AppCompatActivity{
 
     private void setLocationHelperObserver(){
         locationHelper = ViewModelProviders.of(this).get(LocationHelper.class);
-        locationHelper.listenForLocationUpdates(locationUpdateStatus, this).observe(this, locationUpdates -> {
+        locationHelper.listenForLocationUpdates(locationUpdateStatus).observe(this, locationUpdates -> {
             if(locationUpdates==false){
                 buildAlertMessageNoGps();
             }
-            else
+            else if(locationUpdates)
             {
                 goToNextActivity();
             }

@@ -139,8 +139,9 @@ public class EditProfile extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case PICK_IMAGE_ID:
-                Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                filePath= ImagePicker.getImageUri(getApplicationContext(),bitmap);
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath= imagePicker.getImageUri(bitmap);
                 if(filePath !=null){
                     uploadUserProfilePic();
                 }
