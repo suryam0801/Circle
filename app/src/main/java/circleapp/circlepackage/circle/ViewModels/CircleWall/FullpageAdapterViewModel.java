@@ -2,13 +2,13 @@ package circleapp.circlepackage.circle.ViewModels.CircleWall;
 
 import android.content.Context;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.Comment;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class FullpageAdapterViewModel {
 

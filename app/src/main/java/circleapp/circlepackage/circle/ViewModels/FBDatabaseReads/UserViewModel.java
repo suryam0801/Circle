@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseSingleValueRead;
+import circleapp.circlepackage.circle.DataLayer.FirebaseSingleValueRead;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class UserViewModel extends ViewModel {

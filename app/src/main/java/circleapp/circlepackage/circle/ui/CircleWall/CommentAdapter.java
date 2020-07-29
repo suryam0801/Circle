@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,9 +18,9 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.Comment;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 

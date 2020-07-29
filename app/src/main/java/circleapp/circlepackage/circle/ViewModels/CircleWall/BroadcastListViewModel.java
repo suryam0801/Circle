@@ -1,8 +1,8 @@
 package circleapp.circlepackage.circle.ViewModels.CircleWall;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class BroadcastListViewModel {
     public BroadcastListViewModel(){}

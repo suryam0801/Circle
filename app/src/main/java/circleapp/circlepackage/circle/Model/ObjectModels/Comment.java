@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ObjectModels;
+package circleapp.circlepackage.circle.Model.ObjectModels;
 
 public class Comment {
     private String id, commentorName, comment, commentorId, commentorPicURL;

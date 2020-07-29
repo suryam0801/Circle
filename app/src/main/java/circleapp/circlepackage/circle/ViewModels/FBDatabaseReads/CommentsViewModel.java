@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseQueryLiveData;
+import circleapp.circlepackage.circle.DataLayer.FirebaseQueryLiveData;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class CommentsViewModel extends ViewModel {

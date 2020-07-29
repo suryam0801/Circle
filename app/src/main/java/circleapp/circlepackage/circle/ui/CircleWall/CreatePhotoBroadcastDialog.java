@@ -27,13 +27,12 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 import static android.Manifest.permission.CAMERA;
 

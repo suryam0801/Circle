@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.data.ObjectModels.Feedback;
+import circleapp.circlepackage.circle.Model.ObjectModels.Feedback;
 import circleapp.circlepackage.circle.R;
 
 public class FeedbackAdapter extends BaseAdapter {

@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.data.ObjectModels;
+package circleapp.circlepackage.circle.Model.ObjectModels;
 
 public class ReportAbuse {
     String reportAbuseID ,circleID,broadcastID, commentID, creatorID, userID, reportType;

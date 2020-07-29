@@ -1,6 +1,5 @@
 package circleapp.circlepackage.circle.Utils.UploadImages;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
 
@@ -20,7 +19,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.Objects;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class ImageUpload extends ViewModel {

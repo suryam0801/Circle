@@ -31,17 +31,17 @@ import com.suke.widget.SwitchButton;
 
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.CircleWall.CircleWall;
-import circleapp.circlepackage.circle.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.LocalObjectModels.Subscriber;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 

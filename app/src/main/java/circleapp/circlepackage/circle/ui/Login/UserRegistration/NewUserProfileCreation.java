@@ -36,16 +36,16 @@ import com.nabinbhandari.android.permissions.Permissions;
 import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.FirebaseHelpers.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
-import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;

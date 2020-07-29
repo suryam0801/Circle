@@ -4,18 +4,16 @@ import android.app.Application;
 import android.net.Uri;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
-import java.net.URI;
 import java.util.List;
 
-import circleapp.circlepackage.circle.data.LocalObjectModels.LoginUserObject;
-import circleapp.circlepackage.circle.data.LocalObjectModels.TempLocation;
-import circleapp.circlepackage.circle.data.ObjectModels.Broadcast;
-import circleapp.circlepackage.circle.data.ObjectModels.Circle;
-import circleapp.circlepackage.circle.data.ObjectModels.User;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class GlobalVariables extends Application {
     public GlobalVariables(){
