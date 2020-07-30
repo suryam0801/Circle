@@ -13,6 +13,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Collections;
 import java.util.HashMap;
 import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -80,15 +81,15 @@ public class NewUserRegistration extends ViewModel {
             //creaeting the user object
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
-            user = new User(Name, contact, downloadUri.toString(), userId, 0, 0, 0, token_id, ward,
+            user = new User(Name, contact, downloadUri.toString(), userId, 0, null, 0, token_id, ward,
                     district, null, null, null, null);
         } else if (!avatar.equals("")) {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
-            user = new User(Name, contact, avatar, userId, 0, 0, 0, token_id, ward, district,
+            user = new User(Name, contact, avatar, userId, 0, null, 0, token_id, ward, district,
                     null, null, null, null);
         } else {
-            user = new User(Name, contact, "default", userId, 0, 0, 0,
+            user = new User(Name, contact, "default", userId, 0, null, 0,
                     token_id, ward, district, null, null, null, null);
         }
         //storing user as a json in file locally

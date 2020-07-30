@@ -127,7 +127,13 @@ public class EditProfile extends AppCompatActivity {
         userName.setText(globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName());
         userNumber.setText(globalVariables.getAuthenticationToken().getCurrentUser().getPhoneNumber());
         createdCircles.setText(user.getCreatedCircles() + "");
-        workingCircles.setText(user.getActiveCircles() + "");
+        int activeCircles;
+        if(user.getActiveCircles()==null)
+            activeCircles = 0;
+        else {
+            activeCircles = user.getActiveCircles().size();
+        }
+        workingCircles.setText(activeCircles + "");
         HelperMethodsUI.setUserProfileImage(user, this, profileImageView);
     }
     private void uploadUserProfilePic(){

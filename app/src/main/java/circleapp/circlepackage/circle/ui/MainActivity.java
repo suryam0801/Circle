@@ -5,6 +5,7 @@ import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
@@ -51,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
             liveData.observe((LifecycleOwner) this, dataSnapshot -> {
                 if (dataSnapshot.exists()) {
                     User user = dataSnapshot.getValue(User.class);
+                    //for workbench display
+                    if(user.getActiveCircles()!=null)
+                    globalVariables.setInvolvedCircles(user.getCreatedCircles()+user.getActiveCircles().size());
+                    else
+                        globalVariables.setInvolvedCircles(user.getCreatedCircles());
                     mainActivityViewModel.saveUserToSession(user);
                     sendUserToHome();
                 } else {

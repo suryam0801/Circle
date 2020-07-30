@@ -7,11 +7,12 @@ public class User  {
 
 
     private String Name, contact, profileImageLink, userId, token_id, district, ward;
+    private HashMap<String, Boolean> activeCircles;
     private HashMap<String, Integer> notificationsAlert;
     private HashMap<String, Integer> noOfReadDiscussions;
     private HashMap<String, Long> newTimeStampsComments;
     private List<String> mutedBroadcasts;
-    private int createdCircles, activeCircles, completedProjects;
+    private int createdCircles, completedProjects;
 
 
     public User(){
@@ -20,7 +21,7 @@ public class User  {
 
     public User(String Name, String contact,
                 String profileImageLink, String userId,
-                int createdCircles, int activeCircles, int completedProjects, String token_id,
+                int createdCircles, HashMap<String, Boolean> activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
                 HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> mutedBroadcasts) {
         this.Name = Name;
@@ -43,11 +44,11 @@ public class User  {
         this.createdCircles = createdCircles;
     }
 
-    public int getActiveCircles() {
+    public HashMap<String, Boolean> getActiveCircles() {
         return activeCircles;
     }
 
-    public void setActiveCircles(int activeCircles) {
+    public void setActiveCircles(HashMap<String, Boolean> activeCircles) {
         this.activeCircles = activeCircles;
     }
 
