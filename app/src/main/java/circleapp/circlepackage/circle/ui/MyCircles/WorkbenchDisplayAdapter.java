@@ -23,10 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -104,7 +105,8 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             }
 
             //Save user
-            FirebaseWriteHelper.updateUser(user);
+            UserRepository userRepository = new UserRepository();
+             userRepository.updateUser(user);
             globalVariables.saveCurrentCircle(circle);
             globalVariables.saveCurrentUser(user);
 

@@ -21,9 +21,10 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
@@ -153,7 +154,8 @@ public class WorkbenchFragment extends Fragment {
         //add new circle to list
         workbenchCircleList.add(circle);
         wbadapter.notifyDataSetChanged();
-        FirebaseWriteHelper.initializeNewCount( circle, user);
+        UserRepository userRepository = new UserRepository();
+        userRepository.initializeNewCount( circle, user);
         emptyDisplay.setVisibility(View.GONE);
     }
 

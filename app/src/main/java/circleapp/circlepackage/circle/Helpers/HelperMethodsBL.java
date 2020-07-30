@@ -1,11 +1,16 @@
 package circleapp.circlepackage.circle.Helpers;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.FBRepository;
+import circleapp.circlepackage.circle.DataLayer.NotificationRepository;
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
@@ -38,14 +43,14 @@ public class HelperMethodsBL {
             commentTimeStampTemp = new HashMap<>();
             commentTimeStampTemp.put(b.getId(), (long) 0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
-            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         } else if (user.getNewTimeStampsComments() != null && !user.getNewTimeStampsComments().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             commentTimeStampTemp = new HashMap<>(user.getNewTimeStampsComments());
             commentTimeStampTemp.put(b.getId(), (long) 0);
             user.setNewTimeStampsComments(commentTimeStampTemp);
-            FirebaseWriteHelper.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         }
+        UserRepository userRepository = new UserRepository();
+        userRepository.updateUserNewTimeStampComments(user.getUserId(), b.getId(), b.getLatestCommentTimestamp());
         globalVariables.saveCurrentUser(user);
     }
     //BL
@@ -56,19 +61,20 @@ public class HelperMethodsBL {
             userNoReadComments = new HashMap<>();
             userNoReadComments.put(b.getId(), b.getNumberOfComments());
             user.setNoOfReadDiscussions(userNoReadComments);
-            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
             userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
             userNoReadComments.put(b.getId(), 0);
             user.setNoOfReadDiscussions(userNoReadComments);
-            FirebaseWriteHelper.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         }
+        UserRepository userRepository = new UserRepository();
+        userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
         globalVariables.saveCurrentUser(user);
     }
     //BL
     public static void updateUserFields(Broadcast broadcast, String navFrom, User user) {
         HashMap<String, Integer> tempNoOfDiscussion;
+        UserRepository userRepository = new UserRepository();
         if (user.getNoOfReadDiscussions() != null)
             tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
         else
@@ -84,13 +90,13 @@ public class HelperMethodsBL {
                     updateDiscussionInt = 0;
                 tempNoOfDiscussion.put(broadcast.getId(), updateDiscussionInt + 1);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                FirebaseWriteHelper.updateUser(user);
+                userRepository.updateUser(user);
                 break;
 
             case "view":
                 tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
-                FirebaseWriteHelper.updateUser(user);
+                userRepository.updateUser(user);
                 break;
         }
 
@@ -103,7 +109,7 @@ public class HelperMethodsBL {
 
         tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
         user.setNewTimeStampsComments(tempCommentTimeStamps);
-        FirebaseWriteHelper.updateUser(user);
+        userRepository.updateUser(user);
     }
 
     //BL
@@ -200,6 +206,27 @@ public class HelperMethodsBL {
         }
     }
     public static void sendUserApplicationToCreator(User user, Subscriber subscriber, Circle circle){
-        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
+        CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
+        circlePersonnelRepository.applyOrJoin(circle, user, subscriber);
+    }
+
+    public static void writeReportAbuse(Context context,String circleID,String broadcastID,String commentID,String  creatorID,String  userID,String  reportType){
+        FBRepository fbRepository = new FBRepository();
+        fbRepository.createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
+    }
+
+    public static void navToNotificationSource(Context mContext, Notification notif, int position, String broadcastId){
+        NotificationRepository notificationRepository = new NotificationRepository();
+        notificationRepository.NotifyOnclickListener(mContext, notif, position, broadcastId);
+    }
+
+    public static void deleteCircle(Circle circle, User user){
+        CircleRepository circleRepository = new CircleRepository();
+        circleRepository.deleteCircle(circle, user);
+    }
+
+    public static void exitCircle(Circle circle, User user){
+        CircleRepository circleRepository = new CircleRepository();
+        circleRepository.exitCircle(circle, user);
     }
 }

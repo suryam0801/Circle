@@ -18,7 +18,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FBRepository;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class OtpViewModel extends ViewModel {
     //    public  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
@@ -55,7 +56,8 @@ public class OtpViewModel extends ViewModel {
 
         public void signInWithPhoneAuthCredential (PhoneAuthCredential
         credential, PhoneCallbacksListener listener){
-            FirebaseWriteHelper.getAuthToken().signInWithCredential(credential)
+            FBRepository fbRepository = new FBRepository();
+            fbRepository.getAuthToken().signInWithCredential(credential)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override

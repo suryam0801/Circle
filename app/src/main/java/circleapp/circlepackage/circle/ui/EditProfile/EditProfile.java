@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
@@ -97,7 +97,8 @@ public class EditProfile extends AppCompatActivity {
 //            edituserNamedialogue();
         });
         logout.setOnClickListener(view -> {
-            FirebaseWriteHelper.signOutAuth();
+            FBRepository fbRepository = new FBRepository();
+            fbRepository.signOutAuth();
             startActivity(new Intent(EditProfile.this, EntryPage.class));
             finish();
         });

@@ -13,9 +13,12 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.Collections;
 import java.util.HashMap;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+
+import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.FBRepository;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
@@ -46,19 +49,20 @@ public class NewUserRegistration extends ViewModel {
                     .build();
 
             //update the user display name
-            FirebaseWriteHelper.getAuthToken().getCurrentUser().updateProfile(profileUpdates)
+            globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             //Adding the user to collection
                             if (!locationExists){
-                                FirebaseWriteHelper.addDistrict(district);
+                                FBRepository fbRepository = new FBRepository();
+                                fbRepository.addDistrict(district);
                                 createInitialCircles(district);
                             }
 
                             uploadUserData(userId,downloadUri,Name,contact,avatar,district,ward);
                         } else {
                             //to signout the current firebase user
-                            FirebaseWriteHelper.getAuthToken().signOut();
+                            globalVariables.getAuthenticationToken().signOut();
                             //delete the user details
                             globalVariables.getAuthenticationToken().getCurrentUser().delete();
                         }
@@ -127,13 +131,14 @@ public class NewUserRegistration extends ViewModel {
         adminPollBroadcastId = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!", "Admin",
                 2, adminPollOptions, null, 0, adminCircleId);
 */
-
+        CircleRepository circleRepository = new CircleRepository();
+        BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
         //quarantine circle
         String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
-        quarantineCircleId = FirebaseWriteHelper.createDefaultCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
+        quarantineCircleId = circleRepository.createDefaultCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
                 "Automatic", "Vijay Ram", district, 2, 0, "Community Discussion");
 
-        quarantineNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
+        quarantineNormalBroadcastId = broadcastsRepository.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
                         " can help eachother stay safe and clarify any doubts in these uncertain times :)", "Mekkala Nair", 1,
                 0,quarantineCircleId);
 
@@ -141,17 +146,17 @@ public class NewUserRegistration extends ViewModel {
         quarantinePollOptions.put("Lets find out at 8 PM", 0);
         quarantinePollOptions.put("Never :(", 0);
         quarantinePollOptions.put("Soon? Please be soon!", 0);
-        quarantinePollBroadcastId = FirebaseWriteHelper.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
+        quarantinePollBroadcastId = broadcastsRepository.createPollBroadcast("How much longer do you guys think our PM will extend lockdown?", "Jacob Abraham",
                 2, quarantinePollOptions,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/modi-us-2126610f-1481508682.jpg?alt=media&token=5ff4230c-945f-4918-9c21-bff5f90c75e9"
                 , 0, quarantineCircleId);
 
         //students circle
         String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
-        studentsCircleId = FirebaseWriteHelper.createDefaultCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
+        studentsCircleId = circleRepository.createDefaultCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
                         "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
                 district, 0, 0, "Students & Clubs");
 
-        studentsNormalBroadcastId = FirebaseWriteHelper.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
+        studentsNormalBroadcastId = broadcastsRepository.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
                 "You have the support of all the students from " + district + " here!", "Srinithi", 1, 0, studentsCircleId);
 
         HashMap<String, Integer> pollOptionsStudentsCircle = new HashMap<>(); //creating poll options
@@ -159,7 +164,7 @@ public class NewUserRegistration extends ViewModel {
         pollOptionsStudentsCircle.put("im preparing :(", 0);
         pollOptionsStudentsCircle.put("screw it! lets go with the flow", 0);
 
-        studentsPollBroadcastId = FirebaseWriteHelper.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
+        studentsPollBroadcastId = broadcastsRepository.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
                 pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/k9rd8iesn6ygrioen9cv.jpg?alt=media&token=220677ac-6e5f-473e-a28d-ae5c034e83e1",
                 0, studentsCircleId);
     }

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
@@ -19,11 +19,12 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 public class CircleWallViewModel extends ViewModel {
     private MutableLiveData<Boolean> creationState;
     private GlobalVariables globalVariables;
+    private BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
 
     public MutableLiveData<Boolean> createBroadcast(String title, String description, Circle circle, User user, Activity activity){
         creationState = new MutableLiveData<>();
         String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
+        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
         globalVariables  = new GlobalVariables();
@@ -41,7 +42,7 @@ public class CircleWallViewModel extends ViewModel {
         globalVariables.saveCurrentCircle(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), normalBroadcast, newCount);
+        broadcastsRepository.writeBroadcast(circle.getId(), normalBroadcast, newCount);
 
         creationState.setValue(true);
         return creationState;
@@ -49,7 +50,7 @@ public class CircleWallViewModel extends ViewModel {
     public MutableLiveData<Boolean> createPhotoBroadcast(String title, Uri downloadLink, Circle circle, User user, boolean imageExists, Activity activity) {
         creationState = new MutableLiveData<>();
         String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
+        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
         Broadcast photoBroadcast = new Broadcast();
@@ -68,7 +69,7 @@ public class CircleWallViewModel extends ViewModel {
         globalVariables.saveCurrentCircle(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), photoBroadcast, newCount);
+        broadcastsRepository.writeBroadcast(circle.getId(), photoBroadcast, newCount);
         creationState.setValue(true);
         return creationState;
     }
@@ -77,7 +78,7 @@ public class CircleWallViewModel extends ViewModel {
         creationState = new MutableLiveData<>();
         globalVariables  = new GlobalVariables();
         String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
+        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
         Broadcast pollBroadcast = new Broadcast();
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
@@ -99,7 +100,7 @@ public class CircleWallViewModel extends ViewModel {
         SendNotification.sendBCinfo(activity, pollBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), pollBroadcast, newCount);
+        broadcastsRepository.writeBroadcast(circle.getId(), pollBroadcast, newCount);
         creationState.setValue(true);
         return creationState;
     }

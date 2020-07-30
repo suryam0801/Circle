@@ -31,10 +31,10 @@ import com.suke.widget.SwitchButton;
 
 import java.util.HashMap;
 
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
@@ -211,9 +211,10 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     private void setLocalCircleObject(){
+        CircleRepository circleRepository = new CircleRepository();
         user = globalVariables.getCurrentUser();
         String category = getIntent().getStringExtra("category_name");
-        String myCircleID = FirebaseWriteHelper.getCircleId();
+        String myCircleID = circleRepository.getCircleId();
         String creatorUserID = user.getUserId();
         String creatorName = user.getName();
 
