@@ -42,16 +42,7 @@ public class EditProfileViewModel extends ViewModel {
                 imageprogress.setValue(true);
             }
         });
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(MyCirclesViewModel.class);
-
-        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
-
-        liveData.observe((LifecycleOwner) editProfileClassTemp, returnArray -> {
-            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
-            Log.d("12345",circle.toString());
-            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
-            FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
-        });
+        FirebaseWriteHelper.updateCirclePersonnelUserIfInvolved(user, new Subscriber(user,System.currentTimeMillis()));
         Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return imageprogress;
     }
@@ -66,16 +57,8 @@ public class EditProfileViewModel extends ViewModel {
                 nameprogress.setValue(true);
             }
         });
-        MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) editProfileClassTemp).get(MyCirclesViewModel.class);
-
-        liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
-
-        liveData.observe((LifecycleOwner) editProfileClassTemp, returnArray -> {
-            Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
-            Log.d("12345",circle.toString());
-            Subscriber temp_subscriber = new Subscriber(globalVariables.getCurrentUser(),System.currentTimeMillis());
-            FirebaseWriteHelper.updateCirclePersonnel(globalVariables.getCurrentUser(),circle,temp_subscriber);
-        });
+        //update circle personnel
+        FirebaseWriteHelper.updateCirclePersonnelUserIfInvolved(user, new Subscriber(user,System.currentTimeMillis()));
         Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return nameprogress;
     }

@@ -224,8 +224,16 @@ public class FirebaseWriteHelper {
 
     }
 
-    public static void updateCirclePersonnel(User user, Circle circle, Subscriber subscriber){
-        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
+    public static void updateCirclePersonnelUserIfInvolved(User user, Subscriber subscriber){
+        String key;
+        for(Map.Entry<String, Boolean> entry : user.getActiveCircles().entrySet()) {
+            key = entry.getKey();
+            updateCirclePersonnel(user, key, subscriber);
+        }
+    }
+
+    public static void updateCirclePersonnel(User user, String  circleId, Subscriber subscriber){
+        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(user.getUserId()).setValue(subscriber);
         Log.d("123457","JobDone!!!!!!");
     }
 
