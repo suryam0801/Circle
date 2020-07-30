@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,11 +93,7 @@ public class WorkbenchFragment extends Fragment {
         //adapter adds all items from the circle list and displays them in individual circles in the recycler view
         wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
         wbrecyclerView.setAdapter(wbadapter);
-
-        //remove placeholder
-        if (user.getActiveCircles() == 0 && user.getCreatedCircles() == 0)
-            emptyDisplay.setVisibility(View.VISIBLE);
-
+        setEmptyPlaceholder();
 
         create.setOnClickListener(view12 -> {
             startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
@@ -131,6 +128,19 @@ public class WorkbenchFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setEmptyPlaceholder(){
+        int noOfCircleInvolvements = globalVariables.getInvolvedCircles();
+        if(user.getActiveCircles()!=null)
+            noOfCircleInvolvements = user.getActiveCircles().size();
+        Log.d("noOfCircleInvolved", noOfCircleInvolvements+"");
+        if (user.getCreatedCircles() != 0)
+            noOfCircleInvolvements = noOfCircleInvolvements+user.getCreatedCircles();
+        Log.d("noOfCircleInvolved", noOfCircleInvolvements+"");
+        globalVariables.setInvolvedCircles(noOfCircleInvolvements);
+        if(globalVariables.getInvolvedCircles()==0)
+            emptyDisplay.setVisibility(View.VISIBLE);
     }
 
     @Override

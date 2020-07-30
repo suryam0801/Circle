@@ -52,9 +52,20 @@ public class FirebaseWriteHelper {
         int currentCreatedCount = 0;
         if (user.getCreatedCircles() > 0)
             currentCreatedCount = user.getCreatedCircles() - 1;
-
+        HashMap<String, Boolean> circleList = user.getActiveCircles();
+        if(circleList!=null){
+            if(circleList.containsKey(circle.getId()))
+                circleList.remove(circle.getId());
+        }
         user.setCreatedCircles(currentCreatedCount);
+        user.setActiveCircles(circleList);
         globalVariables.saveCurrentUser(user);
+
+        String key;
+        for(Map.Entry<String, Boolean> entry : circle.getMembersList().entrySet()) {
+            key = entry.getKey();
+            globalVariables.getFBDatabase().getReference("/Users").child(key).child("activeCircles").child(circle.getId()).removeValue();
+        }
 
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).removeValue();
@@ -66,14 +77,13 @@ public class FirebaseWriteHelper {
 
     public static void exitCircle(Circle circle, User user) {
         //reducing active circle count
-        int currentActiveCount = 0;
-        if (user.getActiveCircles() > 0)
-            currentActiveCount = user.getActiveCircles() - 1;
+        HashMap<String, Boolean> circleList = user.getActiveCircles();
+        circleList.remove(circle.getId());
 
-        user.setActiveCircles(currentActiveCount);
+        user.setActiveCircles(circleList);
         globalVariables.saveCurrentUser(user);
 
-        globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).child("activeCircles").setValue(currentActiveCount);
+        globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).child("activeCircles").child(circle.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).removeValue();
         globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
     }
@@ -177,7 +187,8 @@ public class FirebaseWriteHelper {
             //adding userID to members list in circlesReference
             globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
 
-            int nowActive = user.getActiveCircles() + 1;
+            HashMap<String, Boolean> nowActive = user.getActiveCircles();
+            nowActive.put(circle.getId(), true);
             user.setActiveCircles(nowActive);
             updateUser(user);
         }
@@ -190,12 +201,15 @@ public class FirebaseWriteHelper {
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("membersList").child(selectedApplicant.getId()).setValue(true);
         UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(selectedApplicant.getId());
-        AtomicInteger noOfActiveCircles = new AtomicInteger();
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             User tempUser = dataSnapshot.getValue(User.class);
-            noOfActiveCircles.set(tempUser.getActiveCircles());
+            if(tempUser!=null){
+
+                HashMap<String, Boolean> activeCircles = tempUser.getActiveCircles();
+                activeCircles.put(circleId, true);
+                globalVariables.getFBDatabase().getReference("/Users").child(selectedApplicant.getId()).child("activeCircles").setValue(activeCircles);
+            }
         });
-        globalVariables.getFBDatabase().getReference("/Users").child(selectedApplicant.getId()).child("activeCircles").setValue(noOfActiveCircles.get() +1);
     }
 
     public static void rejectApplicant(String circleId, Subscriber selectedApplicant) {

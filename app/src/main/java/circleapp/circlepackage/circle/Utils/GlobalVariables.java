@@ -22,14 +22,22 @@ public class GlobalVariables extends Application {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-    public static User currentUser,tempUser;
+    public static User currentUser;
     public static Circle currentCircle;
     public static Broadcast currentBroadcast;
     public static List<Broadcast> currentBroadcastList;
     public static LoginUserObject currentLoginUserObject;
     public static TempLocation currentTempLocation;
     public static Uri TempdownloadLink;
+    public int involvedCircles = 0;
 
+    public int getInvolvedCircles() {
+        return involvedCircles;
+    }
+
+    public void setInvolvedCircles(int involvedCircles) {
+        this.involvedCircles = involvedCircles;
+    }
     public Uri getTempdownloadLink() {
         return TempdownloadLink;
     }
@@ -49,14 +57,6 @@ public class GlobalVariables extends Application {
 
     public FirebaseStorage getFirebaseStorage() {
         return mFirebaseStorage;
-    }
-
-    public User getTempUser(){
-        return tempUser;
-    }
-
-    public void saveTempUser(User user){
-        this.tempUser = user;
     }
 
     public User getCurrentUser(){
