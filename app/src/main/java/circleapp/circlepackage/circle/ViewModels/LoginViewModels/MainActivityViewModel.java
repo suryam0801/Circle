@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.google.firebase.FirebaseApp;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
@@ -26,7 +26,8 @@ public class MainActivityViewModel extends AndroidViewModel {
         if (FirebaseApp.getApps(context)==null) {
             FirebaseApp.initializeApp(context);
         }
-        FirebaseWriteHelper.setPersistenceEnabled(context, true);
+        FBRepository fbRepository = new FBRepository();
+        fbRepository.setPersistenceEnabled(context, true);
     }
 
     public void saveUserToSession(User user){

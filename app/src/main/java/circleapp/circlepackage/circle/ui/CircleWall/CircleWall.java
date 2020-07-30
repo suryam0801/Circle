@@ -47,9 +47,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
@@ -433,7 +434,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         closeDialogButton.setOnClickListener(view -> {
             finishAfterTransition();
-            FirebaseWriteHelper.exitCircle(circle, user);
+            HelperMethodsBL.exitCircle(circle, user);
             confirmationDialog.dismiss();
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
         });
@@ -453,7 +454,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         closeDialogButton.setOnClickListener(view -> {
             finishAfterTransition();
-            FirebaseWriteHelper.deleteCircle(circle, user);
+            HelperMethodsBL.deleteCircle(circle, user);
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
             confirmationDialog.dismiss();
         });
@@ -590,8 +591,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
     private void createPhotoBroadcast() {
+        BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
         String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
+        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
         String currentUserName = user.getName();
         String currentUserId = user.getUserId();
         Broadcast photoBroadcast = new Broadcast();
@@ -609,15 +611,16 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         updateUserCount(circle);
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), photoBroadcast, newCount);
+        broadcastsRepository.writeBroadcast(circle.getId(), photoBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         createPhotoBroadcastPopup.dismiss();
     }
 
     private void createPollBroadcast() {
+        BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
         String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
+        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
         String pollQuestion = setPollQuestionET.getText().toString();
         Broadcast pollBroadcast = new Broadcast();
         String currentUserName = user.getName();
@@ -648,7 +651,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), pollBroadcast, newCount);
+        broadcastsRepository.writeBroadcast(circle.getId(), pollBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         pollAnswerOptionsList.clear();
@@ -723,7 +726,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             HashMap<String, Integer> newNotifs = new HashMap<>(temp.getNotificationsAlert());
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());
             temp.setNotificationsAlert(newNotifs);
-            FirebaseWriteHelper.updateUserCount(temp.getUserId(), c.getId(), temp_Circle.getNoOfBroadcasts());
+            UserRepository userRepository = new UserRepository();
+            userRepository.updateUserCount(temp.getUserId(), c.getId(), temp_Circle.getNoOfBroadcasts());
         } else {
             HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(c.getId(), c.getNoOfBroadcasts());

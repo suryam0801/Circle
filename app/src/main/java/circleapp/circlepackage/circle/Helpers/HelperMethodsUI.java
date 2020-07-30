@@ -54,7 +54,6 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationAdapter;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
@@ -217,7 +216,7 @@ public class HelperMethodsUI {
 
             if (!reportType.equals("")) {
                 reportAbuseDialog.dismiss();
-                FirebaseWriteHelper.createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
+                HelperMethodsBL.writeReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
                 Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Please choose the reason", Toast.LENGTH_SHORT).show();

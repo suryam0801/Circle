@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
 import circleapp.circlepackage.circle.R;
@@ -56,7 +56,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     holder.container.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            FirebaseWriteHelper.NotifyOnclickListener(mContext, notif, position, NotificationList.get(position).getBroadcastId());
+            HelperMethodsBL.navToNotificationSource(mContext, notif, position, NotificationList.get(position).getBroadcastId());
         }
         });
     }

@@ -35,8 +35,8 @@ import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 
+import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
@@ -328,7 +328,8 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     @Override
     public void onBackPressed() {
         finishAfterTransition();
-        FirebaseWriteHelper.signOutAuth();
+        FBRepository fbRepository = new FBRepository();
+        fbRepository.signOutAuth();
 
     }
 
@@ -348,14 +349,14 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
         @Override
         protected void onResume () {
             super.onResume();
-            FirebaseWriteHelper.getAuthToken();
+            globalVariables.getAuthenticationToken();
 
         }
 
         @Override
         protected void onStart () {
             super.onStart();
-            FirebaseWriteHelper.getAuthToken();
+            globalVariables.getAuthenticationToken();
         }
 
 }

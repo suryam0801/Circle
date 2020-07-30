@@ -1,10 +1,9 @@
 package circleapp.circlepackage.circle.ViewModels.CreateCircle;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -14,7 +13,8 @@ public class WriteNewCircle {
     public WriteNewCircle(){}
     private GlobalVariables globalVariables = new GlobalVariables();
     public void writeCircleToDb(Circle circle, User user, Subscriber subscriber){
-        FirebaseWriteHelper.createUserMadeCircle(circle, subscriber);
+        CircleRepository circleRepository = new CircleRepository();
+        circleRepository.createUserMadeCircle(circle, subscriber);
         updateUserObject(user, circle);
     }
     private void updateUserObject(User user, Circle circle){
@@ -25,7 +25,8 @@ public class WriteNewCircle {
             activeCircleList = user.getActiveCircles();
         activeCircleList.put(circle.getId(), true);
         user.setActiveCircles(activeCircleList);
-        FirebaseWriteHelper.updateUser(user);
+        UserRepository userRepository = new UserRepository();
+        userRepository.updateUser(user);
         globalVariables.saveCurrentCircle(circle);
     }
 }

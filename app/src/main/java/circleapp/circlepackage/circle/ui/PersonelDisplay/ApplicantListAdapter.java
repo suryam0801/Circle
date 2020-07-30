@@ -19,7 +19,9 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
@@ -98,12 +100,13 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             else
                 holder.timeElapsed.setText("Applied " + days + "d ago");
         }
+        CircleRepository circleRepository = new CircleRepository();
         //send notification on accepting
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //add user to member list, update users active circle count by 1
-                FirebaseWriteHelper.acceptApplicant(circle.getId(), selectedApplicant, mContext);
+                circleRepository.acceptApplicant(circle.getId(), selectedApplicant, mContext);
                 state = "Accepted";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(),selectedApplicant.getToken_id(),selectedApplicant.getName());
 
@@ -114,7 +117,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             @Override
             public void onClick(View view) {
                 //remove user from applicants list of circle
-                FirebaseWriteHelper.rejectApplicant(circle.getId(), selectedApplicant);
+                circleRepository.rejectApplicant(circle.getId(), selectedApplicant);
                 state = "Rejected";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(), selectedApplicant.getToken_id(), selectedApplicant.getName());
             }

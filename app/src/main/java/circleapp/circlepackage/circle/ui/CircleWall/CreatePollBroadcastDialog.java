@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -177,9 +177,9 @@ public class CreatePollBroadcastDialog {
         return tv;
     }
     private void createPollBroadcast() {
-
+        BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
         String currentCircleId = circle.getId();
-        String broadcastId = FirebaseWriteHelper.getBroadcastId(currentCircleId);
+        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
         String pollQuestion = setPollQuestionET.getText().toString();
         Broadcast pollBroadcast = new Broadcast();
         String currentUserName = user.getName();
@@ -211,7 +211,7 @@ public class CreatePollBroadcastDialog {
         circleWall.updateUserCount(circle);
 
         //updating broadcast in broadcast db
-        FirebaseWriteHelper.writeBroadcast(circle.getId(), pollBroadcast, newCount);
+        broadcastsRepository.writeBroadcast(circle.getId(), pollBroadcast, newCount);
         pollExists = false;
         imageExists = false;
         pollAnswerOptionsList.clear();

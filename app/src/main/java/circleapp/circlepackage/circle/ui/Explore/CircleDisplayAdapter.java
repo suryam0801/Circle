@@ -23,10 +23,10 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -205,8 +205,9 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         TextView description = circleJoinDialog.findViewById(R.id.applyConfirmationDescription);
 
         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
+        CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
 
-        FirebaseWriteHelper.applyOrJoin(circle, user, subscriber);
+        circlePersonnelRepository.applyOrJoin(circle, user, subscriber);
         SendNotification.sendApplication("new_applicant", user, circle, subscriber);
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");

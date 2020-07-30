@@ -17,7 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.util.HashMap;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
@@ -94,7 +94,8 @@ public class CreateNormalBroadcastDialog {
             user.setNotificationsAlert(newNotifs);
 //            SessionStorage.saveUser(activity, user);
             globalVariables.saveCurrentUser(user);
-            FirebaseWriteHelper.updateUserCount(user.getUserId(), circle.getId(), circle.getNoOfBroadcasts());
+            UserRepository userRepository = new UserRepository();
+            userRepository.updateUserCount(user.getUserId(), circle.getId(), circle.getNoOfBroadcasts());
         } else {
             HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(circle.getId(), circle.getNoOfBroadcasts());

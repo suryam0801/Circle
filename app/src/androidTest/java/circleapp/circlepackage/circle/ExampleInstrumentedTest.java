@@ -11,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
-
 import static org.junit.Assert.*;
 
 /**
@@ -27,9 +25,9 @@ public class ExampleInstrumentedTest {
 
     @Before
     public void createCircles() {
-        FirebaseApp.initializeApp(appContext);
+        /*FirebaseApp.initializeApp(appContext);
         FirebaseWriteHelper.createDefaultCircle("Test Circle", "Circle for Testing", "Public",
-                "Surya", "Namakkal", 0, 0, "Events");
+                "Surya", "Namakkal", 0, 0, "Events");*/
     }
 
     @Test

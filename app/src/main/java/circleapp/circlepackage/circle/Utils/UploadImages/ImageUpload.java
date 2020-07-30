@@ -19,7 +19,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.Objects;
 import java.util.UUID;
 
-import circleapp.circlepackage.circle.DataLayer.FirebaseWriteHelper;
+import circleapp.circlepackage.circle.DataLayer.StorageReferenceRepository;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class ImageUpload extends ViewModel {
@@ -42,7 +42,8 @@ public class ImageUpload extends ViewModel {
 
             //generating random id to store the profliepic
             String id = UUID.randomUUID().toString();
-            final StorageReference profileRef = FirebaseWriteHelper.getStorageReference("ProfilePics/" + id);
+            StorageReferenceRepository storageReferenceRepository = new StorageReferenceRepository();
+            final StorageReference profileRef = storageReferenceRepository.getStorageReference("ProfilePics/" + id);
 
             //storing  the pic
             profileRef.putFile(filePath).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
