@@ -332,13 +332,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Exit circle":
-                    showExitDialog();
+                    HelperMethodsUI.showExitDialog(CircleWall.this,circle,user);
                     break;
                 case "Delete circle":
-                    showDeleteDialog();
+                    HelperMethodsUI.showDeleteDialog(CircleWall.this,circle,user);
                     break;
                 case "Circle Information":
-
                     startActivity(new Intent(CircleWall.this, CircleInformation.class));
                     break;
             }
@@ -426,44 +425,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void showExitDialog() {
-        confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
-        final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
-        final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
-
-        closeDialogButton.setOnClickListener(view -> {
-            finishAfterTransition();
-            HelperMethodsBL.exitCircle(circle, user);
-            confirmationDialog.dismiss();
-            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-        });
-
-        cancel.setOnClickListener(view -> confirmationDialog.dismiss());
-
-        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        confirmationDialog.show();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void showDeleteDialog() {
-
-        confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
-        final Button closeDialogButton = confirmationDialog.findViewById(R.id.delete_circle_accept_button);
-        final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
-
-        closeDialogButton.setOnClickListener(view -> {
-            finishAfterTransition();
-            HelperMethodsBL.deleteCircle(circle, user);
-            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-            confirmationDialog.dismiss();
-        });
-
-        cancel.setOnClickListener(view -> confirmationDialog.dismiss());
-
-        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        confirmationDialog.show();
-    }
     private void showCreatePhotoBroadcastDialog() {
         createPhotoBroadcastPopup = new Dialog(CircleWall.this);
         createPhotoBroadcastPopup.setContentView(R.layout.photo_broadcast_create_popup); //set dialog view
