@@ -106,10 +106,13 @@ public class WorkbenchFragment extends Fragment {
                     new ExploreFragment()).commit();
         });
 
+        circlesObserver();
+
+        return view;
+    }
+    private void circlesObserver(){
         MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
-
         liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
-
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
             String modifierType = returnArray[1];
@@ -120,15 +123,13 @@ public class WorkbenchFragment extends Fragment {
                     break;
                 case "changed":
                     if(circle.isAdminVisibility()==true)
-                    changeCircle(circle);
+                        changeCircle(circle);
                     break;
                 case "removed":
                     removeCircle(circle);
                     break;
             }
         });
-
-        return view;
     }
 
     private void setEmptyPlaceholder(){
