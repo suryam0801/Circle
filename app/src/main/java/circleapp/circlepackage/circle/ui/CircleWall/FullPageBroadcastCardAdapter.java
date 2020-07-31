@@ -278,46 +278,12 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 params1.putString("PollInteracted", "Radio button");
 
                 String option = button.getText().toString();
-                updatePollValues(viewHolder,broadcast,user,poll,option,context);
+                fullpageAdapterViewModel.updatePollValues(viewHolder,broadcast,user,poll,option,circle);
+                setBroadcastInfo(context, viewHolder, broadcast, user);
             });
             viewHolder.pollOptionsDisplayGroup.addView(layout);
             button.setPressed(true);
         }
-    }
-
-    private void updatePollValues(ViewHolder viewHolder, Broadcast broadcast, User user, Poll poll, String option, Context context){
-        HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
-        int currentSelectedVoteCount = poll.getOptions().get(option);
-
-        if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
-            ++currentSelectedVoteCount;
-            pollOptionsTemp.put(option, currentSelectedVoteCount);
-            viewHolder.setCurrentUserPollOption(option);
-        } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
-            int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
-
-            --userPreviousVoteCount;
-            ++currentSelectedVoteCount;
-            pollOptionsTemp.put(option, currentSelectedVoteCount);
-            pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
-            viewHolder.setCurrentUserPollOption(option);
-        }
-
-        HashMap<String, String> userResponseHashmap;
-        if (poll.getUserResponse() != null) {
-            userResponseHashmap = new HashMap<>(poll.getUserResponse());
-            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
-        } else {
-            userResponseHashmap = new HashMap<>();
-            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
-        }
-
-        Toast.makeText(context, "Thanks for voting", Toast.LENGTH_SHORT).show();
-        poll.setOptions(pollOptionsTemp);
-        poll.setUserResponse(userResponseHashmap);
-        broadcast.setPoll(poll);
-        fullpageAdapterViewModel.updateBroadcastAfterPollAction(broadcast, circle.getId());
-        setBroadcastInfo(context, viewHolder, broadcast, user);
     }
 
     @Override

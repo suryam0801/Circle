@@ -2,6 +2,8 @@ package circleapp.circlepackage.circle.ViewModels.CircleWall;
 
 import android.content.Context;
 
+import java.util.HashMap;
+
 import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.DataLayer.CommentsRepository;
@@ -11,7 +13,9 @@ import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
+import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.ui.CircleWall.FullPageBroadcastCardAdapter;
 
 public class FullpageAdapterViewModel {
 
@@ -56,6 +60,38 @@ public class FullpageAdapterViewModel {
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp, circle);
         HelperMethodsBL.updateUserFields(broadcast, "create", user);
+    }
+
+    public void updatePollValues(FullPageBroadcastCardAdapter.ViewHolder viewHolder, Broadcast broadcast, User user, Poll poll, String option, Circle circle){
+        HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
+        int currentSelectedVoteCount = poll.getOptions().get(option);
+
+        if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
+            ++currentSelectedVoteCount;
+            pollOptionsTemp.put(option, currentSelectedVoteCount);
+            viewHolder.setCurrentUserPollOption(option);
+        } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
+            int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
+
+            --userPreviousVoteCount;
+            ++currentSelectedVoteCount;
+            pollOptionsTemp.put(option, currentSelectedVoteCount);
+            pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
+            viewHolder.setCurrentUserPollOption(option);
+        }
+
+        HashMap<String, String> userResponseHashmap;
+        if (poll.getUserResponse() != null) {
+            userResponseHashmap = new HashMap<>(poll.getUserResponse());
+            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
+        } else {
+            userResponseHashmap = new HashMap<>();
+            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
+        }
+        poll.setOptions(pollOptionsTemp);
+        poll.setUserResponse(userResponseHashmap);
+        broadcast.setPoll(poll);
+        updateBroadcastAfterPollAction(broadcast, circle.getId());
     }
 
 }

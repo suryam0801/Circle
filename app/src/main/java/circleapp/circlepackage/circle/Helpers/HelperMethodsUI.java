@@ -34,6 +34,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -54,6 +55,8 @@ import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationAdapter;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -516,5 +519,41 @@ public class HelperMethodsUI {
         else {
             backgroundPic.setBackground(drawable);
         }
+    }
+
+    public static void showExitDialog(Context context, Circle circle, User user) {
+        Dialog confirmationDialog = new Dialog(context);
+        confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
+        final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
+        final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
+
+        closeDialogButton.setOnClickListener(view -> {
+            HelperMethodsBL.exitCircle(circle, user);
+            confirmationDialog.dismiss();
+            context.startActivity(new Intent(context, ExploreTabbedActivity.class));
+        });
+
+        cancel.setOnClickListener(view -> confirmationDialog.dismiss());
+
+        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        confirmationDialog.show();
+    }
+
+    public static void showDeleteDialog(Context context, Circle circle, User user) {
+        Dialog confirmationDialog = new Dialog(context);
+        confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
+        final Button closeDialogButton = confirmationDialog.findViewById(R.id.delete_circle_accept_button);
+        final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
+
+        closeDialogButton.setOnClickListener(view -> {
+            HelperMethodsBL.deleteCircle(circle, user);
+            context.startActivity(new Intent(context, ExploreTabbedActivity.class));
+            confirmationDialog.dismiss();
+        });
+
+        cancel.setOnClickListener(view -> confirmationDialog.dismiss());
+
+        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        confirmationDialog.show();
     }
 }
