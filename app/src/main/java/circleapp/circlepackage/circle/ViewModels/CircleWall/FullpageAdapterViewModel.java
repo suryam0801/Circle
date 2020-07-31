@@ -15,6 +15,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
 import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.CircleWall.FullPageBroadcastCardAdapter;
 
 public class FullpageAdapterViewModel {
@@ -37,6 +38,7 @@ public class FullpageAdapterViewModel {
 
     public void updateCommentNumbersPostCreate(Broadcast broadcast, long timetamp, Circle circle) {
         //updating broadCastTimeStamp after creating the comment
+        GlobalVariables globalVariables = new GlobalVariables();
         CircleRepository circleRepository = new CircleRepository();
         int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
         broadcast.setLatestCommentTimestamp(timetamp);
@@ -46,7 +48,8 @@ public class FullpageAdapterViewModel {
         //updating number of discussions in circle
         int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
         circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
-        circleRepository.updateCircle(circle);
+        globalVariables.saveCurrentCircle(circle);
+        circleRepository.updateCircleReadDiscussions(circleNewNumberOfDiscussions, circle);
     }
 
     public void makeCommentEntry(Context mContext, String commentMessage, Broadcast broadcast, User user, Circle circle) {
