@@ -111,24 +111,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     private void updateProfilePicOfCreator(ViewHolder viewHolder, Broadcast broadcast){
-        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
-            Glide.with((Activity) context)
-                    .load(broadcast.getCreatorPhotoURI())
-                    .into(viewHolder.profPicDisplay);
-        } else if (broadcast.getCreatorPhotoURI().equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        } else { //checking if it is default avatar
-            int index = Integer.parseInt(String.valueOf(broadcast.getCreatorPhotoURI().charAt(broadcast.getCreatorPhotoURI().length()-1)));
-            index = index-1;
-            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
-            int profilePic = avatarResourcePos.getResourceId(index, 0);
-            Glide.with((Activity) context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        }
+        HelperMethodsUI.setUserProfileImage(broadcast.getCreatorPhotoURI(), context, viewHolder.profPicDisplay);
     }
 
     private void setNewCommentsTextView(ViewHolder viewHolder, Broadcast broadcast){
