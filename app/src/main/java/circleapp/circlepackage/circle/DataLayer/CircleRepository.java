@@ -37,7 +37,7 @@ public class CircleRepository {
 
     public void updateCircleReadDiscussions(int counter, Circle circle) {
         FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfNewDiscussions"));
-        fbTransactions.runTransactionOnIncrementalValues(1);
+        fbTransactions.runTransactionOnIncrementalValues(counter);
     }
 
     public void deleteCircle(Circle circle, User user) {

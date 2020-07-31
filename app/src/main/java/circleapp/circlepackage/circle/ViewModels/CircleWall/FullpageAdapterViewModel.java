@@ -40,16 +40,17 @@ public class FullpageAdapterViewModel {
         //updating broadCastTimeStamp after creating the comment
         GlobalVariables globalVariables = new GlobalVariables();
         CircleRepository circleRepository = new CircleRepository();
-        int broacastNumberOfComments = broadcast.getNumberOfComments() + 1;
+        int broacastNumberOfComments = broadcast.getNumberOfComments()+1;
         broadcast.setLatestCommentTimestamp(timetamp);
         broadcast.setNumberOfComments(broacastNumberOfComments);
-        broadcastsRepository.updateBroadcast(broadcast,circle.getId());
+        globalVariables.saveCurrentBroadcast(broadcast);
+        broadcastsRepository.updateNoOfCommentsInBroadcast(broadcast.getId(), 1, circle.getId());
 
         //updating number of discussions in circle
         int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
         circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
         globalVariables.saveCurrentCircle(circle);
-        circleRepository.updateCircleReadDiscussions(circleNewNumberOfDiscussions, circle);
+        circleRepository.updateCircleReadDiscussions(1, circle);
     }
 
     public void makeCommentEntry(Context mContext, String commentMessage, Broadcast broadcast, User user, Circle circle) {
