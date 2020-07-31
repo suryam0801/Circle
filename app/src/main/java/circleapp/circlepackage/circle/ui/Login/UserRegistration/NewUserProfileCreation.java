@@ -57,13 +57,13 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     private Uri downloadLink;
     private CircleImageView profilePic;
     private boolean locationExists;
-    String Name, contact;
-    EditText name;
-    Button register;
-    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
-    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    String avatar, uid;
-    RelativeLayout setProfile;
+    private String Name, contact;
+    private EditText name;
+    private Button register;
+    private ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
+    private ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
+    private String avatar, uid;
+    private RelativeLayout setProfile;
     private String ward, district;
     private LoginUserObject loginUserObject;
     private ImageUpload imageUploadModel;
@@ -170,7 +170,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
 
     public void getLocationAlreadyExistsResult() {
         LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
-
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
         liveData.observe((LifecycleOwner) this, dataSnapshot -> {
             if (dataSnapshot.exists()) {
