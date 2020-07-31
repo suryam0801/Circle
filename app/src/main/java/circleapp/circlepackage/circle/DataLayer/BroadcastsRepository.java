@@ -83,4 +83,8 @@ public class BroadcastsRepository {
         return id;
     }
 
+    public void updateNoOfCommentsInBroadcast(String broadcastId, int counter, String circleId) {
+        FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcastId).child("numberOfComments"));
+        fbTransactions.runTransactionOnIncrementalValues(counter);
+    }
 }
