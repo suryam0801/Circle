@@ -18,6 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.nabinbhandari.android.permissions.PermissionHandler;
@@ -36,6 +39,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -60,6 +64,7 @@ public class CreatePollBroadcastDialog {
     private GlobalVariables globalVariables = new GlobalVariables();
     private LinearLayout pollOptionsDisplay, pollImageUploadInitiation;
     public ImageView pollAddPhoto;
+    private CircleWallViewModel circleWallViewModel;
     public void showCreatePollBroadcastDialog(Activity activity) {
         this.activity = activity;
         InitUI();
@@ -177,44 +182,32 @@ public class CreatePollBroadcastDialog {
         return tv;
     }
     private void createPollBroadcast() {
-        BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
-        String currentCircleId = circle.getId();
-        String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
-        String pollQuestion = setPollQuestionET.getText().toString();
-        Broadcast pollBroadcast = new Broadcast();
-        String currentUserName = user.getName();
-        String currentUserId = user.getUserId();
 
+        String pollQuestion = setPollQuestionET.getText().toString();
         //creating poll options hashmap
         HashMap<String, Integer> options = new HashMap<>();
         if (!pollAnswerOptionsList.isEmpty()) {
             for (String option : pollAnswerOptionsList)
                 options.put(option, 0);
         }
+        circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
+        circleWallViewModel.createPollBroadcast(pollQuestion,options,pollExists,imageExists,downloadLink,circle,user,activity).observe((LifecycleOwner) activity, state->{
+            if (state) {
 
-        if (pollExists) {
+                circleWall.updateUserCount(circle);
+                pollAnswerOptionsList.clear();
+                createPollBroadcastPopup.dismiss();
+                this.pollExists = false;
+                this.imageExists = false;
+                downloadLink = null;
+                globalVariables.setTempdownloadLink(null);
+            }else {
+                createPollBroadcastPopup.dismiss();
+                Toast.makeText(activity,"Error while Creating broadcast",Toast.LENGTH_SHORT).show();
+            }
 
-            Poll poll = new Poll(pollQuestion, options, null);
-            if (imageExists) {
-                pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, true, true,
-                        System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0,true);
-            } else
-                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, circle.getMembersList(), currentUserId, true, false,
-                        System.currentTimeMillis(), poll, user.getProfileImageLink(), 0, 0,true);
-        }
-        //updating number of broadcasts in circle
-        circle = globalVariables.getCurrentCircle();
-        int newCount = circle.getNoOfBroadcasts() + 1;
-        circle.setNoOfBroadcasts(newCount);
-        globalVariables.saveCurrentCircle(circle);
-        SendNotification.sendBCinfo(activity, pollBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), pollQuestion);
-        circleWall.updateUserCount(circle);
+        });
+//
 
-        //updating broadcast in broadcast db
-        broadcastsRepository.writeBroadcast(circle.getId(), pollBroadcast, newCount);
-        pollExists = false;
-        imageExists = false;
-        pollAnswerOptionsList.clear();
-        createPollBroadcastPopup.dismiss();
     }
 }
