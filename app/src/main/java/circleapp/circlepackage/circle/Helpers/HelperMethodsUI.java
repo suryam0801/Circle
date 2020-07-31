@@ -52,6 +52,7 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationAdapter;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
@@ -401,18 +402,18 @@ public class HelperMethodsUI {
         });
     }
 //UI
-    public static void setUserProfileImage(User user, Context context, CircleImageView profileImageView) {
-        if (user.getProfileImageLink().length() > 10) {
+    public static void setUserProfileImage(String url, Context context, CircleImageView profileImageView) {
+        if (url.length() > 10) {
             Glide.with(context)
                     .load(globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl())
                     .into(profileImageView);
-        } else if (user.getProfileImageLink().equals("default")) {
+        } else if (url.equals("default")) {
             int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
             Glide.with(context)
                     .load(ContextCompat.getDrawable(context, profilePic))
                     .into(profileImageView);
         } else {
-            int index = Integer.parseInt(String.valueOf(user.getProfileImageLink().charAt(user.getProfileImageLink().length()-1)));
+            int index = Integer.parseInt(String.valueOf(url.charAt(url.length()-1)));
             index = index-1;
             Log.d("index", index+"");
             TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);

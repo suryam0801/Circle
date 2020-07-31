@@ -89,13 +89,10 @@ public class ExploreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
         user = globalVariables.getCurrentUser();
-
         listOfFilters = SessionStorage.getFilters(getActivity());
-
         filter = view.findViewById(R.id.explore_filter_btn);
         filterDisplay = view.findViewById(R.id.filter_display_chip_group);
         exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
-
         setIndex = getActivity().getIntent().getIntExtra("exploreIndex", 0);
 
         //initialize recylcerview
@@ -122,11 +119,11 @@ public class ExploreFragment extends Fragment {
                 setFilterChips(f);
         }
 
-        fetchData();
+        circlesObserver();
         return view;
     }
 
-    public void fetchData() {
+    public void circlesObserver() {
         ExploreCirclesViewModel viewModel = ViewModelProviders.of(this).get(ExploreCirclesViewModel.class);
         liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
@@ -209,7 +206,7 @@ public class ExploreFragment extends Fragment {
             filterDisplay.removeView(chip);
             exploreCircleList.clear();
             adapter.notifyDataSetChanged();
-            fetchData();
+            circlesObserver();
         });
 
         filterDisplay.addView(chip);

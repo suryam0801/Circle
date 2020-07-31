@@ -135,7 +135,7 @@ public class EditProfile extends AppCompatActivity {
             activeCircles = user.getActiveCircles().size();
         }
         workingCircles.setText(activeCircles + "");
-        HelperMethodsUI.setUserProfileImage(user, this, profileImageView);
+        HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(), this, profileImageView);
     }
     private void uploadUserProfilePic(){
         imageUploadModel.imageUpload(filePath);

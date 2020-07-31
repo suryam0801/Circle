@@ -32,7 +32,6 @@ public class MemberListAdapter extends BaseAdapter {
     private TextView name, timeElapsed;
     private CircleImageView profPic;
     private LinearLayout container;
-    private GlobalVariables globalVariables = new GlobalVariables();
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList) {
         this.mContext = mContext;
@@ -63,11 +62,8 @@ public class MemberListAdapter extends BaseAdapter {
         profPic = pview.findViewById(R.id.member_profile_picture);
 
         final Subscriber member = memberList.get(position);
-        String picUrl = member.getPhotoURI();
 
-        User user = globalVariables.getCurrentUser();
-
-        HelperMethodsUI.setUserProfileImage(user, mContext.getApplicationContext(), profPic);
+        HelperMethodsUI.setUserProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), profPic);
 
         //Set text for TextView
         final String nameDisplay = member.getName();
@@ -77,24 +73,6 @@ public class MemberListAdapter extends BaseAdapter {
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
         String dateString = formatter.format(new Date(createdTime));
         timeElapsed.setText("Member since " + dateString);
-        if (picUrl.length() > 10) { //checking if its uploaded image
-            Glide.with((Activity) mContext)
-                    .load(picUrl)
-                    .into(profPic);
-        } else if (picUrl.equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(mContext)
-                    .load(ContextCompat.getDrawable(mContext, profilePic))
-                    .into(profPic);
-        } else { //checking if it is default avatar
-            int index = Integer.parseInt(String.valueOf(picUrl.charAt(picUrl.length()-1)));
-            index = index-1;
-            TypedArray avatarResourcePos = mContext.getResources().obtainTypedArray(R.array.AvatarValues);
-            int profilePic = avatarResourcePos.getResourceId(index, 0);
-            Glide.with((Activity) mContext)
-                    .load(ContextCompat.getDrawable(mContext, profilePic))
-                    .into(profPic);
-        }
 
         return pview;
     }

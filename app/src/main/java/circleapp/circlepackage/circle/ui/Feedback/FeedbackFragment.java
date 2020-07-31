@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -78,9 +79,7 @@ public class FeedbackFragment extends Fragment {
         map.put("feedback", feedbackEditText.getText().toString().trim());
         map.put("userId", user.getUserId());
         map.put("userName", user.getName().trim());
-        FBRepository fbRepository = new FBRepository();
-        fbRepository.makeFeedbackEntry(map);
-
+        HelperMethodsBL.makeNewFeedback(map);
         Toast.makeText(view.getContext(), "Thanks for your feedback :)", Toast.LENGTH_SHORT).show();
     }
 }

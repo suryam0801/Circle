@@ -67,15 +67,7 @@ public class NotificationFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
         InitUIElements(view);
-
-        NotificationsViewModel viewModel = ViewModelProviders.of(this).get(NotificationsViewModel.class);
-
-        liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
-
-        liveData.observe(this, returnArray -> {
-            Notification notification = new Gson().fromJson(returnArray[0], Notification.class);
-            setNotifsView(notification);
-        });
+        setNotifObserver();
         return view;
     }
 
@@ -87,6 +79,15 @@ public class NotificationFragment extends Fragment {
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
 
+    }
+
+    private void setNotifObserver(){
+        NotificationsViewModel viewModel = ViewModelProviders.of(this).get(NotificationsViewModel.class);
+        liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
+        liveData.observe(this, returnArray -> {
+            Notification notification = new Gson().fromJson(returnArray[0], Notification.class);
+            setNotifsView(notification);
+        });
     }
 
     private void setNotifsView(Notification notification) {

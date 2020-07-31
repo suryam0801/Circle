@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
@@ -228,5 +229,11 @@ public class HelperMethodsBL {
     public static void exitCircle(Circle circle, User user){
         CircleRepository circleRepository = new CircleRepository();
         circleRepository.exitCircle(circle, user);
+    }
+
+    public static void makeNewFeedback(Map<String, Object> map) {
+
+        FBRepository fbRepository = new FBRepository();
+        fbRepository.makeFeedbackEntry(map);
     }
 }

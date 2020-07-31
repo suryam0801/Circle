@@ -68,7 +68,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Log.d("efljknwefwe", currentCircle.toString());
         HelperMethodsUI.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
 
-
         //check if circle acceptance is review
         if (currentCircle.getAcceptanceType().equalsIgnoreCase("review"))
             viewHolder.join.setText("Apply");
@@ -79,15 +78,20 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             viewHolder.join.setBackground(context.getResources().getDrawable(R.drawable.unpressable_button));
             viewHolder.join.setTextColor(Color.parseColor("#828282"));
         }
-
         //set the details of each circle to its respective card.
         viewHolder.tv_circleName.setText(currentCircle.getName());
         viewHolder.tv_creatorName.setText(currentCircle.getCreatorName());
         viewHolder.tv_circleDesc.setText(currentCircle.getDescription());
-
         String date = HelperMethodsUI.convertIntoDateFormat("dd MMM, yyyy", currentCircle.getTimestamp());
         viewHolder.tv_createdDate.setText(date);
+        viewHolder.categoryDisplay.setText(currentCircle.getCategory());
+        circleCategory = currentCircle.getCategory();
+        setBannerBackground(circleCategory, viewHolder);
 
+        buttonListeners(viewHolder, currentCircle, isApplicant, i);
+    }
+
+    private void buttonListeners(ViewHolder viewHolder, Circle currentCircle, boolean isApplicant, int i){
         //onclick for join and share
         viewHolder.join.setOnClickListener(view ->
         {
@@ -116,11 +120,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             intent.putExtra("exploreIndex", i);
             context.startActivity(intent);
         });
-
-        viewHolder.categoryDisplay.setText(currentCircle.getCategory());
-        circleCategory = currentCircle.getCategory();
-
-        setBannerBackground(circleCategory, viewHolder);
     }
 
     private void setBannerBackground(String circleCategory, ViewHolder viewHolder) {

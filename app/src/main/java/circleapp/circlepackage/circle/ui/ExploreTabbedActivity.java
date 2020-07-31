@@ -54,7 +54,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
-    private ImageView profPicHolder;
+    private CircleImageView profPicHolder;
     private TextView location;
     private User user;
     private String  intentUri;
@@ -136,26 +136,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         btnAddCircle = findViewById(R.id.add_circle_button);
 
         locationDisplay.setText(user.getDistrict());
-
-        if (user.getProfileImageLink().length() > 10) { //checking if its uploaded image
-            Glide.with(ExploreTabbedActivity.this)
-                    .load(user.getProfileImageLink())
-                    .into(profPicHolder);
-        } else if (user.getProfileImageLink().equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(ExploreTabbedActivity.this)
-                    .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
-                    .into(profPicHolder);
-        } else { //checking if it is default avatar
-            int index = Integer.parseInt(String.valueOf(user.getProfileImageLink().charAt(user.getProfileImageLink().length()-1)));
-            index = index-1;
-            Log.d("index", index+"");
-            TypedArray avatarResourcePos = this.getResources().obtainTypedArray(R.array.AvatarValues);
-            int profilePic = avatarResourcePos.getResourceId(index, 0);
-            Glide.with(ExploreTabbedActivity.this)
-                    .load(ContextCompat.getDrawable(ExploreTabbedActivity.this, profilePic))
-                    .into(profPicHolder);
-        }
+        HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
     }
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);

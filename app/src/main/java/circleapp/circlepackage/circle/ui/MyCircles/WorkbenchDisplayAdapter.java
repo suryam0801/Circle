@@ -69,6 +69,9 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         if (circle.getCreatorID().equals(user.getUserId()))
             holder.tv_circleCreatorName.setText("Me");
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
+        String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
+        holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
+        holder.categoryDisplay.setText(circle.getCategory());
 
 
         //setting new applicants
@@ -91,35 +94,9 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         }
         //Read notification count updated on going to circle wall
         holder.container.setOnClickListener(view -> {
-            if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
-
-                HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
-                tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
-                user.setNotificationsAlert(tempUserNotifStore);
-
-            } else { //first time when a user is opening any circle
-
-                HashMap<String, Integer> newUserNotifStore = new HashMap<>();
-                newUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
-                user.setNotificationsAlert(newUserNotifStore);
-            }
-
-            //Save user
-            UserRepository userRepository = new UserRepository();
-             userRepository.updateUser(user);
-            globalVariables.saveCurrentCircle(circle);
-            globalVariables.saveCurrentUser(user);
-
+            clearNotifications(user, circle);
             //If user enters circle wall for first time
-            SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
-            if (prefs.getBoolean("firstWall", true)) {
-                context.startActivity(new Intent(context, CircleWallBackgroundPicker.class));
-                ((Activity) context).finishAfterTransition();
-                prefs.edit().putBoolean("firstWall", false).commit();
-            } else {
-                context.startActivity(new Intent(context, CircleWall.class));
-                ((Activity) context).finishAfterTransition();
-            }
+            actionOnFirstTimeEntry();
         });
 
         //update new notifs value
@@ -135,11 +112,40 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
+    }
 
-        String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
-        holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
+    private void clearNotifications(User user, Circle circle){
+        if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 
-        holder.categoryDisplay.setText(circle.getCategory());
+            HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
+            tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
+            user.setNotificationsAlert(tempUserNotifStore);
+
+        } else { //first time when a user is opening any circle
+
+            HashMap<String, Integer> newUserNotifStore = new HashMap<>();
+            newUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
+            user.setNotificationsAlert(newUserNotifStore);
+        }
+
+        //Save user
+        UserRepository userRepository = new UserRepository();
+        userRepository.updateUser(user);
+        globalVariables.saveCurrentCircle(circle);
+        globalVariables.saveCurrentUser(user);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void actionOnFirstTimeEntry(){
+        SharedPreferences prefs = context.getSharedPreferences("com.mycompany.myAppName", context.MODE_PRIVATE);
+        if (prefs.getBoolean("firstWall", true)) {
+            context.startActivity(new Intent(context, CircleWallBackgroundPicker.class));
+            ((Activity) context).finishAfterTransition();
+            prefs.edit().putBoolean("firstWall", false).commit();
+        } else {
+            context.startActivity(new Intent(context, CircleWall.class));
+            ((Activity) context).finishAfterTransition();
+        }
     }
 
 

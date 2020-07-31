@@ -54,21 +54,28 @@ public class NewUserRegistration extends ViewModel {
                         if (task.isSuccessful()) {
                             //Adding the user to collection
                             if (!locationExists){
-                                FBRepository fbRepository = new FBRepository();
-                                fbRepository.addDistrict(district);
-                                createInitialCircles(district);
+                                prepDistrictWithCircles(district);
                             }
-
                             uploadUserData(userId,downloadUri,Name,contact,avatar,district,ward);
                         } else {
-                            //to signout the current firebase user
-                            globalVariables.getAuthenticationToken().signOut();
-                            //delete the user details
-                            globalVariables.getAuthenticationToken().getCurrentUser().delete();
+                            removeUser();
                         }
                     });
 
         }
+    }
+
+    private void prepDistrictWithCircles(String district){
+        FBRepository fbRepository = new FBRepository();
+        fbRepository.addDistrict(district);
+        createInitialCircles(district);
+    }
+
+    private void removeUser(){
+        //to signout the current firebase user
+        globalVariables.getAuthenticationToken().signOut();
+        //delete the user details
+        globalVariables.getAuthenticationToken().getCurrentUser().delete();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
