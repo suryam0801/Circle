@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.gson.Gson;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +38,9 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CreatorPollAnswersView extends AppCompatActivity {
 
@@ -133,15 +139,32 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         pieChart.animateXY(1400, 1400);
         pieChart.setDrawEntryLabels(false);
         saveChartButton.setOnClickListener(v->{
-            initFilePathAndSave("pdf");
+            Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    initFilePathAndSave("pdf");
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
         saveResponsesButton.setOnClickListener(v->{
-            initFilePathAndSave("excel");
+            Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    initFilePathAndSave("excel");
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
         });
     }
 
     private void initFilePathAndSave(String pdfOrExcel){
-        String uniqueId = System.currentTimeMillis()+"";
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
         if(pdfOrExcel.equals("pdf")){
