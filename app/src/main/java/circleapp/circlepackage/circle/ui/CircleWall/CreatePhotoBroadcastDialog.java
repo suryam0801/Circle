@@ -71,10 +71,12 @@ public class CreatePhotoBroadcastDialog {
                 circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
                 circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,this.imageExists, activity).observe((LifecycleOwner) activity, state->{
                     if (state){
-                        this.pollExists = false;
-                        this.imageExists = false;
                         circleWall.updateUserCount(circle);
                         createPhotoBroadcastPopup.dismiss();
+                        this.pollExists = false;
+                        this.imageExists = false;
+                        this.downloadLink = null;
+                        globalVariables.setTempdownloadLink(null);
                     }
                     else {
                         createPhotoBroadcastPopup.dismiss();
