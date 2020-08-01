@@ -5,6 +5,7 @@ import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setUserUpdatesObserver();
         mainActivityViewModel = ViewModelProviders.of( this).get(MainActivityViewModel.class);
         mainActivityViewModel.setPersistenceEnabled();
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
     }
     private void setUserUpdatesObserver(){
         if(globalVariables.getAuthenticationToken().getCurrentUser() != null){

@@ -75,6 +75,41 @@
             android:id="@+id/barchart"
             android:layout_width="300dp"
             android:layout_height="300dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/exportChart"
+                android:layout_width="160dp"
+                android:layout_height="50dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/gradient_button"
+                android:fontFamily="@font/roboto_black"
+                android:paddingLeft="19dp"
+                android:paddingRight="19dp"
+                android:text="Share Chart"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18dp" />
+            <Button
+                android:id="@+id/exportAsExcel"
+                android:layout_width="160dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/gradient_button"
+                android:fontFamily="@font/roboto_black"
+                android:paddingLeft="19dp"
+                android:paddingRight="19dp"
+                android:text="Share Responses"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18dp" />
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/poll_answers_recycler_view"
@@ -85,26 +120,6 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="10dp">
         </androidx.recyclerview.widget.RecyclerView>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/exportResults"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_gravity="bottom"
-                android:layout_marginTop="40dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:background="@drawable/gradient_button"
-                android:fontFamily="@font/roboto_black"
-                android:paddingLeft="19dp"
-                android:paddingRight="19dp"
-                android:text="Export Results"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFFFF"
-                android:textSize="19dp" />
-        </RelativeLayout>
 
     </LinearLayout>
 

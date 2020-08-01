@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Button;
@@ -37,7 +39,7 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnel
 public class CreatorPollAnswersView extends AppCompatActivity {
 
     private HashMap<Subscriber, String> list = new HashMap<>();
-    private Button exportButton;
+    private Button saveChartButton, saveResponsesButton;
     private ImageButton bckBtn;
     private GlobalVariables globalVariables = new GlobalVariables();
     private PieChart pieChart;
@@ -88,7 +90,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
             userResponse = poll.getUserResponse();
         else
             userResponse = new HashMap<>();
-        exportButton = findViewById(R.id.exportResults);
+        saveChartButton = findViewById(R.id.exportChart);
+        saveResponsesButton = findViewById(R.id.exportAsExcel);
     }
     private void setResponsesObserver(){
         circlePersonnelViewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
@@ -129,21 +132,48 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         pieChart.animateXY(1400, 1400);
         pieChart.setDrawEntryLabels(false);
-        exportButton.setOnClickListener(v->{
-            initFilePathAndSave();
+        saveChartButton.setOnClickListener(v->{
+            initFilePathAndSave("pdf");
+        });
+        saveResponsesButton.setOnClickListener(v->{
+            initFilePathAndSave("excel");
         });
     }
 
-    private void initFilePathAndSave(){
+    private void initFilePathAndSave(String pdfOrExcel){
+        String uniqueId = System.currentTimeMillis()+"";
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(path, "/" + "PollResults"+System.currentTimeMillis()+".xlsx");
-        exportPollResultAsDoc.writeDataToExcelFile(file);
-        File pdfFile = new File(path+"/"+"PollResults"+System.currentTimeMillis()+".pdf");
-        try {
-            exportPollResultAsDoc.printView2PDF(pieChart,pdfFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(pdfOrExcel.equals("pdf")){
+            File pdfFile = new File(path+"/"+"Poll Results "+circle.getName()+".pdf");
+            try {
+                exportPollResultAsDoc.printView2PDF(pieChart,pdfFile);
+                shareFile(pdfFile,"pdf");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            File file = new File(path, "/" + "Poll Results "+circle.getName()+".xls");
+            exportPollResultAsDoc.writeDataToExcelFile(file);
+            shareFile(file,"excel");
+        }
+    }
+
+    private void shareFile(File myFilePath, String pdfOrExcel){
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        if(myFilePath.exists()) {
+            if(pdfOrExcel.equals("pdf"))
+                intentShareFile.setType("application/pdf");
+            else
+                intentShareFile.setType("application/xls");
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myFilePath));
+
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                    "Circle Poll Results");
+            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Here are the Circle Poll Results:");
+
+            startActivity(Intent.createChooser(intentShareFile, "Circle Poll Results"));
         }
     }
 
