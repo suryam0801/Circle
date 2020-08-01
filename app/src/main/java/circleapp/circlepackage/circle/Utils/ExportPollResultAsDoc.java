@@ -107,7 +107,7 @@ public class ExportPollResultAsDoc {
             int x=0;
             int l = maxLen+2;
             for (; l<maxLen+2+unAnsweredMembers.size();l++){
-                excelData[l][0]= unAnsweredMembers.get(x);
+                excelData[l][0]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
                 x++;
             }
             maxLen = l;
@@ -172,7 +172,7 @@ public class ExportPollResultAsDoc {
         HSSFRow myRow = null;
         HSSFCell myCell = null;
 
-        for (int rowNum = 0; rowNum < excelData[0].length; rowNum++){
+        for (int rowNum = 0; rowNum < rowLength; rowNum++){
             myRow = mySheet.createRow(rowNum);
 
             for (int cellNum = 0; cellNum < colLength ; cellNum++){
