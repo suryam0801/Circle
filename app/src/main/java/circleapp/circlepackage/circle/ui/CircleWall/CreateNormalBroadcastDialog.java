@@ -25,8 +25,10 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class CreateNormalBroadcastDialog {
+    public boolean pollExists = false;
+    public boolean imageExists = false;
     private Dialog createNormalBroadcastPopup;
-    private EditText setTitleET, setMessageET, setPollQuestionET, setPollOptionET, setTitlePhoto;
+    private EditText setTitleET, setMessageET;
     private TextView broadcastHeader;
     private Button btnUploadNormalBroadcast, cancelNormalButton;
     Activity activity;
@@ -86,8 +88,8 @@ public class CreateNormalBroadcastDialog {
     }
 
     private void livedataobserver(User user, Circle circle) {
-        circleWall.pollExists = false;
-        circleWall.imageExists = false;
+        this.pollExists = false;
+        this.imageExists = false;
         if (user.getNotificationsAlert() != null) {
             HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
             newNotifs.put(circle.getId(), circle.getNoOfBroadcasts());
