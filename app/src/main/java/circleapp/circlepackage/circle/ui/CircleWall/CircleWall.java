@@ -73,6 +73,7 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewM
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
 import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
@@ -82,6 +83,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private LinearLayout emptyDisplay;
     private Circle circle;
     private List<String> allCircleMembers;
+    private HashMap<String, Subscriber> listOfMembers;
     private boolean pollExists = false;
     private ImageButton back, moreOptions;
     private User user;
@@ -336,7 +338,16 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Export Poll Data":
-                    exportPollsToFile();
+                    Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                        @Override
+                        public void onGranted() {
+                            exportPollsToFile();
+                        }
+                        @Override
+                        public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                            // permission denied, block the feature.
+                        }
+                    });
                     break;
                 case "Exit circle":
                     HelperMethodsUI.showExitDialog(CircleWall.this,circle,user);
@@ -354,7 +365,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     }
 
     private void exportPollsToFile(){
-        List<String> allCircleMembers = new ArrayList<>();
         List<Broadcast> pollBroadcasts = new ArrayList<>();
         for(Broadcast broadcast: broadcastList){
             if(broadcast.isPollExists()){
@@ -366,21 +376,37 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     Environment.DIRECTORY_DOCUMENTS);
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             ExportPollResultAsDoc exportPollResultAsDoc = new ExportPollResultAsDoc();
-            exportPollResultAsDoc.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers);
+            Log.d("BroadcastQuestion", allCircleMembers.size()+"");
+            exportPollResultAsDoc.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);
+            shareFile(file);
         }
         else {
             Toast.makeText(this, "No Polls exist in this Circle", Toast.LENGTH_SHORT).show();
         }
     }
+    private void shareFile(File myFilePath){
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        if(myFilePath.exists()) {
+            intentShareFile.setType("application/xls");
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myFilePath));
+
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                    "Circle Poll Results");
+            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Here are the Circle Poll Results:");
+
+            startActivity(Intent.createChooser(intentShareFile, "Circle Poll Results"));
+        }
+    }
 
     private void setCircleMembersObserver(){
-
+        listOfMembers = new HashMap<>();
         CirclePersonnelViewModel circlePersonnelViewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
         LiveData<String[]> liveData = circlePersonnelViewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
         liveData.observe(this, returnArray -> {
             Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
             if(member!=null){
                 allCircleMembers.add(member.getId());
+                listOfMembers.put(member.getId(), member);
             }
         });
     }
