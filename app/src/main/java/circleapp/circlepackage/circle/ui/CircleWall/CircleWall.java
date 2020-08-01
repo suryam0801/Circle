@@ -134,41 +134,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
         imageUploadProgressDialog = new ProgressDialog(this);
         ImageUploadModel();
-//        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-//        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-//            Log.d("progressvalue",""+progress);
-//            // update UI
-//            if(progress==null);
-//
-//            else if(progress[1].equals("-1")){
-//                imageUploadProgressDialog.dismiss();
-//                Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            else if(!progress[1].equals("100.0")){
-//                imageUploadProgressDialog.setTitle("Uploading");
-//                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
-//                imageUploadProgressDialog.show();
-//            }
-//            else if(progress[1].equals("100.0")){
-//                downloadLink = Uri.parse(progress[0]);
-//                globalVariables.setTempdownloadLink(downloadLink);
-//                Log.d("boolean", String.valueOf(pollExists));
-//                if (pollBroadcastDialog.pollExists) {
-//                    pollBroadcastDialog.pollUploadButtonView.setVisibility(View.GONE);
-//                    pollBroadcastDialog.pollAddPhoto.setVisibility(View.VISIBLE);
-//
-//                } else {
-//                    photoBroadcastDialog.photoUploadButtonView.setVisibility(View.GONE);
-//                    photoBroadcastDialog.addPhoto.setVisibility(View.VISIBLE);
-//                }
-//                if (pollBroadcastDialog.pollExists)
-//                    Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollBroadcastDialog.pollAddPhoto);
-//                else
-//                    Glide.with(CircleWall.this).load(filePath).fitCenter().into(photoBroadcastDialog.addPhoto);
-//                imageUploadProgressDialog.dismiss();
-//            }
-//        });
 
 
         if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
@@ -458,45 +423,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void showExitDialog() {
-        confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
-        final Button closeDialogButton = confirmationDialog.findViewById(R.id.remove_user_accept_button);
-        final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
-
-        closeDialogButton.setOnClickListener(view -> {
-            finishAfterTransition();
-            HelperMethodsBL.exitCircle(circle, user);
-            confirmationDialog.dismiss();
-            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-        });
-
-        cancel.setOnClickListener(view -> confirmationDialog.dismiss());
-
-        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        confirmationDialog.show();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void showDeleteDialog() {
-
-        confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
-        final Button closeDialogButton = confirmationDialog.findViewById(R.id.delete_circle_accept_button);
-        final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
-
-        closeDialogButton.setOnClickListener(view -> {
-            finishAfterTransition();
-            HelperMethodsBL.deleteCircle(circle, user);
-            startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
-            confirmationDialog.dismiss();
-        });
-
-        cancel.setOnClickListener(view -> confirmationDialog.dismiss());
-
-        confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        confirmationDialog.show();
-    }
     private void uploadPicture(){
         imageUploadModel.imageUpload(filePath);
     }
