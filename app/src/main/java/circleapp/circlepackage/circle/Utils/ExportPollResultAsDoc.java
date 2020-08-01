@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Utils;
 
 import android.graphics.pdf.PdfDocument;
+import android.util.Log;
 import android.view.View;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -11,14 +12,21 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 
 public class ExportPollResultAsDoc {
-    HashMap<Subscriber, String > list;
+    private HashMap<Subscriber, String > list;
+    private int rowLength, colLength;
     public ExportPollResultAsDoc(HashMap<Subscriber, String > list){ this.list = list;}
+    public ExportPollResultAsDoc(){ this.rowLength = 0; this.colLength=0;}
 
     public String[][] getPollResponsesForExporting() {
         String [][] excelData = new String [list.size()+1][2];
@@ -31,6 +39,80 @@ public class ExportPollResultAsDoc {
             excelData[i][0]=key.getName();
             excelData[i][1]=value;
             i++;
+        }
+        return excelData;
+    }
+
+    public String[][] getAllPollResponsesForExporting(int noOfRows, int noOfColumns, List<Broadcast> pollBroadcasts, List<String> allCircleMembers, HashMap<String, Subscriber> listOfMembers){
+        String [][] excelData = new String [noOfRows][noOfColumns];
+        List<String> unAnsweredMembers = new ArrayList<>();
+        Set<String> answers = new HashSet<String>();
+        HashMap<String, String> pollResponse = new HashMap<>();
+        int i=0, maxLen=0;
+        for(Broadcast broadcast: pollBroadcasts){
+            excelData[i][0] = broadcast.getPoll().getQuestion();
+            unAnsweredMembers.removeAll(allCircleMembers);
+            unAnsweredMembers.addAll(allCircleMembers);
+            if(pollResponse!=null)
+                pollResponse.clear();
+            pollResponse = broadcast.getPoll().getUserResponse();
+            Log.d("BroadcastQuestion",unAnsweredMembers.size()+"");
+            if(pollResponse==null){
+
+                excelData[maxLen+1][0]="Un-Answered Members";
+                int x=0;
+                int l = maxLen+2;
+                for (; l<maxLen+2+unAnsweredMembers.size();l++){
+                    excelData[l][0]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
+                    x++;
+                }
+                maxLen = l;
+                i=maxLen+2;
+                rowLength=i;
+                continue;
+            }
+
+            int j = 0;
+            answers.removeAll(pollResponse.values());
+            answers.addAll(pollResponse.values());
+            for(Map.Entry<String, String> entry : pollResponse.entrySet()){
+                String  userId = entry.getKey();
+                unAnsweredMembers.remove(userId);
+            }
+            for (String answer : answers){
+                excelData[i+1][j] = answer;
+                j++;
+                if(colLength<=j)
+                    colLength=j;
+            }
+            for(Map.Entry<String, String> entry : pollResponse.entrySet()){
+                String  userId = entry.getKey();
+                String  answer = entry.getValue();
+                for(int p = 0; p<j; p++){
+                    if(excelData[i+1][p].equals(answer)){
+                        int k = i+2;
+                        do{
+                            if(excelData[k][p]==null){
+                                String username= listOfMembers.get(userId).getName();
+                                excelData[k][p]=username;
+                            }
+                            if(maxLen<=k)
+                                maxLen=k;
+                            k++;
+                        }while (excelData[k][p]!=null);
+                    }
+                }
+            }
+            excelData[maxLen+1][0]="Un-Answered Members";
+            int x=0;
+            int l = maxLen+2;
+            for (; l<maxLen+2+unAnsweredMembers.size();l++){
+                excelData[l][0]= unAnsweredMembers.get(x);
+                x++;
+            }
+            maxLen = l;
+            i=maxLen+2;
+            rowLength = i;
         }
         return excelData;
     }
@@ -66,10 +148,10 @@ public class ExportPollResultAsDoc {
         HSSFRow myRow = null;
         HSSFCell myCell = null;
 
-        for (int rowNum = 0; rowNum < excelData[0].length; rowNum++){
+        for (int rowNum = 0; rowNum < excelData[0].length+1; rowNum++){
             myRow = mySheet.createRow(rowNum);
 
-            for (int cellNum = 0; cellNum < list.size()+1 ; cellNum++){
+            for (int cellNum = 0; cellNum < list.size() ; cellNum++){
                 myCell = myRow.createCell(cellNum);
                 myCell.setCellValue(excelData[rowNum][cellNum]);
             }
@@ -81,4 +163,28 @@ public class ExportPollResultAsDoc {
         }catch(Exception e){ e.printStackTrace();}
 
     }
+
+    public void writeAllPollsToExcelFile(File fileName, List<Broadcast> pollBroadcasts, List<String> allCircleMembers, HashMap<String, Subscriber> listOfMembers){
+        String [][]excelData = getAllPollResponsesForExporting(10000,10, pollBroadcasts, allCircleMembers, listOfMembers);
+
+        HSSFWorkbook myWorkBook = new HSSFWorkbook();
+        HSSFSheet mySheet = myWorkBook.createSheet();
+        HSSFRow myRow = null;
+        HSSFCell myCell = null;
+
+        for (int rowNum = 0; rowNum < excelData[0].length; rowNum++){
+            myRow = mySheet.createRow(rowNum);
+
+            for (int cellNum = 0; cellNum < colLength ; cellNum++){
+                myCell = myRow.createCell(cellNum);
+                myCell.setCellValue(excelData[rowNum][cellNum]);
+            }
+        }
+        try{
+            FileOutputStream out = new FileOutputStream(fileName);
+            myWorkBook.write(out);
+            out.close();
+        }catch(Exception e){ e.printStackTrace();}
+    }
+
 }

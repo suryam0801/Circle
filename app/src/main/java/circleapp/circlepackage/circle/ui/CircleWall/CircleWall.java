@@ -20,6 +20,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,13 +44,18 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.tooltip.Tooltip;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
+import circleapp.circlepackage.circle.Utils.ExportPollResultAsDoc;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -67,19 +73,18 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewM
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
 import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234;
     private Uri downloadLink;
-
     private LinearLayout emptyDisplay;
-
     private Circle circle;
-
+    private List<String> allCircleMembers;
+    private HashMap<String, Subscriber> listOfMembers;
     private boolean pollExists = false;
-
     private ImageButton back, moreOptions;
     private User user;
 
@@ -155,6 +160,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
         viewApplicants = findViewById(R.id.applicants_display_creator);
         recyclerView = findViewById(R.id.broadcastViewRecyclerView);
+        allCircleMembers = new ArrayList<>();
 
         initializeRecyclerView();
         setParentBgImage();
@@ -232,6 +238,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     break;
             }
         });
+
+        setCircleMembersObserver();
     }
 
     private void ImageUploadModel() {
@@ -329,6 +337,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 case "Report Abuse":
                     HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
+                case "Export Poll Data":
+                    Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                        @Override
+                        public void onGranted() {
+                            exportPollsToFile();
+                        }
+                        @Override
+                        public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                            // permission denied, block the feature.
+                        }
+                    });
+                    break;
                 case "Exit circle":
                     HelperMethodsUI.showExitDialog(CircleWall.this,circle,user);
                     break;
@@ -342,6 +362,53 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             return true;
         });
         popup.show();
+    }
+
+    private void exportPollsToFile(){
+        List<Broadcast> pollBroadcasts = new ArrayList<>();
+        for(Broadcast broadcast: broadcastList){
+            if(broadcast.isPollExists()){
+                pollBroadcasts.add(broadcast);
+            }
+        }
+        if(pollBroadcasts!=null){
+            File path = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS);
+            File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
+            ExportPollResultAsDoc exportPollResultAsDoc = new ExportPollResultAsDoc();
+            Log.d("BroadcastQuestion", allCircleMembers.size()+"");
+            exportPollResultAsDoc.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);
+            shareFile(file);
+        }
+        else {
+            Toast.makeText(this, "No Polls exist in this Circle", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void shareFile(File myFilePath){
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        if(myFilePath.exists()) {
+            intentShareFile.setType("application/xls");
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myFilePath));
+
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                    "Circle Poll Results");
+            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Here are the Circle Poll Results:");
+
+            startActivity(Intent.createChooser(intentShareFile, "Circle Poll Results"));
+        }
+    }
+
+    private void setCircleMembersObserver(){
+        listOfMembers = new HashMap<>();
+        CirclePersonnelViewModel circlePersonnelViewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
+        LiveData<String[]> liveData = circlePersonnelViewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+        liveData.observe(this, returnArray -> {
+            Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
+            if(member!=null){
+                allCircleMembers.add(member.getId());
+                listOfMembers.put(member.getId(), member);
+            }
+        });
     }
 
     public void setParentBgImage() {
