@@ -34,24 +34,23 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {
 
-    public CircleImageView profileImageView;
-    public TextView userName;
+    private CircleImageView profileImageView;
+    private TextView userName;
     private TextView userNumber;
     private TextView createdCircles;
     private TextView workingCircles;
-    public Button editProfPic, logout, finalizeChanges;
+    private Button editProfPic, logout, finalizeChanges;
     private ImageButton back;
     private Uri filePath;
     private Uri downloadLink;
-    AlertDialog.Builder confirmation;
+    private AlertDialog.Builder confirmation;
     private static final int PICK_IMAGE_ID = 234;
     private ImageButton editName;
     private User user;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
-    public ImageUpload imageUploadModel;
-    public EditProfileViewModel editProfileViewModel;
-    public  EditProfileImage editUserProfileImage;
-    public EdituserName edituserName;
+    private ImageUpload imageUploadModel;
+    private   EditProfileImage editUserProfileImage;
+    private EdituserName edituserName;
     private GlobalVariables globalVariables = new GlobalVariables();
 
     private Boolean finalizeChange = false;
@@ -68,7 +67,6 @@ public class EditProfile extends AppCompatActivity {
         defUIValues();
         editUserProfileImage = new EditProfileImage();
         edituserName  = new EdituserName();
-        editProfileViewModel = ViewModelProviders.of(this).get(EditProfileViewModel.class);
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             Log.d("progressvalue",""+progress);
@@ -90,10 +88,10 @@ public class EditProfile extends AppCompatActivity {
             }
         });
         editProfPic.setOnClickListener(view -> {
-            editUserProfileImage.editProfile(EditProfile.this);
+            editUserProfileImage.editProfile(EditProfile.this,profileImageView,finalizeChanges);
         });
         editName.setOnClickListener(v -> {
-            edituserName.edituserNamedialogue(EditProfile.this);
+            edituserName.edituserNamedialogue(EditProfile.this,userName);
 //            edituserNamedialogue();
         });
         logout.setOnClickListener(view -> {

@@ -36,25 +36,25 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.Manifest.permission.CAMERA;
 
 public class EditProfileImage extends AppCompatActivity {
-    Dialog editUserProfiledialogue;
+    private CircleImageView profileImageView;
+    private Dialog editUserProfiledialogue;
     private ProgressDialog imageUploadProgressDialog;
-    ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
-    ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
-    CircleImageView profilePic;
-    RelativeLayout setProfile;
-    Boolean finalizeChange = false;
+    private ImageButton avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8, avatarList[];
+    private ImageView avatar1_bg, avatar2_bg, avatar3_bg, avatar4_bg, avatar5_bg, avatar6_bg, avatar7_bg, avatar8_bg, avatarBgList[];
+    private CircleImageView profilePic;
+    private RelativeLayout setProfile;
+    private Boolean finalizeChange = false;
     private static final int PICK_IMAGE_ID = 234;
-    String avatar;
-    Button profilepicButton, profileuploadButton;
-    Uri downloadLink;
-    User user;
-    EditProfile EditProfileClassTemp;
+    private String avatar;
+    private Uri downloadLink;
+    private User user;
+    private EditProfile EditProfileClassTemp;
     public EditProfileViewModel editProfileViewModel;
-    Uri filePath;
-    GlobalVariables globalVariables = new GlobalVariables();
-    private LiveData<String[]> liveData;
-
-    public void editProfile(EditProfile EditProfileClass) {
+    private GlobalVariables globalVariables = new GlobalVariables();
+    private Button finalizeChanges,profilepicButton, profileuploadButton;
+    public void editProfile(EditProfile EditProfileClass, CircleImageView profileImageView, Button finalizeChanges) {
+        this.finalizeChanges = finalizeChanges;
+        this.profileImageView = profileImageView;
         this.EditProfileClassTemp = EditProfileClass;
         InitUI();
         InitAvatars();
@@ -64,7 +64,7 @@ public class EditProfileImage extends AppCompatActivity {
         profilepicButton.setOnClickListener(view -> {
             ImagePickerIntent();
         });
-        EditProfileClass.finalizeChanges.setOnClickListener(view -> {
+        finalizeChanges.setOnClickListener(view -> {
             FinalizeChangesBtn();
         });
         avatar1.setOnClickListener(new View.OnClickListener() {
@@ -177,9 +177,11 @@ public class EditProfileImage extends AppCompatActivity {
                     TypedArray avatarResourcePos = EditProfileClassTemp.getResources().obtainTypedArray(R.array.AvatarValues);
                     Glide.with(EditProfileClassTemp)
                             .load(avatarResourcePos.getResourceId(index, 0))
-                            .into(EditProfileClassTemp.profileImageView);
+                            .into(profileImageView);
                     Log.d("TAG2", "DownloadURI bv::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     finalizeChange = true;
+                    downloadLink = null;
+                    globalVariables.setTempdownloadLink(null);
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
                 }
@@ -208,9 +210,10 @@ public class EditProfileImage extends AppCompatActivity {
                 if (state) {
                     Log.d("TAG", "DownloadURI ::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     globalVariables.saveCurrentUser(user);
-                    Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);
+                    Glide.with(EditProfileClassTemp).load(TempUrl).into(profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
                     downloadLink = null;
+                    finalizeChange = true;
                     globalVariables.setTempdownloadLink(null);
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
@@ -218,7 +221,7 @@ public class EditProfileImage extends AppCompatActivity {
             });
         }
         finalizeChange = true;
-        EditProfileClassTemp.finalizeChanges.setVisibility(View.GONE);
+        finalizeChanges.setVisibility(View.GONE);
     }
     private void ImagePickerIntent() {
         Permissions.check(EditProfileClassTemp, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, null, null, new PermissionHandler() {

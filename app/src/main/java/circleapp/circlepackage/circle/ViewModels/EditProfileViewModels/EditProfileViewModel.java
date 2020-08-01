@@ -24,9 +24,9 @@ public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> nameprogress;
     private UserRepository userRepository = new UserRepository();
     private CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
-    GlobalVariables globalVariables = new GlobalVariables();
+    private GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<String[]> liveData;
-    EditProfile editProfileClassTemp;
+    private EditProfile editProfileClassTemp;
     public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp) {
         imageprogress = new MutableLiveData<>();
         this.editProfileClassTemp = editProfileClassTemp;
@@ -39,7 +39,7 @@ public class EditProfileViewModel extends ViewModel {
             }
         });
         circlePersonnelRepository.updateCirclePersonnelUserIfInvolved(user, new Subscriber(user,System.currentTimeMillis()));
-        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return imageprogress;
     }
 
@@ -55,7 +55,7 @@ public class EditProfileViewModel extends ViewModel {
         });
         //update circle personnel
         circlePersonnelRepository.updateCirclePersonnelUserIfInvolved(user, new Subscriber(user,System.currentTimeMillis()));
-        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(editProfileClassTemp, "User Updated Successfully!!!!.....", Toast.LENGTH_SHORT).show();
         return nameprogress;
     }
 }
