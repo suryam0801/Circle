@@ -37,6 +37,8 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import static android.Manifest.permission.CAMERA;
 
 public class CreatePhotoBroadcastDialog {
+    public boolean pollExists = false;
+    public boolean imageExists = false;
     private static final int PICK_IMAGE_ID = 234;
     private Dialog createPhotoBroadcastPopup;
     private EditText setTitlePhoto;
@@ -64,13 +66,13 @@ public class CreatePhotoBroadcastDialog {
             this.downloadLink = globalVariables.getTempdownloadLink();
             Log.d("tagdownload",downloadLink.toString());
             if (this.downloadLink != null && !setTitlePhoto.getText().toString().isEmpty()) {
-                circleWall.imageExists = true;
+                this.imageExists = true;
                 String title = setTitlePhoto.getText().toString();
                 circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
-                circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,circleWall.imageExists, activity).observe((LifecycleOwner) activity, state->{
+                circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,this.imageExists, activity).observe((LifecycleOwner) activity, state->{
                     if (state){
-                        circleWall.pollExists = false;
-                        circleWall.imageExists = false;
+                        this.pollExists = false;
+                        this.imageExists = false;
                         circleWall.updateUserCount(circle);
                         createPhotoBroadcastPopup.dismiss();
                     }

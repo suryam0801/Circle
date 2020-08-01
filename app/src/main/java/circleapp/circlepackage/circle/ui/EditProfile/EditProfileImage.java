@@ -210,6 +210,8 @@ public class EditProfileImage extends AppCompatActivity {
                     globalVariables.saveCurrentUser(user);
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(EditProfileClassTemp.profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
+                    downloadLink = null;
+                    globalVariables.setTempdownloadLink(null);
                     imageUploadProgressDialog.dismiss();
                     editUserProfiledialogue.dismiss();
                 }
