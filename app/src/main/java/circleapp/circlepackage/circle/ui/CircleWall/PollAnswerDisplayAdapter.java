@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.HashMap;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
@@ -47,25 +48,7 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
 
         final Subscriber member = (Subscriber) list.keySet().toArray()[position];
         final String answer = (String) list.values().toArray()[position];
-        if (member.getPhotoURI().length() > 10) {
-            Glide.with(mContext)
-                    .load(globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl())
-                    .into(holder.profPic);
-        } else if (member.getPhotoURI().equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(mContext)
-                    .load(ContextCompat.getDrawable(mContext, profilePic))
-                    .into(holder.profPic);
-        } else {
-            int index = Integer.parseInt(String.valueOf(member.getPhotoURI().charAt(member.getPhotoURI().length()-1)));
-            index = index-1;
-            Log.d("index", index+"");
-            TypedArray avatarResourcePos = mContext.getResources().obtainTypedArray(R.array.AvatarValues);
-            int profilePic = avatarResourcePos.getResourceId(index, 0);
-            Glide.with(mContext)
-                    .load(profilePic)
-                    .into(holder.profPic);
-        }
+        HelperMethodsUI.setUserProfileImage(member.getPhotoURI(),mContext,holder.profPic);
         ++count;
         if(count == 4) count = 0;
 
@@ -73,7 +56,6 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
         final String nameDisplay = member.getName();
         holder.name.setText(nameDisplay);
         holder.answer.setText(answer);
-
         holder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.item_animation_fall_down));
     }
 
