@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -23,15 +24,16 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class EdituserName {
 
-    Dialog editUserNamedialogue, editUserProfiledialogue;
-    private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
+    private Dialog editUserNamedialogue;
+    private ProgressDialog userNameProgressDialogue;
     public EditProfileViewModel editProfileViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
-    private LiveData<String[]> liveData;
-    EditProfile EditProfileClassTemp;
-    User user;
+    private EditProfile EditProfileClassTemp;
+    private User user;
+    private TextView userName;
 
-    public void edituserNamedialogue(EditProfile editProfile) {
+    public void edituserNamedialogue(EditProfile editProfile, TextView userName) {
+        this.userName = userName;
         this.EditProfileClassTemp = editProfile;
         editUserNamedialogue = new Dialog(EditProfileClassTemp);
         editUserNamedialogue.setContentView(R.layout.user_name_edit_dialogue); //set dialog view
@@ -39,7 +41,6 @@ public class EdituserName {
         final EditText edit_name = editUserNamedialogue.findViewById(R.id.edit_name);
         edit_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         userNameProgressDialogue = new ProgressDialog(EditProfileClassTemp);
-        imageUploadProgressDialog = new ProgressDialog(EditProfileClassTemp);
         editProfileViewModel = ViewModelProviders.of(EditProfileClassTemp).get(EditProfileViewModel.class);
 
         edit_name_finalize.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +74,7 @@ public class EdituserName {
                 user.setName(name);
                 editProfileViewModel.editprofilename(profileUpdates,user,EditProfileClassTemp).observe(EditProfileClassTemp, state->{
                     if (state){
-                        EditProfileClassTemp.userName.setText(globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName());
+                        userName.setText(globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName());
                         userNameProgressDialogue.dismiss();
                         editUserNamedialogue.dismiss();
 
