@@ -149,6 +149,8 @@ dependencies {
     implementation 'com.nabinbhandari.android:permissions:3.8'
     //SwitchUI
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
+    implementation "com.github.SUPERCILEX.poi-android:poi:$poiVersion"
+    implementation "com.github.SUPERCILEX.poi-android:proguard:$poiVersion"
 }
 
 
