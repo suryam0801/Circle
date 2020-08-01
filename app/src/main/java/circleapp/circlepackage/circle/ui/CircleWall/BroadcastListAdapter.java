@@ -111,24 +111,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     private void updateProfilePicOfCreator(ViewHolder viewHolder, Broadcast broadcast){
-        if (broadcast.getCreatorPhotoURI().length() > 10) { //checking if its uploaded image
-            Glide.with((Activity) context)
-                    .load(broadcast.getCreatorPhotoURI())
-                    .into(viewHolder.profPicDisplay);
-        } else if (broadcast.getCreatorPhotoURI().equals("default")) {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
-            Glide.with(context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        } else { //checking if it is default avatar
-            int index = Integer.parseInt(String.valueOf(broadcast.getCreatorPhotoURI().charAt(broadcast.getCreatorPhotoURI().length()-1)));
-            index = index-1;
-            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
-            int profilePic = avatarResourcePos.getResourceId(index, 0);
-            Glide.with((Activity) context)
-                    .load(ContextCompat.getDrawable(context, profilePic))
-                    .into(viewHolder.profPicDisplay);
-        }
+        HelperMethodsUI.setUserProfileImage(broadcast.getCreatorPhotoURI(), context, viewHolder.profPicDisplay);
     }
 
     private void setNewCommentsTextView(ViewHolder viewHolder, Broadcast broadcast){
@@ -311,7 +294,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 params1.putString("PollInteracted", "Radio button");
 
                 String option = button.getText().toString();
-                updatePollAnswer(option, viewHolder, broadcast, poll);
+                broadcastListViewModel.updatePollAnswer(option, viewHolder, broadcast, poll, circle, user);
             });
             viewHolder.pollOptionsDisplayGroup.addView(layout);
             button.setPressed(true);
@@ -324,42 +307,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         intent.putExtra("indexOfBroadcast", position);
         context.startActivity(intent);
         ((Activity) context).finish();
-    }
-
-    public void updatePollAnswer(String option, ViewHolder viewHolder, Broadcast broadcast, Poll poll) {
-        HashMap<String, Integer> pollOptionsTemp = poll.getOptions();
-        int currentSelectedVoteCount = poll.getOptions().get(option);
-
-        if (viewHolder.getCurrentUserPollOption() == null) { //voting for first time
-            ++currentSelectedVoteCount;
-            pollOptionsTemp.put(option, currentSelectedVoteCount);
-            viewHolder.setCurrentUserPollOption(option);
-        } else if (!viewHolder.getCurrentUserPollOption().equals(option)) {
-            int userPreviousVoteCount = poll.getOptions().get(viewHolder.getCurrentUserPollOption()); //repeated vote (regulates count)
-
-            if (userPreviousVoteCount != 0)
-                --userPreviousVoteCount;
-
-            ++currentSelectedVoteCount;
-            pollOptionsTemp.put(option, currentSelectedVoteCount);
-            pollOptionsTemp.put(viewHolder.getCurrentUserPollOption(), userPreviousVoteCount);
-            viewHolder.setCurrentUserPollOption(option);
-
-        }
-
-        HashMap<String, String> userResponseHashmap;
-        if (poll.getUserResponse() != null) {
-            userResponseHashmap = new HashMap<>(poll.getUserResponse());
-            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
-        } else {
-            userResponseHashmap = new HashMap<>();
-            userResponseHashmap.put(user.getUserId(), viewHolder.getCurrentUserPollOption());
-        }
-
-        poll.setOptions(pollOptionsTemp);
-        poll.setUserResponse(userResponseHashmap);
-        broadcast.setPoll(poll);
-        broadcastListViewModel.updateBroadcastOnPollInteraction(broadcast,circle.getId());
     }
 
     public void showDeleteBroadcastDialog(Broadcast broadcast) {

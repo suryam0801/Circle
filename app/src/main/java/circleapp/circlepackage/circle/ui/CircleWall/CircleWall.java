@@ -365,13 +365,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Exit circle":
-                    showExitDialog();
+                    HelperMethodsUI.showExitDialog(CircleWall.this,circle,user);
                     break;
                 case "Delete circle":
-                    showDeleteDialog();
+                    HelperMethodsUI.showDeleteDialog(CircleWall.this,circle,user);
                     break;
                 case "Circle Information":
-
                     startActivity(new Intent(CircleWall.this, CircleInformation.class));
                     break;
             }
@@ -458,6 +457,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         recyclerView.setItemAnimator(null);
 
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void showExitDialog() {

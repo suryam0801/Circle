@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -29,7 +30,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 
-public class FullPageBroadcastCardView extends AppCompatActivity {
+public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 
     private Circle circle;
     private List<Broadcast> broadcastList;
@@ -40,6 +41,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
     private ImageButton moreOptions, viewApplicants;
     private RecyclerView recyclerView;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private Dialog reportAbuseDialog;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,6 +78,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         recyclerView.scrollToPosition(initialBroadcastPosition);
     }
     private void setUIElements(){
+        reportAbuseDialog = new Dialog(this);
         recyclerView = findViewById(R.id.full_page_broadcast_card_recycler_view);
         banner = findViewById(R.id.full_page_broadcast_banner_name);
         back = findViewById(R.id.bck_fullpage_broadcast);
@@ -98,6 +101,10 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, moreOptions);
         popup.getMenuInflater()
                 .inflate(R.menu.circle_wall_menu, popup.getMenu());
+        if (circle.getCreatorID().equals(globalVariables.getCurrentUser().getUserId()))
+            popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
+        else
+            popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getTitle().toString()) {
@@ -106,21 +113,39 @@ public class FullPageBroadcastCardView extends AppCompatActivity {
                     startActivity(new Intent(this, CircleWallBackgroundPicker.class));
                     break;
                 case "Invite a friend":
-                    HelperMethodsUI.showShareCirclePopup(circle, this);
+                    InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
+                    bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
                     break;
                 case "Report Abuse":
+                    HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, this, circle.getId(), "", "", circle.getCreatorID(), globalVariables.getCurrentUser().getUserId());
                     break;
                 case "Exit circle":
+                    HelperMethodsUI.showExitDialog(this, circle, globalVariables.getCurrentUser());
                     break;
                 case "Delete circle":
+                    HelperMethodsUI.showDeleteDialog(this, circle, globalVariables.getCurrentUser());
                     break;
                 case "Circle Information":
+                    startActivity(new Intent(this, CircleInformation.class));
                     break;
             }
             return true;
         });
         popup.show();
     }
+    @Override
+    public void onButtonClicked(String text) {
+
+        switch (text) {
+            case "shareLink":
+                HelperMethodsUI.showShareCirclePopup(circle, this);
+                break;
+            case "copyLink":
+                HelperMethodsUI.copyLinkToClipBoard(circle, this);
+                break;
+        }
+    }
+
 
     public void setParentBgImage() {
         String bg = SessionStorage.getCircleWallBgImage(this);

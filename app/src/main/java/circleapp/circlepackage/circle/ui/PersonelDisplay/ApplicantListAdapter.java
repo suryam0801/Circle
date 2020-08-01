@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
@@ -35,7 +36,6 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     String TAG = "APPLICANT_LIST_ADAPTER";
     private String state;
     private int propic;
-    private int myImageList;
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;
@@ -54,27 +54,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     public void onBindViewHolder(@NonNull ApplicantListAdapter.ViewHolder holder, int position) {
         final Subscriber selectedApplicant = ApplicantList.get(position);
 
-        if (selectedApplicant.getPhotoURI().length() > 10) {
-            Glide.with(mContext)
-                    .load(selectedApplicant.getPhotoURI())
-                    .into(holder.profPic);
-        }
-        else if(selectedApplicant.getPhotoURI().equals("default")){
-            Glide.with(mContext)
-                    .load(ContextCompat.getDrawable(mContext, R.drawable.default_profile_pic))
-                    .into(holder.profPic);
-        }
-        else {
-            int index = Integer.parseInt(String.valueOf(selectedApplicant.getPhotoURI().charAt(selectedApplicant.getPhotoURI().length()-1)));
-            index = index-1;
-            TypedArray avatarResourcePos = mContext.getResources().obtainTypedArray(R.array.AvatarValues);
-            propic = avatarResourcePos.getResourceId(index, 0);
-            myImageList = propic;
-            Glide.with(mContext)
-                    .load(propic)
-                    .placeholder(ContextCompat.getDrawable(mContext, myImageList))
-                    .into(holder.profPic);
-        }
+        HelperMethodsUI.setUserProfileImage(selectedApplicant.getPhotoURI(), mContext, holder.profPic);
 
         //Set text for TextView
         final String nameDisplay = selectedApplicant.getName();

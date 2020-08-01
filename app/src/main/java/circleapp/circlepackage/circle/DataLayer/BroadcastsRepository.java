@@ -2,6 +2,11 @@ package circleapp.circlepackage.circle.DataLayer;
 
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
@@ -14,15 +19,16 @@ public class BroadcastsRepository {
     private GlobalVariables globalVariables = new GlobalVariables();
 
     public void deleteBroadcast(String circleId, Broadcast broadcast, int noOfBroadcasts, User user) {
+
         StorageReferenceRepository storageReferenceRepository = new StorageReferenceRepository();
         UserRepository userRepository = new UserRepository();
         Log.d("wefkjn", "tempListening.toString()");
         if (broadcast.isImageExists())
             storageReferenceRepository.removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
-
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcast.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circleId).child(broadcast.getId()).removeValue();
-        globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("noOfBroadcasts").setValue(noOfBroadcasts-1);
+        FBTransactions noOfBroadcastsUpdate = new FBTransactions(globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("noOfBroadcasts"));
+        noOfBroadcastsUpdate.runTransactionOnIncrementalValues(-1);
         userRepository.updateUserObjectWhenDeletingBroadcast(user, broadcast);
     }
 
@@ -77,4 +83,8 @@ public class BroadcastsRepository {
         return id;
     }
 
+    public void updateNoOfCommentsInBroadcast(String broadcastId, int counter, String circleId) {
+        FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcastId).child("numberOfComments"));
+        fbTransactions.runTransactionOnIncrementalValues(counter);
+    }
 }

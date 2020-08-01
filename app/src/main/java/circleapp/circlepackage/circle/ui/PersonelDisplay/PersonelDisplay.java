@@ -41,6 +41,7 @@ public class PersonelDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personel_display);
+        //UI values
         circle = globalVariables.getCurrentCircle();
         user = globalVariables.getCurrentUser();
 
@@ -49,6 +50,7 @@ public class PersonelDisplay extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         applicantsList = new ArrayList<>(); //initialize membersList
 
+        //Button listeners
         back.setOnClickListener(view -> {
             finishAfterTransition();
             startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
