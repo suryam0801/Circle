@@ -203,8 +203,6 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(list!=null)
-            list.clear();
-        adapter.notifyDataSetChanged();
+        liveData.removeObservers(this);
     }
 }

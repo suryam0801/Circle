@@ -147,10 +147,7 @@ public class WorkbenchFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if(workbenchCircleList!=null){
-            workbenchCircleList.clear();
-            wbadapter.notifyDataSetChanged();
-        }
+        liveData.removeObservers(this);
         super.onPause();
     }
 

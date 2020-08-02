@@ -218,10 +218,7 @@ public class ExploreFragment extends Fragment {
     }
     @Override
     public void onPause() {
-        if(exploreCircleList!=null){
-            exploreCircleList.clear();
-            adapter.notifyDataSetChanged();
-        }
+        liveData.removeObservers(this);
         super.onPause();
     }
 }

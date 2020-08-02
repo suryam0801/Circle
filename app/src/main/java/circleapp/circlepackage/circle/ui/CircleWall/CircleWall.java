@@ -551,12 +551,4 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
         globalVariables.saveCurrentUser(temp);
     }
-    @Override
-    public void onPause() {
-        if(broadcastList!=null){
-            broadcastList.clear();
-            adapter.notifyDataSetChanged();
-        }
-        super.onPause();
-    }
 }
