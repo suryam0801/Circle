@@ -21,7 +21,9 @@ import circleapp.circlepackage.circle.ui.CircleWall.FullPageBroadcastCardAdapter
 public class FullpageAdapterViewModel {
 
     public FullpageAdapterViewModel(){}
+
     private BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
+
     public void updateMutedList(User user, String circleId, String broadcastId, int transaction){
         UserRepository userRepository = new UserRepository();
         userRepository.updateUser(user);

@@ -74,7 +74,8 @@ public class ExportPollResultAsDoc {
             }
 
             int j = 0;
-            answers.removeAll(pollResponse.values());
+            if(answers!=null)
+                answers.clear();
             answers.addAll(pollResponse.values());
             for(Map.Entry<String, String> entry : pollResponse.entrySet()){
                 String  userId = entry.getKey();
