@@ -100,7 +100,12 @@ public class NotificationFragment extends Fragment {
     }
     @Override
     public void onPause() {
-        liveData.removeObservers(this);
+        if(thisWeekNotifs!=null)
+            thisWeekNotifs.clear();
+        if(previousNotifs!=null)
+            previousNotifs.clear();
+        adapterPrevious.notifyDataSetChanged();
+        adapterThisWeek.notifyDataSetChanged();
         super.onPause();
     }
 }
