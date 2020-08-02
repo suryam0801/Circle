@@ -120,7 +120,7 @@
                         android:text="Public"
                         android:textColor="@color/black20"
                         android:textSize="16dp"></TextView>
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -129,8 +129,8 @@
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="23dp"
-                            android:layout_marginTop="5dp"
-                            android:text="Anyone in your area can join"
+                            android:layout_marginTop="15dp"
+                            android:text="Anyone in your area can view this Circle"
                             android:textColor="#DEDADA"></TextView>
                         <Space
                             android:layout_width="0dp"
@@ -140,11 +140,12 @@
                             android:id="@+id/visibilitySwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="20dp"
                             android:layout_marginRight="20dp"
                             app:sb_checked_color="#158BF1"></com.suke.widget.SwitchButton>
 
-                    </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/acceptanceDisplayView"
@@ -163,7 +164,7 @@
                         android:text="Members join freely"
                         android:textColor="@color/black20"
                         android:textSize="16dp"></TextView>
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -172,7 +173,7 @@
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="23dp"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="15dp"
                             android:text="People can join this Circle without applying"
                             android:textColor="#DEDADA"></TextView>
                         <Space
@@ -183,12 +184,15 @@
                             android:id="@+id/joiningSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
+                            android:layout_alignParentEnd="true"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
                             android:layout_marginRight="20dp"
+                            android:layout_marginBottom="10dp"
                             app:sb_checked_color="#158BF1">
                         </com.suke.widget.SwitchButton>
 
-                    </LinearLayout>
+                    </RelativeLayout>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
