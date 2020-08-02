@@ -1,8 +1,6 @@
 package circleapp.circlepackage.circle.Utils;
 
-import android.graphics.pdf.PdfDocument;
 import android.util.Log;
-import android.view.View;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -11,7 +9,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -117,28 +114,6 @@ public class ExportPollResultAsDoc {
             rowLength = i;
         }
         return excelData;
-    }
-
-    public void printView2PDF(View content, File file) throws IOException {
-        // create a new document
-        PdfDocument document = new PdfDocument();
-
-        // crate a page description
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(
-                content.getMeasuredWidth(), content.getMeasuredHeight(),1)
-                .create();
-
-        // start a page
-        PdfDocument.Page page = document.startPage(pageInfo);
-
-        // draw something on the page
-        content.draw(page.getCanvas());
-
-        // finish the page
-        document.finishPage(page);
-        document.writeTo(new FileOutputStream(file));
-        // close the document
-        document.close();
     }
 
     public void writeDataToExcelFile(File fileName) {
