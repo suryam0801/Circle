@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -39,13 +38,12 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CreatorPollAnswersView extends AppCompatActivity {
 
     private HashMap<Subscriber, String> list = new HashMap<>();
-    private Button saveChartButton, saveResponsesButton;
+    private ImageButton saveResponsesButton;
     private ImageButton bckBtn;
     private GlobalVariables globalVariables = new GlobalVariables();
     private PieChart pieChart;
@@ -96,7 +94,6 @@ public class CreatorPollAnswersView extends AppCompatActivity {
             userResponse = poll.getUserResponse();
         else
             userResponse = new HashMap<>();
-        saveChartButton = findViewById(R.id.exportChart);
         saveResponsesButton = findViewById(R.id.exportAsExcel);
     }
     private void setResponsesObserver(){
@@ -138,23 +135,11 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         pieChart.animateXY(1400, 1400);
         pieChart.setDrawEntryLabels(false);
-        saveChartButton.setOnClickListener(v->{
-            Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    initFilePathAndSave("pdf");
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
-        });
         saveResponsesButton.setOnClickListener(v->{
             Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
-                    initFilePathAndSave("excel");
+                    initFilePathAndSave();
                 }
                 @Override
                 public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -164,38 +149,23 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         });
     }
 
-    private void initFilePathAndSave(String pdfOrExcel){
+    private void initFilePathAndSave(){
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
-        if(pdfOrExcel.equals("pdf")){
-            File pdfFile = new File(path+"/"+"Poll Results "+circle.getName()+".pdf");
-            try {
-                exportPollResultAsDoc.printView2PDF(pieChart,pdfFile);
-                shareFile(pdfFile,"pdf");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            File file = new File(path, "/" + "Poll Results "+circle.getName()+".xls");
-            exportPollResultAsDoc.writeDataToExcelFile(file);
-            shareFile(file,"excel");
-        }
+        File file = new File(path, "/" + "Poll Results "+circle.getName()+".xls");
+        exportPollResultAsDoc.writeDataToExcelFile(file);
+        shareFile(file);
     }
 
-    private void shareFile(File myFilePath, String pdfOrExcel){
+    private void shareFile(File myFilePath){
         Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-        if(myFilePath.exists()) {
-            if(pdfOrExcel.equals("pdf"))
-                intentShareFile.setType("application/pdf");
-            else
-                intentShareFile.setType("application/xls");
-            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myFilePath));
 
+        if(myFilePath.exists()) {
+            intentShareFile.setType("application/xls");
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myFilePath));
             intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
                     "Circle Poll Results");
             intentShareFile.putExtra(Intent.EXTRA_TEXT, "Here are the Circle Poll Results:");
-
             startActivity(Intent.createChooser(intentShareFile, "Circle Poll Results"));
         }
     }
