@@ -25,7 +25,6 @@ import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -33,6 +32,8 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
+
+import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
 
 public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
@@ -58,12 +59,13 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         //Go back to home
         back.setOnClickListener(view -> {
             finishAfterTransition();
-            startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
+            Intent intent= new Intent(getApplicationContext(), CircleWall.class);
+            startActivity(intent);
         });
         //Only for creator
         viewApplicants.setOnClickListener(view -> {
             finishAfterTransition();
-            startActivity(new Intent(this, PersonelDisplay.class));
+            startActivity(new Intent(getApplicationContext(), PersonelDisplay.class));
         });
         //Drop down menu
         moreOptions.setOnClickListener(view -> {
