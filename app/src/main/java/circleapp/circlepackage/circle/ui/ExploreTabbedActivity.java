@@ -239,14 +239,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);
                 break;
         }
-        if (!popupCircle.getBackgroundImageLink().equals("default"))
-            Glide.with(this).load(popupCircle.getBackgroundImageLink()).into(profPic);
-        else {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
-            Glide.with(this)
-                    .load(ContextCompat.getDrawable(this, profilePic))
-                    .into(profPic);
-        }
+        HelperMethodsUI.createDefaultCircleIcon(popupCircle,this,profPic);
 
         tv_circleName.setText(popupCircle.getName());
         tv_creatorName.setText(popupCircle.getCreatorName());
