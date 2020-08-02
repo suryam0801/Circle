@@ -100,9 +100,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private CreateNormalBroadcastDialog normalBroadcastDialog;
     private CreatePhotoBroadcastDialog photoBroadcastDialog;
     private CreatePollBroadcastDialog pollBroadcastDialog;
-
     private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto;
-
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
@@ -111,31 +109,27 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
+        setCircleObserver();
+        setImageUploadObserver();
+        initUIElements();
+        initializeRecyclerView();
+        setParentBgImage();
+        initBtnListeners();
+        setBroadcastObserver();
+        setCircleMembersObserver();
+    }
+
+    private void initUIElements(){
         confirmationDialog = new Dialog(CircleWall.this);
         reportAbuseDialog = new Dialog(CircleWall.this);
-        user = globalVariables.getCurrentUser();
-        circle = globalVariables.getCurrentCircle();
         normalBroadcastDialog = new CreateNormalBroadcastDialog();
         photoBroadcastDialog = new CreatePhotoBroadcastDialog();
         pollBroadcastDialog = new CreatePollBroadcastDialog();
-        MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
-        tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
-            circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null&&circle.getMembersList()!=null) {
-                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
-                if (circle.getMembersList().containsKey(user.getUserId())) {
-                    globalVariables.saveCurrentCircle(circle);
-                }
-            }
-        });
+
 
         broadcastid = getIntent().getStringExtra("broadcastId");
         broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
         imageUploadProgressDialog = new ProgressDialog(this);
-        ImageUploadModel();
-
-
         if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
@@ -156,9 +150,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         viewApplicants = findViewById(R.id.applicants_display_creator);
         recyclerView = findViewById(R.id.broadcastViewRecyclerView);
         allCircleMembers = new ArrayList<>();
-
-        initializeRecyclerView();
-        setParentBgImage();
         circleBannerName.setText(circle.getName());
 
         if (circle.getApplicantsList() != null) {
@@ -174,7 +165,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         if (circle.getNoOfBroadcasts() == 0)
             emptyDisplay.setVisibility(View.VISIBLE);
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void initBtnListeners(){
         back.setOnClickListener(view -> {
             finishAfterTransition();
             startActivity(new Intent(CircleWall.this, ExploreTabbedActivity.class));
@@ -211,11 +205,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
         getStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
         getStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
+    }
 
+    private void setBroadcastObserver(){
         BroadcastsViewModel viewModel = ViewModelProviders.of(this).get(BroadcastsViewModel.class);
-
         LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
-
         liveData.observe(this, returnArray -> {
             Broadcast broadcast = new Gson().fromJson(returnArray[0], Broadcast.class);
             String modifierType = returnArray[1];
@@ -233,11 +227,25 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     break;
             }
         });
-
-        setCircleMembersObserver();
     }
 
-    private void ImageUploadModel() {
+    private void setCircleObserver(){
+        user = globalVariables.getCurrentUser();
+        circle = globalVariables.getCurrentCircle();
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
+            circle = dataSnapshot.getValue(Circle.class);
+            if (circle != null&&circle.getMembersList()!=null) {
+                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
+                if (circle.getMembersList().containsKey(user.getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
+                }
+            }
+        });
+    }
+
+    private void setImageUploadObserver() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             Log.d("progressvalue",""+progress);
