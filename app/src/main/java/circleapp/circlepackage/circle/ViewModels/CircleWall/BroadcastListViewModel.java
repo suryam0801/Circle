@@ -12,7 +12,9 @@ import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListAdapter;
 
 public class BroadcastListViewModel {
     public BroadcastListViewModel(){}
+
     private BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
+
     public void updateListenerListOfBroadcast(int addOrRemove, User user, String circleId, String broadcastId){
         UserRepository userRepository = new UserRepository();
         broadcastsRepository.broadcastListenerList(addOrRemove, user.getUserId(), circleId, broadcastId);
