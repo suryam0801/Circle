@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 
 public class GetSearchableSpinnerLocation {
     private Context mContext;

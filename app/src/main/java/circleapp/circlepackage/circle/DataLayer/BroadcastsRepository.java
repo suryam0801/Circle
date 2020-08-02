@@ -2,11 +2,6 @@ package circleapp.circlepackage.circle.DataLayer;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
-
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;

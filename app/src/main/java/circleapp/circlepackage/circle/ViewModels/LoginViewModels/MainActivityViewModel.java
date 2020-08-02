@@ -9,8 +9,8 @@ import androidx.lifecycle.AndroidViewModel;
 import com.google.firebase.FirebaseApp;
 
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class MainActivityViewModel extends AndroidViewModel {
 
