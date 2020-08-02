@@ -1,10 +1,8 @@
 package circleapp.circlepackage.circle.Helpers;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +12,12 @@ import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.DataLayer.NotificationRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;

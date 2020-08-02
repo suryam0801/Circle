@@ -11,7 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -22,8 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class LocationHelper extends AndroidViewModel {
 

@@ -19,7 +19,6 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class OtpViewModel extends ViewModel {
     //    public  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;

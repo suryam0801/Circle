@@ -1,13 +1,5 @@
 package circleapp.circlepackage.circle.ui.CircleWall.FullPageView;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,20 +11,27 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
+
 import java.util.List;
 
-import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
-import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
-import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 
 public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
@@ -58,12 +57,13 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         //Go back to home
         back.setOnClickListener(view -> {
             finishAfterTransition();
-            startActivity(new Intent(FullPageBroadcastCardView.this, ExploreTabbedActivity.class));
+            Intent intent= new Intent(getApplicationContext(), CircleWall.class);
+            startActivity(intent);
         });
         //Only for creator
         viewApplicants.setOnClickListener(view -> {
             finishAfterTransition();
-            startActivity(new Intent(this, PersonelDisplay.class));
+            startActivity(new Intent(getApplicationContext(), PersonelDisplay.class));
         });
         //Drop down menu
         moreOptions.setOnClickListener(view -> {

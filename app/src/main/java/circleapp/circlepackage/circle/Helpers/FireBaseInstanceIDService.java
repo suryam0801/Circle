@@ -24,8 +24,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 
 import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
 
