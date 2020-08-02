@@ -25,7 +25,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 public class ExportPollResultAsDoc {
     private HashMap<Subscriber, String > list;
     private int rowLength, colLength;
-    public ExportPollResultAsDoc(HashMap<Subscriber, String > list){ this.list = list;}
+    public ExportPollResultAsDoc(HashMap<Subscriber, String > list){ this.list = list; this.rowLength = 0;}
     public ExportPollResultAsDoc(){ this.rowLength = 0; this.colLength=0;}
 
     public String[][] getPollResponsesForExporting() {
@@ -39,6 +39,7 @@ public class ExportPollResultAsDoc {
             excelData[i][0]=key.getName();
             excelData[i][1]=value;
             i++;
+            rowLength = i;
         }
         return excelData;
     }
@@ -148,10 +149,10 @@ public class ExportPollResultAsDoc {
         HSSFRow myRow = null;
         HSSFCell myCell = null;
 
-        for (int rowNum = 0; rowNum < excelData[0].length+1; rowNum++){
+        for (int rowNum = 0; rowNum < rowLength; rowNum++){
             myRow = mySheet.createRow(rowNum);
 
-            for (int cellNum = 0; cellNum < list.size() ; cellNum++){
+            for (int cellNum = 0; cellNum < 2 ; cellNum++){
                 myCell = myRow.createCell(cellNum);
                 myCell.setCellValue(excelData[rowNum][cellNum]);
             }

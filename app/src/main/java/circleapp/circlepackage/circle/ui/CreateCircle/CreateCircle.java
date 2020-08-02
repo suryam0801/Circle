@@ -161,7 +161,7 @@ public class CreateCircle extends AppCompatActivity {
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 if(isChecked){
                     visibilityType="Everybody";
-                    visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can see this Circle");
+                    visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can view this Circle");
                     visibiltyHeading.setText("Public");
                 }
                 else{
