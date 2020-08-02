@@ -46,6 +46,7 @@ public class CircleInformation extends AppCompatActivity {
     private int indexValue;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private MemberListAdapter adapter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -68,8 +69,10 @@ public class CircleInformation extends AppCompatActivity {
     }
     @Override
     public void onPause() {
-        if(liveData!=null)
-        liveData.removeObservers(this);
+        if(memberList!=null){
+            memberList.clear();
+            adapter.notifyDataSetChanged();
+        }
         super.onPause();
     }
     private void initUIElements(){
@@ -108,7 +111,7 @@ public class CircleInformation extends AppCompatActivity {
 
     private void loadMembersList() {
         memberList = new ArrayList<>(); //initialize membersList
-        final MemberListAdapter adapter = new MemberListAdapter(this, memberList);
+        adapter = new MemberListAdapter(this, memberList);
         membersDisplay.setAdapter(adapter);
 
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
@@ -170,9 +173,11 @@ public class CircleInformation extends AppCompatActivity {
     public void onBackPressed() {
         int indexValue = getIntent().getIntExtra("exploreIndex", -1);
         if (indexValue == -1) {
+            globalVariables.saveCurrentUser(user);
             finishAfterTransition();
             startActivity(new Intent(CircleInformation.this, CircleWall.class));
         } else {
+            globalVariables.saveCurrentUser(user);
             finishAfterTransition();
             Intent intent = new Intent(CircleInformation.this, ExploreTabbedActivity.class);
             intent.putExtra("exploreIndex", indexValue);

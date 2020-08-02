@@ -55,7 +55,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private CircleImageView profPicHolder;
-    private TextView location;
     private User user;
     private String  intentUri;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
@@ -112,9 +111,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initUIElements(){
-        location = findViewById(R.id.explore_district_name_display);
         user = globalVariables.getCurrentUser();
-        location.setText(user.getDistrict());
         intentUri = getIntent().getStringExtra("imagelink");
         shownPopup = false;
 
@@ -134,17 +131,18 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         locationDisplay = findViewById(R.id.explore_district_name_display);
         bottomNav = findViewById(R.id.bottom_navigation);
         btnAddCircle = findViewById(R.id.add_circle_button);
-
-        locationDisplay.setText(user.getDistrict());
-        HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
+        if(user!=null){
+            locationDisplay.setText(user.getDistrict());
+            HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
+        }
     }
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
-            user = dataSnapshot.getValue(User.class);
-            if (user != null) {
-                globalVariables.saveCurrentUser(user);
+            User tempUser = dataSnapshot.getValue(User.class);
+            if (tempUser != null) {
+                globalVariables.saveCurrentUser(tempUser);
             }
         });
     }
