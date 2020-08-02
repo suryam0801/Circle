@@ -32,7 +32,7 @@ import com.suke.widget.SwitchButton;
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -51,7 +51,7 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView visibilityPrompt, logoHelp, backgroundText, visibiltyHeading, acceptanceHeading, acceptancePrompt;
+    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt;
     private Button btn_createCircle;
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
@@ -102,13 +102,12 @@ public class CreateCircle extends AppCompatActivity {
         categoryName = findViewById(R.id.category_name);
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
-        logoHelp = findViewById(R.id.logo_help);
-        backgroundText = findViewById(R.id.backgroundText);
         imageUploadProgressDialog = new ProgressDialog(this);
         acceptanceType="Automatic";
         visibilityType="Everybody";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setObserverForImageUpload(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
@@ -128,9 +127,10 @@ public class CreateCircle extends AppCompatActivity {
             }
             else if(progress[1].equals("100.0")){
                 downloadLink = Uri.parse(progress[0]);
+                backgroundPic.setScaleX((float) 1.0);
+                backgroundPic.setScaleY((float) 1.0);
+                backgroundPic.setBackground(getDrawable(R.drawable.circle_wall_background_white));
                 Glide.with(this).load(filePath).into(backgroundPic);
-                backgroundText.setVisibility(View.GONE);
-                logoHelp.setVisibility(View.GONE);
                 imageUploadProgressDialog.dismiss();
             }
         });
@@ -254,6 +254,7 @@ public class CreateCircle extends AppCompatActivity {
         Intent chooseImageIntent = imagePicker.getPickImageIntent();
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void uploadCircleLogo(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
@@ -268,9 +269,10 @@ public class CreateCircle extends AppCompatActivity {
             }
             else if(progress[1].equals("100.0")){
                 downloadLink = Uri.parse(progress[0]);
+                backgroundPic.setScaleX((float) 1.0);
+                backgroundPic.setScaleY((float) 1.0);
+                backgroundPic.setBackground(getDrawable(R.drawable.circle_wall_background_white));
                 Glide.with(this).load(filePath).into(backgroundPic);
-                backgroundText.setVisibility(View.GONE);
-                logoHelp.setVisibility(View.GONE);
                 imageUploadProgressDialog.dismiss();
             }
         });
@@ -278,6 +280,7 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     //code for upload the image
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

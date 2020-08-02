@@ -19,11 +19,11 @@ import java.util.Set;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 
-public class ExportPollResultAsDoc {
+public class PollExportUtil {
     private HashMap<Subscriber, String > list;
     private int rowLength, colLength;
-    public ExportPollResultAsDoc(HashMap<Subscriber, String > list){ this.list = list; this.rowLength = 0;}
-    public ExportPollResultAsDoc(){ this.rowLength = 0; this.colLength=0;}
+    public PollExportUtil(HashMap<Subscriber, String > list){ this.list = list; this.rowLength = 0;}
+    public PollExportUtil(){ this.rowLength = 0; this.colLength=0;}
 
     public String[][] getPollResponsesForExporting() {
         String [][] excelData = new String [list.size()+1][2];

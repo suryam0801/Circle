@@ -25,7 +25,7 @@ import java.util.List;
 
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;

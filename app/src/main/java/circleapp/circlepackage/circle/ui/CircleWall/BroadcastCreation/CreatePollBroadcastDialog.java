@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -30,16 +30,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
-import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
-import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
-import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 import static android.Manifest.permission.CAMERA;
 

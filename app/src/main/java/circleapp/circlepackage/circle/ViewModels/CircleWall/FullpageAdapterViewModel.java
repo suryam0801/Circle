@@ -16,7 +16,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
 import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ui.CircleWall.FullPageBroadcastCardAdapter;
+import circleapp.circlepackage.circle.ui.CircleWall.FullPageView.FullPageBroadcastCardAdapter;
 
 public class FullpageAdapterViewModel {
 

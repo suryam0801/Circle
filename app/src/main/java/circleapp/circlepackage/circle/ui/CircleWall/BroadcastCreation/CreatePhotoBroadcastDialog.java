@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation;
 
 import android.Manifest;
 import android.app.Activity;
@@ -33,6 +33,7 @@ import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 import static android.Manifest.permission.CAMERA;
 

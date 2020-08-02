@@ -31,7 +31,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.CircleWall.FullPageImageDisplay"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.CircleWall.FullPageBroadcastCardView"
+        <activity android:name=".ui.CircleWall.FullPageView.FullPageBroadcastCardView"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.CreateCircle.CreateCircleCategoryPicker"
@@ -43,7 +43,7 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
 
-        <activity android:name=".ui.CircleWall.CreatorPollAnswersView" />
+        <activity android:name=".ui.CircleWall.PollResults.CreatorPollAnswersView" />
         <activity
             android:name=".ui.ExploreTabbedActivity"
             android:noHistory="true" >
@@ -62,7 +62,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.CircleWall.CircleWall"
+        <activity android:name=".ui.CircleWall.BroadcastListView.CircleWall"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.MainActivity">
