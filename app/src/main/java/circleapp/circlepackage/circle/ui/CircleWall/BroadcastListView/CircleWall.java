@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,19 +15,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -48,23 +42,25 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
-import circleapp.circlepackage.circle.Utils.ExportPollResultAsDoc;
+import circleapp.circlepackage.circle.Utils.PollExportUtil;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreateNormalBroadcastDialog;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreatePhotoBroadcastDialog;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreatePollBroadcastDialog;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.Helpers.SendNotification;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
-import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
@@ -72,7 +68,6 @@ import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 
-import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
@@ -375,9 +370,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             File path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS);
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
-            ExportPollResultAsDoc exportPollResultAsDoc = new ExportPollResultAsDoc();
+            PollExportUtil pollExportUtil = new PollExportUtil();
             Log.d("BroadcastQuestion", allCircleMembers.size()+"");
-            exportPollResultAsDoc.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);
+            pollExportUtil.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);
             shareFile(file);
         }
         else {

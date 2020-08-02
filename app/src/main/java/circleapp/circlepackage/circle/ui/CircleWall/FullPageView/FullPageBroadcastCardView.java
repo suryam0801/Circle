@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.FullPageView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +21,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
@@ -30,7 +34,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 import circleapp.circlepackage.circle.R;
 
-public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
+public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
     private Circle circle;
     private List<Broadcast> broadcastList;

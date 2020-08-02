@@ -24,7 +24,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 public class NotificationRepository {
     private GlobalVariables globalVariables = new GlobalVariables();

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;

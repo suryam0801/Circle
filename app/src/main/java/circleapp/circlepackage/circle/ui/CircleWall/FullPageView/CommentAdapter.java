@@ -1,8 +1,6 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.FullPageView;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;

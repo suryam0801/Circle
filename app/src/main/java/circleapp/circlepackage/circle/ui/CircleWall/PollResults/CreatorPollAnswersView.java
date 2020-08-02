@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.PollResults;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import circleapp.circlepackage.circle.Utils.ExportPollResultAsDoc;
+import circleapp.circlepackage.circle.Utils.PollExportUtil;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -57,7 +57,7 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     private Circle circle;
     private Broadcast broadcast;
     private RecyclerView.Adapter adapter;
-    private ExportPollResultAsDoc exportPollResultAsDoc;
+    private PollExportUtil pollExportUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class CreatorPollAnswersView extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                 }
-                exportPollResultAsDoc = new ExportPollResultAsDoc(list);
+                pollExportUtil = new PollExportUtil(list);
             }
         });
     }
@@ -153,7 +153,7 @@ public class CreatorPollAnswersView extends AppCompatActivity {
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
         File file = new File(path, "/" + "Poll Results "+circle.getName()+".xls");
-        exportPollResultAsDoc.writeDataToExcelFile(file);
+        pollExportUtil.writeDataToExcelFile(file);
         shareFile(file);
     }
 

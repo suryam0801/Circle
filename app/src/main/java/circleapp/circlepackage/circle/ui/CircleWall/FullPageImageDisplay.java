@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 public class FullPageImageDisplay extends AppCompatActivity {
 

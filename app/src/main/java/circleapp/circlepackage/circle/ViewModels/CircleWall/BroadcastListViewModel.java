@@ -8,7 +8,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListAdapter;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.BroadcastListAdapter;
 
 public class BroadcastListViewModel {
     public BroadcastListViewModel(){}

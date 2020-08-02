@@ -1,10 +1,9 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -53,6 +51,9 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ui.CircleWall.FullPageImageDisplay;
+import circleapp.circlepackage.circle.ui.CircleWall.FullPageView.FullPageBroadcastCardView;
+import circleapp.circlepackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {

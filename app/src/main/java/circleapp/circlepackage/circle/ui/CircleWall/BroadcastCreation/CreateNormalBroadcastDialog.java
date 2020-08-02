@@ -1,4 +1,4 @@
-package circleapp.circlepackage.circle.ui.CircleWall;
+package circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -23,6 +23,7 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.CircleWallViewModel;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 public class CreateNormalBroadcastDialog {
     public boolean pollExists = false;
