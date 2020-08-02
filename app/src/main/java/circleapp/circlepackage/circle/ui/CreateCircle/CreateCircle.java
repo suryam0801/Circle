@@ -280,6 +280,7 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     //code for upload the image
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
