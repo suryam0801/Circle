@@ -254,6 +254,7 @@ public class CreateCircle extends AppCompatActivity {
         Intent chooseImageIntent = imagePicker.getPickImageIntent();
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void uploadCircleLogo(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
