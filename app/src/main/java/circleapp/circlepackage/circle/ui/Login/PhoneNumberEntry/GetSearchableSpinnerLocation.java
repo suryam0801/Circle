@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
 
 public class GetSearchableSpinnerLocation {
     private Context mContext;
@@ -27,7 +27,6 @@ public class GetSearchableSpinnerLocation {
         int temp = 0;
         for (String cn : al) {
             if(temp == 1){
-                Log.d("LocationParams", pos+mCountryName+mCountryDialCode);
                 break;
             }
             pos = pos + 1;
@@ -41,8 +40,6 @@ public class GetSearchableSpinnerLocation {
                         contryDialCode = arrDial[0];
                         mCountryDialCode="+"+contryDialCode;
                         temp = 1;
-
-                        Log.d("LocationParams", pos+mCountryName+mCountryDialCode);
                         break;
                     }
                 }
@@ -58,6 +55,5 @@ public class GetSearchableSpinnerLocation {
         tempLocation = globalVariables.getCurrentTempLocation();
         mCountryName = tempLocation.getCountryName();
         mCountryDialCode = tempLocation.getCountryDialCode();
-        Log.d("LocationParams", mCountryName+mCountryDialCode);
     }
 }

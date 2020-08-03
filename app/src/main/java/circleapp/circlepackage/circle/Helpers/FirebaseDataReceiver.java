@@ -12,14 +12,12 @@ import androidx.legacy.content.WakefulBroadcastReceiver;
 
 import circleapp.circlepackage.circle.R;
 
-import static android.content.Context.NOTIFICATION_SERVICE;
 import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
 
 public class FirebaseDataReceiver extends WakefulBroadcastReceiver {
     int notifid  = (int) System.currentTimeMillis();
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("BroadcastReceiver::", "BroadcastReceiver");
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context,context.getString(default_notification_channel_id))

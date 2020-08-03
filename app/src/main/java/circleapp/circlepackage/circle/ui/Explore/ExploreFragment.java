@@ -2,6 +2,14 @@ package circleapp.circlepackage.circle.ui.Explore;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -11,25 +19,23 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.ExploreCirclesViewModel;
+import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +52,8 @@ public class ExploreFragment extends Fragment {
 
     private List<Circle> exploreCircleList = new ArrayList<>();
 
+    private LinearLayout emptyDisplay;
+    private ImageButton createCircle;
     private ChipGroup filterDisplay;
     private RecyclerView.Adapter adapter;
 
@@ -92,6 +100,8 @@ public class ExploreFragment extends Fragment {
         listOfFilters = SessionStorage.getFilters(getActivity());
         filter = view.findViewById(R.id.explore_filter_btn);
         filterDisplay = view.findViewById(R.id.filter_display_chip_group);
+        emptyDisplay = view.findViewById(R.id.explore_empty_display);
+        createCircle = view.findViewById(R.id.placeholder_explore_circle_layout);
         exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
         setIndex = getActivity().getIntent().getIntExtra("exploreIndex", 0);
 
@@ -113,6 +123,10 @@ public class ExploreFragment extends Fragment {
             SessionStorage.saveFilters(getActivity(), listOfFilters);
             startActivity(intent);
         });
+        createCircle.setOnClickListener(v->{
+            startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
+            getActivity().finish();
+        });
 
         if (listOfFilters != null) {
             for (String f : listOfFilters)
@@ -120,6 +134,7 @@ public class ExploreFragment extends Fragment {
         }
 
         circlesObserver();
+        setPlaceholder();
         return view;
     }
 
@@ -144,10 +159,20 @@ public class ExploreFragment extends Fragment {
                     break;
             }
         });
+    }
 
+    private void setPlaceholder(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(exploreCircleList.size()==0)
+                    emptyDisplay.setVisibility(View.VISIBLE);
+            }
+        }, 1000);
     }
 
     public void addCircle(Circle circle) {
+        emptyDisplay.setVisibility(View.GONE);
         boolean isMember = HelperMethodsUI.isMemberOfCircle(circle, user.getUserId());
         boolean isInLocation = circle.getCircleDistrict().trim().equalsIgnoreCase(user.getDistrict().trim());
 
@@ -186,6 +211,8 @@ public class ExploreFragment extends Fragment {
             exploreCircleList.remove(position);
             adapter.notifyItemRemoved(position);
         }
+        if(exploreCircleList.size()==0)
+            emptyDisplay.setVisibility(View.VISIBLE);
     }
 
     private void setFilterChips(final String name) {

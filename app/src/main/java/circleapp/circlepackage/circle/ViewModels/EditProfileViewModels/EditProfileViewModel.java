@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle.ViewModels.EditProfileViewModels;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -14,9 +13,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 public class EditProfileViewModel extends ViewModel {
@@ -33,7 +32,6 @@ public class EditProfileViewModel extends ViewModel {
         globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.d("gluser",globalVariables.getCurrentUser().toString());
                 userRepository.updateUser(globalVariables.getCurrentUser());
                 imageprogress.setValue(true);
             }
@@ -49,7 +47,6 @@ public class EditProfileViewModel extends ViewModel {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 userRepository.updateUser(globalVariables.getCurrentUser());
-                Log.d("edit",globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }
         });

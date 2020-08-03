@@ -161,7 +161,7 @@ public class NewUserRegistration extends ViewModel {
         String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
         studentsCircleId = circleRepository.createDefaultCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
                         "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
-                district, 0, 0, "Students & Clubs");
+                district, 2, 0, "Students & Clubs");
 
         studentsNormalBroadcastId = broadcastsRepository.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
                 "You have the support of all the students from " + district + " here!", "Srinithi", 1, 0, studentsCircleId);

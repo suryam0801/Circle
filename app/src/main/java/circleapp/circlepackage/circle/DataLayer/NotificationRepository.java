@@ -3,9 +3,11 @@ package circleapp.circlepackage.circle.DataLayer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -97,13 +99,13 @@ public class NotificationRepository {
         return notificationId;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void NotifyOnclickListener(Context context, Notification curent, int position, String broadcastId) {
         MyCirclesViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsParticularCircleLiveData(curent.getCircleId());
         liveData.observe((LifecycleOwner) context, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
-                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                 if(circle.getMembersList()==null)
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                 else if (circle.getMembersList().containsKey(globalVariables.getCurrentUser().getUserId())) {
@@ -112,7 +114,7 @@ public class NotificationRepository {
                     intent.putExtra("broadcastPos", position);
                     intent.putExtra("broadcastId", broadcastId);
                     context.startActivity(intent);
-                    ((Activity) context).finish();
+                    ((Activity) context).finishAfterTransition();
                 }
                 else {
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();

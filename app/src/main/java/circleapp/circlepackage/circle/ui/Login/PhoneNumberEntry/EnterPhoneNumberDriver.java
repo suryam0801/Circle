@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.Login.OtpVerification.OtpActivity;
-import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
 
 public class EnterPhoneNumberDriver {
     private GlobalVariables globalVariables = new GlobalVariables();

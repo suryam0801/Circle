@@ -19,21 +19,22 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
-import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SendNotification;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdapter.ViewHolder> {
@@ -65,7 +66,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         Circle currentCircle = circleList.get(i);
         String circleCategory;
-        Log.d("efljknwefwe", currentCircle.toString());
         HelperMethodsUI.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
 
         //check if circle acceptance is review

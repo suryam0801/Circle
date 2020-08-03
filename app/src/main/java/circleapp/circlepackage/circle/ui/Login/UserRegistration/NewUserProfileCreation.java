@@ -36,16 +36,16 @@ import com.nabinbhandari.android.permissions.Permissions;
 import java.util.ArrayList;
 
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
+import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
+import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.LocationsViewModel;
-import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
-import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.Model.LocalObjectModels.TempLocation;
+import circleapp.circlepackage.circle.ViewModels.LoginViewModels.UserRegistration.NewUserRegistration;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -241,7 +241,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     private void setImageUploadProgressObservable(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 
@@ -274,7 +273,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
             tempLink = downloadLink.toString();
         newUserRegistration = ViewModelProviders.of(this).get(NewUserRegistration.class);
         newUserRegistration.userObjectUploadProgress(false, uid, Name, district, ward, tempLink,avatar,contact,locationExists).observe(this, isUserUploaded -> {
-            Log.d("userreg()value",""+isUserUploaded);
             // update UI
             if(isUserUploaded==false);
             else {

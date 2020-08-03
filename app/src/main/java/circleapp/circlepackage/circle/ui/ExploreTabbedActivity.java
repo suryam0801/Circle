@@ -1,14 +1,5 @@
 package circleapp.circlepackage.circle.ui;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.viewpager.widget.ViewPager;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -24,26 +15,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
-import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
-
-import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
-
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
+import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
 import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
@@ -122,7 +120,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         //recieve ur request on opening
         if (intentUri != null) {
-            Log.d("intenturl",intentUri);
             url = intentUri;
             processUrl(url);
         }
@@ -241,14 +238,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);
                 break;
         }
-        if (!popupCircle.getBackgroundImageLink().equals("default"))
-            Glide.with(this).load(popupCircle.getBackgroundImageLink()).into(profPic);
-        else {
-            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_circle_logo));
-            Glide.with(this)
-                    .load(ContextCompat.getDrawable(this, profilePic))
-                    .into(profPic);
-        }
+        HelperMethodsUI.createDefaultCircleIcon(popupCircle,this,profPic);
 
         tv_circleName.setText(popupCircle.getName());
         tv_creatorName.setText(popupCircle.getCreatorName());

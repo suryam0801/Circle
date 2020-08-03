@@ -24,14 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
-import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDisplayAdapter.ViewHolder> {
@@ -69,7 +69,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.tv_circleCreatorName.setText("Me");
         holder.tv_circleCreatorName.setText(circle.getCreatorName());
         String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
-        holder.tv_circleCreatedDateWB.setText("Joined " + timeElapsed);
+        holder.tv_circleCreatedDateWB.setText("Started " + timeElapsed);
         holder.categoryDisplay.setText(circle.getCategory());
 
 
@@ -94,6 +94,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         //Read notification count updated on going to circle wall
         holder.container.setOnClickListener(view -> {
             clearNotifications(user, circle);
+            globalVariables.saveCurrentCircle(circle);
             //If user enters circle wall for first time
             actionOnFirstTimeEntry();
         });

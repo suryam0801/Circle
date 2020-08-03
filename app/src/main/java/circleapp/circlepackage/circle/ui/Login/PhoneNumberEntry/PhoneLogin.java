@@ -1,7 +1,6 @@
 package circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry;
 
 import android.annotation.SuppressLint;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

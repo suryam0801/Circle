@@ -13,11 +13,10 @@ import androidx.fragment.app.Fragment;
 import java.util.HashMap;
 import java.util.Map;
 
-import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class FeedbackFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";

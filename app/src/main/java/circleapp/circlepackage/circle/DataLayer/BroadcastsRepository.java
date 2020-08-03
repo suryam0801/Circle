@@ -2,11 +2,6 @@ package circleapp.circlepackage.circle.DataLayer;
 
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
-
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
@@ -22,7 +17,6 @@ public class BroadcastsRepository {
 
         StorageReferenceRepository storageReferenceRepository = new StorageReferenceRepository();
         UserRepository userRepository = new UserRepository();
-        Log.d("wefkjn", "tempListening.toString()");
         if (broadcast.isImageExists())
             storageReferenceRepository.removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcast.getId()).removeValue();

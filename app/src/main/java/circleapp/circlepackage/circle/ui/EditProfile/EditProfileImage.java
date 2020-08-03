@@ -16,21 +16,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
-
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
-import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -162,7 +160,6 @@ public class EditProfileImage extends AppCompatActivity {
         if (avatar != "") {
             imageUploadProgressDialog.setTitle("Uploading Profile....");
             imageUploadProgressDialog.show();
-            Log.d("TAG2", "DownloadURI ::" + avatar);
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setPhotoUri(Uri.parse(avatar))
                     .build();
@@ -178,7 +175,6 @@ public class EditProfileImage extends AppCompatActivity {
                     Glide.with(EditProfileClassTemp)
                             .load(avatarResourcePos.getResourceId(index, 0))
                             .into(profileImageView);
-                    Log.d("TAG2", "DownloadURI bv::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     finalizeChange = true;
                     downloadLink = null;
                     globalVariables.setTempdownloadLink(null);
@@ -196,11 +192,9 @@ public class EditProfileImage extends AppCompatActivity {
     private void FinalizeChangesBtn() {
 //        String TempUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
         String TempUrl = globalVariables.getCurrentUser().getProfileImageLink();
-        Log.d("TAG", "DownloadURI ::" + TempUrl);
         imageUploadProgressDialog.setTitle("Uploading Profile....");
         imageUploadProgressDialog.show();
         if (TempUrl != null) {
-            Log.d("TAG", "DownloadURI ::" + TempUrl);
 
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setPhotoUri(Uri.parse(TempUrl))
@@ -208,7 +202,6 @@ public class EditProfileImage extends AppCompatActivity {
             user.setProfileImageLink(TempUrl);
             editProfileViewModel.editprofileimage(profileUpdates, user, EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
                 if (state) {
-                    Log.d("TAG", "DownloadURI ::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     globalVariables.saveCurrentUser(user);
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);

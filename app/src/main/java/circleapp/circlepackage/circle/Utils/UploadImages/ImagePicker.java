@@ -74,7 +74,6 @@ public class ImagePicker extends AndroidViewModel {
             Intent targetedIntent = new Intent(intent);
             targetedIntent.setPackage(packageName);
             list.add(targetedIntent);
-            Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
         }
         return list;
     }
@@ -82,7 +81,6 @@ public class ImagePicker extends AndroidViewModel {
 
     public Bitmap getImageFromResult(int resultCode,
                                             Intent imageReturnedIntent) {
-        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
         Bitmap bm = null;
         File imageFile = getTempFile();
         if (resultCode == Activity.RESULT_OK) {
@@ -94,7 +92,6 @@ public class ImagePicker extends AndroidViewModel {
             } else {            /** ALBUM **/
                 selectedImage = imageReturnedIntent.getData();
             }
-            Log.d(TAG, "selectedImage: " + selectedImage);
 
             bm = getImageResized(selectedImage);
             int rotation = getRotation(context, selectedImage, isCamera);
@@ -124,9 +121,6 @@ public class ImagePicker extends AndroidViewModel {
         Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);
 
-        Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
-                actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
-
         return actuallyUsableBitmap;
     }
 
@@ -139,7 +133,6 @@ public class ImagePicker extends AndroidViewModel {
         int i = 0;
         do {
             bm = decodeBitmap(selectedImage, sampleSizes[i]);
-            Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
             i++;
         } while (bm.getWidth() < minWidthQuality && i < sampleSizes.length);
         return bm;
@@ -153,7 +146,6 @@ public class ImagePicker extends AndroidViewModel {
         } else {
             rotation = getRotationFromGallery(imageUri);
         }
-        Log.d(TAG, "Image rotation: " + rotation);
         return rotation;
     }
 

@@ -1,13 +1,13 @@
 package circleapp.circlepackage.circle.ui.CircleWall;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 
@@ -96,6 +96,12 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void backToCircleWall(){
+        finishAfterTransition();
+        startActivity(new Intent(CircleWallBackgroundPicker.this, CircleWall.class));
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onBackPressed(){
         finishAfterTransition();
         startActivity(new Intent(CircleWallBackgroundPicker.this, CircleWall.class));
     }

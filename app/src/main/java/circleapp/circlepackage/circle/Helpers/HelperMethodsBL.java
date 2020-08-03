@@ -1,10 +1,13 @@
 package circleapp.circlepackage.circle.Helpers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
-import java.io.File;
+import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +17,13 @@ import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.DataLayer.NotificationRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,7 +37,6 @@ public class HelperMethodsBL {
     public static String getCircleIdFromShareURL(String url) {
         String lines[] = url.split("\\r?\\n");
         for (int i = 0; i < lines.length; i++) {
-            Log.d("URL", lines[i]);
         }
         url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
         return url;
@@ -218,19 +221,28 @@ public class HelperMethodsBL {
         fbRepository.createReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void navToNotificationSource(Context mContext, Notification notif, int position, String broadcastId){
         NotificationRepository notificationRepository = new NotificationRepository();
         notificationRepository.NotifyOnclickListener(mContext, notif, position, broadcastId);
     }
 
-    public static void deleteCircle(Circle circle, User user){
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void deleteCircle(Activity context, Circle circle, User user){
         CircleRepository circleRepository = new CircleRepository();
         circleRepository.deleteCircle(circle, user);
+        Intent intent = new Intent(context, ExploreTabbedActivity.class);
+        context.startActivity(intent);
+        context.finishAfterTransition();
     }
 
-    public static void exitCircle(Circle circle, User user){
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static void exitCircle(Activity context, Circle circle, User user){
         CircleRepository circleRepository = new CircleRepository();
         circleRepository.exitCircle(circle, user);
+        Intent intent = new Intent(context, ExploreTabbedActivity.class);
+        context.startActivity(intent);
+        context.finishAfterTransition();
     }
 
     public static void makeNewFeedback(Map<String, Object> map) {

@@ -27,8 +27,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 
 import static android.provider.Contacts.GroupMembership.GROUP_ID;
 import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
@@ -43,20 +43,20 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
         super.onMessageReceived(remoteMessage);
 
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 JSONObject data = new JSONObject(remoteMessage.getData());
                 String data_title = data.getString("title");
                 String data_body = data.getString("body");
+
 //                sendNotification(data_title,data_body);
                 Log.d(TAG, "onMessageReceived: \n" +
                         "Extra Information: " + data_title+":::"+data_body);
                 Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: ");
 
+
                 String messageTitle = remoteMessage.getNotification().getTitle();
 
                 String messageBody = remoteMessage.getNotification().getBody();
-                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+messageTitle+"::"+messageBody);
                 sendNotification(messageTitle, messageBody);
 
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -97,7 +97,6 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(@NonNull String token) {
-        Log.d(TAG, "Refreshed token: " + token);
         super.onNewToken(token);
 
         sendRegistrationToServer(token);
@@ -111,14 +110,15 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
         // [END dispatch_job]
     }
     private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
     }
 
     private void sendRegistrationToServer(String token) {
     }
+
     @SuppressLint("NewApi")
     private void sendNotification(String title, String messageBody) {
         Log.d("infunc", "NOTIF RECIEVED: "+title+"::"+messageBody);
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);

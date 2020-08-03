@@ -34,6 +34,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -52,15 +53,14 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.ui.Notifications.NotificationAdapter;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
-
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.ui.Notifications.NotificationAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMethodsUI {
@@ -415,7 +415,6 @@ public class HelperMethodsUI {
         } else {
             int index = Integer.parseInt(String.valueOf(url.charAt(url.length()-1)));
             index = index-1;
-            Log.d("index", index+"");
             TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
             int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with(context)
@@ -474,7 +473,7 @@ public class HelperMethodsUI {
         };
 
         // Expansion speed of 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (1/2*targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 //UI
@@ -499,7 +498,7 @@ public class HelperMethodsUI {
         };
 
         // Collapse speed of 1dp/ms
-        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (1/2*initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 
@@ -518,6 +517,7 @@ public class HelperMethodsUI {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showExitDialog(Context context, Circle circle, User user) {
         Dialog confirmationDialog = new Dialog(context);
         confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
@@ -525,7 +525,7 @@ public class HelperMethodsUI {
         final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-            HelperMethodsBL.exitCircle(circle, user);
+            HelperMethodsBL.exitCircle((Activity) context, circle, user);
             confirmationDialog.dismiss();
             context.startActivity(new Intent(context, ExploreTabbedActivity.class));
         });
@@ -536,6 +536,7 @@ public class HelperMethodsUI {
         confirmationDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showDeleteDialog(Context context, Circle circle, User user) {
         Dialog confirmationDialog = new Dialog(context);
         confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
@@ -543,7 +544,7 @@ public class HelperMethodsUI {
         final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-            HelperMethodsBL.deleteCircle(circle, user);
+            HelperMethodsBL.deleteCircle((Activity) context, circle, user);
             context.startActivity(new Intent(context, ExploreTabbedActivity.class));
             confirmationDialog.dismiss();
         });

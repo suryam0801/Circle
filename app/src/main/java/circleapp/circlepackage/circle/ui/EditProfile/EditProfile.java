@@ -1,9 +1,5 @@
 package circleapp.circlepackage.circle.ui.EditProfile;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -18,18 +14,21 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.bumptech.glide.Glide;
 
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
-import circleapp.circlepackage.circle.Model.ObjectModels.User;
-import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {
@@ -69,7 +68,6 @@ public class EditProfile extends AppCompatActivity {
         edituserName  = new EdituserName();
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,6 +67,76 @@
                     android:textSize="12dp"></TextView>
 
             </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:id="@+id/right_comment_display_background_container"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/right_comment_profilePicture"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_account_circle_black_24dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+            <TextView
+                android:id="@+id/right_comment_object_ownerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="10dp"
+                android:text="Name"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/black"
+                android:textSize="14dp"></TextView>
+            <TextView
+                android:id="@+id/right_comment_object_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="35dp"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/broadcast_message_background"
+                android:padding="15dp"
+                android:text="Description"
+                android:autoLink="phone|web"
+                android:lineSpacingExtra="3dp"
+                android:textColor="#000000"
+                android:textSize="14dp"></TextView>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="23dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/right_comments_object_postedTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="18dp"
+                android:text="Time Elapsed"
+                android:textColor="#9D9D9D"
+                android:textSize="12dp"></TextView>
 
         </LinearLayout>
 

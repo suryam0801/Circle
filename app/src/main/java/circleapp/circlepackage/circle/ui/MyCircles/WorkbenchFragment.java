@@ -2,13 +2,6 @@ package circleapp.circlepackage.circle.ui.MyCircles;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,20 +9,25 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
 
 /**
@@ -136,10 +134,8 @@ public class WorkbenchFragment extends Fragment {
         int noOfCircleInvolvements = globalVariables.getInvolvedCircles();
         if(user.getActiveCircles()!=null)
             noOfCircleInvolvements = user.getActiveCircles().size();
-        Log.d("noOfCircleInvolved", noOfCircleInvolvements+"");
         if (user.getCreatedCircles() != 0)
             noOfCircleInvolvements = noOfCircleInvolvements+user.getCreatedCircles();
-        Log.d("noOfCircleInvolved", noOfCircleInvolvements+"");
         globalVariables.setInvolvedCircles(noOfCircleInvolvements);
         if(globalVariables.getInvolvedCircles()==0)
             emptyDisplay.setVisibility(View.VISIBLE);
@@ -171,5 +167,7 @@ public class WorkbenchFragment extends Fragment {
         int position = HelperMethodsUI.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(position);
         wbadapter.notifyItemChanged(position);
+        if(globalVariables.getInvolvedCircles()==0)
+            emptyDisplay.setVisibility(View.VISIBLE);
     }
 }

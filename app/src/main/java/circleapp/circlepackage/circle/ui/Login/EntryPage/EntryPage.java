@@ -1,7 +1,4 @@
 package circleapp.circlepackage.circle.ui.Login.EntryPage;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,13 +9,16 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 
-import circleapp.circlepackage.circle.Utils.LocationHelper.LocationHelper;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.LocationHelper.LocationHelper;
 import circleapp.circlepackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -78,7 +78,6 @@ public class EntryPage extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
         agreeContinue.setEnabled(true);
-        Log.d(TAG,"Activity Resumed");
     }
 
     //alert box..

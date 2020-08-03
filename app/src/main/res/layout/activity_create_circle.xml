@@ -210,7 +210,6 @@
                     android:textSize="16dp"></TextView>
 
                 <RelativeLayout
-                    android:id="@+id/backgroundPreview"
                     android:layout_width="match_parent"
                     android:layout_height="110dp"
                     android:layout_gravity="left"
@@ -228,7 +227,7 @@
 
                     <EditText
                         android:id="@+id/create_circle_Name"
-                        android:layout_width="250dp"
+                        android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_alignStart="@+id/background_image"
                         android:layout_marginStart="100dp"

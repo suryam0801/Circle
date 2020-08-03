@@ -1,11 +1,5 @@
 package circleapp.circlepackage.circle.ui.CircleWall;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,22 +9,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
-import circleapp.circlepackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
+import circleapp.circlepackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CircleInformation extends AppCompatActivity {

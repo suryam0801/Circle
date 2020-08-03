@@ -1,9 +1,5 @@
 package circleapp.circlepackage.circle.ui.CreateCircle;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -15,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +18,10 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.nabinbhandari.android.permissions.PermissionHandler;
@@ -32,17 +31,17 @@ import com.suke.widget.SwitchButton;
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
-import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
-import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
-import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
-import circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
+import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -57,7 +56,6 @@ public class CreateCircle extends AppCompatActivity {
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
     private User user;
     private TextView categoryName;
-    private RelativeLayout addLogo;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadLink;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -98,7 +96,6 @@ public class CreateCircle extends AppCompatActivity {
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         backgroundPic = findViewById(R.id.background_image);
-        addLogo = findViewById(R.id.backgroundPreview);
         categoryName = findViewById(R.id.category_name);
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
@@ -111,7 +108,6 @@ public class CreateCircle extends AppCompatActivity {
     private void setObserverForImageUpload(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 
@@ -147,7 +143,7 @@ public class CreateCircle extends AppCompatActivity {
             sendToHome();
         });
 
-        addLogo.setOnClickListener(v -> {
+        backgroundPic.setOnClickListener(v -> {
             Permissions.check(this, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
@@ -169,7 +165,6 @@ public class CreateCircle extends AppCompatActivity {
                     visibilityPrompt.setText("Only people with Invite Link can view this Circle");
                     visibiltyHeading.setText("Private");
                 }
-                Log.d("CreateCircleVisibility", visibilityType);
             }
         });
         acceptanceSwitchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
@@ -186,7 +181,6 @@ public class CreateCircle extends AppCompatActivity {
                     acceptanceHeading.setText("Members have to apply");
                     acceptancePrompt.setText("You have to accept member applications for them to join");
                 }
-                Log.d("CreateCircleAcceptance", acceptanceType);
             }
         });
     }
@@ -204,7 +198,6 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        Log.d("circledetails", circle.getAcceptanceType()+circle.getVisibility());
         writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
@@ -258,7 +251,6 @@ public class CreateCircle extends AppCompatActivity {
     private void uploadCircleLogo(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 

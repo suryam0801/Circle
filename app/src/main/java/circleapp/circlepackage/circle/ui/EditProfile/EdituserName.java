@@ -12,15 +12,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.EditProfileViewModels.EditProfileViewModel;
-import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
 public class EdituserName {
 

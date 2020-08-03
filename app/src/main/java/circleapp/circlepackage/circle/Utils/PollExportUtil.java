@@ -54,7 +54,6 @@ public class PollExportUtil {
             if(pollResponse!=null)
                 pollResponse.clear();
             pollResponse = broadcast.getPoll().getUserResponse();
-            Log.d("BroadcastQuestion",unAnsweredMembers.size()+"");
             if(pollResponse==null){
 
                 excelData[maxLen+1][0]="Un-Answered Members";
