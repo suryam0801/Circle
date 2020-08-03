@@ -68,11 +68,14 @@ public class NotificationRepository {
 
             {
                 LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
+                Log.d("Push NR user",i);
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
+                        Log.d("Push NR user",i);
                         String tokenId = user.getToken_id();
                         String state = "broadcast";
+                        Log.d("Push NR",user.getToken_id());
                         HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
                         globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                     } else {

@@ -157,7 +157,7 @@ public class HelperMethodsBL {
                     @Override
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                         try {
-                            Log.d("Push",response.body().string());
+                            Log.d("Push",response.body().string()+"::"+title_broadcast+body);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -197,7 +197,7 @@ public class HelperMethodsBL {
                     @Override
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                         try {
-                            Log.d("Push",response.body().string());
+                            Log.d("Push",response.body().string()+"::"+titleapplicant+bodyapplicant);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

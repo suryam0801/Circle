@@ -24,13 +24,15 @@ public class FirebaseDataReceiver extends WakefulBroadcastReceiver {
                         .setContentTitle(intent.getExtras().getString("title"))
                         .setSmallIcon(R.drawable.circle_logo)
                         .setPriority(1)
-                        .setContentText(intent.getExtras().getString("body"))
+                        .setContentText(intent.getExtras().getString("body")+"Madness Extra")
                         .setAutoCancel(false)
                         .setSound(defaultSoundUri);
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(notifid+1 /* ID of notification */, notificationBuilder.build());
+//        notificationManager.notify(notifid+1 /* ID of notification */, notificationBuilder.build());
+//        notificationManager.cancel(notifid-1);
+        Log.d("FirebaseDataReceiver","Notification Recieved"+intent.getExtras().getString("title")+notifid);
 
     }
 }

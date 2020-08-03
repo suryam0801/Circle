@@ -1,7 +1,9 @@
 package circleapp.circlepackage.circle.Helpers;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -27,12 +30,14 @@ import org.json.JSONObject;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 
+import static android.provider.Contacts.GroupMembership.GROUP_ID;
 import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
 
 public class FireBaseInstanceIDService extends FirebaseMessagingService {
     private static final String TAG =FireBaseInstanceIDService.class.getSimpleName();
     int notificationId = (int) System.currentTimeMillis();
-private static final String channelId = String.valueOf(R.string.default_notification_channel_id);
+    Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+    private static final String channelId = String.valueOf(R.string.default_notification_channel_id);
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -42,7 +47,12 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                 JSONObject data = new JSONObject(remoteMessage.getData());
                 String data_title = data.getString("title");
                 String data_body = data.getString("body");
-                sendNotification(data_title,data_body);
+
+//                sendNotification(data_title,data_body);
+                Log.d(TAG, "onMessageReceived: \n" +
+                        "Extra Information: " + data_title+":::"+data_body);
+                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: ");
+
 
                 String messageTitle = remoteMessage.getNotification().getTitle();
 
@@ -62,8 +72,8 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                                 .setContentTitle(messageTitle)
                                 .setSmallIcon(R.drawable.circle_logo)
                                 .setPriority(Notification.PRIORITY_MAX)
-                                .setContentText(messageBody)
-                                .setAutoCancel(true)
+                                .setContentText(messageBody+"Waste")
+                                .setAutoCancel(false)
                                 .setSound(notifSound);
 
 
@@ -73,8 +83,10 @@ private static final String channelId = String.valueOf(R.string.default_notifica
 
 
 
-                notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
-
+//                notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
+//                notificationManager.cancel(notificationId);
+//                stopForeground(true);
+                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+messageTitle+"::"+messageBody+notificationId);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -101,9 +113,12 @@ private static final String channelId = String.valueOf(R.string.default_notifica
     }
 
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
     }
-    private void sendNotification(String title,String messageBody) {
+
+    @SuppressLint("NewApi")
+    private void sendNotification(String title, String messageBody) {
+        Log.d("infunc", "NOTIF RECIEVED: "+title+"::"+messageBody);
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
@@ -112,9 +127,10 @@ private static final String channelId = String.valueOf(R.string.default_notifica
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setContentTitle(title)
-                        .setSmallIcon(R.drawable.circle_logo)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setContentText(messageBody)
+                        .setContentText(messageBody+"Actual")
+                        .setStyle(new NotificationCompat.InboxStyle())
                         .setAutoCancel(false)
                         .setSound(notifSound);
 
@@ -134,6 +150,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         "Comment Notifications",
                         NotificationManager.IMPORTANCE_DEFAULT);
                 channel1.setSound(notifSound,att);
+//                channel1.setGroup("Comment Notifications");
                 notificationManager.createNotificationChannel(channel1);
             }
             else if(title.toLowerCase().contains("post")){
@@ -141,6 +158,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         "New Post Notifications",
                         NotificationManager.IMPORTANCE_HIGH);
                 channel2.setSound(notifSound,att);
+//                channel2.setGroup("New Post Notifications");
                 notificationManager.createNotificationChannel(channel2);
             }
             else if(title.toLowerCase().contains("applicant")||title.toLowerCase().contains("application")){
@@ -148,6 +166,7 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         "Circle applicants",
                         NotificationManager.IMPORTANCE_HIGH);
                 channel3.setSound(notifSound,att);
+//                channel3.setGroup("Circle applicants");
                 notificationManager.createNotificationChannel(channel3);
             }
             else {
@@ -155,10 +174,15 @@ private static final String channelId = String.valueOf(R.string.default_notifica
                         "General Notifications",
                         NotificationManager.IMPORTANCE_HIGH);
                 channel.setSound(notifSound,att);
+//                channel.setGroup("General Notifications");
                 notificationManager.createNotificationChannel(channel);
             }
         }
 
-        notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
+//        NotificationChannelGroup notificationChannelGroup=
+//                new  NotificationChannelGroup( GROUP_ID,
+//                        "Notifs");
+//        notificationManager.createNotificationChannelGroup(notificationChannelGroup);
+        notificationManager.notify(HelperMethodsUI.uuidGet(), Math.toIntExact(System.currentTimeMillis()), notificationBuilder.build());
     }
 }
