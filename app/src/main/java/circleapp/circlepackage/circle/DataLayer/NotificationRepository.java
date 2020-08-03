@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.database.DataSnapshot;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ public class NotificationRepository {
                         User user = dataSnapshot.getValue(User.class);
                         String tokenId = user.getToken_id();
                         String state = "comment";
+                        Log.d("commentnotif",i);
                         HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
                         globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                     } else {
