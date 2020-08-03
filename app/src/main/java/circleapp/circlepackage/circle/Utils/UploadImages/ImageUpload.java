@@ -51,7 +51,7 @@ public class ImageUpload extends ViewModel {
                 public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                    String[] returnValue = {filePath.toString(), ""+progress};
+                    String[] returnValue = {filePath.toString(), ""+Math.round(progress)};
                     progressPercentageAndLink.setValue(returnValue);
 
                     //displaying percentage in progress dialog
