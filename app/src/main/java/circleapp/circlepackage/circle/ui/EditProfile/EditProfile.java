@@ -71,12 +71,12 @@ public class EditProfile extends AppCompatActivity {
             // update UI
             if(progress==null);
 
-            else if(!progress[1].equals("100.0")){
+            else if(!progress[1].equals("100")){
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();
             }
-            else if(progress[1].equals("100.0")){
+            else if(progress[1].equals("100")){
                 Glide.with(this).load(filePath).into(profileImageView);
                 downloadLink = Uri.parse(progress[0]);
                 finalizeChanges.setVisibility(View.VISIBLE);
