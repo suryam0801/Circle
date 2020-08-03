@@ -35,7 +35,7 @@ import static circleapp.circlepackage.circle.R.string.default_notification_chann
 
 public class FireBaseInstanceIDService extends FirebaseMessagingService {
     private static final String TAG =FireBaseInstanceIDService.class.getSimpleName();
-    int notificationId = (int) System.currentTimeMillis();
+
     Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
     private static final String channelId = String.valueOf(R.string.default_notification_channel_id);
     @Override
@@ -47,46 +47,15 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                 JSONObject data = new JSONObject(remoteMessage.getData());
                 String data_title = data.getString("title");
                 String data_body = data.getString("body");
-
-//                sendNotification(data_title,data_body);
+                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+data_title+"::"+data_body);
+                sendNotification(data_title,data_body);
                 Log.d(TAG, "onMessageReceived: \n" +
                         "Extra Information: " + data_title+":::"+data_body);
-                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: ");
-
-
                 String messageTitle = remoteMessage.getNotification().getTitle();
 
                 String messageBody = remoteMessage.getNotification().getBody();
-                sendNotification(messageTitle, messageBody);
-
-                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
-
-                Intent intent = new Intent(this, ExploreTabbedActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                        PendingIntent.FLAG_ONE_SHOT);
-
-                NotificationCompat.Builder notificationBuilder =
-                        new NotificationCompat.Builder(this,getString(default_notification_channel_id))
-                                .setContentTitle(messageTitle)
-                                .setSmallIcon(R.drawable.circle_logo)
-                                .setPriority(Notification.PRIORITY_MAX)
-                                .setContentText(messageBody+"Waste")
-                                .setAutoCancel(false)
-                                .setSound(notifSound);
-
-
-
-                NotificationManager notificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-
-
-//                notificationManager.notify(notificationId /* ID of notification */, notificationBuilder.build());
-//                notificationManager.cancel(notificationId);
-//                stopForeground(true);
-                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+messageTitle+"::"+messageBody+notificationId);
+//                sendNotification(messageTitle, messageBody);
+                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+messageTitle+"::"+messageBody);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -102,16 +71,6 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
         sendRegistrationToServer(token);
 
     }
-    private void scheduleJob() {
-        // [START dispatch_job]
-        OneTimeWorkRequest work = new OneTimeWorkRequest.Builder(MyWorker.class)
-                .build();
-        WorkManager.getInstance().beginWith(work).enqueue();
-        // [END dispatch_job]
-    }
-    private void handleNow() {
-    }
-
     private void sendRegistrationToServer(String token) {
     }
 
@@ -129,7 +88,7 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setPriority(Notification.PRIORITY_MAX)
-                        .setContentText(messageBody+"Actual")
+                        .setContentText(messageBody)
                         .setStyle(new NotificationCompat.InboxStyle())
                         .setAutoCancel(false)
                         .setSound(notifSound);
@@ -183,6 +142,7 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
 //                new  NotificationChannelGroup( GROUP_ID,
 //                        "Notifs");
 //        notificationManager.createNotificationChannelGroup(notificationChannelGroup);
-        notificationManager.notify(HelperMethodsUI.uuidGet(), Math.toIntExact(System.currentTimeMillis()), notificationBuilder.build());
+        int notificationId = (int) System.currentTimeMillis();
+        notificationManager.notify(HelperMethodsUI.uuidGet(), (int)System.currentTimeMillis(), notificationBuilder.build());
     }
 }
