@@ -173,6 +173,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
                 deleteBroadcastConfirmation = new Dialog(context);
                 showDeleteBroadcastDialog(broadcast);
             } else{
+                deleteBroadcastConfirmation = new Dialog(context);
                 HelperMethodsUI.showReportAbusePopup(deleteBroadcastConfirmation, context, circle.getId(), broadcast.getId(), "", broadcast.getCreatorID(), user.getUserId());
             }
             return true;
