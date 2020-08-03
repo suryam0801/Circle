@@ -17,7 +17,6 @@ public class BroadcastsRepository {
 
         StorageReferenceRepository storageReferenceRepository = new StorageReferenceRepository();
         UserRepository userRepository = new UserRepository();
-        Log.d("wefkjn", "tempListening.toString()");
         if (broadcast.isImageExists())
             storageReferenceRepository.removeBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcast.getId()).removeValue();

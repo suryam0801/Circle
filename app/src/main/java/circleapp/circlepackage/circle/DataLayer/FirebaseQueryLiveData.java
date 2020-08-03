@@ -29,13 +29,11 @@ public class FirebaseQueryLiveData extends LiveData<String[]> {
 
     @Override
     protected void onActive() {
-        Log.d(LOG_TAG, "onActive");
         query.addChildEventListener(listener);
     }
 
     @Override
     protected void onInactive() {
-        Log.d(LOG_TAG, "onInactive");
         query.removeEventListener(listener);
     }
 

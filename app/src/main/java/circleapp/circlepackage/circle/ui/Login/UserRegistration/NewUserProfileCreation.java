@@ -241,7 +241,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     private void setImageUploadProgressObservable(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 
@@ -274,7 +273,6 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
             tempLink = downloadLink.toString();
         newUserRegistration = ViewModelProviders.of(this).get(NewUserRegistration.class);
         newUserRegistration.userObjectUploadProgress(false, uid, Name, district, ward, tempLink,avatar,contact,locationExists).observe(this, isUserUploaded -> {
-            Log.d("userreg()value",""+isUserUploaded);
             // update UI
             if(isUserUploaded==false);
             else {

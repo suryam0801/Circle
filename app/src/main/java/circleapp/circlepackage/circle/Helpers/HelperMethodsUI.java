@@ -415,7 +415,6 @@ public class HelperMethodsUI {
         } else {
             int index = Integer.parseInt(String.valueOf(url.charAt(url.length()-1)));
             index = index-1;
-            Log.d("index", index+"");
             TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
             int profilePic = avatarResourcePos.getResourceId(index, 0);
             Glide.with(context)

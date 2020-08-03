@@ -103,7 +103,6 @@ public class NotificationRepository {
         liveData.observe((LifecycleOwner) context, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
-                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                 if(circle.getMembersList()==null)
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                 else if (circle.getMembersList().containsKey(globalVariables.getCurrentUser().getUserId())) {

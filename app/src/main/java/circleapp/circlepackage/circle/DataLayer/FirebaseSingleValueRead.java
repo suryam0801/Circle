@@ -27,13 +27,11 @@ public class FirebaseSingleValueRead extends LiveData<DataSnapshot> {
 
     @Override
     protected void onActive() {
-        Log.d(LOG_TAG, "onActive");
         query.addValueEventListener(listener);
     }
 
     @Override
     protected void onInactive() {
-        Log.d(LOG_TAG, "onInactive");
         query.removeEventListener(listener);
     }
 

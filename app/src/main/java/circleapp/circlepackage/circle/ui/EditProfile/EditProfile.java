@@ -68,7 +68,6 @@ public class EditProfile extends AppCompatActivity {
         edituserName  = new EdituserName();
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 

@@ -32,7 +32,6 @@ public class EditProfileViewModel extends ViewModel {
         globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.d("gluser",globalVariables.getCurrentUser().toString());
                 userRepository.updateUser(globalVariables.getCurrentUser());
                 imageprogress.setValue(true);
             }
@@ -48,7 +47,6 @@ public class EditProfileViewModel extends ViewModel {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 userRepository.updateUser(globalVariables.getCurrentUser());
-                Log.d("edit",globalVariables.getAuthenticationToken().getCurrentUser().getDisplayName()+"stored");
                 nameprogress.setValue(true);
             }
         });

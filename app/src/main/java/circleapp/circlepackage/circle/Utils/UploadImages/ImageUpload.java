@@ -50,7 +50,6 @@ public class ImageUpload extends ViewModel {
                 @Override
                 public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    Log.d("ProgressBarValue", progress+"");
 
                     String[] returnValue = {filePath.toString(), ""+progress};
                     progressPercentageAndLink.setValue(returnValue);
@@ -64,7 +63,6 @@ public class ImageUpload extends ViewModel {
                             if (!task.isSuccessful()) {
                                 throw Objects.requireNonNull(task.getException());
                             }
-                                Log.d("pic",profileRef.getDownloadUrl().toString()+"then"+filePath.toString());
                             // Continue with the task to get the download URL
                             return profileRef.getDownloadUrl();
                         }

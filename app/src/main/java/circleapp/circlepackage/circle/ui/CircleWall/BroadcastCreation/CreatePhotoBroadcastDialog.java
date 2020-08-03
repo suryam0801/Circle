@@ -65,7 +65,6 @@ public class CreatePhotoBroadcastDialog {
         });
         btnUploadPhotoBroadcast.setOnClickListener(view -> {
             this.downloadLink = globalVariables.getTempdownloadLink();
-            Log.d("tagdownload",downloadLink.toString());
             if (this.downloadLink != null && !setTitlePhoto.getText().toString().isEmpty()) {
                 this.imageExists = true;
                 String title = setTitlePhoto.getText().toString();

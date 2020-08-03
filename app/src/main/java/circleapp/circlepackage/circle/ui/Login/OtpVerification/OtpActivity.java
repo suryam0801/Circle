@@ -74,7 +74,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         InitUIElements();
         initProgressbar();
         initAlertDialog();
-        Log.d("otpactivity","started_activity");
         HelperMethodsUI.increaseTouchArea(resendTextView);
         resendTextView.setClickable(false);
         mVerifyBtn.setText("Verify OTP");
@@ -98,7 +97,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("otpactivity","incorrect_number");
                         dialog.dismiss();
                         sendBackToPhoneNumberEntry();
                     }
@@ -126,7 +124,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
             //Pasing the OTP and credentials for the Verification
             try{
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mAuthVerificationId, otp);
-                Log.d("OtpActivity", "credential:: " + credential.getSmsCode());
 //                signInWithPhoneAuthCredential(credential);
                 otpViewModel.signInWithPhoneAuthCredential(credential,this);
             }catch (Exception e){
@@ -201,13 +198,11 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("OtpActivity", "onPause:: " + mOtpText.getText());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("OtpActivity", "onResume");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -225,7 +220,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
 
     @Override
     public void onVerificationCodeDetected(String code) {
-        Log.d("otpactivity", "onVerificationCompleted:: " + code);
         if(code!=null){
             mOtpText.setText(code);
             autofill = true;
@@ -239,7 +233,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         AlertDialog alertDialog = confirmation.create();
         alertDialog.setTitle("Alert");
         alertDialog.show();
-        Log.d("otpactivity", "onVerificationFailed:: "+message);
     }
 
     @Override
@@ -254,7 +247,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
                             @Override
                             public void onTick(long millisUntilFinished) {
                                 resendTextView.setText("Resend OTP in: " + counter);
-                                Log.d("otpactivitycounter",""+counter);
 
                                 if (counter != 0) {
                                     counter--;
@@ -281,7 +273,6 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
                             mVerifyBtn.setText("Verifying OTP");
                             mVerifyBtn.performClick();
                         }
-                        Log.d("OtpActivity", s);
                         Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
                     }
                 },

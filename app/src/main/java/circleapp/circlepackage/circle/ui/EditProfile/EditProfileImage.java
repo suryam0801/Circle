@@ -160,7 +160,6 @@ public class EditProfileImage extends AppCompatActivity {
         if (avatar != "") {
             imageUploadProgressDialog.setTitle("Uploading Profile....");
             imageUploadProgressDialog.show();
-            Log.d("TAG2", "DownloadURI ::" + avatar);
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setPhotoUri(Uri.parse(avatar))
                     .build();
@@ -176,7 +175,6 @@ public class EditProfileImage extends AppCompatActivity {
                     Glide.with(EditProfileClassTemp)
                             .load(avatarResourcePos.getResourceId(index, 0))
                             .into(profileImageView);
-                    Log.d("TAG2", "DownloadURI bv::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     finalizeChange = true;
                     downloadLink = null;
                     globalVariables.setTempdownloadLink(null);
@@ -194,11 +192,9 @@ public class EditProfileImage extends AppCompatActivity {
     private void FinalizeChangesBtn() {
 //        String TempUrl = SessionStorage.getUser(EditProfileClassTemp).getProfileImageLink();
         String TempUrl = globalVariables.getCurrentUser().getProfileImageLink();
-        Log.d("TAG", "DownloadURI ::" + TempUrl);
         imageUploadProgressDialog.setTitle("Uploading Profile....");
         imageUploadProgressDialog.show();
         if (TempUrl != null) {
-            Log.d("TAG", "DownloadURI ::" + TempUrl);
 
             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                     .setPhotoUri(Uri.parse(TempUrl))
@@ -206,7 +202,6 @@ public class EditProfileImage extends AppCompatActivity {
             user.setProfileImageLink(TempUrl);
             editProfileViewModel.editprofileimage(profileUpdates, user, EditProfileClassTemp).observe(EditProfileClassTemp, state -> {
                 if (state) {
-                    Log.d("TAG", "DownloadURI ::" + globalVariables.getAuthenticationToken().getCurrentUser().getPhotoUrl());
                     globalVariables.saveCurrentUser(user);
                     Glide.with(EditProfileClassTemp).load(TempUrl).into(profileImageView);
                     HelperMethodsUI.GlideSetProfilePic(EditProfileClassTemp, String.valueOf(R.drawable.ic_account_circle_black_24dp), profilePic);
