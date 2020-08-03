@@ -41,6 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/report_popup"
+        android:paddingRight="5dp"
+        android:paddingLeft="15dp"
         android:textColor="#828282"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"

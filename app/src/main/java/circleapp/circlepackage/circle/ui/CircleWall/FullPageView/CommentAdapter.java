@@ -51,19 +51,26 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         final long createdTime = comment.getTimestamp();
         final long currentTime = System.currentTimeMillis();
-
         String timeString = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
-
-        boolean broadcastTimestampExists = user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(currentBroadcast.getId());
-        if (broadcastTimestampExists) {
-            if (user.getNewTimeStampsComments().get(currentBroadcast.getId()) < comment.getTimestamp())
-                holder.backgroundContainer.setBackground(mContext.getResources().getDrawable(R.drawable.light_blue_sharp_background));
-        }
 
         holder.userName.setText(name);
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
         HelperMethodsUI.setUserProfileImage(picUrl,mContext,holder.profPic);
+
+        holder.rightUserName.setText(name);
+        holder.rightComment.setText(cmnt);
+        holder.rightTimeElapsed.setText(timeString);
+        HelperMethodsUI.setUserProfileImage(picUrl,mContext,holder.rightProfPic);
+
+        if(user.getUserId().equals(comment.getCommentorId())){
+            holder.backgroundContainer.setVisibility(View.GONE);
+            holder.rightBackgroundContainer.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.backgroundContainer.setVisibility(View.VISIBLE);
+            holder.rightBackgroundContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -82,11 +89,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView profPic;
-        TextView userName;
-        TextView comment;
-        TextView timeElapsed;
-        LinearLayout backgroundContainer;
+        CircleImageView profPic , rightProfPic;
+        TextView userName, rightUserName;
+        TextView comment, rightComment;
+        TextView timeElapsed, rightTimeElapsed;
+        LinearLayout backgroundContainer, rightBackgroundContainer;
 
         public ViewHolder(View view) {
             super(view);
@@ -98,6 +105,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             userName = view.findViewById(R.id.comment_object_ownerName);
             comment = view.findViewById(R.id.comment_object_comment);
             timeElapsed = view.findViewById(R.id.comments_object_postedTime);
+
+            rightBackgroundContainer = view.findViewById(R.id.right_comment_display_background_container);
+            rightProfPic = view.findViewById(R.id.right_comment_profilePicture);
+            rightUserName = view.findViewById(R.id.right_comment_object_ownerName);
+            rightComment = view.findViewById(R.id.right_comment_object_comment);
+            rightTimeElapsed = view.findViewById(R.id.right_comments_object_postedTime);
+
         }
     }
 }
+/*        For showing a blue border on newly arrived comments
+        boolean broadcastTimestampExists = user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(currentBroadcast.getId());
+        if (broadcastTimestampExists) {
+            if (user.getNewTimeStampsComments().get(currentBroadcast.getId()) < comment.getTimestamp())
+                holder.backgroundContainer.setBackground(mContext.getResources().getDrawable(R.drawable.light_blue_sharp_background));
+        }*/
