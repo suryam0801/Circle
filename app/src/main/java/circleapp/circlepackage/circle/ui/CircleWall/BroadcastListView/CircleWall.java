@@ -162,7 +162,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     .setDismissOnClick(true)
                     .show();
         }
-
         if (circle.getNoOfBroadcasts() == 0)
             emptyDisplay.setVisibility(View.VISIBLE);
     }
@@ -232,17 +231,22 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void setCircleObserver(){
         user = globalVariables.getCurrentUser();
         circle = globalVariables.getCurrentCircle();
+        setPlaceholder();
         MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
             circle = dataSnapshot.getValue(Circle.class);
             if (circle != null&&circle.getMembersList()!=null) {
-                Log.d("Notification Fragment", "Circle list :: " + circle.toString());
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
                 }
             }
         });
+    }
+    private void setPlaceholder(){
+        emptyDisplay = findViewById(R.id.circle_wall_empty_display);
+        if (circle.getNoOfBroadcasts() == 0)
+            emptyDisplay.setVisibility(View.VISIBLE);
     }
 
     private void setImageUploadObserver() {

@@ -94,6 +94,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         //Read notification count updated on going to circle wall
         holder.container.setOnClickListener(view -> {
             clearNotifications(user, circle);
+            globalVariables.saveCurrentCircle(circle);
             //If user enters circle wall for first time
             actionOnFirstTimeEntry();
         });

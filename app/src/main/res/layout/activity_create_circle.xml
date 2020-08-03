@@ -210,7 +210,6 @@
                     android:textSize="16dp"></TextView>
 
                 <RelativeLayout
-                    android:id="@+id/backgroundPreview"
                     android:layout_width="match_parent"
                     android:layout_height="110dp"
                     android:layout_gravity="left"

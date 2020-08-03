@@ -34,6 +34,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -517,6 +518,7 @@ public class HelperMethodsUI {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showExitDialog(Context context, Circle circle, User user) {
         Dialog confirmationDialog = new Dialog(context);
         confirmationDialog.setContentView(R.layout.exit_confirmation_popup);
@@ -524,7 +526,7 @@ public class HelperMethodsUI {
         final Button cancel = confirmationDialog.findViewById(R.id.remove_user_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-            HelperMethodsBL.exitCircle(circle, user);
+            HelperMethodsBL.exitCircle((Activity) context, circle, user);
             confirmationDialog.dismiss();
             context.startActivity(new Intent(context, ExploreTabbedActivity.class));
         });
@@ -535,6 +537,7 @@ public class HelperMethodsUI {
         confirmationDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showDeleteDialog(Context context, Circle circle, User user) {
         Dialog confirmationDialog = new Dialog(context);
         confirmationDialog.setContentView(R.layout.delete_confirmation_popup);
@@ -542,7 +545,7 @@ public class HelperMethodsUI {
         final Button cancel = confirmationDialog.findViewById(R.id.delete_circle_cancel_button);
 
         closeDialogButton.setOnClickListener(view -> {
-            HelperMethodsBL.deleteCircle(circle, user);
+            HelperMethodsBL.deleteCircle((Activity) context, circle, user);
             context.startActivity(new Intent(context, ExploreTabbedActivity.class));
             confirmationDialog.dismiss();
         });

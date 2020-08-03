@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#fcfcfc"
     tools:context=".ui.Explore.ExploreFragment">
 
     <TextView
@@ -31,6 +30,54 @@
             android:layout_height="wrap_content">
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
+    <LinearLayout
+        android:id="@+id/explore_empty_display"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have already joined all the Circles in your Location"
+            android:textSize="25dp"
+            android:lineSpacingExtra="4dp"
+            android:textAlignment="center"
+            android:fontFamily="@font/roboto_bold"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/dotted_gray_line"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageButton
+                android:id="@+id/placeholder_explore_circle_layout"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_add_box_24"></ImageButton>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Click me to create your own Circle and get the party started!"
+                android:textAlignment="center"></TextView>
+
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exploreRecyclerView"
@@ -38,4 +85,4 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
 
-</LinearLayout>
+    </LinearLayout>
