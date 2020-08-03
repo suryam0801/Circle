@@ -56,7 +56,6 @@ public class CreateCircle extends AppCompatActivity {
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
     private User user;
     private TextView categoryName;
-    private RelativeLayout addLogo;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadLink;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -97,7 +96,6 @@ public class CreateCircle extends AppCompatActivity {
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         backgroundPic = findViewById(R.id.background_image);
-        addLogo = findViewById(R.id.backgroundPreview);
         categoryName = findViewById(R.id.category_name);
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
@@ -146,7 +144,7 @@ public class CreateCircle extends AppCompatActivity {
             sendToHome();
         });
 
-        addLogo.setOnClickListener(v -> {
+        backgroundPic.setOnClickListener(v -> {
             Permissions.check(this, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
