@@ -15,6 +15,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,6 +46,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -207,17 +209,23 @@ public class HelperMethodsUI {
         CheckBox sex_check = (CheckBox) reportAbuseDialog.findViewById(R.id.report_sex);
 
         reportButton.setOnClickListener(view -> {
-            String reportType = "";
+            String[] reportType = new String[3];
             if (spam_check.isChecked())
-                reportType = "spam";
+                reportType[0] = "spam";
+            else
+                reportType[0] = "";
             if (violent_check.isChecked())
-                reportType = "violence";
+                reportType[1] ="violence";
+            else
+                reportType[1] = "";
             if (sex_check.isChecked())
-                reportType = "sex";
+                reportType[2] = "sex";
+            else
+                reportType[2] = "";
 
             if (!reportType.equals("")) {
                 reportAbuseDialog.dismiss();
-                HelperMethodsBL.writeReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, reportType);
+                HelperMethodsBL.writeReportAbuse(context, circleID, broadcastID, commentID, creatorID, userID, TextUtils.join("-", reportType));
                 Toast.makeText(context, "Thanks for making Circle a better place!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Please choose the reason", Toast.LENGTH_SHORT).show();
@@ -473,7 +481,7 @@ public class HelperMethodsUI {
         };
 
         // Expansion speed of 1dp/ms
-        a.setDuration((int) (1/2*targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 //UI
@@ -498,7 +506,7 @@ public class HelperMethodsUI {
         };
 
         // Collapse speed of 1dp/ms
-        a.setDuration((int) (1/2*initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 

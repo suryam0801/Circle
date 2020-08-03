@@ -116,12 +116,12 @@ public class CreateCircle extends AppCompatActivity {
                 Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
             }
 
-            else if(!progress[1].equals("100.0")){
+            else if(!progress[1].equals("100")){
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();
             }
-            else if(progress[1].equals("100.0")){
+            else if(progress[1].equals("100")){
                 downloadLink = Uri.parse(progress[0]);
                 backgroundPic.setScaleX((float) 1.0);
                 backgroundPic.setScaleY((float) 1.0);
@@ -254,12 +254,12 @@ public class CreateCircle extends AppCompatActivity {
             // update UI
             if(progress==null);
 
-            else if(!progress[1].equals("100.0")){
+            else if(!progress[1].equals("100")){
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();
             }
-            else if(progress[1].equals("100.0")){
+            else if(progress[1].equals("100")){
                 downloadLink = Uri.parse(progress[0]);
                 backgroundPic.setScaleX((float) 1.0);
                 backgroundPic.setScaleY((float) 1.0);

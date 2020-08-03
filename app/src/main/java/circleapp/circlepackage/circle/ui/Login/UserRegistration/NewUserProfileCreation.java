@@ -249,12 +249,12 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
                 Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
             }
 
-            else if(!progress[1].equals("100.0")){
+            else if(!progress[1].equals("100")){
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();
             }
-            else if(progress[1].equals("100.0")){
+            else if(progress[1].equals("100")){
                 Glide.with(this).load(filePath).into(profilePic);
                 downloadLink = Uri.parse(progress[0]);
                 for (int i = 0; i < 8; i++) {

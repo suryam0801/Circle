@@ -130,6 +130,8 @@ public class HelperMethodsBL {
         switch (state)
         {
             case "comment":
+                if(globalVariables.getCurrentUser().getToken_id().equals(tokenId))
+                    break;
                 String title  = "New Comment added in "+ notification.getCircleName();
                 String body_comment = name+" " + ":" + " "+message ;
                 Call<ResponseBody> call_comment = api.sendpushNotification(tokenId,title,body_comment);

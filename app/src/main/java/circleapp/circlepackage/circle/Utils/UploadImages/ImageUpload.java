@@ -77,7 +77,7 @@ public class ImageUpload extends ViewModel {
                             .build();
                     if(globalVariables.getAuthenticationToken().getCurrentUser()!=null){
                         globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates);
-                        String[] returnValue = {uri.toString(), ""+100.0};
+                        String[] returnValue = {uri.toString(), ""+100};
                         progressPercentageAndLink.setValue(returnValue);
                     }
                     else {
