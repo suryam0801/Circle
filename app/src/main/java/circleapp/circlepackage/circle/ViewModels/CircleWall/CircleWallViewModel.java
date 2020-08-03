@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.ViewModels.CircleWall;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -33,6 +34,7 @@ public class CircleWallViewModel extends ViewModel {
         normalBroadcast = new Broadcast(broadcastId, title, description, null,
                 currentUserName, circle.getMembersList(), currentUserId, false, false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), 0, 0,true);
+        Log.d("Push viewModel",user.getToken_id());
         SendNotification.sendBCinfo(activity,normalBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), title);
 
         //updating number of broadcasts in circle

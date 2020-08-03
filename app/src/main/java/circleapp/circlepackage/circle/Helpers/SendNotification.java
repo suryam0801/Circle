@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.Helpers;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,7 +38,7 @@ public class SendNotification {
             message = message + "...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         String getDate = getCurrentDateStamp();
-
+        Log.d("Push SN",circleName);
         Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
         notificationRepository.writeBroadcastNotifications(context,notif, membersList,broadcast);
 
