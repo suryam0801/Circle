@@ -37,7 +37,6 @@ public class HelperMethodsBL {
     public static String getCircleIdFromShareURL(String url) {
         String lines[] = url.split("\\r?\\n");
         for (int i = 0; i < lines.length; i++) {
-            Log.d("URL", lines[i]);
         }
         url = url.replace("https://worfo.app.link/8JMEs34W96/?", "");
         return url;

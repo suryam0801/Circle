@@ -78,7 +78,6 @@ public class EntryPage extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
         agreeContinue.setEnabled(true);
-        Log.d(TAG,"Activity Resumed");
     }
 
     //alert box..

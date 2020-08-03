@@ -108,7 +108,6 @@ public class CreateCircle extends AppCompatActivity {
     private void setObserverForImageUpload(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 
@@ -166,7 +165,6 @@ public class CreateCircle extends AppCompatActivity {
                     visibilityPrompt.setText("Only people with Invite Link can view this Circle");
                     visibiltyHeading.setText("Private");
                 }
-                Log.d("CreateCircleVisibility", visibilityType);
             }
         });
         acceptanceSwitchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
@@ -183,7 +181,6 @@ public class CreateCircle extends AppCompatActivity {
                     acceptanceHeading.setText("Members have to apply");
                     acceptancePrompt.setText("You have to accept member applications for them to join");
                 }
-                Log.d("CreateCircleAcceptance", acceptanceType);
             }
         });
     }
@@ -201,7 +198,6 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        Log.d("circledetails", circle.getAcceptanceType()+circle.getVisibility());
         writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
@@ -255,7 +251,6 @@ public class CreateCircle extends AppCompatActivity {
     private void uploadCircleLogo(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 

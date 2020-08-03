@@ -134,10 +134,8 @@ public class WorkbenchFragment extends Fragment {
         int noOfCircleInvolvements = globalVariables.getInvolvedCircles();
         if(user.getActiveCircles()!=null)
             noOfCircleInvolvements = user.getActiveCircles().size();
-        Log.d("noOfCircleInvolved", noOfCircleInvolvements+"");
         if (user.getCreatedCircles() != 0)
             noOfCircleInvolvements = noOfCircleInvolvements+user.getCreatedCircles();
-        Log.d("noOfCircleInvolved", noOfCircleInvolvements+"");
         globalVariables.setInvolvedCircles(noOfCircleInvolvements);
         if(globalVariables.getInvolvedCircles()==0)
             emptyDisplay.setVisibility(View.VISIBLE);

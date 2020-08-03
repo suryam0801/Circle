@@ -47,6 +47,5 @@ public class CirclePersonnelRepository {
 
     public void updateCirclePersonnel(User user, String  circleId, Subscriber subscriber){
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(user.getUserId()).setValue(subscriber);
-        Log.d("123457","JobDone!!!!!!");
     }
 }

@@ -95,29 +95,24 @@ public class ExploreCategoryFilter extends AppCompatActivity {
                 selectedFilters.add("Health & Fitness");
             else
                 selectedFilters.remove("Health & Fitness");
-
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         events.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Events");
             else
                 selectedFilters.remove("Events");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         studentsAndClubs.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Students & Clubs");
             else
                 selectedFilters.remove("Students & Clubs");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         apartmentsAndCommunities.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Apartments & Communities");
             else
                 selectedFilters.remove("Apartments & Communities");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
 
         sports.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -125,42 +120,36 @@ public class ExploreCategoryFilter extends AppCompatActivity {
                 selectedFilters.add("Sports");
             else
                 selectedFilters.remove("Sports");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         friendsAndFamily.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Friends & Family");
             else
                 selectedFilters.remove("Friends & Family");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         foodAndEntertainment.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Food & Entertainment");
             else
                 selectedFilters.remove("Food & Entertainment");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         scienceAndTech.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Science & Tech");
             else
                 selectedFilters.remove("Science & Tech");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         gaming.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("Gaming");
             else
                 selectedFilters.remove("Gaming");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
         general.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b)
                 selectedFilters.add("General");
             else
                 selectedFilters.remove("General");
-            Log.d("CATEGORY FILTER", selectedFilters.toString());
         });
 
         back.setOnClickListener(view -> {

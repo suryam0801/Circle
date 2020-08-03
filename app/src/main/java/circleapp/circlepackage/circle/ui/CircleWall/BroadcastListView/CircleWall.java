@@ -252,7 +252,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void setImageUploadObserver() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            Log.d("progressvalue",""+progress);
             // update UI
             if(progress==null);
 
@@ -269,7 +268,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             else if(progress[1].equals("100.0")){
                 downloadLink = Uri.parse(progress[0]);
                 globalVariables.setTempdownloadLink(downloadLink);
-                Log.d("boolean", String.valueOf(pollExists));
                 if (pollBroadcastDialog.pollExists) {
                     pollBroadcastDialog.pollUploadButtonView.setVisibility(View.GONE);
                     pollBroadcastDialog.pollAddPhoto.setVisibility(View.VISIBLE);
@@ -383,7 +381,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     Environment.DIRECTORY_DOCUMENTS);
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             PollExportUtil pollExportUtil = new PollExportUtil();
-            Log.d("BroadcastQuestion", allCircleMembers.size()+"");
             pollExportUtil.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);
             shareFile(file);
         }

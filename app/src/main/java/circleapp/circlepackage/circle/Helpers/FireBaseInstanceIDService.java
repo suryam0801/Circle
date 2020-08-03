@@ -38,20 +38,15 @@ private static final String channelId = String.valueOf(R.string.default_notifica
         super.onMessageReceived(remoteMessage);
 
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             try {
                 JSONObject data = new JSONObject(remoteMessage.getData());
                 String data_title = data.getString("title");
                 String data_body = data.getString("body");
                 sendNotification(data_title,data_body);
-                Log.d(TAG, "onMessageReceived: \n" +
-                        "Extra Information: " + data_title+":::"+data_body);
-                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: ");
 
                 String messageTitle = remoteMessage.getNotification().getTitle();
 
                 String messageBody = remoteMessage.getNotification().getBody();
-                Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+messageTitle+"::"+messageBody);
                 sendNotification(messageTitle, messageBody);
 
                 Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -90,7 +85,6 @@ private static final String channelId = String.valueOf(R.string.default_notifica
 
     @Override
     public void onNewToken(@NonNull String token) {
-        Log.d(TAG, "Refreshed token: " + token);
         super.onNewToken(token);
 
         sendRegistrationToServer(token);
@@ -104,14 +98,12 @@ private static final String channelId = String.valueOf(R.string.default_notifica
         // [END dispatch_job]
     }
     private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
     }
 
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
     }
     private void sendNotification(String title,String messageBody) {
-        Log.d("infunc", "NOTIF RECIEVED: "+title+"::"+messageBody);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
         Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);

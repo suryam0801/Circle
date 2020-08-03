@@ -27,7 +27,6 @@ public class GetSearchableSpinnerLocation {
         int temp = 0;
         for (String cn : al) {
             if(temp == 1){
-                Log.d("LocationParams", pos+mCountryName+mCountryDialCode);
                 break;
             }
             pos = pos + 1;
@@ -41,8 +40,6 @@ public class GetSearchableSpinnerLocation {
                         contryDialCode = arrDial[0];
                         mCountryDialCode="+"+contryDialCode;
                         temp = 1;
-
-                        Log.d("LocationParams", pos+mCountryName+mCountryDialCode);
                         break;
                     }
                 }
@@ -58,6 +55,5 @@ public class GetSearchableSpinnerLocation {
         tempLocation = globalVariables.getCurrentTempLocation();
         mCountryName = tempLocation.getCountryName();
         mCountryDialCode = tempLocation.getCountryDialCode();
-        Log.d("LocationParams", mCountryName+mCountryDialCode);
     }
 }

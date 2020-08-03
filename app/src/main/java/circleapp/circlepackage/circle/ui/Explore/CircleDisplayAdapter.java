@@ -66,7 +66,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
 
         Circle currentCircle = circleList.get(i);
         String circleCategory;
-        Log.d("efljknwefwe", currentCircle.toString());
         HelperMethodsUI.createDefaultCircleIcon(currentCircle,context,viewHolder.circleLogo);
 
         //check if circle acceptance is review

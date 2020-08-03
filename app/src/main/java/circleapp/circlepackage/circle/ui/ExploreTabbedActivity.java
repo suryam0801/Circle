@@ -120,7 +120,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         //recieve ur request on opening
         if (intentUri != null) {
-            Log.d("intenturl",intentUri);
             url = intentUri;
             processUrl(url);
         }

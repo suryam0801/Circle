@@ -31,7 +31,6 @@ public class UserRepository {
             userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
             userNoReadComments.remove(broadcast.getId());
             user.setNoOfReadDiscussions(userNoReadComments);
-            Log.d("wefkjn", userNoReadComments.toString());
             updateUser(user);
         }
 
@@ -42,7 +41,6 @@ public class UserRepository {
             userCommentTimestamps = new HashMap<>(user.getNewTimeStampsComments());
             userCommentTimestamps.remove(broadcast.getId());
             user.setNewTimeStampsComments(userCommentTimestamps);
-            Log.d("wefkjn", userCommentTimestamps.toString());
             updateUser(user);
         }
     }
@@ -74,7 +72,6 @@ public class UserRepository {
     }
 
     public void updateUser(User user) {
-        Log.d("userTag",user.toString());
         globalVariables.saveCurrentUser(user);
         globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).setValue(user);
 
