@@ -474,7 +474,7 @@ public class HelperMethodsUI {
         };
 
         // Expansion speed of 1dp/ms
-        a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (1/2*targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 //UI
@@ -499,7 +499,7 @@ public class HelperMethodsUI {
         };
 
         // Collapse speed of 1dp/ms
-        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (1/2*initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 

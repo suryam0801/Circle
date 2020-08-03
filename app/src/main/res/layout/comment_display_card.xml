@@ -133,6 +133,7 @@
                 android:gravity="right"
                 android:fontFamily="@font/roboto_regular"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="18dp"
                 android:text="Time Elapsed"
                 android:textColor="#9D9D9D"
                 android:textSize="12dp"></TextView>
