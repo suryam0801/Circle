@@ -36,8 +36,9 @@ public class NotificationRepository {
         Set<String> member;
         UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
         if (listenersList != null) {
-            listenersList.remove(notification.getCreatorId());
+            listenersList.remove(globalVariables.getCurrentUser().getUserId());
             member = listenersList.keySet();
+            if(member!=null)
             for (String i : member)
             {
                 LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
