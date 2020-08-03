@@ -56,9 +56,9 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         setParentBgImage();
         //Go back to home
         back.setOnClickListener(view -> {
-            finishAfterTransition();
             Intent intent= new Intent(getApplicationContext(), CircleWall.class);
             startActivity(intent);
+            finish();
         });
         //Only for creator
         viewApplicants.setOnClickListener(view -> {

@@ -229,7 +229,7 @@
             android:layout_centerHorizontal="true"
             android:clickable="true"
             android:drawableBottom="@drawable/ic_baseline_arrow_drop_down_24"
-            android:text="View Broadcast"
+            android:text="View Post"
             android:textAllCaps="false"
             android:textColor="#828282"
             android:tooltipText="CreateCircle" />
