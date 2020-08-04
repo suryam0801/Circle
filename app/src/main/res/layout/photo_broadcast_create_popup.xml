@@ -29,35 +29,17 @@
                 android:textColor="#3B3B3B"
                 android:textSize="16dp"></TextView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Title"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
-
             <EditText
                 android:id="@+id/photoTitleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:hint="Enter Title"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:backgroundTint="#D1D1D1"
                 android:inputType="textCapSentences"
                 android:textColor="@color/black"
                 android:textSize="12dp"></EditText>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Add Photo"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
 
             <RelativeLayout
                 android:id="@+id/photo_add_photo_view"
