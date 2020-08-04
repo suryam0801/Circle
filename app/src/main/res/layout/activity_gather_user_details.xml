@@ -266,17 +266,6 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Enter your Username"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginLeft="15dp"
-                    android:textColor="#B3B1B1"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:textSize="14dp">
-                </TextView>
                 <EditText
                     android:id="@+id/name"
                     android:layout_width="match_parent"
@@ -284,7 +273,10 @@
                     android:backgroundTint="#ACA9A9"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:padding="20dp"
                     android:textColorHint="#ACA9A9"
+                    android:hint="Enter Username"
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="13dp"
                     android:ems="10"
