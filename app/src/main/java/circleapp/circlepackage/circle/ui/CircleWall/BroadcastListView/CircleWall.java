@@ -100,7 +100,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private CreateNormalBroadcastDialog normalBroadcastDialog;
     private CreatePhotoBroadcastDialog photoBroadcastDialog;
     private CreatePollBroadcastDialog pollBroadcastDialog;
-    private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto;
+    private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto, getStartedText, blackGetStartedBroadcast, blackGetStartedPhoto, blackGetStartedPoll;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
@@ -144,6 +144,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPoll = findViewById(R.id.circle_wall_get_started_poll);
         getStartedBroadcast = findViewById(R.id.circle_wall_get_started_broadcast);
         getStartedPhoto = findViewById(R.id.circle_wall_get_started_image);
+        getStartedText = findViewById(R.id.circle_wall_get_started_text);
+        blackGetStartedBroadcast = findViewById(R.id.circle_wall_black_get_started_broadcast);
+        blackGetStartedPhoto = findViewById(R.id.circle_wall_black_get_started_image);
+        blackGetStartedPoll = findViewById(R.id.circle_wall_black_get_started_poll);
         floatingActionMenu = findViewById(R.id.menu);
         moreOptions = findViewById(R.id.circle_wall_more_options);
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
@@ -162,8 +166,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     .setDismissOnClick(true)
                     .show();
         }
-        if (circle.getNoOfBroadcasts() == 0)
+        if (circle.getNoOfBroadcasts() == 0){
             emptyDisplay.setVisibility(View.VISIBLE);
+            if(SessionStorage.getCircleWallBgImage(CircleWall.this).equals("bg10")){
+                getStartedText.setTextColor(getResources().getColor(R.color.black));
+                blackGetStartedBroadcast.setVisibility(View.VISIBLE);
+                blackGetStartedPhoto.setVisibility(View.VISIBLE);
+                blackGetStartedPoll.setVisibility(View.VISIBLE);
+                getStartedPoll.setVisibility(View.GONE);
+                getStartedBroadcast.setVisibility(View.GONE);
+                getStartedPhoto.setVisibility(View.GONE);
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -204,6 +218,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
         getStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
         getStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
+
+        blackGetStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
+        blackGetStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
+        blackGetStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
     }
 
     private void setBroadcastObserver(){
@@ -231,22 +249,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void setCircleObserver(){
         user = globalVariables.getCurrentUser();
         circle = globalVariables.getCurrentCircle();
-        setPlaceholder();
         MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
-            circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null&&circle.getMembersList()!=null) {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
+                circle = circleTemp;
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
                 }
             }
         });
-    }
-    private void setPlaceholder(){
-        emptyDisplay = findViewById(R.id.circle_wall_empty_display);
-        if (circle.getNoOfBroadcasts() == 0)
-            emptyDisplay.setVisibility(View.VISIBLE);
     }
 
     private void setImageUploadObserver() {
@@ -324,9 +337,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         popup.getMenuInflater()
                 .inflate(R.menu.circle_wall_menu, popup.getMenu());
         if (circle.getCreatorID().equals(user.getUserId()))
-            popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
+            popup.getMenu().findItem(R.id.exportPollsMenuBar).setVisible(true);
         else
             popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
+        if (circle.getCreatorID().equals(user.getUserId()))
+            popup.getMenu().findItem(R.id.exportPollsMenuBar).setVisible(true);
 
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(item -> {
@@ -379,6 +394,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         if(pollBroadcasts!=null){
             File path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS);
+            if(!path.exists())
+                path.mkdir();
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             PollExportUtil pollExportUtil = new PollExportUtil();
             pollExportUtil.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);

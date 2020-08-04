@@ -62,8 +62,13 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         User user = globalVariables.getCurrentUser();
         HelperMethodsUI.createDefaultCircleIcon(circle,context,holder.backgroundPic);
 
-        //set the details of each circle to its respective card.
-        //holder.container.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_animation_fall_down));
+        setUIElements(holder,circle,user);
+        setNewApplicantsIndicator(holder,circle,user);
+        setNewNotifsIndicator(holder,circle,user);
+        setButtonListeners(holder,circle,user);
+    }
+
+    private void setUIElements(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         holder.tv_MycircleName.setText(circle.getName());
         if (circle.getCreatorID().equals(user.getUserId()))
             holder.tv_circleCreatorName.setText("Me");
@@ -71,8 +76,9 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
         holder.tv_circleCreatedDateWB.setText("Started " + timeElapsed);
         holder.categoryDisplay.setText(circle.getCategory());
+    }
 
-
+    private void setNewApplicantsIndicator(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         //setting new applicants
         if (HelperMethodsUI.numberOfApplicants(circle, user) > 0) {
             GradientDrawable itemBackgroundApplicant = HelperMethodsUI.gradientRectangleDrawableSetter(80);
@@ -81,7 +87,9 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.newApplicantsDisplay.setBackground(itemBackgroundApplicant);
             holder.newApplicantsDisplay.setText(Integer.toString(circle.getApplicantsList().size()));
         }
+    }
 
+    private void setNewNotifsIndicator(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         //read for new notifs and set counter
         int newNotifs = HelperMethodsUI.newNotifications(circle, user);
         if (newNotifs > 0) {
@@ -91,6 +99,10 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setButtonListeners(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         //Read notification count updated on going to circle wall
         holder.container.setOnClickListener(view -> {
             clearNotifications(user, circle);

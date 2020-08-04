@@ -48,12 +48,15 @@ public class PollExportUtil {
         HashMap<String, String> pollResponse = new HashMap<>();
         int i=0, maxLen=0;
         for(Broadcast broadcast: pollBroadcasts){
-            excelData[i][0] = broadcast.getPoll().getQuestion();
+            //Poll question
+            excelData[i][0] = "Poll Question:";
+            excelData[i][1] = broadcast.getPoll().getQuestion();
             unAnsweredMembers.removeAll(allCircleMembers);
             unAnsweredMembers.addAll(allCircleMembers);
             if(pollResponse!=null)
                 pollResponse.clear();
             pollResponse = broadcast.getPoll().getUserResponse();
+            //If nobody answered the poll
             if(pollResponse==null){
 
                 excelData[maxLen+1][0]="Un-Answered Members";
@@ -77,12 +80,14 @@ public class PollExportUtil {
                 String  userId = entry.getKey();
                 unAnsweredMembers.remove(userId);
             }
+            //headers-Poll option
             for (String answer : answers){
                 excelData[i+1][j] = answer;
                 j++;
                 if(colLength<=j)
                     colLength=j;
             }
+            //Adding name of user who responded under each poll
             for(Map.Entry<String, String> entry : pollResponse.entrySet()){
                 String  userId = entry.getKey();
                 String  answer = entry.getValue();
@@ -101,6 +106,7 @@ public class PollExportUtil {
                     }
                 }
             }
+            //Unanswered members in the poll
             excelData[maxLen+1][0]="Un-Answered Members";
             int x=0;
             int l = maxLen+2;
@@ -162,5 +168,4 @@ public class PollExportUtil {
             out.close();
         }catch(Exception e){ e.printStackTrace();}
     }
-
 }

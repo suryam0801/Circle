@@ -165,9 +165,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
 
-        //set the details of each circle to its respective card.
-        viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
-
         viewHolder.container.setOnLongClickListener(v -> {
             if (broadcast.getCreatorID().equals(user.getUserId())) {
                 deleteBroadcastConfirmation = new Dialog(context);
