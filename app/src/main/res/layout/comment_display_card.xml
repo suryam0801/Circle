@@ -110,7 +110,7 @@
                 android:layout_marginRight="35dp"
                 android:fontFamily="@font/roboto_regular"
                 android:layout_marginTop="35dp"
-                android:background="@drawable/broadcast_message_background"
+                android:background="@drawable/broadcast_comment_right_align"
                 android:padding="15dp"
                 android:text="Description"
                 android:autoLink="phone|web"

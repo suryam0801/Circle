@@ -42,25 +42,27 @@
                         android:layout_height="40dp"
                         android:background="@drawable/ic_account_circle_black_24dp"></de.hdodenhof.circleimageview.CircleImageView>
 
-                    <TextView
-                        android:id="@+id/full_page_broadcast_ownerName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="50dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="Name"
-                        android:textColor="#000000"
-                        android:textSize="15dp"></TextView>
-
                     <ImageButton
                         android:id="@+id/full_page_broadcast_listener_on_off_toggle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
                         android:background="@drawable/ic_outline_broadcast_listening_icon"></ImageButton>
+
+                    <TextView
+                        android:id="@+id/full_page_broadcast_Title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="40dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:singleLine="false"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:text="Title"
+                        android:textColor="#111f05"
+                        android:textSize="14dp"></TextView>
 
                 </RelativeLayout>
 
@@ -77,25 +79,38 @@
                         android:weightSum="100">
 
                         <TextView
-                            android:id="@+id/full_page_broadcast_Title"
-                            android:layout_width="match_parent"
+                            android:id="@+id/full_page_created_by_text"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="99"
+                            android:layout_marginRight="5dp"
+                            android:layout_gravity="center"
+                            android:layout_centerVertical="true"
                             android:fontFamily="@font/roboto_regular"
-                            android:lineSpacingExtra="4dp"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:text="Title"
-                            android:textColor="#000000"
-                            android:textSize="14dp"></TextView>
-
-                        <Button
-                            android:id="@+id/full_page_broadcast_view_poll_answers"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:background="@drawable/ic_insert_chart_blue_24dp"
-                            android:gravity="center_vertical"
-                            android:visibility="gone"></Button>
+                            android:text="Created by"
+                            android:textColor="#9D9D9D"
+                            android:textSize="12dp"></TextView>
+                        <TextView
+                            android:id="@+id/full_page_broadcast_ownerName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Name"
+                            android:textColor="@color/color_blue"
+                            android:textSize="12dp"></TextView>
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <Button
+                                android:id="@+id/full_page_broadcast_view_poll_answers"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_alignParentEnd="true"
+                                android:background="@drawable/ic_insert_chart_blue_24dp"
+                                android:gravity="center_vertical"
+                                android:visibility="gone"></Button>
+                        </RelativeLayout>
                     </LinearLayout>
 
                     <com.github.chrisbanes.photoview.PhotoView
