@@ -79,7 +79,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Circle circle;
     private List<String> allCircleMembers;
     private HashMap<String, Subscriber> listOfMembers;
-    private boolean pollExists = false;
     private ImageButton back, moreOptions;
     private User user;
 

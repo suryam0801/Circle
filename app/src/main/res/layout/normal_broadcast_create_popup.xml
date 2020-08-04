@@ -29,41 +29,25 @@
                 android:textColor="#3B3B3B"
                 android:textSize="16dp"></TextView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Title"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
 
             <EditText
                 android:id="@+id/broadcastTitleEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="#D1D1D1"
+                android:hint="Enter Title"
                 android:inputType="textCapSentences"
                 android:textColor="@color/black"
                 android:textSize="12dp"></EditText>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Description"
-                android:textColor="#9D9D9D"
-                android:textSize="12dp"></TextView>
 
             <EditText
                 android:id="@+id/broadcastDescriptionEditText"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginBottom="10dp"
+                android:hint="Enter Description"
                 android:background="@drawable/unpressable_button"
                 android:inputType="textCapSentences|textMultiLine"
                 android:scrollHorizontally="false"
