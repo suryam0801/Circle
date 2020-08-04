@@ -3,7 +3,6 @@
     android:id="@+id/broadcast_display_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="3dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -14,6 +13,7 @@
         android:layout_marginRight="25dp"
         android:layout_marginBottom="5dp"
         android:background="@drawable/broadcast_cards"
+        android:elevation="5dp"
         android:orientation="vertical"
         android:paddingLeft="8dp"
         android:paddingTop="13dp"
