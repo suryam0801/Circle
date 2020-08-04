@@ -45,11 +45,13 @@ public class NotificationRepository {
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
-                        String tokenId = user.getToken_id();
-                        String state = "comment";
-                        Log.d("commentnotif",i);
-                        HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
-                        globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
+                        if(user!=null){
+                            String tokenId = user.getToken_id();
+                            String state = "comment";
+                            Log.d("commentnotif",i);
+                            HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
+                            globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
+                        }
                     } else {
                     }
                 });
@@ -75,12 +77,14 @@ public class NotificationRepository {
                 liveData.observe((LifecycleOwner) context, dataSnapshot -> {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
-                        Log.d("Push NR user",i);
-                        String tokenId = user.getToken_id();
-                        String state = "broadcast";
-                        Log.d("Push NR",user.getToken_id());
-                        HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
-                        globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
+                        if(user!=null){
+                            Log.d("PushNRuser",i);
+                            String tokenId = user.getToken_id();
+                            String state = "broadcast";
+                            Log.d("Push NR",user.getToken_id());
+                            HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
+                            globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
+                        }
                     } else {
                     }
                 });
