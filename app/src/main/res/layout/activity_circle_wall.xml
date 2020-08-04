@@ -12,12 +12,13 @@
         android:id="@+id/circle_wall_empty_display"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#20000000"
+        android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
 
         <TextView
+            android:id="@+id/circle_wall_get_started_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
@@ -64,6 +65,38 @@
                 android:gravity="center"
                 android:text="New Image"
                 android:textColor="@color/white"></TextView>
+            <TextView
+                android:id="@+id/circle_wall_black_get_started_poll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:drawableTop="@drawable/ic_poll_black"
+                android:gravity="center"
+                android:text="New Poll"
+                android:textColor="@color/black"
+                android:visibility="gone"></TextView>
+
+            <TextView
+                android:id="@+id/circle_wall_black_get_started_broadcast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:drawableTop="@drawable/ic_message_black"
+                android:gravity="center"
+                android:text="New Broadcast"
+                android:textColor="@color/black"
+                android:visibility="gone"></TextView>
+
+            <TextView
+                android:id="@+id/circle_wall_black_get_started_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:drawableTop="@drawable/ic_camera_black"
+                android:gravity="center"
+                android:text="New Image"
+                android:textColor="@color/black"
+                android:visibility="gone"></TextView>
 
         </LinearLayout>
 
