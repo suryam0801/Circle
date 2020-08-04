@@ -130,6 +130,7 @@ public class HelperMethodsBL {
         switch (state)
         {
             case "comment":
+                Log.d("comment_problem",message);
                 if(globalVariables.getCurrentUser().getToken_id().equals(tokenId))
                     break;
                 String title  = "New Comment added in "+ notification.getCircleName();
@@ -152,6 +153,7 @@ public class HelperMethodsBL {
                 });
                 break;
             case "broadcast":
+                Log.d("broadcast_problem",broadcast.getTitle());
                 String title_broadcast  = "New Post added in "+ notification.getCircleName();
                 String body =broadcast.getTitle();
                 Call<ResponseBody> call = api.sendpushNotification(tokenId,title_broadcast,body);

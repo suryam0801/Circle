@@ -206,7 +206,7 @@
         android:elevation="6dp"
         android:background="@drawable/edit_project_button_background"
         android:gravity="center"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/broadcast_adapter_no_of_comments_display"
