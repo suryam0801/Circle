@@ -376,6 +376,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         if(pollBroadcasts!=null){
             File path = Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS);
+            if(!path.exists())
+                path.mkdir();
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             PollExportUtil pollExportUtil = new PollExportUtil();
             pollExportUtil.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);

@@ -152,6 +152,8 @@ public class CreatorPollAnswersView extends AppCompatActivity {
     private void initFilePathAndSave(){
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
+        if(!path.exists())
+            path.mkdir();
         File file = new File(path, "/" + "Poll Results "+circle.getName()+".xls");
         pollExportUtil.writeDataToExcelFile(file);
         shareFile(file);
