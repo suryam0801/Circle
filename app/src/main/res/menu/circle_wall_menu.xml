@@ -20,7 +20,7 @@
         android:id="@+id/exportPollsMenuBar"
         android:title="Export Poll Data"
         android:icon="@drawable/ic_person_outline_black_24dp"
-        app:showAsAction="" >
+        android:visible="false">
     </item>
 
     <item
