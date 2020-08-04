@@ -231,22 +231,17 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private void setCircleObserver(){
         user = globalVariables.getCurrentUser();
         circle = globalVariables.getCurrentCircle();
-        setPlaceholder();
         MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
-            circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null&&circle.getMembersList()!=null) {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
+                circle = circleTemp;
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
                 }
             }
         });
-    }
-    private void setPlaceholder(){
-        emptyDisplay = findViewById(R.id.circle_wall_empty_display);
-        if (circle.getNoOfBroadcasts() == 0)
-            emptyDisplay.setVisibility(View.VISIBLE);
     }
 
     private void setImageUploadObserver() {
