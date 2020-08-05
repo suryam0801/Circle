@@ -153,9 +153,12 @@ public class HelperMethodsBL {
                 });
                 break;
             case "broadcast":
-                Log.d("broadcast_problem",broadcast.getTitle());
                 String title_broadcast  = "New Post added in "+ notification.getCircleName();
-                String body =broadcast.getTitle();
+                String body;
+                if(broadcast.isPollExists())
+                    body = broadcast.getPoll().getQuestion();
+                else
+                    body = broadcast.getTitle();
                 Call<ResponseBody> call = api.sendpushNotification(tokenId,title_broadcast,body);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override

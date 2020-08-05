@@ -93,7 +93,7 @@ public class CircleRepository {
         tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
             User tempUser = dataSnapshot.getValue(User.class);
             if(tempUser!=null){
-
+                tempLiveData.removeObservers((LifecycleOwner) context);
                 HashMap<String, Boolean> activeCircles = tempUser.getActiveCircles();
                 activeCircles.put(circleId, true);
                 globalVariables.getFBDatabase().getReference("/Users").child(selectedApplicant.getId()).child("activeCircles").setValue(activeCircles);
