@@ -19,12 +19,12 @@
     <RelativeLayout
         android:id="@+id/full_page_broadcast_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,10 +67,12 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:id="@+id/post_content_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -139,92 +141,57 @@
                         android:orientation="vertical"
                         android:visibility="gone"></LinearLayout>
 
-                    <LinearLayout
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="16dp"
-                        android:orientation="horizontal"
-                        android:weightSum="100">
-
+                        android:layout_height="wrap_content">
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="17dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/message"></ImageView>
-
-                        <TextView
-                            android:id="@+id/full_page_broadcast_viewComments"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginBottom="2dp"
-                            android:layout_weight="99"
-                            android:fontFamily="@font/roboto_condensed"
-                            android:text="16 messages"
-                            android:textColor="#000000"
-                            android:textSize="13dp"></TextView>
-
-                        <TextView
-                            android:id="@+id/full_page_broadcast_postedTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Time Elapsed"
-                            android:textColor="#9D9D9D"
-                            android:textSize="12dp"></TextView>
-
-
-                    </LinearLayout>
-
+                            android:id="@+id/view_image"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/show_post_icon"
+                            android:layout_marginRight="5dp"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentEnd="true"
+                            android:visibility="visible"></ImageView>
+                        <ImageView
+                            android:id="@+id/hide_image"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/hide_post_icon"
+                            android:layout_marginRight="5dp"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentEnd="true"
+                            android:visibility="gone"></ImageView>
+                        <Button
+                            android:id="@+id/view_post_button"
+                            android:layout_width="130dp"
+                            android:layout_height="35dp"
+                            android:background="@drawable/unpressable_button"
+                            android:layout_alignParentEnd="true"
+                            android:text="View Post"
+                            android:textAlignment="textStart"
+                            android:paddingLeft="10dp"
+                            android:textColor="@color/grey"></Button>
+                        <Button
+                            android:id="@+id/hide_post_button"
+                            android:layout_width="130dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/unpressable_button"
+                            android:layout_alignParentEnd="true"
+                            android:text="Hide Post"
+                            android:textAlignment="textStart"
+                            android:paddingLeft="10dp"
+                            android:textColor="@color/grey"
+                            android:visibility="gone"></Button>
+                    </RelativeLayout>
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
-
-            <Button
-                android:id="@+id/clickToViewComments"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_alignParentBottom="true"
-                android:clickable="true"
-                android:drawableTop="@drawable/ic_baseline_arrow_drop_up_24"
-                android:drawablePadding="0dp"
-                android:padding="0dp"
-                android:text="View Comments"
-                android:textAllCaps="false"
-                android:textColor="#828282"
-                android:tooltipText="CreateCircle" />
-
-            <LinearLayout
-                android:id="@+id/full_page_broadcast_adapter_comments_alert_display"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="10dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/edit_project_button_background"
-                android:gravity="center"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/full_page_broadcast_adapter_no_of_comments_display"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="1"
-                    android:textColor="@color/white"></TextView>
-            </LinearLayout>
-
-        </RelativeLayout>
 
     </RelativeLayout>
 
@@ -235,19 +202,6 @@
         android:orientation="vertical"
         android:visibility="visible"
         android:weightSum="100">
-
-        <Button
-            android:id="@+id/clickToViewBroadcastFullPage"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:clickable="true"
-            android:drawableBottom="@drawable/ic_baseline_arrow_drop_down_24"
-            android:text="View Post"
-            android:textAllCaps="false"
-            android:textColor="#828282"
-            android:tooltipText="CreateCircle" />
 
         <ScrollView
             android:layout_width="match_parent"
