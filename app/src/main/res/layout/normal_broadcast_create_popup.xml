@@ -37,8 +37,11 @@
                 android:padding="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:backgroundTint="#D1D1D1"
                 android:hint="Enter Title"
+                android:textColorHint="@color/black20"
                 android:inputType="textCapSentences"
                 android:textColor="@color/black"
                 android:textSize="12dp"></EditText>
@@ -58,6 +61,7 @@
                 android:gravity="start|top"
                 android:overScrollMode="always"
                 android:padding="20dp"
+                android:textColorHint="@color/black20"
                 android:textColor="@color/black"
                 android:textSize="12dp"></EditText>
 

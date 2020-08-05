@@ -102,6 +102,10 @@ public class CreateCircle extends AppCompatActivity {
         imageUploadProgressDialog = new ProgressDialog(this);
         acceptanceType="Automatic";
         visibilityType="Everybody";
+        visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can view this Circle");
+        visibiltyHeading.setText("Public");
+        acceptanceHeading.setText("Quick Join");
+        acceptancePrompt.setText("People can join this Circle without applying");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -173,13 +177,13 @@ public class CreateCircle extends AppCompatActivity {
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
                 if(isChecked){
                     acceptanceType="Automatic";
-                    acceptanceHeading.setText("Members join freely");
+                    acceptanceHeading.setText("Quick Join");
                     acceptancePrompt.setText("People can join this Circle without applying");
                 }
                 else{
                     acceptanceType="Review";
-                    acceptanceHeading.setText("Members have to apply");
-                    acceptancePrompt.setText("You have to accept member applications for them to join");
+                    acceptanceHeading.setText("People must apply");
+                    acceptancePrompt.setText("People must apply to join this Circle");
                 }
             }
         });
