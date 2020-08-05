@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,6 +29,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.LocalObjectModels.LoginUserObject;
@@ -61,7 +61,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
   
     AlertDialog.Builder confirmation;
     public ProgressDialog progressDialog;
-
+private PhoneAuthProvider.ForceResendingToken resendingToken;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("ResourceAsColor")
     @Override
@@ -106,8 +106,11 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
     public void initProgressbar(){
         progressDialog = new ProgressDialog(OtpActivity.this);
         progressDialog.setTitle("Verifying your Number...");
-        progressDialog.show();
         progressDialog.setCancelable(false);
+        if(!(OtpActivity.this).isFinishing())
+        {
+            progressDialog.show();
+        }
     }
 
     public void UpdateUI(String otp){
@@ -160,11 +163,21 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         startActivity(intent);
     }
     private void setResendOtpButton(){
+        AtomicInteger count = new AtomicInteger();
         resendTextView.setText("Click here to resend OTP");
         resendTextView.setTextColor(Color.parseColor("#6CACFF"));
         resendTextView.setClickable(true);
         resendTextView.setOnClickListener(view -> {
-            otpViewModel.resendVerificationCode(phn_number);
+            if (count.get() != 2 ){
+                otpViewModel.resendVerificationCode(phn_number,OtpActivity.this,resendingToken);
+                mOtpText.setText("");
+                count.getAndIncrement();
+            }
+            else {
+                resendTextView.setText("You Exceeded the Limit Try Again Later!!!");
+                resendTextView.setTextColor(Color.parseColor("#6CACFF"));
+                resendTextView.setClickable(false);
+            }
         });
     }
 
@@ -232,11 +245,16 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
         progressDialog.dismiss();
         AlertDialog alertDialog = confirmation.create();
         alertDialog.setTitle("Alert");
-        alertDialog.show();
+        if(!(OtpActivity.this).isFinishing())
+        {
+            //show dialog
+            alertDialog.show();
+        }
     }
 
     @Override
     public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken token) {
+        this.resendingToken = token;
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -274,6 +292,7 @@ public class OtpActivity extends AppCompatActivity implements PhoneCallbacksList
                             mVerifyBtn.performClick();
                         }
                         Toast.makeText(getApplicationContext(), "OTP Sent successfully", Toast.LENGTH_SHORT).show();
+
                     }
                 },
                 5000);
