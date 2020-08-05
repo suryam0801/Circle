@@ -527,6 +527,15 @@ public class HelperMethodsUI {
         }
     }
 
+    public static void createFirstLetterIcon(String title, Context context, CircleImageView backgroundPic){
+        char firstLetter = title.charAt(0);
+        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+        int color = generator.getColor(title);
+        TextDrawable drawable = TextDrawable.builder()
+                .buildRound(firstLetter +"",color);
+        backgroundPic.setBackground(drawable);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showExitDialog(Context context, Circle circle, User user) {
         Dialog confirmationDialog = new Dialog(context);

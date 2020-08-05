@@ -112,7 +112,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     private void updateProfilePicOfCreator(ViewHolder viewHolder, Broadcast broadcast){
-        HelperMethodsUI.setUserProfileImage(broadcast.getCreatorPhotoURI(), context, viewHolder.profPicDisplay);
+
+        if(broadcast.getTitle()!=null)
+            HelperMethodsUI.createFirstLetterIcon(broadcast.getTitle(),context,viewHolder.profPicDisplay);
+        else
+            HelperMethodsUI.createFirstLetterIcon(broadcast.getPoll().getQuestion(), context, viewHolder.profPicDisplay);
     }
 
     private void setNewCommentsTextView(ViewHolder viewHolder, Broadcast broadcast){

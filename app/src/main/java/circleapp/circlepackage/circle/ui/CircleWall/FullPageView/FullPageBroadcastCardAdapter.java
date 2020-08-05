@@ -217,7 +217,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     private void setCreatorProfilePic(ViewHolder viewHolder, Context context, Broadcast broadcast){
-        HelperMethodsUI.setUserProfileImage(broadcast.getCreatorPhotoURI(), context, viewHolder.profPicDisplay);
+        if(broadcast.getTitle()!=null)
+            HelperMethodsUI.createFirstLetterIcon(broadcast.getTitle(),context,viewHolder.profPicDisplay);
+        else
+            HelperMethodsUI.createFirstLetterIcon(broadcast.getPoll().getQuestion(), context, viewHolder.profPicDisplay);
     }
 
     private void setImageIfExists(Broadcast broadcast, ViewHolder viewHolder, Context context){
