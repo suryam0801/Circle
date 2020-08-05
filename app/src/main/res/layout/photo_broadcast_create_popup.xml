@@ -39,6 +39,7 @@
                 android:layout_marginBottom="15dp"
                 android:backgroundTint="#D1D1D1"
                 android:inputType="textCapSentences"
+                android:textColorHint="@color/black20"
                 android:textColor="@color/black"
                 android:textSize="12dp"></EditText>
 

@@ -117,8 +117,8 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginRight="10dp"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Public"
-                        android:textColor="@color/black20"
+                        android:text="Visibility"
+                        android:textColor="@color/black"
                         android:textSize="16dp"></TextView>
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="23dp"
                             android:layout_marginTop="15dp"
-                            android:text="Anyone in your area can view this Circle"
+                            android:text="Explanation Text"
                             android:textColor="#DEDADA"></TextView>
                         <Space
                             android:layout_width="0dp"
@@ -161,8 +161,8 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginRight="10dp"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Members join freely"
-                        android:textColor="@color/black20"
+                        android:text="Application type"
+                        android:textColor="@color/black"
                         android:textSize="16dp"></TextView>
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -174,7 +174,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="23dp"
                             android:layout_marginTop="15dp"
-                            android:text="People can join this Circle without applying"
+                            android:text="Explanation Text"
                             android:textColor="#DEDADA"></TextView>
                         <Space
                             android:layout_width="0dp"
@@ -200,18 +200,10 @@
                         android:background="#EEEEEE"></View>
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="23dp"
-                    android:layout_marginTop="30dp"
-                    android:text="Circle Name"
-                    android:textColor="@color/black20"
-                    android:textSize="16dp"></TextView>
-
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:layout_gravity="left"
                     android:layout_marginStart="25dp"
                     android:clickable="true"
@@ -239,35 +231,26 @@
                         android:hint="Circle name here"
                         android:inputType="textCapSentences"
                         android:textColor="@color/black"
-                        android:textColorHint="#D1D1D1"
+                        android:textColorHint="@color/black20"
                         android:textSize="16dp"></EditText>
                 </RelativeLayout>
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="23dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Purpose"
-                    android:textColor="@color/black20"
-                    android:textSize="16dp"></TextView>
 
                 <EditText
                     android:id="@+id/create_circle_Description"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="120dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/unpressable_button"
                     android:backgroundTint="#EEEEEE"
                     android:fontFamily="@font/roboto_regular"
                     android:hint="Enter purpose here (200 characters)"
                     android:inputType="textCapSentences|textMultiLine"
                     android:textColor="@color/black"
-                    android:textColorHint="#D1D1D1"
+                    android:textColorHint="@color/black20"
                     android:minLines="1"
                     android:ems="10"
                     android:imeOptions="flagNoExtractUi"
