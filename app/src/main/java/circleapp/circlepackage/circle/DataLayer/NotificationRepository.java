@@ -46,9 +46,11 @@ public class NotificationRepository {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
                         if(user!=null){
+                            liveData.removeObservers((LifecycleOwner) context);
                             String tokenId = user.getToken_id();
                             String state = "comment";
                             Log.d("commentnotif",i);
+                            if(message!=null)
                             HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
                             globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                         }
@@ -78,10 +80,10 @@ public class NotificationRepository {
                     if (dataSnapshot.exists()) {
                         User user = dataSnapshot.getValue(User.class);
                         if(user!=null){
-                            Log.d("PushNRuser",i);
+                            liveData.removeObservers((LifecycleOwner) context);
                             String tokenId = user.getToken_id();
                             String state = "broadcast";
-                            Log.d("Push NR",user.getToken_id());
+                            if(broadcast!=null)
                             HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
                             globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                         }
@@ -113,6 +115,7 @@ public class NotificationRepository {
         liveData.observe((LifecycleOwner) context, dataSnapshot -> {
             Circle circle = dataSnapshot.getValue(Circle.class);
             if (circle != null) {
+                liveData.removeObservers((LifecycleOwner) context);
                 if(circle.getMembersList()==null)
                     Toast.makeText(context, "Not a member of this circle anymore", Toast.LENGTH_SHORT).show();
                 else if (circle.getMembersList().containsKey(globalVariables.getCurrentUser().getUserId())) {
