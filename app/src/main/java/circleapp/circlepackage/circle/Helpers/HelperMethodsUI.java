@@ -536,6 +536,15 @@ public class HelperMethodsUI {
         backgroundPic.setBackground(drawable);
     }
 
+    public static void setPostIcon(Broadcast broadcast, CircleImageView backgroundPic, Context context){
+        if(broadcast.isPollExists())
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.poll_post_icon));
+        else if(broadcast.isImageExists())
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.photo_post_icon));
+        else
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.message_post_icon));
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showExitDialog(Context context, Circle circle, User user) {
         Dialog confirmationDialog = new Dialog(context);

@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -79,26 +80,16 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         Broadcast currentBroadcast = broadcastList.get(position);
         User user = globalVariables.getCurrentUser();
         String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
-        holder.viewComments.setText(commentsDisplayText);
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
             holder.notificationToggle.setBackground(mContext.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
-        } else {
-            int noOfUserUnread = 0;
-            try {
-                noOfUserUnread = currentBroadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(currentBroadcast.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (noOfUserUnread > 0) {
-                holder.newNotifsContainer.setVisibility(View.VISIBLE);
-                holder.newNotifsTV.setText(noOfUserUnread + "");
-            }
         }
         setButtonListeners(holder, currentBroadcast, user, position);
+        setCreatorProfilePic(holder, mContext, currentBroadcast);
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
         setComments(holder, position, currentBroadcast, user);
+        fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
 
     }
 
@@ -121,26 +112,30 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             holder.commentListView.smoothScrollToPosition(0);
 
             if (position == initialIndex) {
-                HelperMethodsUI.collapse(holder.broadcst_container);
                 fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
             }
         });
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
-        holder.collapseBroadcastView.setOnClickListener(view -> {
-            fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
-            HelperMethodsUI.collapse(holder.broadcst_container);
-            holder.newNotifsContainer.setVisibility(View.GONE);
-        });
 
-        holder.collapseCommentView.setOnClickListener(view -> {
-            HelperMethodsUI.expand(holder.broadcst_container);
+        holder.viewPostButton.setOnClickListener(view->{
+            //visibility of button
+            holder.viewPostImage.setVisibility(View.GONE);
+            holder.viewPostButton.setVisibility(View.GONE);
+            holder.hidePostButton.setVisibility(View.VISIBLE);
+            holder.hidePostImage.setVisibility(View.VISIBLE);
+            holder.postContentLayout.setVisibility(View.VISIBLE);
             globalVariables.saveCurrentBroadcast(broadcastList.get(position));
-            try {
-                imm.hideSoftInputFromWindow(((Activity) mContext).getCurrentFocus().getWindowToken(), 0);
-            } catch (Exception e) {
-            }
+
+        });
+        holder.hidePostButton.setOnClickListener(view->{
+            //visibility of button
+            holder.hidePostButton.setVisibility(View.GONE);
+            holder.hidePostImage.setVisibility(View.GONE);
+            holder.viewPostImage.setVisibility(View.VISIBLE);
+            holder.viewPostButton.setVisibility(View.VISIBLE);
+            holder.postContentLayout.setVisibility(View.GONE);
         });
 
         holder.addCommentButton.setOnClickListener(view -> {
@@ -181,7 +176,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     public void setBroadcastInfo(Context context, ViewHolder viewHolder, Broadcast broadcast, User user) {
 
-        setCreatorProfilePic(viewHolder, context, broadcast);
         setBroadcastUI(viewHolder, broadcast, context);
         setImageIfExists(broadcast,viewHolder,context);
 
@@ -193,14 +187,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private void setBroadcastUI(ViewHolder viewHolder, Broadcast broadcast, Context context){
 
         viewHolder.broadcastTitle.setText(broadcast.getTitle());
-        //calculating and setting time elapsed
-        long currentTime = System.currentTimeMillis();
-        long createdTime = broadcast.getTimeStamp();
-        String timeElapsed = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
-        viewHolder.timeElapsedDisplay.setText(timeElapsed);
-
-        //view discussion onclick
-        viewHolder.viewComments.setOnClickListener(view -> HelperMethodsUI.collapse(viewHolder.broadcst_container));
 
         //set the details of each circle to its respective card.
         viewHolder.broadcastNameDisplay.setText(broadcast.getCreatorName());
@@ -217,10 +203,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     private void setCreatorProfilePic(ViewHolder viewHolder, Context context, Broadcast broadcast){
-        if(broadcast.getTitle()!=null)
-            HelperMethodsUI.createFirstLetterIcon(broadcast.getTitle(),context,viewHolder.profPicDisplay);
-        else
-            HelperMethodsUI.createFirstLetterIcon(broadcast.getPoll().getQuestion(), context, viewHolder.profPicDisplay);
+        HelperMethodsUI.setPostIcon(broadcast,viewHolder.profPicDisplay, context);
     }
 
     private void setImageIfExists(Broadcast broadcast, ViewHolder viewHolder, Context context){
@@ -301,35 +284,37 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public class ViewHolder extends RecyclerView.ViewHolder {
         private RecyclerView commentListView;
         private RelativeLayout broadcst_container;
-        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newNotifsTV;
+        private LinearLayout postContentLayout;
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, broadcastTitle;
         private CircleImageView profPicDisplay;
         private LinearLayout pollOptionsDisplayGroup, newNotifsContainer;
         private ImageButton notificationToggle;
         private String currentUserPollOption = null;
-        private Button viewPollAnswers, collapseBroadcastView, collapseCommentView, addCommentButton;
+        private Button viewPollAnswers, addCommentButton;
         private EditText addCommentEditText;
         private PhotoView imageView;
+        private Button viewPostButton, hidePostButton;
+        private ImageView viewPostImage, hidePostImage;
 
         public ViewHolder(View view) {
             super(view);
             commentListView = view.findViewById(R.id.full_page_broadcast_comments_display);
             broadcst_container = view.findViewById(R.id.full_page_broadcast_container);
+            postContentLayout = view.findViewById(R.id.post_content_layout);
             broadcastNameDisplay = view.findViewById(R.id.full_page_broadcast_ownerName);
             broadcastMessageDisplay = view.findViewById(R.id.full_page_broadcast_Message);
-            timeElapsedDisplay = view.findViewById(R.id.full_page_broadcast_postedTime);
             profPicDisplay = view.findViewById(R.id.full_page_broadcast_profilePicture);
             pollOptionsDisplayGroup = view.findViewById(R.id.full_page_broadcast_poll_options_radio_group);
-            viewComments = view.findViewById(R.id.full_page_broadcast_viewComments);
             viewPollAnswers = view.findViewById(R.id.full_page_broadcast_view_poll_answers);
             broadcastTitle = view.findViewById(R.id.full_page_broadcast_Title);
             imageView = view.findViewById(R.id.uploaded_image_display_broadcast_full_page);
-            collapseBroadcastView = view.findViewById(R.id.clickToViewComments);
-            collapseCommentView = view.findViewById(R.id.clickToViewBroadcastFullPage);
             addCommentButton = view.findViewById(R.id.full_page_broadcast_comment_send_button);
             addCommentEditText = view.findViewById(R.id.full_page_broadcast_comment_type_editText);
             notificationToggle = view.findViewById(R.id.full_page_broadcast_listener_on_off_toggle);
-            newNotifsContainer = view.findViewById(R.id.full_page_broadcast_adapter_comments_alert_display);
-            newNotifsTV = view.findViewById(R.id.full_page_broadcast_adapter_no_of_comments_display);
+            viewPostButton = view.findViewById(R.id.view_post_button);
+            viewPostImage = view.findViewById(R.id.view_image);
+            hidePostButton = view.findViewById(R.id.hide_post_button);
+            hidePostImage = view.findViewById(R.id.hide_image);
         }
 
         public String getCurrentUserPollOption() {

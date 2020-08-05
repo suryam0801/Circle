@@ -91,7 +91,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //update no of unread comments by user
         HelperMethodsBL.initializeNewReadComments(broadcast, user);
         //UI actions
-        updateProfilePicOfCreator(viewHolder, broadcast);
+        updateIconOfPost(viewHolder, broadcast);
         setNewCommentsTextView(viewHolder, broadcast);
         setUiElements(viewHolder, i, broadcast);
         setButtonListeners(viewHolder, i, broadcast);
@@ -111,12 +111,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         });
     }
 
-    private void updateProfilePicOfCreator(ViewHolder viewHolder, Broadcast broadcast){
-
-        if(broadcast.getTitle()!=null)
-            HelperMethodsUI.createFirstLetterIcon(broadcast.getTitle(),context,viewHolder.profPicDisplay);
-        else
-            HelperMethodsUI.createFirstLetterIcon(broadcast.getPoll().getQuestion(), context, viewHolder.profPicDisplay);
+    private void updateIconOfPost(ViewHolder viewHolder, Broadcast broadcast){
+        HelperMethodsUI.setPostIcon(broadcast,viewHolder.profPicDisplay, context);
     }
 
     private void setNewCommentsTextView(ViewHolder viewHolder, Broadcast broadcast){

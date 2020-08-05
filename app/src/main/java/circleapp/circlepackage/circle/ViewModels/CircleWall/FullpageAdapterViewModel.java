@@ -47,12 +47,15 @@ public class FullpageAdapterViewModel {
         broadcast.setNumberOfComments(broacastNumberOfComments);
         globalVariables.saveCurrentBroadcast(broadcast);
         broadcastsRepository.updateNoOfCommentsInBroadcast(broadcast.getId(), 1, circle.getId());
+        //updating latest timestamp in broadcasts
+        broadcastsRepository.updateLatestTimeStampInBroadcast(broadcast.getId(), System.currentTimeMillis(), circle.getId());
 
         //updating number of discussions in circle
         int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
         circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
         globalVariables.saveCurrentCircle(circle);
         circleRepository.updateCircleReadDiscussions(1, circle);
+
     }
 
     public void makeCommentEntry(Context mContext, String commentMessage, Broadcast broadcast, User user, Circle circle) {
@@ -66,6 +69,7 @@ public class FullpageAdapterViewModel {
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp, circle);
         HelperMethodsBL.updateUserFields(broadcast, "create", user);
+        updateUserAfterReadingComments(broadcast, user, "view");
     }
 
     public void updatePollValues(FullPageBroadcastCardAdapter.ViewHolder viewHolder, Broadcast broadcast, User user, Poll poll, String option, Circle circle){

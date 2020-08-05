@@ -81,4 +81,8 @@ public class BroadcastsRepository {
         FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcastId).child("numberOfComments"));
         fbTransactions.runTransactionOnIncrementalValues(counter);
     }
+
+    public void updateLatestTimeStampInBroadcast(String broadcastId, long timestamp, String circleId){
+        globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcastId).child("latestCommentTimestamp").setValue(timestamp);
+    }
 }
