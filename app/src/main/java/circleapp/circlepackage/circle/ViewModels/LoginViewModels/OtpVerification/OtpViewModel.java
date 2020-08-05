@@ -19,6 +19,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
+import circleapp.circlepackage.circle.ui.Login.OtpVerification.OtpActivity;
 
 public class OtpViewModel extends ViewModel {
     //    public  PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
@@ -80,12 +81,12 @@ public class OtpViewModel extends ViewModel {
                     mCallbacks
             );
         }
-        public void resendVerificationCode (String phone){
+        public void resendVerificationCode(String phone, OtpActivity otpActivity, PhoneAuthProvider.ForceResendingToken resendingToken){
             PhoneAuthProvider.getInstance().verifyPhoneNumber(
                     phone.trim(),
-                    30,
+                    60,
                     TimeUnit.SECONDS,
-                    TaskExecutors.MAIN_THREAD,
+                    otpActivity,
                     mCallbacks,
                     resendingToken
             );
