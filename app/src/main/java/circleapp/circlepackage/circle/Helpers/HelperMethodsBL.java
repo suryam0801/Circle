@@ -14,11 +14,13 @@ import java.util.Map;
 
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.CommentsRepository;
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.DataLayer.NotificationRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
@@ -257,6 +259,11 @@ public class HelperMethodsBL {
         Intent intent = new Intent(context, ExploreTabbedActivity.class);
         context.startActivity(intent);
         context.finishAfterTransition();
+    }
+
+    public static void deleteComment(String circleId, String broadcastId, Comment comment){
+        CommentsRepository commentsRepository = new CommentsRepository();
+        commentsRepository.deleteComment(comment, circleId,broadcastId);
     }
 
     public static void makeNewFeedback(Map<String, Object> map) {

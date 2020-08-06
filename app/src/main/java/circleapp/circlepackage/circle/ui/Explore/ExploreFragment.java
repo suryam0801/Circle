@@ -168,7 +168,7 @@ public class ExploreFragment extends Fragment {
                 if(exploreCircleList.size()==0)
                     emptyDisplay.setVisibility(View.VISIBLE);
             }
-        }, 1000);
+        }, 3000);
     }
 
     public void addCircle(Circle circle) {
