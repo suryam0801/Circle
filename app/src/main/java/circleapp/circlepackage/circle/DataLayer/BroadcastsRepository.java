@@ -30,7 +30,11 @@ public class BroadcastsRepository {
     public void writeBroadcast(Circle circle, Broadcast broadcast, int newCount) {
         StorageReferenceRepository storageReferenceRepository = new StorageReferenceRepository();
         globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
-        if(circle.getNoOfCommentsPerBroadcast().get(broadcast.getId())==null)
+        if(circle.getNoOfCommentsPerBroadcast()!=null){
+            if(circle.getNoOfCommentsPerBroadcast().get(broadcast.getId())==null)
+                globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfCommentsPerBroadcast").child(broadcast.getId()).setValue(0);
+        }
+        else
             globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfCommentsPerBroadcast").child(broadcast.getId()).setValue(0);
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circle.getId()).child(broadcast.getId()).setValue(broadcast);
         //globalVariables.getFBDatabase().getReference("/Users").child("noOfReadDiscussions").child(broadcast.getId()).setValue(0);

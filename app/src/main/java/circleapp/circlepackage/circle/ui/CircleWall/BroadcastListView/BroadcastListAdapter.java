@@ -123,7 +123,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
         //new comments setter
-        String commentsDisplayText = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) + " messages";
+        String commentsDisplayText;
+        if(circle.getNoOfCommentsPerBroadcast()==null)
+            commentsDisplayText = 0 + " messages";
+        else if(circle.getNoOfCommentsPerBroadcast().get(broadcast.getId())==null)
+            commentsDisplayText = 0 + " messages";
+        else
+            commentsDisplayText = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
         try {
@@ -183,7 +189,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcastMuted) {
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         } else {
-            int noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) - user.getNoOfReadDiscussions().get(broadcast.getId());
+            int noOfUserUnread=0;
+            if(circle.getNoOfCommentsPerBroadcast()==null)
+                noOfUserUnread = 0;
+            else if(user.getNoOfReadDiscussions().get(broadcast.getId())==null)
+                noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId());
+            else
+                noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) - user.getNoOfReadDiscussions().get(broadcast.getId());
             if (noOfUserUnread > 0) {
                 viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
                 viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
