@@ -89,7 +89,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         user = globalVariables.getCurrentUser();
         getLiveCircleData();
         //update no of unread comments by user
-        HelperMethodsBL.initializeNewReadComments(broadcast, user);
+        HelperMethodsBL.initializeNewReadComments(circle, broadcast, user);
         //UI actions
         updateIconOfPost(viewHolder, broadcast);
         setNewCommentsTextView(viewHolder, broadcast);
@@ -123,7 +123,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
         //new comments setter
-        String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
+        String commentsDisplayText = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
         try {
@@ -183,7 +183,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcastMuted) {
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         } else {
-            int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
+            int noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) - user.getNoOfReadDiscussions().get(broadcast.getId());
             if (noOfUserUnread > 0) {
                 viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
                 viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");

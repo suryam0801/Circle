@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
+import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
@@ -33,11 +34,6 @@ public class CircleRepository {
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(subscriber.getId()).setValue(subscriber);
         if(!circle.getBackgroundImageLink().equals("default"))
             storageReferenceRepository.addCircleImageReference(circle.getId(),circle.getBackgroundImageLink());
-    }
-
-    public void updateCircleReadDiscussions(int counter, Circle circle) {
-        FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfNewDiscussions"));
-        fbTransactions.runTransactionOnIncrementalValues(counter);
     }
 
     public void deleteCircle(Circle circle, User user) {
@@ -106,10 +102,15 @@ public class CircleRepository {
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
     }
 
-    public String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, int noOfDiscussions, String category) {
+    public String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, String category) {
         String id = HelperMethodsUI.uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, noOfDiscussions, true);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, true);
         globalVariables.getFBDatabase().getReference("/Circles").child(id).setValue(circle);
         return id;
+    }
+
+    public void updateNoOfCommentsInBroadcast(Circle circle, Broadcast broadcast){
+        FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfCommentsPerBroadcast").child(broadcast.getId()));
+        fbTransactions.runTransactionOnIncrementalValues(1);
     }
 }

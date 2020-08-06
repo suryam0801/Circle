@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -26,11 +27,14 @@ public class BroadcastsRepository {
         userRepository.updateUserObjectWhenDeletingBroadcast(user, broadcast);
     }
 
-    public void writeBroadcast(String circleId, Broadcast broadcast, int newCount) {
+    public void writeBroadcast(Circle circle, Broadcast broadcast, int newCount) {
         StorageReferenceRepository storageReferenceRepository = new StorageReferenceRepository();
-        globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("noOfBroadcasts").setValue(newCount);
-        globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcast.getId()).setValue(broadcast);
-        storageReferenceRepository.addBroadcastImageReference(circleId, broadcast.getId(), broadcast.getAttachmentURI());
+        globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfBroadcasts").setValue(newCount);
+        if(circle.getNoOfCommentsPerBroadcast().get(broadcast.getId())==null)
+            globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfCommentsPerBroadcast").child(broadcast.getId()).setValue(0);
+        globalVariables.getFBDatabase().getReference("/Broadcasts").child(circle.getId()).child(broadcast.getId()).setValue(broadcast);
+        //globalVariables.getFBDatabase().getReference("/Users").child("noOfReadDiscussions").child(broadcast.getId()).setValue(0);
+        storageReferenceRepository.addBroadcastImageReference(circle.getId(), broadcast.getId(), broadcast.getAttachmentURI());
     }
 
     public void updateBroadcast(Broadcast broadcast, String circleId) {
@@ -53,7 +57,7 @@ public class BroadcastsRepository {
     public String createPhotoBroadcast(String title, String photoUri, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
 
         String id = HelperMethodsUI.uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments,true);
+        Broadcast broadcast = new Broadcast(id, title, null, photoUri, creatorName, null, "AdminId", false, true, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0,true);
         globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circleId).child(id).setValue(broadcast);
         return id;
     }
@@ -63,23 +67,18 @@ public class BroadcastsRepository {
         Broadcast broadcast;
         Poll poll = new Poll(text, pollOptions, null);
         if (downloadUri != null)
-            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments,true);
+            broadcast = new Broadcast(id, null, null, downloadUri, creatorName, null, "AdminId", true, true, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0,true);
         else
-            broadcast = new Broadcast(id, null, null, null, creatorName, null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0, noOfComments,true);
+            broadcast = new Broadcast(id, null, null, null, creatorName, null, "AdminId", true, false, System.currentTimeMillis() + offsetTimeStamp, poll, "default", 0,true);
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(id).setValue(broadcast);
         return id;
     }
 
     public String createMessageBroadcast(String title, String message, String creatorName, int offsetTimeStamp, int noOfComments, String circleId) {
         String id = HelperMethodsUI.uuidGet();
-        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, noOfComments, true);
+        Broadcast broadcast = new Broadcast(id, title, message, null, creatorName, null, "AdminId", false, false, System.currentTimeMillis() + offsetTimeStamp, null, "default", 0, true);
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(id).setValue(broadcast);
         return id;
-    }
-
-    public void updateNoOfCommentsInBroadcast(String broadcastId, int counter, String circleId) {
-        FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).child(broadcastId).child("numberOfComments"));
-        fbTransactions.runTransactionOnIncrementalValues(counter);
     }
 
     public void updateLatestTimeStampInBroadcast(String broadcastId, long timestamp, String circleId){

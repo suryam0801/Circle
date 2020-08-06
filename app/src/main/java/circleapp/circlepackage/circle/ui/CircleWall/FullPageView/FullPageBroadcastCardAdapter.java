@@ -79,7 +79,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         //Init UI Elements
         Broadcast currentBroadcast = broadcastList.get(position);
         User user = globalVariables.getCurrentUser();
-        String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -89,7 +88,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setCreatorProfilePic(holder, mContext, currentBroadcast);
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
         setComments(holder, position, currentBroadcast, user);
-        fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
+        fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
 
     }
 
@@ -112,7 +111,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             holder.commentListView.smoothScrollToPosition(0);
 
             if (position == initialIndex) {
-                fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
+                fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
             }
         });
     }

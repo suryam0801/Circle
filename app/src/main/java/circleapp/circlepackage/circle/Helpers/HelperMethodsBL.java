@@ -60,12 +60,12 @@ public class HelperMethodsBL {
         globalVariables.saveCurrentUser(user);
     }
     //BL
-    public static void initializeNewReadComments(Broadcast b, User user) {
+    public static void initializeNewReadComments(Circle c,Broadcast b, User user) {
         HashMap<String, Integer> userNoReadComments;
         if (user.getNoOfReadDiscussions() == null) {
             //first time viewing any comments
             userNoReadComments = new HashMap<>();
-            userNoReadComments.put(b.getId(), b.getNumberOfComments());
+            userNoReadComments.put(b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
             user.setNoOfReadDiscussions(userNoReadComments);
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
@@ -74,11 +74,11 @@ public class HelperMethodsBL {
             user.setNoOfReadDiscussions(userNoReadComments);
         }
         UserRepository userRepository = new UserRepository();
-        userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
+        userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
         globalVariables.saveCurrentUser(user);
     }
     //BL
-    public static void updateUserFields(Broadcast broadcast, String navFrom, User user) {
+    public static void updateUserFields(Circle c, Broadcast broadcast, String navFrom, User user) {
         HashMap<String, Integer> tempNoOfDiscussion;
         UserRepository userRepository = new UserRepository();
         if (user.getNoOfReadDiscussions() != null)
@@ -100,7 +100,7 @@ public class HelperMethodsBL {
                 break;
 
             case "view":
-                tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
+                tempNoOfDiscussion.put(broadcast.getId(), c.getNoOfCommentsPerBroadcast().get(broadcast.getId()));
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userRepository.updateUser(user);
                 break;

@@ -223,8 +223,8 @@ public class CreateCircle extends AppCompatActivity {
             backgroundImageLink = "default";
 
         circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilityType, creatorUserID, creatorName,
-                category, backgroundImageLink, tempUserForMemberList, null, user.getDistrict(), user.getWard(),
-                System.currentTimeMillis(), 0, 0,true);
+                category, backgroundImageLink, tempUserForMemberList, null,null, user.getDistrict(), user.getWard(),
+                System.currentTimeMillis(), 0,true);
 
         creatorSubscriber = new Subscriber(user, System.currentTimeMillis());
     }
