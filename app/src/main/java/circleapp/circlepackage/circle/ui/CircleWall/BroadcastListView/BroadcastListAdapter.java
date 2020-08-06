@@ -45,6 +45,7 @@ import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
 import circleapp.circlepackage.circle.Model.ObjectModels.Poll;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
@@ -89,7 +90,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         user = globalVariables.getCurrentUser();
         getLiveCircleData();
         //update no of unread comments by user
-        HelperMethodsBL.initializeNewReadComments(broadcast, user);
+        HelperMethodsBL.initializeNewReadComments(circle, broadcast, user);
         //UI actions
         updateIconOfPost(viewHolder, broadcast);
         setNewCommentsTextView(viewHolder, broadcast);
@@ -102,11 +103,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         particularCircleViewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
         currentCircleLiveData = particularCircleViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         currentCircleLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
-            circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null&&circle.getMembersList()!=null) {
-                if (circle.getMembersList().containsKey(user.getUserId())) {
-                    globalVariables.saveCurrentCircle(circle);
-                }
+            Circle tempCircle = dataSnapshot.getValue(Circle.class);
+            if(tempCircle!=null){
+                globalVariables.saveCurrentCircle(circle);
+                circle = tempCircle;
             }
         });
     }
@@ -123,7 +123,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.timeElapsedDisplay.setText(timeElapsed);
 
         //new comments setter
-        String commentsDisplayText = broadcast.getNumberOfComments() + " messages";
+        String commentsDisplayText;
+        if(circle.getNoOfCommentsPerBroadcast()==null)
+            commentsDisplayText = 0 + " messages";
+        else if(circle.getNoOfCommentsPerBroadcast().get(broadcast.getId())==null)
+            commentsDisplayText = 0 + " messages";
+        else
+            commentsDisplayText = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
         try {
@@ -183,7 +189,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcastMuted) {
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         } else {
-            int noOfUserUnread = broadcast.getNumberOfComments() - user.getNoOfReadDiscussions().get(broadcast.getId());
+            int noOfUserUnread=0;
+            if(circle.getNoOfCommentsPerBroadcast()==null)
+                noOfUserUnread = 0;
+            else if(user.getNoOfReadDiscussions().get(broadcast.getId())==null)
+                noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId());
+            else
+                noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) - user.getNoOfReadDiscussions().get(broadcast.getId());
             if (noOfUserUnread > 0) {
                 viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
                 viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");

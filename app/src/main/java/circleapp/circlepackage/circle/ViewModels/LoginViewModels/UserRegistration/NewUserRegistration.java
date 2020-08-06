@@ -138,12 +138,12 @@ public class NewUserRegistration extends ViewModel {
         adminPollBroadcastId = HelperMethods.createPollBroadcast("Use polls like this to quickly get your friends’ opinion about something!", "Admin",
                 2, adminPollOptions, null, 0, adminCircleId);
 */
-        CircleRepository circleRepository = new CircleRepository();
+/*        CircleRepository circleRepository = new CircleRepository();
         BroadcastsRepository broadcastsRepository = new BroadcastsRepository();
         //quarantine circle
         String quarantineCircleId, quarantineNormalBroadcastId, quarantinePollBroadcastId;
         quarantineCircleId = circleRepository.createDefaultCircle("Quarantine Talks " + district, "Figure out how quarantine life is for the rest of " + district + " and ask any questions or help out your neighbors using this circle",
-                "Automatic", "Vijay Ram", district, 2, 0, "Community Discussion");
+                "Automatic", "Vijay Ram", district, 2, "Community Discussion");
 
         quarantineNormalBroadcastId = broadcastsRepository.createMessageBroadcast("Welcome All! Stay Safe!","Hey guys lets use this app to connect with our neighborhood in these times of isolation. I hope we" +
                         " can help eachother stay safe and clarify any doubts in these uncertain times :)", "Mekkala Nair", 1,
@@ -161,7 +161,7 @@ public class NewUserRegistration extends ViewModel {
         String studentsCircleId, studentsNormalBroadcastId, studentsPollBroadcastId;
         studentsCircleId = circleRepository.createDefaultCircle(district + " Students Hangout!", "Lets use this circle to unite all students in " + district + ". Voice your problems, " +
                         "questions, or anything you need support with. You will never walk alone!", "Automatic", "Srinithi",
-                district, 2, 0, "Students & Clubs");
+                district, 2, "Students & Clubs");
 
         studentsNormalBroadcastId = broadcastsRepository.createMessageBroadcast("Let's show the unity and power of students!!!", "Welcome guys! Be respectful and have a good time. This circle will be our safe place from parents, college, school, and tests. " +
                 "You have the support of all the students from " + district + " here!", "Srinithi", 1, 0, studentsCircleId);
@@ -173,7 +173,7 @@ public class NewUserRegistration extends ViewModel {
 
         studentsPollBroadcastId = broadcastsRepository.createPollBroadcast("Do you guys think we will have exams?", "Vijai VJR", 1,
                 pollOptionsStudentsCircle,"https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com/o/k9rd8iesn6ygrioen9cv.jpg?alt=media&token=220677ac-6e5f-473e-a28d-ae5c034e83e1",
-                0, studentsCircleId);
+                0, studentsCircleId);*/
     }
 
 

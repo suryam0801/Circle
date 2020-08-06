@@ -32,9 +32,9 @@ public class FullpageAdapterViewModel {
     public void updateBroadcastAfterPollAction(Broadcast broadcast, String circleId){
         broadcastsRepository.updateBroadcast(broadcast, circleId);
     }
-    public void updateUserAfterReadingComments(Broadcast currentBroadcast, User user, String navFrom){
+    public void updateUserAfterReadingComments(Circle circle,Broadcast currentBroadcast, User user, String navFrom){
 
-        HelperMethodsBL.updateUserFields(currentBroadcast, navFrom, user);
+        HelperMethodsBL.updateUserFields(circle, currentBroadcast, navFrom, user);
         HelperMethodsBL.initializeNewCommentsAlertTimestamp(currentBroadcast, user);
     }
 
@@ -42,19 +42,11 @@ public class FullpageAdapterViewModel {
         //updating broadCastTimeStamp after creating the comment
         GlobalVariables globalVariables = new GlobalVariables();
         CircleRepository circleRepository = new CircleRepository();
-        int broacastNumberOfComments = broadcast.getNumberOfComments()+1;
-        broadcast.setLatestCommentTimestamp(timetamp);
-        broadcast.setNumberOfComments(broacastNumberOfComments);
-        globalVariables.saveCurrentBroadcast(broadcast);
-        broadcastsRepository.updateNoOfCommentsInBroadcast(broadcast.getId(), 1, circle.getId());
         //updating latest timestamp in broadcasts
         broadcastsRepository.updateLatestTimeStampInBroadcast(broadcast.getId(), System.currentTimeMillis(), circle.getId());
 
         //updating number of discussions in circle
-        int circleNewNumberOfDiscussions = circle.getNoOfNewDiscussions() + 1;
-        circle.setNoOfNewDiscussions(circleNewNumberOfDiscussions);
-        globalVariables.saveCurrentCircle(circle);
-        circleRepository.updateCircleReadDiscussions(1, circle);
+        circleRepository.updateNoOfCommentsInBroadcast(circle,broadcast);
 
     }
 
@@ -68,8 +60,8 @@ public class FullpageAdapterViewModel {
         SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());
 
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp, circle);
-        HelperMethodsBL.updateUserFields(broadcast, "create", user);
-        updateUserAfterReadingComments(broadcast, user, "view");
+        HelperMethodsBL.updateUserFields(circle, broadcast, "create", user);
+        updateUserAfterReadingComments(circle, broadcast, user, "view");
     }
 
     public void updatePollValues(FullPageBroadcastCardAdapter.ViewHolder viewHolder, Broadcast broadcast, User user, Poll poll, String option, Circle circle){

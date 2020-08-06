@@ -5,8 +5,9 @@ import java.util.HashMap;
 public class Circle {
     private String id, name, description, acceptanceType, visibility, creatorID, creatorName, circleDistrict, circleWard="", category, backgroundImageLink;
     private HashMap<String, Boolean> membersList, applicantsList;
+    private HashMap<String, Integer> noOfCommentsPerBroadcast;
     private long timestamp;
-    private int noOfBroadcasts, noOfNewDiscussions;
+    private int noOfBroadcasts;
     private boolean adminVisibility;
 
     public Circle() {
@@ -14,8 +15,8 @@ public class Circle {
 
     public Circle(String id, String name, String description, String acceptanceType, String visibility, String creatorID,
                   String creatorName, String category, String backgroundImageLink,
-                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList,
-                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, int noOfNewDiscussions, boolean adminVisibility) {
+                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList, HashMap<String, Integer> noOfCommentsPerBroadcast,
+                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, boolean adminVisibility) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,7 +32,7 @@ public class Circle {
         this.circleWard = circleWard;
         this.timestamp = timestamp;
         this.noOfBroadcasts = noOfBroadcasts;
-        this.noOfNewDiscussions = noOfNewDiscussions;
+        this.noOfCommentsPerBroadcast = noOfCommentsPerBroadcast;
         this.adminVisibility = adminVisibility;
     }
     public boolean isAdminVisibility() {
@@ -146,14 +147,6 @@ public class Circle {
         this.noOfBroadcasts = noOfBroadcasts;
     }
 
-    public int getNoOfNewDiscussions() {
-        return noOfNewDiscussions;
-    }
-
-    public void setNoOfNewDiscussions(int noOfNewDiscussions) {
-        this.noOfNewDiscussions = noOfNewDiscussions;
-    }
-
     public String getBackgroundImageLink() {
         return backgroundImageLink;
     }
@@ -168,6 +161,14 @@ public class Circle {
 
     public void setVisibility(String visibility) {
         this.visibility = visibility;
+    }
+
+    public HashMap<String, Integer> getNoOfCommentsPerBroadcast() {
+        return noOfCommentsPerBroadcast;
+    }
+
+    public void setNoOfCommentsPerBroadcast(HashMap<String, Integer> noOfCommentsPerBroadcast) {
+        this.noOfCommentsPerBroadcast = noOfCommentsPerBroadcast;
     }
 
     @Override
@@ -186,9 +187,9 @@ public class Circle {
                 ", backgroundImageLink='" + backgroundImageLink + '\'' +
                 ", membersList=" + membersList +
                 ", applicantsList=" + applicantsList +
+                ", noOfCommentsPerBroadcast=" + applicantsList +
                 ", timestamp=" + timestamp +
                 ", noOfBroadcasts=" + noOfBroadcasts +
-                ", noOfNewDiscussions=" + noOfNewDiscussions +
                 ", adminVisibility=" + adminVisibility +
                 '}';
     }

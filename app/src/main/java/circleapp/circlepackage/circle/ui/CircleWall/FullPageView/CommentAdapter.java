@@ -1,17 +1,24 @@
 package circleapp.circlepackage.circle.ui.CircleWall.FullPageView;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.CommentsRepository;
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
@@ -27,6 +34,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private User user;
     private Broadcast currentBroadcast;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private Dialog deleteCommentConfirmation;
 
     public CommentAdapter(Context mContext, List<Comment> CommentList, Broadcast currentBroadcast) {
         this.mContext = mContext;
@@ -63,6 +71,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.rightTimeElapsed.setText(timeString);
         HelperMethodsUI.setUserProfileImage(picUrl,mContext,holder.rightProfPic);
 
+        holder.rightBackgroundContainer.setOnLongClickListener(v->{
+            showDeleteCommentDialog(comment);
+            return true;
+        });
+
         if(user.getUserId().equals(comment.getCommentorId())){
             holder.backgroundContainer.setVisibility(View.GONE);
             holder.rightBackgroundContainer.setVisibility(View.VISIBLE);
@@ -71,6 +84,24 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.backgroundContainer.setVisibility(View.VISIBLE);
             holder.rightBackgroundContainer.setVisibility(View.GONE);
         }
+    }
+
+    public void showDeleteCommentDialog(Comment comment){
+        deleteCommentConfirmation= new Dialog(mContext);
+        deleteCommentConfirmation.setContentView(R.layout.delete_comment_popup);
+        final Button closeDialogButton = deleteCommentConfirmation.findViewById(R.id.delete_comment_confirm_btn);
+        final Button cancel = deleteCommentConfirmation.findViewById(R.id.delete_comment_cancel_btn);
+
+        closeDialogButton.setOnClickListener(view -> {
+            HelperMethodsBL.deleteComment(globalVariables.getCurrentCircle().getId(),currentBroadcast.getId(), comment);
+            deleteCommentConfirmation.dismiss();
+            Toast.makeText(mContext, "Comment Deleted!", Toast.LENGTH_SHORT).show();
+        });
+
+        cancel.setOnClickListener(view -> deleteCommentConfirmation.dismiss());
+
+        deleteCommentConfirmation.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        deleteCommentConfirmation.show();
     }
 
     @Override

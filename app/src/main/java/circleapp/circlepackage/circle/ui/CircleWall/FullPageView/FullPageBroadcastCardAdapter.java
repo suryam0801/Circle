@@ -79,7 +79,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         //Init UI Elements
         Broadcast currentBroadcast = broadcastList.get(position);
         User user = globalVariables.getCurrentUser();
-        String commentsDisplayText = currentBroadcast.getNumberOfComments() + " messages";
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -89,7 +88,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setCreatorProfilePic(holder, mContext, currentBroadcast);
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
         setComments(holder, position, currentBroadcast, user);
-        fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
+        fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
 
     }
 
@@ -106,15 +105,36 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
 
         liveData.observe((LifecycleOwner) mContext, returnArray -> {
+            String modifierType = returnArray[1];
             Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
-            commentsList.add(0, tempComment); //to store timestamp values descendingly
-            commentAdapter.notifyItemInserted(0);
-            holder.commentListView.smoothScrollToPosition(0);
-
-            if (position == initialIndex) {
-                fullpageAdapterViewModel.updateUserAfterReadingComments(currentBroadcast, user, "view");
+            switch (modifierType) {
+                case "added":
+                    addComment(commentAdapter, commentsList, tempComment, currentBroadcast, holder,position,  user);
+                    break;
+                case "changed":
+                    break;
+                case "removed":
+                    removeComment(commentAdapter, commentsList, tempComment);
+                    break;
             }
         });
+    }
+
+    private void addComment(CommentAdapter commentAdapter, List<Comment> commentsList, Comment tempComment, Broadcast currentBroadcast, ViewHolder holder, int position, User user){
+        commentsList.add(0, tempComment); //to store timestamp values descendingly
+        commentAdapter.notifyItemInserted(0);
+        holder.commentListView.smoothScrollToPosition(0);
+
+        if (position == initialIndex) {
+            fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
+        }
+    }
+
+    private void removeComment(CommentAdapter commentAdapter, List<Comment> commentsList, Comment tempComment){
+        int pos = HelperMethodsUI.returnIndexOfComment(commentsList, tempComment);
+        commentsList.remove(pos);
+        commentAdapter.notifyItemChanged(pos);
+        //notifyItemRangeRemoved(0, commentsList.size()-1);
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){

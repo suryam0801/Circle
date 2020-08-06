@@ -6,7 +6,6 @@ public class Broadcast {
     private String id, title, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
     private boolean pollExists, imageExists, adminVisibility;
     private long timeStamp, latestCommentTimestamp;
-    private int numberOfComments;
     private Poll poll;
     HashMap<String, Boolean> listenersList;
 
@@ -28,7 +27,7 @@ public class Broadcast {
 
     public Broadcast(String id, String title, String message, String attachmentURI, String creatorName, HashMap<String, Boolean> listenersList,
                      String creatorID, boolean pollExists, boolean imageExists, long timeStamp, Poll poll, String creatorPhotoURI,
-                     long latestCommentTimestamp, int numberOfComments, boolean adminVisibility) {
+                     long latestCommentTimestamp, boolean adminVisibility) {
         this.id = id;
         this.title = title;
         this.message = message;
@@ -42,7 +41,6 @@ public class Broadcast {
         this.timeStamp = timeStamp;
         this.poll = poll;
         this.latestCommentTimestamp = latestCommentTimestamp;
-        this.numberOfComments = numberOfComments;
         this.adminVisibility = adminVisibility;
     }
 
@@ -137,14 +135,6 @@ public class Broadcast {
         this.latestCommentTimestamp = latestCommentTimestamp;
     }
 
-    public int getNumberOfComments() {
-        return numberOfComments;
-    }
-
-    public void setNumberOfComments(int numberOfComments) {
-        this.numberOfComments = numberOfComments;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -168,7 +158,6 @@ public class Broadcast {
                 ", imageExists" + imageExists +
                 ", timeStamp=" + timeStamp +
                 ", latestCommentTimestamp=" + latestCommentTimestamp +
-                ", numberOfComments=" + numberOfComments +
                 ", poll=" + poll +
                 ", adminVisibility=" + adminVisibility +
                 '}';

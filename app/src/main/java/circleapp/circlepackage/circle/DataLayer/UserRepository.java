@@ -77,6 +77,11 @@ public class UserRepository {
 
     }
 
+    public void updateUserReadDiscussions(User user, Broadcast broadcast){
+        FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).child("noOfReadDiscussions").child(broadcast.getId()));
+        fbTransactions.runTransactionOnIncrementalValues(1);
+    }
+
     public String getUserId() {
         String userId = globalVariables.getFBDatabase().getReference("/Users").child(globalVariables.getAuthenticationToken().getCurrentUser().getUid()).push().getKey();
         return userId;

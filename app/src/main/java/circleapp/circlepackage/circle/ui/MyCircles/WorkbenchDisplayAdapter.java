@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -89,13 +90,22 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void setNewNotifsIndicator(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         //read for new notifs and set counter
         int newNotifs = HelperMethodsUI.newNotifications(circle, user);
+        int newCommentsNotif = HelperMethodsUI.newCommentNotifications(circle, user);
         if (newNotifs > 0) {
             GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
             itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
             holder.newNotifAlert.setText(newNotifs + "");
+            holder.newNotifAlert.setBackground(itemBackgroundNotif);
+            holder.newNotifAlert.setVisibility(View.VISIBLE);
+        }
+        else if(newCommentsNotif>0){
+            GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
+            itemBackgroundNotif.setColor(Color.parseColor("#158BF1"));
+            holder.newNotifAlert.setText(newCommentsNotif + "");
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }

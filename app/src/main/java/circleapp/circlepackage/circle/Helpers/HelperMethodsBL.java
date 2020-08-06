@@ -14,11 +14,13 @@ import java.util.Map;
 
 import circleapp.circlepackage.circle.DataLayer.CirclePersonnelRepository;
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
+import circleapp.circlepackage.circle.DataLayer.CommentsRepository;
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.DataLayer.NotificationRepository;
 import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Comment;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
@@ -60,12 +62,12 @@ public class HelperMethodsBL {
         globalVariables.saveCurrentUser(user);
     }
     //BL
-    public static void initializeNewReadComments(Broadcast b, User user) {
+    public static void initializeNewReadComments(Circle c,Broadcast b, User user) {
         HashMap<String, Integer> userNoReadComments;
         if (user.getNoOfReadDiscussions() == null) {
             //first time viewing any comments
             userNoReadComments = new HashMap<>();
-            userNoReadComments.put(b.getId(), b.getNumberOfComments());
+            userNoReadComments.put(b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
             user.setNoOfReadDiscussions(userNoReadComments);
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast
@@ -74,11 +76,18 @@ public class HelperMethodsBL {
             user.setNoOfReadDiscussions(userNoReadComments);
         }
         UserRepository userRepository = new UserRepository();
-        userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), b.getNumberOfComments());
+        try {
+
+            if(c.getNoOfCommentsPerBroadcast()==null)
+                userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), 0);
+            else
+                userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
+        }catch (NullPointerException e) {
+        }
         globalVariables.saveCurrentUser(user);
     }
     //BL
-    public static void updateUserFields(Broadcast broadcast, String navFrom, User user) {
+    public static void updateUserFields(Circle c, Broadcast broadcast, String navFrom, User user) {
         HashMap<String, Integer> tempNoOfDiscussion;
         UserRepository userRepository = new UserRepository();
         if (user.getNoOfReadDiscussions() != null)
@@ -100,7 +109,7 @@ public class HelperMethodsBL {
                 break;
 
             case "view":
-                tempNoOfDiscussion.put(broadcast.getId(), broadcast.getNumberOfComments());
+                tempNoOfDiscussion.put(broadcast.getId(), c.getNoOfCommentsPerBroadcast().get(broadcast.getId()));
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userRepository.updateUser(user);
                 break;
@@ -250,6 +259,11 @@ public class HelperMethodsBL {
         Intent intent = new Intent(context, ExploreTabbedActivity.class);
         context.startActivity(intent);
         context.finishAfterTransition();
+    }
+
+    public static void deleteComment(String circleId, String broadcastId, Comment comment){
+        CommentsRepository commentsRepository = new CommentsRepository();
+        commentsRepository.deleteComment(comment, circleId,broadcastId);
     }
 
     public static void makeNewFeedback(Map<String, Object> map) {
