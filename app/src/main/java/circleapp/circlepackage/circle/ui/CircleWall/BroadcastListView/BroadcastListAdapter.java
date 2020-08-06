@@ -102,11 +102,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         particularCircleViewModel = ViewModelProviders.of((FragmentActivity) context).get(MyCirclesViewModel.class);
         currentCircleLiveData = particularCircleViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         currentCircleLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
-            circle = dataSnapshot.getValue(Circle.class);
-            if (circle != null&&circle.getMembersList()!=null) {
-                if (circle.getMembersList().containsKey(user.getUserId())) {
-                    globalVariables.saveCurrentCircle(circle);
-                }
+            Circle tempCircle = dataSnapshot.getValue(Circle.class);
+            if(tempCircle!=null){
+                globalVariables.saveCurrentCircle(circle);
+                circle = tempCircle;
             }
         });
     }
