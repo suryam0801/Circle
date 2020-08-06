@@ -17,6 +17,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.TouchDelegate;
@@ -54,12 +55,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Notification;
+import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -581,5 +584,29 @@ public class HelperMethodsUI {
 
         confirmationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         confirmationDialog.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static int newCommentNotifications(Circle circle, User user) {
+        int num = 0;
+        Set<String> broadcastsList = new ArraySet<>();
+        if (user.getNoOfReadDiscussions() != null)
+            broadcastsList = user.getNoOfReadDiscussions().keySet();
+        if (user.getMutedBroadcasts() != null)
+            broadcastsList.removeAll(user.getMutedBroadcasts());
+        HashMap<String, Integer> circleBroadcastList = circle.getNoOfCommentsPerBroadcast();
+        if (circleBroadcastList != null) {
+            for (Map.Entry<String, Integer> entry : circleBroadcastList.entrySet()) {
+                String broadcastId = entry.getKey();
+                Integer numberOfComments = entry.getValue();
+                if (broadcastsList.contains(broadcastId)) {
+                    if(user.getNoOfReadDiscussions()==null)
+                        num = num + numberOfComments;
+                    else
+                        num = num + numberOfComments - user.getNoOfReadDiscussions().get(broadcastId);
+                }
+            }
+        }
+        return num;
     }
 }

@@ -74,10 +74,14 @@ public class HelperMethodsBL {
             user.setNoOfReadDiscussions(userNoReadComments);
         }
         UserRepository userRepository = new UserRepository();
-        if(c.getNoOfCommentsPerBroadcast()==null)
-            userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), 0);
-        else
-            userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
+        try {
+
+            if(c.getNoOfCommentsPerBroadcast()==null)
+                userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), 0);
+            else
+                userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
+        }catch (NullPointerException e) {
+        }
         globalVariables.saveCurrentUser(user);
     }
     //BL

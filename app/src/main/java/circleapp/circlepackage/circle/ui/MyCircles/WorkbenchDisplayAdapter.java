@@ -89,13 +89,22 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void setNewNotifsIndicator(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         //read for new notifs and set counter
         int newNotifs = HelperMethodsUI.newNotifications(circle, user);
+        int newCommentsNotif = HelperMethodsUI.newCommentNotifications(circle, user);
         if (newNotifs > 0) {
             GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
             itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
             holder.newNotifAlert.setText(newNotifs + "");
+            holder.newNotifAlert.setBackground(itemBackgroundNotif);
+            holder.newNotifAlert.setVisibility(View.VISIBLE);
+        }
+        else if(newCommentsNotif>0){
+            GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
+            itemBackgroundNotif.setColor(context.getResources().getColor(R.color.md_blue_500));
+            holder.newNotifAlert.setText(newCommentsNotif + "");
             holder.newNotifAlert.setBackground(itemBackgroundNotif);
             holder.newNotifAlert.setVisibility(View.VISIBLE);
         }
