@@ -14,10 +14,15 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.List;
 
@@ -25,16 +30,21 @@ import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
 
 public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
+    private User user;
     private Circle circle;
     private List<Broadcast> broadcastList;
     private int initialBroadcastPosition;
@@ -51,9 +61,12 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_page_broadcast_card_view);
+        user = globalVariables.getCurrentUser();
 
         setUIElements();
         setParentBgImage();
+        setCircleObserver();
+        initObserverForUser();
         //Go back to home
         back.setOnClickListener(view -> {
             onBackPressed();
@@ -96,6 +109,30 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
             viewApplicants.setVisibility(View.VISIBLE);
         banner.setText(circle.getName());
 
+    }
+
+    private void initObserverForUser(){
+        UserViewModel tempViewModel = ViewModelProviders.of(FullPageBroadcastCardView.this).get(UserViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
+        tempLiveData.observe((LifecycleOwner) FullPageBroadcastCardView.this, dataSnapshot -> {
+            user = dataSnapshot.getValue(User.class);
+            if (user != null) {
+                globalVariables.saveCurrentUser(user);
+            }
+        });
+    }
+
+    private void setCircleObserver(){
+        circle = globalVariables.getCurrentCircle();
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of(FullPageBroadcastCardView.this).get(MyCirclesViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        tempLiveData.observe((LifecycleOwner) FullPageBroadcastCardView.this, dataSnapshot -> {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
+                circle = circleTemp;
+                globalVariables.saveCurrentCircle(circle);
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="25dp"
+    android:background="@drawable/skills_adder_background"
+    android:elevation="12dp"
+    android:gravity="center"
+    android:id="@id/container"
+    android:orientation="vertical"
+    android:scaleType="fitXY">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:text="Would you like to join?"
+            android:textColor="#3B3B3B"
+            android:textSize="24dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/avatar3"
+            android:id="@+id/popup_circle_logo"></de.hdodenhof.circleimageview.CircleImageView>
+        <TextView
+            android:id="@+id/popup_circle_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="75dp"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="center"
+            android:text="Name"
+            android:textColor="#3B3B3B"
+            android:textSize="18dp" />
+    </RelativeLayout>
+    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/popup_circle_creatorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:fontFamily="@font/roboto_regular"
+                android:text="By Creator Name"
+                android:textColor="@color/color_blue"
+                android:textSize="12dp" />
+        </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="14dp"
+            android:layout_weight="99"
+            android:orientation="vertical"
+            android:paddingRight="10dp">
+
+
+            <TextView
+                android:id="@+id/popup_circle_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/roboto_regular"
+                android:lineSpacingExtra="4dp"
+                android:maxLines="3"
+                android:text="Message"
+                android:textAlignment="center"
+                android:textColor="#9D9D9D"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/join_card_cancel"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/report_submit_button"
+                android:fontFamily="@font/roboto_condensed"
+                android:text="No"
+                android:textAllCaps="false"
+                android:textColor="#F30000"
+                android:textSize="14dp"></Button>
+            <Button
+                android:id="@+id/join_card_join"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="25dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/poll_creation_item_option_background"
+                android:fontFamily="@font/roboto_condensed"
+                android:text="Join"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14dp"></Button>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

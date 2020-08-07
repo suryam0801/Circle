@@ -66,8 +66,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private GlobalVariables globalVariables = new GlobalVariables();
     //Popup circle elements
     private TextView tv_circleName, tv_creatorName, tv_circleDesc;
-    private Button join;
-    private ImageView bannerImage;
+    private Button join, cancel;
     private CircleImageView profPic;
     private boolean alreadyMember, alreadyApplicant;
 
@@ -184,6 +183,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             }
         });
 
+        cancel.setOnClickListener(view->{
+            getIntent().setData(null);
+            linkCircleDialog.dismiss();
+        });
+
         //clearing intent data so popup doesnt show each time
         linkCircleDialog.setOnDismissListener(dialogInterface -> {
             getIntent().setData(null);
@@ -191,57 +195,18 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     }
     private void initPopupElements(Circle popupCircle){
         linkCircleDialog = new Dialog(ExploreTabbedActivity.this);
-        linkCircleDialog.setContentView(R.layout.circle_card_display_view); //set dialog view
+        linkCircleDialog.setContentView(R.layout.join_circle_popup); //set dialog view
 
-        tv_circleName = linkCircleDialog.findViewById(R.id.circle_name);
-        tv_creatorName = linkCircleDialog.findViewById(R.id.circle_creatorName);
-        tv_circleDesc = linkCircleDialog.findViewById(R.id.circle_desc);
-        join = linkCircleDialog.findViewById(R.id.circle_card_join);
-        bannerImage = linkCircleDialog.findViewById(R.id.circle_banner_image);
-        profPic = linkCircleDialog.findViewById(R.id.explore_circle_logo);
-
-        switch (popupCircle.getCategory()) {
-            case "Events":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_events)).centerCrop().into(bannerImage);
-                break;
-            case "Apartments & Communities":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_apartment_and_communities)).centerCrop().into(bannerImage);
-                break;
-            case "Sports":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_sports)).centerCrop().into(bannerImage);
-                break;
-            case "Friends & Family":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_friends_and_family)).centerCrop().into(bannerImage);
-                break;
-            case "Food & Entertainment":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_food_and_entertainment)).centerCrop().into(bannerImage);
-                break;
-            case "Science & Tech":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_science_and_tech_background)).centerCrop().into(bannerImage);
-                break;
-            case "Gaming":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_gaming)).centerCrop().into(bannerImage);
-                break;
-            case "Health & Fitness":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_health_and_fitness)).centerCrop().into(bannerImage);
-                break;
-            case "Students & Clubs":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_students_and_clubs)).centerCrop().into(bannerImage);
-                break;
-            case "The Circle App":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.admin_circle_banner)).centerCrop().into(bannerImage);
-                break;
-            case "General":
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_general)).centerCrop().into(bannerImage);
-                break;
-            default:
-                Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(bannerImage);
-                break;
-        }
+        tv_circleName = linkCircleDialog.findViewById(R.id.popup_circle_name);
+        tv_creatorName = linkCircleDialog.findViewById(R.id.popup_circle_creatorName);
+        tv_circleDesc = linkCircleDialog.findViewById(R.id.popup_circle_desc);
+        join = linkCircleDialog.findViewById(R.id.join_card_join);
+        cancel = linkCircleDialog.findViewById(R.id.join_card_cancel);
+        profPic = linkCircleDialog.findViewById(R.id.popup_circle_logo);
         HelperMethodsUI.createDefaultCircleIcon(popupCircle,this,profPic);
 
         tv_circleName.setText(popupCircle.getName());
-        tv_creatorName.setText(popupCircle.getCreatorName());
+        tv_creatorName.setText("By "+popupCircle.getCreatorName());
         tv_circleDesc.setText(popupCircle.getDescription());
         if(popupCircle.getAcceptanceType()!=null){
             if (popupCircle.getAcceptanceType().equalsIgnoreCase("review"))
@@ -278,7 +243,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             linkCircleDialog.dismiss();
             title.setText("Successfully Joined!");
-            description.setText("Congratulations! You are now an honorary member of " + circle.getName() + ". You can view and get access to your circle from your wall. Click 'Done' to be redirected to this circle's wall.");
+            description.setText("Congratulations! You are now a member of " + circle.getName() + ". Click 'Done' to go to this circle.");
         }
 
         closeDialogButton.setOnClickListener(view -> {
@@ -312,7 +277,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                     popupCalled = true;
                 }
                 else
-                    Toast.makeText(ExploreTabbedActivity.this, "That Circle does not exist anymore",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExploreTabbedActivity.this, "That Circle was deleted",Toast.LENGTH_SHORT).show();
             }
         });
     }

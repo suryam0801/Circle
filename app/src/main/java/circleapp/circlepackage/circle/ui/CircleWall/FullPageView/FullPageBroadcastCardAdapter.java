@@ -57,6 +57,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private InputMethodManager imm;
     private GlobalVariables globalVariables = new GlobalVariables();
     private FullpageAdapterViewModel fullpageAdapterViewModel = new FullpageAdapterViewModel();
+    private RecyclerView.LayoutManager layoutManager;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -95,7 +96,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private void setComments(ViewHolder holder, int position, Broadcast currentBroadcast, User user){
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
         holder.commentListView.setLayoutManager(layoutManager);
 
         commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
@@ -134,7 +135,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         int pos = HelperMethodsUI.returnIndexOfComment(commentsList, tempComment);
         commentsList.remove(pos);
         commentAdapter.notifyItemChanged(pos);
-        //notifyItemRangeRemoved(0, commentsList.size()-1);
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
