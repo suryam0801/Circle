@@ -202,20 +202,17 @@
         android:orientation="vertical"
         android:visibility="visible"
         android:weightSum="100">
-
-        <ScrollView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/full_page_write_comment_edit_text">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/full_page_broadcast_comments_display"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/full_page_write_comment_edit_text"
-            android:layout_marginTop="40dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/full_page_broadcast_comments_display"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"
-                android:dividerHeight="0dp"></androidx.recyclerview.widget.RecyclerView>
-        </ScrollView>
+            android:divider="@null"
+            android:dividerHeight="0dp"></androidx.recyclerview.widget.RecyclerView>
+    </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/full_page_write_comment_edit_text"
