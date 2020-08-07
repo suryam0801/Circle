@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.lzyzsd.randomcolor.RandomColor;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import circleapp.circlepackage.circle.DataLayer.CommentsRepository;
@@ -50,6 +59,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return new CommentAdapter.ViewHolder(pview);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
         final Comment comment = CommentList.get(position);
@@ -59,17 +69,23 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         final long createdTime = comment.getTimestamp();
         final long currentTime = System.currentTimeMillis();
-        String timeString = HelperMethodsUI.getTimeElapsed(currentTime, createdTime);
+
+        String pattern = "hh:mm a";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date = new Date(createdTime);
+        String timeString = simpleDateFormat.format(date);
 
         holder.userName.setText(name);
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
-        HelperMethodsUI.setUserProfileImage(picUrl,mContext,holder.profPic);
+        //For username color change
+        int[] color = globalVariables.getColorsForUsername();
+        int hash = arrayValForName(name);
+        if(hash<10&&hash>=0)
+            holder.userName.setTextColor(color[hash]);
 
-        holder.rightUserName.setText(name);
         holder.rightComment.setText(cmnt);
         holder.rightTimeElapsed.setText(timeString);
-        HelperMethodsUI.setUserProfileImage(picUrl,mContext,holder.rightProfPic);
 
         holder.rightBackgroundContainer.setOnLongClickListener(v->{
             showDeleteCommentDialog(comment);
@@ -86,6 +102,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
     }
 
+    private int arrayValForName(String name){
+        int val = name.charAt(0);
+        return val%10;
+    }
     public void showDeleteCommentDialog(Comment comment){
         deleteCommentConfirmation= new Dialog(mContext);
         deleteCommentConfirmation.setContentView(R.layout.delete_comment_popup);
@@ -120,8 +140,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView profPic , rightProfPic;
-        TextView userName, rightUserName;
+        TextView userName;
         TextView comment, rightComment;
         TextView timeElapsed, rightTimeElapsed;
         LinearLayout backgroundContainer, rightBackgroundContainer;
@@ -132,14 +151,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             params1.putString("newCommentsViewed", "noOfComments");
 
             backgroundContainer = view.findViewById(R.id.comment_display_background_container);
-            profPic = view.findViewById(R.id.comment_profilePicture);
             userName = view.findViewById(R.id.comment_object_ownerName);
             comment = view.findViewById(R.id.comment_object_comment);
             timeElapsed = view.findViewById(R.id.comments_object_postedTime);
 
             rightBackgroundContainer = view.findViewById(R.id.right_comment_display_background_container);
-            rightProfPic = view.findViewById(R.id.right_comment_profilePicture);
-            rightUserName = view.findViewById(R.id.right_comment_object_ownerName);
             rightComment = view.findViewById(R.id.right_comment_object_comment);
             rightTimeElapsed = view.findViewById(R.id.right_comments_object_postedTime);
 

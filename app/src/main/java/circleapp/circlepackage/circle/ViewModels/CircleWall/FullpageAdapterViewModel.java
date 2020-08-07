@@ -59,6 +59,7 @@ public class FullpageAdapterViewModel {
         commentsRepository.makeNewComment(comment, circle.getId(), broadcast.getId());
         SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());
 
+        //Circle and broadcast
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp, circle);
         HelperMethodsBL.updateUserFields(circle, broadcast, "create", user);
         updateUserAfterReadingComments(circle, broadcast, user, "view");

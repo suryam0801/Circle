@@ -132,13 +132,13 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             commentsDisplayText = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
 
-        try {
+        /*try {
             if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
                 viewHolder.viewComments.setText(commentsDisplayText + " (new)");
             }
         } catch (Exception e) {
             //null value for get new timestamp comments for particular broadcast
-        }
+        }*/
     }
 
     private void setUiElements(ViewHolder viewHolder, int i, Broadcast broadcast){
@@ -236,7 +236,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         Intent intent = new Intent(context, FullPageBroadcastCardView.class);
         intent.putExtra("broadcastPosition", position);
         context.startActivity(intent);
-        ((Activity) context).finish();
+        ((Activity) context).finishAfterTransition();
     }
 
     public void ifImageExistsAction(ViewHolder viewHolder, Broadcast broadcast, int position) {

@@ -220,7 +220,7 @@
         <LinearLayout
             android:id="@+id/full_page_write_comment_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/unpressable_button"
             android:orientation="horizontal"
@@ -239,13 +239,15 @@
                 android:paddingRight="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="#D1D1D1"
-                android:textSize="12dp"></EditText>
+                android:textSize="15dp"></EditText>
 
             <Button
                 android:id="@+id/full_page_broadcast_comment_send_button"
                 style="?android:attr/borderlessButtonStyle"
-                android:layout_width="31dp"
-                android:layout_height="26dp"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:gravity="right"
+                android:layout_gravity="center"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginRight="15dp"

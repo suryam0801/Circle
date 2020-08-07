@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.Utils;
 import android.app.Application;
 import android.net.Uri;
 
+import com.github.lzyzsd.randomcolor.RandomColor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -30,6 +31,12 @@ public class GlobalVariables extends Application {
     public static TempLocation currentTempLocation;
     public static Uri TempdownloadLink;
     public int involvedCircles = 0;
+    RandomColor randomColor = new RandomColor();
+    public int[] colors = randomColor.randomColor(10);
+
+    public int[] getColorsForUsername(){
+        return colors;
+    }
 
     public int getInvolvedCircles() {
         return involvedCircles;
