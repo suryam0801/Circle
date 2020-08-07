@@ -135,7 +135,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         int pos = HelperMethodsUI.returnIndexOfComment(commentsList, tempComment);
         commentsList.remove(pos);
         commentAdapter.notifyItemChanged(pos);
-        //notifyItemRangeRemoved(0, commentsList.size()-1);
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
@@ -165,7 +164,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, user, circle);
             }
             holder.addCommentEditText.setText("");
-            layoutManager.scrollToPosition(0);
         });
 
         holder.notificationToggle.setOnClickListener(view -> {
