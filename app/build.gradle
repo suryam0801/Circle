@@ -110,6 +110,7 @@ dependencies {
     implementation 'com.github.dimorinny:show-case-card-view:0.0.4'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.github.vihtarb:tooltip:0.1.9'
+    implementation 'com.github.lzyzsd.randomcolor:library:1.0.0'
 
 
     implementation project(':searchablespinnerlibrary')

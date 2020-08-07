@@ -67,7 +67,12 @@ public class HelperMethodsBL {
         if (user.getNoOfReadDiscussions() == null) {
             //first time viewing any comments
             userNoReadComments = new HashMap<>();
-            userNoReadComments.put(b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
+            if(c.getNoOfCommentsPerBroadcast()==null)
+                userNoReadComments.put(b.getId(), 0);
+            else if(c.getNoOfCommentsPerBroadcast().containsKey(b.getId()))
+                userNoReadComments.put(b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
+            else
+                userNoReadComments.put(b.getId(), 0);
             user.setNoOfReadDiscussions(userNoReadComments);
         } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
             //if timestampcomments exists but does not contain value for that particular broadcast

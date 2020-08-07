@@ -115,7 +115,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         setParentBgImage();
         initBtnListeners();
         setBroadcastObserver();
-        setCircleMembersObserver();
+        if(user.getUserId().equals(circle.getCreatorID()))
+            setCircleMembersObserver();
     }
 
     private void initUIElements(){
