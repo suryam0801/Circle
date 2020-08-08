@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -70,10 +72,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     private BroadcastListViewModel broadcastListViewModel = new BroadcastListViewModel();
 
     //contructor to set latestCircleList and context for Adapter
-    public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle) {
+    public BroadcastListAdapter(Context context, List<Broadcast> broadcastList, Circle circle, User user) {
         this.context = context;
         this.broadcastList = broadcastList;
         this.circle = circle;
+        this.user = user;
     }
 
     @Override
@@ -82,12 +85,12 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         return new BroadcastListAdapter.ViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(final BroadcastListAdapter.ViewHolder viewHolder, int i) {
 
         //init values
         Broadcast broadcast = broadcastList.get(i);
-        user = globalVariables.getCurrentUser();
         getLiveCircleData();
         //update no of unread comments by user
         HelperMethodsBL.initializeNewReadComments(circle, broadcast, user);
@@ -160,6 +163,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setButtonListeners(ViewHolder viewHolder, int i, Broadcast broadcast){
         //view discussion onclick
         viewHolder.viewComments.setOnClickListener(view -> intentToDiscussionActivity(i));
@@ -231,6 +235,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void intentToDiscussionActivity(int position) {
         globalVariables.saveCurrentBroadcastList(broadcastList);
         Intent intent = new Intent(context, FullPageBroadcastCardView.class);

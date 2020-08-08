@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -78,6 +79,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         //Init UI Elements
+
         Broadcast currentBroadcast = broadcastList.get(position);
         User user = globalVariables.getCurrentUser();
         //Init muted button
@@ -125,6 +127,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         commentsList.add(0, tempComment); //to store timestamp values descendingly
         commentAdapter.notifyItemInserted(0);
         holder.commentListView.smoothScrollToPosition(0);
+        HelperMethodsBL.updateUserAfterReadingComments(user,currentBroadcast);
 
         if (position == initialIndex) {
             fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
