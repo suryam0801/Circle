@@ -201,7 +201,8 @@
         android:weightSum="100">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/light_grey"
         android:layout_above="@+id/full_page_write_comment_edit_text">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/full_page_broadcast_comments_display"
