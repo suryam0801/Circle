@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +20,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +68,16 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private GlobalVariables globalVariables = new GlobalVariables();
     private FullpageAdapterViewModel fullpageAdapterViewModel = new FullpageAdapterViewModel();
     private RecyclerView.LayoutManager layoutManager;
+    private boolean isLoading=false;
+    private int itemPos = 0;
+    private static final int TOTAL_ITEMS_TO_LOAD = 100;
+    private int mCurrentPage = 1;
+    private String mLastKey = "";
+    private String mPrevKey = "";
+    private LinearLayoutManager lm;
+    private int scrollPos=0;
+    private static int firstVisibleInListview;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -92,54 +111,140 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
         setComments(holder, position, currentBroadcast, user);
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
+    }
 
+    private void loadMessages(Broadcast currentBroadcast, ViewHolder holder, CommentAdapter commentAdapter, List<Comment> commentsList){
+        DatabaseReference messageRef;
+        messageRef = globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
+        Query messageQuery = messageRef.limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
+        messageQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
+
+                Comment comment = dataSnapshot.getValue(Comment.class);
+
+                itemPos++;
+                if (itemPos == 1) {
+                    String messageKey = dataSnapshot.getKey();
+                    mLastKey = messageKey;
+                    mPrevKey = messageKey;
+                }
+                commentsList.add(comment);
+                commentAdapter.notifyDataSetChanged();
+                assert comment != null;
+                holder.commentListView.scrollToPosition(commentsList.size() - 1);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadMoreMessages(Broadcast currentBroadcast, CommentAdapter commentAdapter, List<Comment> commentsList) {
+        DatabaseReference commentsRef;
+        commentsRef = globalVariables.getFBDatabase().getReference("BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
+
+        Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(100);
+        messageQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
+                Comment comment = dataSnapshot.getValue(Comment.class);
+                String commentKey = dataSnapshot.getKey();
+                assert comment != null;
+                if(!mPrevKey.equals(commentKey)){
+
+                    commentsList.add(itemPos++,comment);
+
+                } else {
+                    mPrevKey = mLastKey;
+                }
+
+                if(itemPos == 1) {
+                    mLastKey = commentKey;
+                }
+                commentAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
+
+                // lm.scrollToPositionWithOffset(10, 0);
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void removeSwipeRefreshDrawable(){
+        try {
+            Field f = mSwipeRefreshLayout.getClass().getDeclaredField("mCircleView");
+            f.setAccessible(true);
+            ImageView img = (ImageView)f.get(mSwipeRefreshLayout);
+            assert img != null;
+            img.setImageResource(android.R.color.transparent);
+            img.setBackgroundColor(ContextCompat.getColor(mContext, android.R.color.transparent));
+            img.setBackgroundResource(android.R.color.transparent);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setComments(ViewHolder holder, int position, Broadcast currentBroadcast, User user){
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
+
         layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
         holder.commentListView.setLayoutManager(layoutManager);
 
         commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
         holder.commentListView.setAdapter(commentAdapter);
+        mSwipeRefreshLayout = holder.swipeRefreshLayout;
+        loadMessages(currentBroadcast, holder, commentAdapter, commentsList);
+        removeSwipeRefreshDrawable();//look here
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
-        CommentsViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(CommentsViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
+            @Override
+            public void onRefresh() {
 
-        liveData.observe((LifecycleOwner) mContext, returnArray -> {
-            String modifierType = returnArray[1];
-            Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
-            switch (modifierType) {
-                case "added":
-                    addComment(commentAdapter, commentsList, tempComment, currentBroadcast, holder,position,  user);
-                    break;
-                case "changed":
-                    break;
-                case "removed":
-                    removeComment(commentAdapter, commentsList, tempComment);
-                    break;
+                mCurrentPage++;
+                itemPos = 0;
+                loadMoreMessages(currentBroadcast, commentAdapter, commentsList);
             }
         });
     }
-
-    private void addComment(CommentAdapter commentAdapter, List<Comment> commentsList, Comment tempComment, Broadcast currentBroadcast, ViewHolder holder, int position, User user){
-        commentsList.add(0, tempComment); //to store timestamp values descendingly
-        commentAdapter.notifyItemInserted(0);
-        holder.commentListView.smoothScrollToPosition(0);
-        HelperMethodsBL.updateUserAfterReadingComments(user,currentBroadcast);
-
-        if (position == initialIndex) {
-            fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
-        }
-    }
-
-    private void removeComment(CommentAdapter commentAdapter, List<Comment> commentsList, Comment tempComment){
-        int pos = HelperMethodsUI.returnIndexOfComment(commentsList, tempComment);
-        commentsList.remove(pos);
-        commentAdapter.notifyItemChanged(pos);
-    }
-
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
 
         holder.viewPostButton.setOnClickListener(view->{
@@ -318,6 +423,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         private PhotoView imageView;
         private Button viewPostButton, hidePostButton;
         private ImageView viewPostImage, hidePostImage;
+        private SwipeRefreshLayout swipeRefreshLayout;
 
         public ViewHolder(View view) {
             super(view);
@@ -338,6 +444,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             viewPostImage = view.findViewById(R.id.view_image);
             hidePostButton = view.findViewById(R.id.hide_post_button);
             hidePostImage = view.findViewById(R.id.hide_image);
+            swipeRefreshLayout = view.findViewById(R.id.message_swipe_layout);
+
         }
 
         public String getCurrentUserPollOption() {
