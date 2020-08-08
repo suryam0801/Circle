@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
+import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.Model.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.MainActivity;
@@ -39,6 +40,9 @@ public class FBRepository {
 
     public void addDistrict(String district) {
         globalVariables.getFBDatabase().getReference("Locations").child(district).setValue(true);
+    }
+    public void addContact(Contacts contacts) {
+        globalVariables.getFBDatabase().getReference("Contacts").child(HelperMethodsUI.uuidGet()).setValue(contacts);
     }
 
     public void createReportAbuse(Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {

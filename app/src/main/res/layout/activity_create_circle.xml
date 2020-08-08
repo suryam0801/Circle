@@ -197,7 +197,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
-                        android:background="#EEEEEE"></View>
+                        android:background="#EEEEEE"/>
                 </LinearLayout>
 
                 <RelativeLayout
@@ -232,7 +232,7 @@
                         android:inputType="textCapSentences"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black20"
-                        android:textSize="16dp"></EditText>
+                        android:textSize="16dp"/>
                 </RelativeLayout>
 
                 <EditText
@@ -261,8 +261,20 @@
                     android:scrollbars="vertical"
                     android:gravity="start|top"
                     android:overScrollMode="always"
-                    android:textSize="16dp"></EditText>
-
+                    android:textSize="16dp"/>
+<TextView
+    android:id="@+id/addpeople"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginRight="10dp"
+    android:text="Add People"
+    android:fontFamily="@font/roboto_regular"
+    android:clickable="true"
+    android:onClick="ShowContacts"
+    android:textColor="@color/black"
+    android:textSize="16sp"/>
             </LinearLayout>
 
         </LinearLayout>
