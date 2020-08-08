@@ -13,8 +13,8 @@
         android:background="@color/light_grey"
         android:id="@+id/comment_display_background_container"
         android:orientation="vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,8 +24,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="23dp"
+                android:layout_marginRight="25dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -48,12 +47,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
-                        android:layout_marginTop="5dp"
                         android:background="@drawable/broadcast_message_background"
                         android:paddingLeft="15dp"
-                        android:paddingRight="30dp"
-                        android:paddingTop="19dp"
-                        android:paddingBottom="20dp"
+                        android:paddingRight="55dp"
+                        android:paddingTop="22dp"
+                        android:paddingBottom="15dp"
                         android:text="Description"
                         android:autoLink="phone|web"
                         android:lineSpacingExtra="3dp"
@@ -89,8 +87,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:layout_marginLeft="25dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp">
             <TextView
                 android:id="@+id/right_comment_object_comment"
                 android:layout_width="wrap_content"
@@ -98,12 +97,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="10dp"
                 android:fontFamily="@font/roboto_regular"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/broadcast_comment_right_align"
-                android:paddingLeft="30dp"
-                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="55dp"
                 android:paddingTop="15dp"
-                android:paddingBottom="20dp"
+                android:paddingBottom="15dp"
                 android:text="Description"
                 android:autoLink="phone|web"
                 android:lineSpacingExtra="3dp"
