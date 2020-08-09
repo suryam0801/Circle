@@ -46,7 +46,8 @@ public class HelperMethodsBL {
         return url;
     }
     //BL
-    public static void initializeNewCommentsAlertTimestamp(Broadcast b, User user) {
+    public static void initializeNewCommentsAlertTimestamp(Broadcast b) {
+        User user = globalVariables.getCurrentUser();
         HashMap<String, Long> commentTimeStampTemp;
         if (user.getNewTimeStampsComments() == null) {
             //first time viewing any comments
@@ -64,41 +65,12 @@ public class HelperMethodsBL {
         globalVariables.saveCurrentUser(user);
     }
     //BL
-    public static void initializeNewReadComments(Circle c,Broadcast b, User user) {
-        HashMap<String, Integer> userNoReadComments;
-        if (user.getNoOfReadDiscussions() == null) {
-            //first time viewing any comments
-            userNoReadComments = new HashMap<>();
-            if(c.getNoOfCommentsPerBroadcast()==null)
-                userNoReadComments.put(b.getId(), 0);
-            else if(c.getNoOfCommentsPerBroadcast().containsKey(b.getId()))
-                userNoReadComments.put(b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
-            else
-                userNoReadComments.put(b.getId(), 0);
-            user.setNoOfReadDiscussions(userNoReadComments);
-        } else if (user.getNoOfReadDiscussions() != null && !user.getNoOfReadDiscussions().containsKey(b.getId())) {
-            //if timestampcomments exists but does not contain value for that particular broadcast
-            userNoReadComments = new HashMap<>(user.getNoOfReadDiscussions());
-            userNoReadComments.put(b.getId(), 0);
-            user.setNoOfReadDiscussions(userNoReadComments);
-        }
-        UserRepository userRepository = new UserRepository();
-        try {
-
-            if(c.getNoOfCommentsPerBroadcast()==null)
-                userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), 0);
-            else
-                userRepository.updateUserNewReadComments(user.getUserId(), b.getId(), c.getNoOfCommentsPerBroadcast().get(b.getId()));
-        }catch (NullPointerException e) {
-        }
-        globalVariables.saveCurrentUser(user);
-    }
-    //BL
-    public static void updateUserFields(Circle c, Broadcast broadcast, String navFrom, User user) {
+    public static void updateUserFields(Circle c, Broadcast broadcast, String navFrom) {
         HashMap<String, Integer> tempNoOfDiscussion;
         UserRepository userRepository = new UserRepository();
+        User user = globalVariables.getCurrentUser();
         if (user.getNoOfReadDiscussions() != null)
-            tempNoOfDiscussion = new HashMap<>(user.getNoOfReadDiscussions());
+            tempNoOfDiscussion = user.getNoOfReadDiscussions();
         else
             tempNoOfDiscussion = new HashMap<>();
 
@@ -135,6 +107,7 @@ public class HelperMethodsBL {
         tempCommentTimeStamps.put(broadcast.getId(), broadcast.getLatestCommentTimestamp());
         user.setNewTimeStampsComments(tempCommentTimeStamps);
         userRepository.updateUser(user);
+        globalVariables.saveCurrentUser(user);
     }
 
     //BL
