@@ -28,14 +28,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,8 +112,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
         holder.commentListView.setAdapter(commentAdapter);
         mSwipeRefreshLayout = holder.swipeRefreshLayout;
+        //Load initial messages
         loadMessages(currentBroadcast, holder, commentAdapter, commentsList);
-        //removeSwipeRefreshDrawable();//look here
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -174,52 +168,37 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     private void loadMoreMessages(Broadcast currentBroadcast, CommentAdapter commentAdapter, List<Comment> commentsList) {
-        
-        DatabaseReference commentsRef;
-        commentsRef = globalVariables.getFBDatabase().getReference("BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
 
-        Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(100);
-        messageQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
-                Comment comment = dataSnapshot.getValue(Comment.class);
-                String commentKey = dataSnapshot.getKey();
-                assert comment != null;
-                if(!mPrevKey.equals(commentKey)){
-
-                    commentsList.add(itemPos++,comment);
-
-                } else {
-                    mPrevKey = mLastKey;
-                }
-
-                if(itemPos == 1) {
-                    mLastKey = commentKey;
-                }
-                commentAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+        CommentsViewModel commentsViewModel = new CommentsViewModel();
+        LiveData<String []> liveData = commentsViewModel.getDataSnapsLoadMoreCommentsLiveData(circle.getId(), currentBroadcast.getId(), mLastKey, 100);
+        liveData.observe((LifecycleOwner) mContext, returnArray->{
+            Comment comment = new Gson().fromJson(returnArray[0], Comment.class);
+            mSwipeRefreshLayout.setRefreshing(false);
+            String modifierType = returnArray[1];
+            switch (modifierType) {
+                case "added":
+                    addMoreComments(comment,commentAdapter,commentsList);
+                    break;
             }
         });
+    }
+
+    private void addMoreComments(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
+        String commentKey = comment.getId();
+        assert comment != null;
+        if(!mPrevKey.equals(commentKey)){
+
+            commentsList.add(itemPos++,comment);
+
+        } else {
+            mPrevKey = mLastKey;
+        }
+
+        if(itemPos == 1) {
+            mLastKey = commentKey;
+        }
+        commentAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
