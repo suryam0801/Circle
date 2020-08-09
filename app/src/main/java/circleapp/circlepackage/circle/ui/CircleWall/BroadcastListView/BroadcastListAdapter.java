@@ -92,8 +92,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         //init values
         Broadcast broadcast = broadcastList.get(i);
         getLiveCircleData();
-        //update no of unread comments by user
-        HelperMethodsBL.initializeNewReadComments(circle, broadcast, user);
         //UI actions
         updateIconOfPost(viewHolder, broadcast);
         setNewCommentsTextView(viewHolder, broadcast);

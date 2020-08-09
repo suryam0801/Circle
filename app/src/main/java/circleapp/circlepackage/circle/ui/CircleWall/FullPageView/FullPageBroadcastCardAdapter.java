@@ -54,6 +54,7 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circlepackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
@@ -63,6 +64,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Context mContext;
     private List<Broadcast> broadcastList;
     private Circle circle;
+    private User user;
+    private Broadcast currentBroadcast;
     private int initialIndex;
     private InputMethodManager imm;
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -70,7 +73,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private RecyclerView.LayoutManager layoutManager;
     private boolean isLoading=false;
     private int itemPos = 0;
-    private static final int TOTAL_ITEMS_TO_LOAD = 100;
+    private static final int TOTAL_ITEMS_TO_LOAD = 20;
     private int mCurrentPage = 1;
     private String mLastKey = "";
     private String mPrevKey = "";
@@ -99,8 +102,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         //Init UI Elements
 
-        Broadcast currentBroadcast = broadcastList.get(position);
-        User user = globalVariables.getCurrentUser();
+        currentBroadcast = broadcastList.get(position);
+        user = globalVariables.getCurrentUser();
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -132,6 +135,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 commentsList.add(comment);
                 commentAdapter.notifyDataSetChanged();
                 assert comment != null;
+                HelperMethodsBL.initializeNewReadComments(circle, currentBroadcast, globalVariables.getCurrentUser());
                 holder.commentListView.scrollToPosition(commentsList.size() - 1);
                 mSwipeRefreshLayout.setRefreshing(false);
             }
@@ -162,7 +166,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         DatabaseReference commentsRef;
         commentsRef = globalVariables.getFBDatabase().getReference("BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
 
-        Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(100);
+        Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -181,7 +185,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     mLastKey = commentKey;
                 }
                 commentAdapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
 
                 // lm.scrollToPositionWithOffset(10, 0);
 
