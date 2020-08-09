@@ -69,6 +69,7 @@
                 android:hint="Enter poll option"
                 android:inputType="textCapSentences"
                 android:textColor="@color/black"
+                android:digits="@string/poll"
                 android:textColorHint="@color/black20"
                 android:textSize="12dp"></EditText>
 

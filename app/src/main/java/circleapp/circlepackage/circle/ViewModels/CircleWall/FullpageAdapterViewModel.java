@@ -34,16 +34,15 @@ public class FullpageAdapterViewModel {
     }
     public void updateUserAfterReadingComments(Circle circle,Broadcast currentBroadcast, User user, String navFrom){
 
-        HelperMethodsBL.updateUserFields(circle, currentBroadcast, navFrom, user);
-        HelperMethodsBL.initializeNewCommentsAlertTimestamp(currentBroadcast, user);
+        HelperMethodsBL.initializeNewCommentsAlertTimestamp(currentBroadcast);
+        HelperMethodsBL.updateUserFields(circle, currentBroadcast, navFrom);
     }
 
     public void updateCommentNumbersPostCreate(Broadcast broadcast, long timetamp, Circle circle) {
         //updating broadCastTimeStamp after creating the comment
-        GlobalVariables globalVariables = new GlobalVariables();
         CircleRepository circleRepository = new CircleRepository();
         //updating latest timestamp in broadcasts
-        broadcastsRepository.updateLatestTimeStampInBroadcast(broadcast.getId(), System.currentTimeMillis(), circle.getId());
+        broadcastsRepository.updateLatestTimeStampInBroadcast(broadcast.getId(), timetamp, circle.getId());
 
         //updating number of discussions in circle
         circleRepository.updateNoOfCommentsInBroadcast(circle,broadcast);
@@ -61,8 +60,8 @@ public class FullpageAdapterViewModel {
 
         //Circle and broadcast
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp, circle);
-        HelperMethodsBL.updateUserFields(circle, broadcast, "create", user);
-        updateUserAfterReadingComments(circle, broadcast, user, "view");
+        updateUserAfterReadingComments(circle, broadcast, user, "create");
+
     }
 
     public void updatePollValues(FullPageBroadcastCardAdapter.ViewHolder viewHolder, Broadcast broadcast, User user, Poll poll, String option, Circle circle){

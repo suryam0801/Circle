@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Circle</string>
     <string name="default_notification_channel_id">Circle_CH 01</string>
+    <string name="poll">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#032;&#160;1234567890?</string>
     <string name="digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#</string>
     <string name="username">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#032;&#160;</string>
     <string name="permission_message">Location permission is needed for core functionality</string>

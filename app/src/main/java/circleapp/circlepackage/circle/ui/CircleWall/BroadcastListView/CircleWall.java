@@ -321,7 +321,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
 
         recyclerView.scrollToPosition(broadcastPos);
-        HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcast, user);
+        HelperMethodsBL.initializeNewCommentsAlertTimestamp(broadcast);
 
         //coming back from image display
         int indexOfReturnFromFullImage = getIntent().getIntExtra("indexOfBroadcast", 0);
