@@ -116,7 +116,10 @@ public class HelperMethodsBL {
                 break;
 
             case "view":
-                tempNoOfDiscussion.put(broadcast.getId(), c.getNoOfCommentsPerBroadcast().get(broadcast.getId()));
+                if(c.getNoOfCommentsPerBroadcast().containsKey(broadcast.getId()))
+                    tempNoOfDiscussion.put(broadcast.getId(), c.getNoOfCommentsPerBroadcast().get(broadcast.getId()));
+                else
+                    tempNoOfDiscussion.put(broadcast.getId(), 0);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
                 userRepository.updateUser(user);
                 break;

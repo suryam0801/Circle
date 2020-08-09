@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +20,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,7 +31,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
-import com.google.gson.Gson;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -71,15 +65,11 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private GlobalVariables globalVariables = new GlobalVariables();
     private FullpageAdapterViewModel fullpageAdapterViewModel = new FullpageAdapterViewModel();
     private RecyclerView.LayoutManager layoutManager;
-    private boolean isLoading=false;
     private int itemPos = 0;
     private static final int TOTAL_ITEMS_TO_LOAD = 50;
     private int mCurrentPage = 1;
     private String mLastKey = "";
     private String mPrevKey = "";
-    private LinearLayoutManager lm;
-    private int scrollPos=0;
-    private static int firstVisibleInListview;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
@@ -114,6 +104,32 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
         setComments(holder, position, currentBroadcast, user);
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
+    }
+
+    private void setComments(ViewHolder holder, int position, Broadcast currentBroadcast, User user){
+        CommentAdapter commentAdapter;
+        List<Comment> commentsList = new ArrayList<>();
+
+        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        holder.commentListView.setLayoutManager(layoutManager);
+
+        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
+        holder.commentListView.setAdapter(commentAdapter);
+        mSwipeRefreshLayout = holder.swipeRefreshLayout;
+        loadMessages(currentBroadcast, holder, commentAdapter, commentsList);
+        //removeSwipeRefreshDrawable();//look here
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+
+                mCurrentPage++;
+                itemPos = 0;
+                loadMoreMessages(currentBroadcast, commentAdapter, commentsList);
+                if(!mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
     }
 
     private void loadMessages(Broadcast currentBroadcast, ViewHolder holder, CommentAdapter commentAdapter, List<Comment> commentsList){
@@ -167,7 +183,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         commentsRef = globalVariables.getFBDatabase().getReference("BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
 
         Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(100);
-
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -187,8 +202,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 }
                 commentAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
-
-                // lm.scrollToPositionWithOffset(10, 0);
 
             }
 
@@ -227,31 +240,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         }
     }
 
-    private void setComments(ViewHolder holder, int position, Broadcast currentBroadcast, User user){
-        CommentAdapter commentAdapter;
-        List<Comment> commentsList = new ArrayList<>();
-
-        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
-        holder.commentListView.setLayoutManager(layoutManager);
-
-        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
-        holder.commentListView.setAdapter(commentAdapter);
-        mSwipeRefreshLayout = holder.swipeRefreshLayout;
-        loadMessages(currentBroadcast, holder, commentAdapter, commentsList);
-        //removeSwipeRefreshDrawable();//look here
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-
-            @Override
-            public void onRefresh() {
-
-                mCurrentPage++;
-                itemPos = 0;
-                loadMoreMessages(currentBroadcast, commentAdapter, commentsList);
-                if(!mSwipeRefreshLayout.isRefreshing())
-                    mSwipeRefreshLayout.setRefreshing(true);
-            }
-        });
-    }
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
 
         holder.viewPostButton.setOnClickListener(view->{
