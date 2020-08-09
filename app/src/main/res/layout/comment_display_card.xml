@@ -28,8 +28,10 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/broadcast_message_background"
+                    android:layout_marginTop="1dp"
                     android:layout_marginLeft="10dp">
                     <TextView
                         android:id="@+id/comment_object_ownerName"
@@ -37,7 +39,8 @@
                         android:layout_height="wrap_content"
                         android:elevation="10dp"
                         android:layout_marginTop="4dp"
-                        android:layout_marginLeft="15dp"
+                        android:layout_margin="4dp"
+                        android:paddingLeft="12dp"
                         android:text="Name"
                         android:fontFamily="@font/roboto_regular"
                         android:textColor="@color/md_blue_900"
@@ -47,7 +50,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
-                        android:background="@drawable/broadcast_message_background"
                         android:paddingLeft="15dp"
                         android:paddingRight="55dp"
                         android:paddingTop="22dp"
@@ -60,7 +62,7 @@
 
                     <TextView
                         android:id="@+id/comments_object_postedTime"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/comment_object_comment"
                         android:layout_marginLeft="16dp"

@@ -142,19 +142,19 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
                 Comment comment = dataSnapshot.getValue(Comment.class);
 
-                itemPos++;
-                if (itemPos == 1) {
+        itemPos++;
+        if (itemPos == 1) {
                     String messageKey = dataSnapshot.getKey();
-                    mLastKey = messageKey;
-                    mPrevKey = messageKey;
-                }
-                commentsList.add(comment);
-                commentAdapter.notifyDataSetChanged();
-                assert comment != null;
-                HelperMethodsBL.initializeNewReadComments(circle, currentBroadcast, globalVariables.getCurrentUser());
-                holder.commentListView.scrollToPosition(commentsList.size() - 1);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
+            mLastKey = messageKey;
+            mPrevKey = messageKey;
+        }
+        commentsList.add(comment);
+        commentAdapter.notifyDataSetChanged();
+        assert comment != null;
+        HelperMethodsBL.initializeNewReadComments(circle, currentBroadcast, globalVariables.getCurrentUser());
+        holder.commentListView.scrollToPosition(commentsList.size() - 1);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -169,7 +169,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            }
+    }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
