@@ -87,10 +87,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.rightComment.setText(cmnt);
         holder.rightTimeElapsed.setText(timeString);
 
-        holder.rightBackgroundContainer.setOnLongClickListener(v->{
+        /*holder.rightBackgroundContainer.setOnLongClickListener(v->{
             showDeleteCommentDialog(comment);
             return true;
-        });
+        });*/
 
         if(user.getUserId().equals(comment.getCommentorId())){
             holder.backgroundContainer.setVisibility(View.GONE);

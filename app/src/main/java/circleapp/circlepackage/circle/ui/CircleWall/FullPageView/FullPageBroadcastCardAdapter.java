@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
+import com.google.gson.Gson;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,7 +51,6 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circlepackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
@@ -133,18 +135,27 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     private void loadMessages(Broadcast currentBroadcast, ViewHolder holder, CommentAdapter commentAdapter, List<Comment> commentsList){
-        DatabaseReference messageRef;
-        messageRef = globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
-        Query messageQuery = messageRef.limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
-        messageQuery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
 
-                Comment comment = dataSnapshot.getValue(Comment.class);
+        CommentsViewModel commentsViewModel = new CommentsViewModel();
+        LiveData<String[]> liveData = commentsViewModel.getDataSnapsInitialLoadCommentsLiveData(circle.getId(), currentBroadcast.getId(), mCurrentPage, TOTAL_ITEMS_TO_LOAD);
+        liveData.observe((LifecycleOwner) mContext, returnArray->{
+            Comment comment = new Gson().fromJson(returnArray[0], Comment.class);
+            String modifierType = returnArray[1];
+            switch (modifierType) {
+                case "added":
+                    addInitComments(comment,commentAdapter,commentsList,holder);
+                    break;
+                case "removed":
+                    removeInitComment(comment,commentAdapter,commentsList);
+                    break;
+            }
+        });
+    }
 
+    private void addInitComments(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList, ViewHolder holder){
         itemPos++;
         if (itemPos == 1) {
-                    String messageKey = dataSnapshot.getKey();
+            String messageKey = comment.getId();
             mLastKey = messageKey;
             mPrevKey = messageKey;
         }
@@ -156,29 +167,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-    }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+    private void removeInitComment(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
+        int index = commentsList.indexOf(comment);
+        commentsList.remove(comment);
+        commentAdapter.notifyItemRangeChanged(index,commentsList.size()-index);
     }
 
     private void loadMoreMessages(Broadcast currentBroadcast, CommentAdapter commentAdapter, List<Comment> commentsList) {
+        
         DatabaseReference commentsRef;
         commentsRef = globalVariables.getFBDatabase().getReference("BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
 
@@ -224,20 +220,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
             }
         });
-    }
-
-    public void removeSwipeRefreshDrawable(){
-        try {
-            Field f = mSwipeRefreshLayout.getClass().getDeclaredField("mCircleView");
-            f.setAccessible(true);
-            ImageView img = (ImageView)f.get(mSwipeRefreshLayout);
-            assert img != null;
-            img.setImageResource(android.R.color.transparent);
-            img.setBackgroundColor(ContextCompat.getColor(mContext, android.R.color.transparent));
-            img.setBackgroundResource(android.R.color.transparent);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){

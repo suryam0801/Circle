@@ -21,6 +21,7 @@ public class CommentsViewModel extends ViewModel {
     }
     @NonNull
     public LiveData<String[]> getDataSnapsLoadMoreCommentsLiveData(String circleId, String broadcastId, String mLastKey, int limit) {
+
         Query messageQuery = globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circleId).child(broadcastId).orderByKey().endAt(mLastKey).limitToLast(limit);
         FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(messageQuery);
         return liveWorkBenchCircleData;
