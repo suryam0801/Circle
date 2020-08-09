@@ -59,6 +59,7 @@ import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.BroadcastsViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreateNormalBroadcastDialog;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreatePhotoBroadcastDialog;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreatePollBroadcastDialog;
@@ -108,6 +109,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
+        setUserObserver();
         setCircleObserver();
         setImageUploadObserver();
         initUIElements();
@@ -247,7 +249,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     }
 
     private void setCircleObserver(){
-        user = globalVariables.getCurrentUser();
         circle = globalVariables.getCurrentCircle();
         MyCirclesViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(MyCirclesViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
@@ -258,6 +259,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
                 }
+            }
+        });
+    }
+
+    private void setUserObserver(){
+        user = globalVariables.getCurrentUser();
+        UserViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(UserViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
+        tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
+            user = dataSnapshot.getValue(User.class);
+            if (user != null) {
+                globalVariables.saveCurrentUser(user);
             }
         });
     }
@@ -505,7 +518,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
         //initializing the CircleDisplayAdapter and setting the adapter to recycler view
         //adapter adds all items from the circle list and displays them in individual cards in the recycler view
-        adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle);
+        adapter = new BroadcastListAdapter(CircleWall.this, broadcastList, circle, user);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(null);
 

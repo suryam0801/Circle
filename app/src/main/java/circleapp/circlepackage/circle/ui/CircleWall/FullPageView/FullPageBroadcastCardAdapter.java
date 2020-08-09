@@ -19,12 +19,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -53,11 +54,19 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Context mContext;
     private List<Broadcast> broadcastList;
     private Circle circle;
+    private User user;
+    private Broadcast currentBroadcast;
     private int initialIndex;
     private InputMethodManager imm;
     private GlobalVariables globalVariables = new GlobalVariables();
     private FullpageAdapterViewModel fullpageAdapterViewModel = new FullpageAdapterViewModel();
     private RecyclerView.LayoutManager layoutManager;
+    private int itemPos = 0;
+    private static final int TOTAL_ITEMS_TO_LOAD = 50;
+    private int mCurrentPage = 1;
+    private String mLastKey = "";
+    private String mPrevKey = "";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -78,8 +87,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     public void onBindViewHolder(FullPageBroadcastCardAdapter.ViewHolder holder, int position) {
         ((Activity) mContext).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         //Init UI Elements
-        Broadcast currentBroadcast = broadcastList.get(position);
-        User user = globalVariables.getCurrentUser();
+
+        currentBroadcast = broadcastList.get(position);
+        user = globalVariables.getCurrentUser();
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -90,51 +100,105 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setBroadcastInfo(mContext, holder, currentBroadcast, user);
         setComments(holder, position, currentBroadcast, user);
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
-
     }
 
     private void setComments(ViewHolder holder, int position, Broadcast currentBroadcast, User user){
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
-        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true);
+
+        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         holder.commentListView.setLayoutManager(layoutManager);
 
         commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
         holder.commentListView.setAdapter(commentAdapter);
+        mSwipeRefreshLayout = holder.swipeRefreshLayout;
+        //Load initial messages
+        loadMessages(currentBroadcast, holder, commentAdapter, commentsList);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
-        CommentsViewModel viewModel = ViewModelProviders.of((FragmentActivity) mContext).get(CommentsViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsCommentsLiveData(circle.getId(), currentBroadcast.getId());
+            @Override
+            public void onRefresh() {
 
-        liveData.observe((LifecycleOwner) mContext, returnArray -> {
+                mCurrentPage++;
+                itemPos = 0;
+                loadMoreMessages(currentBroadcast, commentAdapter, commentsList);
+                if(!mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(true);
+            }
+        });
+    }
+
+    private void loadMessages(Broadcast currentBroadcast, ViewHolder holder, CommentAdapter commentAdapter, List<Comment> commentsList){
+
+        CommentsViewModel commentsViewModel = new CommentsViewModel();
+        LiveData<String[]> liveData = commentsViewModel.getDataSnapsInitialLoadCommentsLiveData(circle.getId(), currentBroadcast.getId(), mCurrentPage, TOTAL_ITEMS_TO_LOAD);
+        liveData.observe((LifecycleOwner) mContext, returnArray->{
+            Comment comment = new Gson().fromJson(returnArray[0], Comment.class);
             String modifierType = returnArray[1];
-            Comment tempComment = new Gson().fromJson(returnArray[0], Comment.class);
             switch (modifierType) {
                 case "added":
-                    addComment(commentAdapter, commentsList, tempComment, currentBroadcast, holder,position,  user);
-                    break;
-                case "changed":
+                    addInitComments(comment,commentAdapter,commentsList,holder);
                     break;
                 case "removed":
-                    removeComment(commentAdapter, commentsList, tempComment);
+                    removeInitComment(comment,commentAdapter,commentsList);
                     break;
             }
         });
     }
 
-    private void addComment(CommentAdapter commentAdapter, List<Comment> commentsList, Comment tempComment, Broadcast currentBroadcast, ViewHolder holder, int position, User user){
-        commentsList.add(0, tempComment); //to store timestamp values descendingly
-        commentAdapter.notifyItemInserted(0);
-        holder.commentListView.smoothScrollToPosition(0);
-
-        if (position == initialIndex) {
-            fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
+    private void addInitComments(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList, ViewHolder holder){
+        itemPos++;
+        if (itemPos == 1) {
+            String messageKey = comment.getId();
+            mLastKey = messageKey;
+            mPrevKey = messageKey;
         }
+        commentsList.add(comment);
+        commentAdapter.notifyDataSetChanged();
+        assert comment != null;
+        HelperMethodsBL.initializeNewReadComments(circle, currentBroadcast, globalVariables.getCurrentUser());
+        holder.commentListView.scrollToPosition(commentsList.size() - 1);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    private void removeComment(CommentAdapter commentAdapter, List<Comment> commentsList, Comment tempComment){
-        int pos = HelperMethodsUI.returnIndexOfComment(commentsList, tempComment);
-        commentsList.remove(pos);
-        commentAdapter.notifyItemChanged(pos);
+    private void removeInitComment(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
+        int index = commentsList.indexOf(comment);
+        commentsList.remove(comment);
+        commentAdapter.notifyItemRangeChanged(index,commentsList.size()-index);
+    }
+
+    private void loadMoreMessages(Broadcast currentBroadcast, CommentAdapter commentAdapter, List<Comment> commentsList) {
+
+        CommentsViewModel commentsViewModel = new CommentsViewModel();
+        LiveData<String []> liveData = commentsViewModel.getDataSnapsLoadMoreCommentsLiveData(circle.getId(), currentBroadcast.getId(), mLastKey, 100);
+        liveData.observe((LifecycleOwner) mContext, returnArray->{
+            Comment comment = new Gson().fromJson(returnArray[0], Comment.class);
+            mSwipeRefreshLayout.setRefreshing(false);
+            String modifierType = returnArray[1];
+            switch (modifierType) {
+                case "added":
+                    addMoreComments(comment,commentAdapter,commentsList);
+                    break;
+            }
+        });
+    }
+
+    private void addMoreComments(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
+        String commentKey = comment.getId();
+        assert comment != null;
+        if(!mPrevKey.equals(commentKey)){
+
+            commentsList.add(itemPos++,comment);
+
+        } else {
+            mPrevKey = mLastKey;
+        }
+
+        if(itemPos == 1) {
+            mLastKey = commentKey;
+        }
+        commentAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, User user, int position){
@@ -315,6 +379,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         private PhotoView imageView;
         private Button viewPostButton, hidePostButton;
         private ImageView viewPostImage, hidePostImage;
+        private SwipeRefreshLayout swipeRefreshLayout;
 
         public ViewHolder(View view) {
             super(view);
@@ -335,6 +400,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             viewPostImage = view.findViewById(R.id.view_image);
             hidePostButton = view.findViewById(R.id.hide_post_button);
             hidePostImage = view.findViewById(R.id.hide_image);
+            swipeRefreshLayout = view.findViewById(R.id.message_swipe_layout);
+
         }
 
         public String getCurrentUserPollOption() {

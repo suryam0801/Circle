@@ -144,7 +144,8 @@
                     android:layout_height="wrap_content">
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
                         <ImageView
                             android:id="@+id/view_image"
                             android:layout_width="25dp"
@@ -199,18 +200,21 @@
         android:orientation="vertical"
         android:visibility="visible"
         android:weightSum="100">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/light_grey"
-        android:layout_above="@+id/full_page_write_comment_edit_text">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/full_page_broadcast_comments_display"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/message_swipe_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp"></androidx.recyclerview.widget.RecyclerView>
-    </RelativeLayout>
+            android:background="@color/light_grey"
+            android:layout_above="@+id/full_page_write_comment_edit_text"
+            android:layout_alignParentStart="true">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/full_page_broadcast_comments_display"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp"></androidx.recyclerview.widget.RecyclerView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout
             android:id="@+id/full_page_write_comment_edit_text"
