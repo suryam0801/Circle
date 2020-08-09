@@ -117,6 +117,7 @@ public class HelperMethodsBL {
                 .baseUrl(apiurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         Api api = retrofit.create(Api.class);
 
         switch (state)
@@ -128,6 +129,7 @@ public class HelperMethodsBL {
                 String title  = "New Comment added in "+ notification.getCircleName();
                 String body_comment = name+" " + ":" + " "+message ;
                 Call<ResponseBody> call_comment = api.sendpushNotification(tokenId,title,body_comment);
+                Log.d("Push",call_comment.toString());
                 call_comment.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {

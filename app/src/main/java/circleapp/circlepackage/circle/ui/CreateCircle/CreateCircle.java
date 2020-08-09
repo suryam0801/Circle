@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -55,7 +57,7 @@ public class CreateCircle extends AppCompatActivity {
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
     private User user;
-    private TextView categoryName;
+    private TextView categoryName,addPeople;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadLink;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -88,6 +90,7 @@ public class CreateCircle extends AppCompatActivity {
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         visibilitySwitchButton = findViewById(R.id.visibilitySwitch);
         acceptanceSwitchButton = findViewById(R.id.joiningSwitch);
+        addPeople = findViewById(R.id.addpeople);
         visibilitySwitchButton.setChecked(true);
         acceptanceSwitchButton.setChecked(true);
         btn_createCircle = findViewById(R.id.create_circle_submit);
@@ -107,7 +110,12 @@ public class CreateCircle extends AppCompatActivity {
         acceptanceHeading.setText("Quick Join");
         acceptancePrompt.setText("People can join this Circle without applying");
     }
-
+ @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+ public void ShowContacts(View view){
+        Intent intent = new Intent(CreateCircle.this,AddPeople.class);
+        startActivity(intent);
+        finishAfterTransition();
+ }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setObserverForImageUpload(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);

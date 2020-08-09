@@ -19,6 +19,7 @@ import circleapp.circlepackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.DataLayer.FBRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
+import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 
@@ -70,6 +71,11 @@ public class NewUserRegistration extends ViewModel {
         fbRepository.addDistrict(district);
         createInitialCircles(district);
     }
+    private void AddContacts(String phn_num){
+        FBRepository fbRepository = new FBRepository();
+        Contacts contacts = new Contacts(phn_num,globalVariables.getAuthenticationToken().getUid());
+        fbRepository.addContact(phn_num,globalVariables.getAuthenticationToken().getUid());
+    }
 
     private void removeUser(){
         //to signout the current firebase user
@@ -105,6 +111,7 @@ public class NewUserRegistration extends ViewModel {
         }
         //storing user as a json in file locally
         //store user in realtime database. (testing possible options for fastest retrieval)
+        AddContacts(contact);
         globalVariables.getFBDatabase().getReference("Users").child(userId).setValue(user).addOnCompleteListener(task -> {
             isUserUploaded.setValue(true);
             globalVariables.saveCurrentUser(user);
