@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,12 +53,13 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
+    private LinearLayout addPeopleLayout;
     private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt;
     private Button btn_createCircle;
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
     private User user;
-    private TextView categoryName,addPeople;
+    private TextView categoryName;
     private CircleImageView backgroundPic;
     private Uri filePath, downloadLink;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
@@ -90,7 +92,7 @@ public class CreateCircle extends AppCompatActivity {
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         visibilitySwitchButton = findViewById(R.id.visibilitySwitch);
         acceptanceSwitchButton = findViewById(R.id.joiningSwitch);
-        addPeople = findViewById(R.id.addpeople);
+        addPeopleLayout = findViewById(R.id.add_people_layout);
         visibilitySwitchButton.setChecked(true);
         acceptanceSwitchButton.setChecked(true);
         btn_createCircle = findViewById(R.id.create_circle_submit);
@@ -111,8 +113,8 @@ public class CreateCircle extends AppCompatActivity {
         acceptancePrompt.setText("People can join this Circle without applying");
     }
  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
- public void ShowContacts(View view){
-        Intent intent = new Intent(CreateCircle.this,AddPeople.class);
+ public void showContacts(){
+        Intent intent = new Intent(CreateCircle.this, AddPeople.class);
         startActivity(intent);
         finishAfterTransition();
  }
@@ -194,6 +196,15 @@ public class CreateCircle extends AppCompatActivity {
                     acceptancePrompt.setText("People must apply to join this Circle");
                 }
             }
+        });
+
+        addPeopleLayout.setOnClickListener(v->{
+            Permissions.check(this, new String[]{CAMERA, Manifest.permission.READ_CONTACTS},null, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    showContacts();
+                }
+            });
         });
     }
 

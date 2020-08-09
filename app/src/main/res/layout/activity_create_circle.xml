@@ -262,19 +262,26 @@
                     android:gravity="start|top"
                     android:overScrollMode="always"
                     android:textSize="16dp"/>
-<TextView
-    android:id="@+id/addpeople"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="20dp"
-    android:layout_marginTop="15dp"
-    android:layout_marginRight="10dp"
-    android:text="Add People"
-    android:fontFamily="@font/roboto_regular"
-    android:clickable="true"
-    android:onClick="ShowContacts"
-    android:textColor="@color/black"
-    android:textSize="16sp"/>
+                <LinearLayout
+                    android:id="@+id/add_people_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/add_people_btn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_person_add_black_24dp"
+                        android:layout_marginLeft="20dp"></ImageButton>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="Add People"
+                        android:layout_gravity="center">
+                    </TextView>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

@@ -12,17 +12,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.ViewHolder> {
-    private ArrayList<String> temp_num,temp_name;
+    private List<Contacts> contactsList = new ArrayList<>();
     private Context context;
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    public AddPeopleAdapter(ArrayList<String> temp_num, Context context) {
-        this.temp_num = temp_num;
+    public AddPeopleAdapter(List<Contacts> contactsList, Context context) {
+        this.contactsList = contactsList;
         this.context = context;
     }
 
@@ -35,31 +37,36 @@ public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.View
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull AddPeopleAdapter.ViewHolder holder, int position) {
-        String temp_num = this.temp_num.get(position);
-        String temp_name = this.temp_name.get(position);
+        String temp_num = this.contactsList.get(position).getPhn_number();
+        String temp_name = this.contactsList.get(position).getUid();
 
         holder.person_name.setText(temp_name);
         holder.person_contact.setText(temp_num);
 
-        holder.state.setOnClickListener(view ->{
-            holder.state.setText("Remove");
-            holder.state.setBackgroundColor(R.color.md_red_A100);
+        holder.addPersonBtn.setOnClickListener(view ->{
+            holder.addPersonBtn.setVisibility(View.GONE);
+            holder.removePersonBtn.setVisibility(View.VISIBLE);
+        });
+        holder.removePersonBtn.setOnClickListener(view ->{
+            holder.removePersonBtn.setVisibility(View.GONE);
+            holder.addPersonBtn.setVisibility(View.VISIBLE);
         });
 
     }
 
     @Override
     public int getItemCount() {
-        return temp_num.size();
+        return contactsList.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView person_name, person_contact;
-        private Button state;
+        private Button addPersonBtn, removePersonBtn;
         public ViewHolder(View view) {
             super(view);
             person_name = view.findViewById(R.id.name_textView);
             person_contact = view.findViewById(R.id.phone_number);
-            state = view.findViewById(R.id.state_btn);
+            addPersonBtn = view.findViewById(R.id.add_person_btn);
+            removePersonBtn = view.findViewById(R.id.remove_person_btn);
         }
     }
 

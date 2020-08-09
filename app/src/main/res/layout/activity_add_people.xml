@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.CreateCircle.AddPeople"
     android:background="@color/white"
-    android:padding="4dp">
-
+    android:padding="4dp"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Contacts"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_gravity="center">
+    </TextView>
+</LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
-        android:id="@+id/contactView"
-        android:layout_below="@+id/button1" />
+        android:id="@+id/contactView"/>
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button1"
-        android:visibility="gone"
-        android:text="Click Here to load Contacts" />
-
-</RelativeLayout>
-
+</LinearLayout>
