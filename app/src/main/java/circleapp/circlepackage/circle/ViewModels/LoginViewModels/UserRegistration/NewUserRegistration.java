@@ -74,7 +74,7 @@ public class NewUserRegistration extends ViewModel {
     private void AddContacts(String phn_num){
         FBRepository fbRepository = new FBRepository();
         Contacts contacts = new Contacts(phn_num,globalVariables.getAuthenticationToken().getUid());
-        fbRepository.addContact(contacts);
+        fbRepository.addContact(phn_num,globalVariables.getAuthenticationToken().getUid());
     }
 
     private void removeUser(){

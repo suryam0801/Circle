@@ -18,7 +18,7 @@ public class ContactsViewModel extends ViewModel {
 
     @NonNull
     public LiveData<DataSnapshot> getDataSnapsContactsLiveData() {
-        FirebaseSingleValueRead liveContactsData = new FirebaseSingleValueRead(globalVariables.getFBDatabase().getReference().child("/Contacts"));
+        FirebaseSingleValueRead liveContactsData = new FirebaseSingleValueRead(globalVariables.getFBDatabase().getReference().child("Contacts"));
 //        Log.d("Contacts",liveContactsData.getValue().toString()+" $$$");
         return liveContactsData;
     }

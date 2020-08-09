@@ -41,8 +41,8 @@ public class FBRepository {
     public void addDistrict(String district) {
         globalVariables.getFBDatabase().getReference("Locations").child(district).setValue(true);
     }
-    public void addContact(Contacts contacts) {
-        globalVariables.getFBDatabase().getReference("Contacts").child(HelperMethodsUI.uuidGet()).setValue(contacts);
+    public void addContact(String phn_num,String uid) {
+        globalVariables.getFBDatabase().getReference("Contacts").child(phn_num).setValue(uid);
     }
 
     public void createReportAbuse(Context context, String circleID, String broadcastID, String commentID, String creatorID, String userID, String reportType) {

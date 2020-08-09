@@ -8,11 +8,11 @@
     android:background="@color/white"
     android:padding="4dp">
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
-        android:id="@+id/listview1"
+        android:id="@+id/contactView"
         android:layout_below="@+id/button1" />
 
     <Button

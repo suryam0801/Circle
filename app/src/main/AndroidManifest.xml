@@ -117,6 +117,7 @@
         <service
             android:name=".Helpers.FireBaseInstanceIDService"
             android:directBootAware="true"
+            android:stopWithTask="false"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

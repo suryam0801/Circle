@@ -172,6 +172,7 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
         LocationsViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(LocationsViewModel.class);
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapsLocationsSingleValueLiveData(district);
         liveData.observe((LifecycleOwner) this, dataSnapshot -> {
+            Log.d("Location",dataSnapshot.toString());
             if (dataSnapshot.exists()) {
                 locationExists = true;
             } else {
