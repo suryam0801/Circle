@@ -73,7 +73,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private RecyclerView.LayoutManager layoutManager;
     private boolean isLoading=false;
     private int itemPos = 0;
-    private static final int TOTAL_ITEMS_TO_LOAD = 20;
+    private static final int TOTAL_ITEMS_TO_LOAD = 50;
     private int mCurrentPage = 1;
     private String mLastKey = "";
     private String mPrevKey = "";
@@ -166,7 +166,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         DatabaseReference commentsRef;
         commentsRef = globalVariables.getFBDatabase().getReference("BroadcastComments").child(circle.getId()).child(currentBroadcast.getId());
 
-        Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
+        Query messageQuery = commentsRef.orderByKey().endAt(mLastKey).limitToLast(100);
+
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
@@ -185,6 +186,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     mLastKey = commentKey;
                 }
                 commentAdapter.notifyDataSetChanged();
+                mSwipeRefreshLayout.setRefreshing(false);
 
                 // lm.scrollToPositionWithOffset(10, 0);
 
@@ -236,7 +238,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.commentListView.setAdapter(commentAdapter);
         mSwipeRefreshLayout = holder.swipeRefreshLayout;
         loadMessages(currentBroadcast, holder, commentAdapter, commentsList);
-        removeSwipeRefreshDrawable();//look here
+        //removeSwipeRefreshDrawable();//look here
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -245,6 +247,8 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 mCurrentPage++;
                 itemPos = 0;
                 loadMoreMessages(currentBroadcast, commentAdapter, commentsList);
+                if(!mSwipeRefreshLayout.isRefreshing())
+                    mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
