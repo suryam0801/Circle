@@ -456,7 +456,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null) {
                         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
-                        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(userId).setValue(subscriber);
+                        HelperMethodsBL.updateCirclePersonel(subscriber, circle.getId());
                     }
                 });
             }

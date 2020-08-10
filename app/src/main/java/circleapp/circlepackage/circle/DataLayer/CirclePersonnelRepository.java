@@ -40,12 +40,12 @@ public class CirclePersonnelRepository {
         if(user.getActiveCircles()!=null){
             for(Map.Entry<String, Boolean> entry : user.getActiveCircles().entrySet()) {
                 key = entry.getKey();
-                updateCirclePersonnel(user, key, subscriber);
+                updateCirclePersonnel(user.getUserId(), key, subscriber);
             }
         }
     }
 
-    public void updateCirclePersonnel(User user, String  circleId, Subscriber subscriber){
-        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(user.getUserId()).setValue(subscriber);
+    public void updateCirclePersonnel(String  userId, String  circleId, Subscriber subscriber){
+        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(userId).setValue(subscriber);
     }
 }
