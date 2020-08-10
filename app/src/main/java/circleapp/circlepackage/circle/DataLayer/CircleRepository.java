@@ -8,8 +8,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
@@ -18,7 +21,9 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 
 public class CircleRepository {
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -112,5 +117,25 @@ public class CircleRepository {
     public void updateNoOfCommentsInBroadcast(Circle circle, Broadcast broadcast){
         FBTransactions fbTransactions = new FBTransactions(globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("noOfCommentsPerBroadcast").child(broadcast.getId()));
         fbTransactions.runTransactionOnIncrementalValues(1);
+    }
+
+    public void addUsersToCircle(Circle c, Context context){
+        if(globalVariables.getUsersList()!=null){
+
+            for(String userId: globalVariables.getUsersList()){
+
+                UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
+                LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(userId);
+                tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        Subscriber subscriber = new Subscriber(user,System.currentTimeMillis());
+                        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(c.getId()).child("members").child(userId).setValue(subscriber);
+                    }
+                });
+                globalVariables.getFBDatabase().getReference("/Users").child(userId).child("activeCircles").child(c.getId()).setValue(true);
+                globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(true);
+            }
+        }
     }
 }

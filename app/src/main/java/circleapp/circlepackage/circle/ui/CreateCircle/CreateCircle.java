@@ -54,7 +54,7 @@ public class CreateCircle extends AppCompatActivity {
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
     private LinearLayout addPeopleLayout;
-    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt;
+    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt, particiapantNumber;
     private Button btn_createCircle;
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
@@ -111,12 +111,12 @@ public class CreateCircle extends AppCompatActivity {
         visibiltyHeading.setText("Public");
         acceptanceHeading.setText("Quick Join");
         acceptancePrompt.setText("People can join this Circle without applying");
+        particiapantNumber = findViewById(R.id.participant_number);
     }
  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
  public void showContacts(){
         Intent intent = new Intent(CreateCircle.this, AddPeople.class);
         startActivity(intent);
-        finishAfterTransition();
  }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setObserverForImageUpload(){
@@ -221,7 +221,7 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber);
+        writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber,this);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
     }
@@ -330,5 +330,16 @@ public class CreateCircle extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        if(globalVariables.getUsersList()!=null){
+            particiapantNumber.setVisibility(View.VISIBLE);
+            particiapantNumber.setText("No of Participants: "+globalVariables.getUsersList().size());
+        }
+        else
+            particiapantNumber.setVisibility(View.GONE);
+        super.onResume();
     }
 }

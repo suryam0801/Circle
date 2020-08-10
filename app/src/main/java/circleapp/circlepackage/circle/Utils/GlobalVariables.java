@@ -24,7 +24,7 @@ public class GlobalVariables extends Application {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     public static User currentUser;
-    public static List<String > usersList;
+    public static List<String > usersList, tempUsersList;
     public static Circle currentCircle;
     public static Broadcast currentBroadcast;
     public static List<Broadcast> currentBroadcastList;
@@ -41,6 +41,14 @@ public class GlobalVariables extends Application {
 
     public static void setUsersList( List<String > usersList) {
         GlobalVariables.usersList = usersList;
+    }
+
+    public static List<String> getTempUsersList() {
+        return tempUsersList;
+    }
+
+    public static void setTempUsersList(List<String> tempUsersList) {
+        GlobalVariables.tempUsersList = tempUsersList;
     }
 
     public int[] getColorsForUsername(){

@@ -65,10 +65,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         final Comment comment = CommentList.get(position);
         final String name = comment.getCommentorName();
         final String cmnt = comment.getComment();
-        final String picUrl = comment.getCommentorPicURL();
 
         final long createdTime = comment.getTimestamp();
-        final long currentTime = System.currentTimeMillis();
 
         String pattern = "hh:mm a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -162,9 +160,3 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
     }
 }
-/*        For showing a blue border on newly arrived comments
-        boolean broadcastTimestampExists = user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().containsKey(currentBroadcast.getId());
-        if (broadcastTimestampExists) {
-            if (user.getNewTimeStampsComments().get(currentBroadcast.getId()) < comment.getTimestamp())
-                holder.backgroundContainer.setBackground(mContext.getResources().getDrawable(R.drawable.light_blue_sharp_background));
-        }*/

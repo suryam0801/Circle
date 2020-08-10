@@ -1,11 +1,14 @@
 package circleapp.circlepackage.circle.ui.CreateCircle;
 
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,35 +28,42 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.ContactsViewMod
 public class AddPeople extends AppCompatActivity {
     private RecyclerView listView ;
     private List<Contacts> contactsList = new ArrayList<>();
-    Cursor cursor ;
-    String name, phonenumber ;
-    ContactsViewModel contactsViewModel;
-    GlobalVariables globalVariables = new GlobalVariables();
+    private Button doneBtn;
+    private ImageButton backBtn;
+    private Cursor cursor ;
+    private String name, phonenumber ;
+    private ContactsViewModel contactsViewModel;
+    private GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<DataSnapshot> liveData;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_people);
-
         listView = findViewById(R.id.contactView);
+        doneBtn = findViewById(R.id.done_add_people);
+        backBtn = findViewById(R.id.back_add_btn);
+        globalVariables.setUsersList(null);
         LoadContacts();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        doneBtn.setOnClickListener(v->{
+            onBackPressed();
+        });
+        backBtn.setOnClickListener(v->{
+            onBackPressed();
+        });
     }
 
     public void LoadContacts(){
-        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        listView.setLayoutManager(wblayoutManager);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        listView.setHasFixedSize(true);
+        listView.setLayoutManager(layoutManager);
         AddPeopleAdapter addPeopleAdapter = new AddPeopleAdapter(contactsList, this);
         listView.setAdapter(addPeopleAdapter);
-        GetContactsIntoArrayList();
+        GetContactsIntoArrayList(addPeopleAdapter);
     }
 
-    public void GetContactsIntoArrayList(){
+    public void GetContactsIntoArrayList(AddPeopleAdapter addPeopleAdapter){
 
         cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null, null, null);
         HashMap<String, String> cont = new HashMap<>();
@@ -72,22 +82,31 @@ public class AddPeople extends AppCompatActivity {
         liveData.observe(this, dataSnapshot ->{
             if (dataSnapshot.exists()) {
                 String userId;
-                List<String > usersList = new ArrayList<>();
+                List<String > tempUsersList = new ArrayList<>();
                 for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                     userId = messageSnapshot.getValue().toString();
                     String phn = messageSnapshot.getKey();
                     phn = phn.substring(phn.length()-10);
                     if(cont.containsKey(phn)){
                         contactsList.add(new Contacts(phn,cont.get(phn)));
-                        usersList.add(userId);
+                        addPeopleAdapter.notifyDataSetChanged();
+                        tempUsersList.add(userId);
                     }
                 }
-                globalVariables.setUsersList(usersList);
-                Log.d("ContactInServer",contactsList.toString());
+                globalVariables.setTempUsersList(tempUsersList);
+                Log.d("ContactInServer",tempUsersList.toString());
+                Log.d("ContactInServerRecycler",contactsList.toString());
             }
             else {
                 Log.d("Contacts","Data not exist");
             }
         });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onBackPressed(){
+        finishAfterTransition();
+        globalVariables.setTempUsersList(null);
+        super.onBackPressed();
     }
 }

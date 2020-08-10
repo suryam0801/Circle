@@ -19,9 +19,10 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 
 public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.ViewHolder> {
-    private List<Contacts> contactsList = new ArrayList<>();
+    private List<Contacts> contactsList;
     private Context context;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private List<String> usersList = new ArrayList<>();
 
     public AddPeopleAdapter(List<Contacts> contactsList, Context context) {
         this.contactsList = contactsList;
@@ -31,8 +32,9 @@ public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.View
     @NonNull
     @Override
     public AddPeopleAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contact_items_listview, viewGroup, false);
-        return new AddPeopleAdapter.ViewHolder(view);    }
+        View view = View.inflate(context, R.layout.contact_items_listview,null);
+        return new AddPeopleAdapter.ViewHolder(view);
+    }
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -40,16 +42,24 @@ public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.View
         String temp_num = this.contactsList.get(position).getPhn_number();
         String temp_name = this.contactsList.get(position).getUid();
 
+        if(globalVariables.getUsersList()!=null)
+            usersList = globalVariables.getUsersList();
+        List<String> tempUsersList = globalVariables.getTempUsersList();
+
         holder.person_name.setText(temp_name);
         holder.person_contact.setText(temp_num);
 
         holder.addPersonBtn.setOnClickListener(view ->{
             holder.addPersonBtn.setVisibility(View.GONE);
             holder.removePersonBtn.setVisibility(View.VISIBLE);
+            usersList.add(tempUsersList.get(position));
+            globalVariables.setUsersList(usersList);
         });
         holder.removePersonBtn.setOnClickListener(view ->{
             holder.removePersonBtn.setVisibility(View.GONE);
             holder.addPersonBtn.setVisibility(View.VISIBLE);
+            usersList.remove(tempUsersList.get(position));
+            globalVariables.setUsersList(usersList);
         });
 
     }
@@ -58,9 +68,11 @@ public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.View
     public int getItemCount() {
         return contactsList.size();
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView person_name, person_contact;
         private Button addPersonBtn, removePersonBtn;
+
         public ViewHolder(View view) {
             super(view);
             person_name = view.findViewById(R.id.name_textView);
