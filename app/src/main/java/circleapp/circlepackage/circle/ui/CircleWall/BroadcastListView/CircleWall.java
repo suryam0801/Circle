@@ -180,6 +180,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 getStartedPhoto.setVisibility(View.GONE);
             }
         }
+        if(user.getUserId().equals(circle.getCreatorID()))
+            setCircleMembersObserver();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -371,7 +373,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Export Poll Data":
-                    setCircleMembersObserver();
                     Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
                         @Override
                         public void onGranted() {
@@ -412,7 +413,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 path.mkdir();
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             PollExportUtil pollExportUtil = new PollExportUtil();
-            pollExportUtil.writeAllPollsToExcelFile(file, pollBroadcasts, allCircleMembers, listOfMembers);
+            pollExportUtil.writeAllPollsToExcelFile(this, file, pollBroadcasts, allCircleMembers, listOfMembers);
             shareFile(file);
         }
         else {
