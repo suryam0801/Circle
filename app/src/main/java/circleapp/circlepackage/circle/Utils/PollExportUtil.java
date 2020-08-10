@@ -86,11 +86,14 @@ public class PollExportUtil {
         List<String> unAnsweredMembers = new ArrayList<>();
         Set<String> answers = new HashSet<String>();
         HashMap<String, String> pollResponse = new HashMap<>();
+        HashMap<String, Integer> pollOptions = new HashMap<>();
         int i=0, maxLen=0;
         for(Broadcast broadcast: pollBroadcasts){
             //Poll question
             excelData[i][0] = "Poll Question:";
             excelData[i][1] = broadcast.getPoll().getQuestion();
+            //Clearing past broadcast data
+            pollOptions.clear();//Clear poll options
             unAnsweredMembers.removeAll(allCircleMembers);
             unAnsweredMembers.addAll(allCircleMembers);
             if(pollResponse!=null)
@@ -101,8 +104,8 @@ public class PollExportUtil {
 
                 excelData[maxLen+1][0]="Un-Answered Members";
                 int x=0;
-                int l = maxLen+2;
-                for (; l<maxLen+2+unAnsweredMembers.size();l++){
+                int l;
+                for (l = maxLen+2; l<maxLen+2+unAnsweredMembers.size();l++){
                     excelData[l][0]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
                     x++;
                 }
@@ -111,46 +114,53 @@ public class PollExportUtil {
                 rowLength=i;
                 continue;
             }
-
-            int j = 0;
-            if(answers!=null)
-                answers.clear();
-            answers.addAll(pollResponse.values());
+            //record poll responses
+            excelData[++i][0]="Poll Responses:";
+            pollOptions=broadcast.getPoll().getOptions();
+            int pollOptionsLength = 0;
+            for (Map.Entry<String, Integer> entry : pollOptions.entrySet()){
+                String  option = entry.getKey();
+                excelData[i+1][pollOptionsLength]=option;
+                pollOptionsLength++;
+                if(colLength<pollOptionsLength)
+                    colLength=pollOptionsLength;
+            }
+            i++;//Go to line with answers strings
+            //Remove members from unanswered list
             for(Map.Entry<String, String> entry : pollResponse.entrySet()){
                 String  userId = entry.getKey();
                 unAnsweredMembers.remove(userId);
             }
-            //headers-Poll option
-            for (String answer : answers){
-                excelData[i+1][j] = answer;
-                j++;
-                if(colLength<=j)
-                    colLength=j;
-            }
+            //List of answers strings in poll
+            if(answers!=null)
+                answers.clear();
+            answers.addAll(pollResponse.values());
+            //headers-Answered Poll option
+            int j = 0;
+
             //Adding name of user who responded under each poll
             for(Map.Entry<String, String> entry : pollResponse.entrySet()){
                 String  userId = entry.getKey();
                 String  answer = entry.getValue();
-                for(int p = 0; p<j; p++){
-                    if(excelData[i+1][p].equals(answer)){
-                        int k = i+2;
-                        do{
-                            if(excelData[k][p]==null){
-                                String username= listOfMembers.get(userId).getName();
-                                excelData[k][p]=username;
-                            }
-                            if(maxLen<=k)
-                                maxLen=k;
+                int k;
+                int answerSize = pollOptionsLength;
+                for (int p=0;p<answerSize;p++){
+                    if(excelData[i][p].equals(answer)){
+                        k = i;
+                        while (excelData[k][p]!=null){
                             k++;
-                        }while (excelData[k][p]!=null);
+                        }
+                        if(maxLen<k)
+                            maxLen=k;
+                        excelData[k][p]=listOfMembers.get(userId).getName();
                     }
                 }
             }
             //Unanswered members in the poll
             excelData[maxLen+1][0]="Un-Answered Members";
             int x=0;
-            int l = maxLen+2;
-            for (; l<maxLen+2+unAnsweredMembers.size();l++){
+            int l;
+            for (l = maxLen+2; l<maxLen+2+unAnsweredMembers.size();l++){
                 excelData[l][0]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
                 x++;
             }
@@ -159,28 +169,6 @@ public class PollExportUtil {
             rowLength = i;
         }
         return excelData;
-    }
-
-    public void createPdf(Context context, File fileName) throws DocumentException {
-        Document document = new Document();
-        try {
-            document.open();
-            Drawable d = context.getResources().getDrawable(R.drawable.circle_logo);
-            BitmapDrawable bitDw = ((BitmapDrawable) d);
-            Bitmap bmp = bitDw.getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            Image image = Image.getInstance(stream.toByteArray());
-            document.add(image);
-            document.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Paragraph para = new Paragraph();
-        para.add("Exported By Circle");
-        document.add(para);
-        PdfPTable table = new PdfPTable(colLength);
-
     }
 
     public void writeDataToExcelFile(File fileName) {
