@@ -11,16 +11,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -50,7 +53,8 @@ public class CreateCircle extends AppCompatActivity {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt;
+    private LinearLayout addPeopleLayout;
+    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt, particiapantNumber;
     private Button btn_createCircle;
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
@@ -88,6 +92,7 @@ public class CreateCircle extends AppCompatActivity {
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         visibilitySwitchButton = findViewById(R.id.visibilitySwitch);
         acceptanceSwitchButton = findViewById(R.id.joiningSwitch);
+        addPeopleLayout = findViewById(R.id.add_people_layout);
         visibilitySwitchButton.setChecked(true);
         acceptanceSwitchButton.setChecked(true);
         btn_createCircle = findViewById(R.id.create_circle_submit);
@@ -106,8 +111,13 @@ public class CreateCircle extends AppCompatActivity {
         visibiltyHeading.setText("Public");
         acceptanceHeading.setText("Quick Join");
         acceptancePrompt.setText("People can join this Circle without applying");
+        particiapantNumber = findViewById(R.id.participant_number);
     }
-
+ @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+ public void showContacts(){
+        Intent intent = new Intent(CreateCircle.this, AddPeople.class);
+        startActivity(intent);
+ }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setObserverForImageUpload(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
@@ -186,6 +196,15 @@ public class CreateCircle extends AppCompatActivity {
                     acceptancePrompt.setText("People must apply to join this Circle");
                 }
             }
+        });
+
+        addPeopleLayout.setOnClickListener(v->{
+            Permissions.check(this, new String[]{CAMERA, Manifest.permission.READ_CONTACTS},null, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    showContacts();
+                }
+            });
         });
     }
 
@@ -311,5 +330,16 @@ public class CreateCircle extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        if(globalVariables.getUsersList()!=null){
+            particiapantNumber.setVisibility(View.VISIBLE);
+            particiapantNumber.setText("No of Participants: "+globalVariables.getUsersList().size());
+        }
+        else
+            particiapantNumber.setVisibility(View.GONE);
+        super.onResume();
     }
 }

@@ -1,5 +1,7 @@
 package circleapp.circlepackage.circle.ViewModels.CreateCircle;
 
+import android.content.Context;
+
 import java.util.HashMap;
 
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
@@ -12,11 +14,14 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
 public class WriteNewCircle {
     public WriteNewCircle(){}
     private GlobalVariables globalVariables = new GlobalVariables();
+
     public void writeCircleToDb(Circle circle, User user, Subscriber subscriber){
         CircleRepository circleRepository = new CircleRepository();
         circleRepository.createUserMadeCircle(circle, subscriber);
         updateUserObject(user, circle);
+        circleRepository.addUsersToCircle(circle);
     }
+
     private void updateUserObject(User user, Circle circle){
         int currentCreatedNo = user.getCreatedCircles() + 1;
         user.setCreatedCircles(currentCreatedNo);

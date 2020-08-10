@@ -24,6 +24,7 @@ public class GlobalVariables extends Application {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     public static User currentUser;
+    public static List<String > usersList, tempUsersList;
     public static Circle currentCircle;
     public static Broadcast currentBroadcast;
     public static List<Broadcast> currentBroadcastList;
@@ -33,6 +34,22 @@ public class GlobalVariables extends Application {
     public int involvedCircles = 0;
     RandomColor randomColor = new RandomColor();
     public int[] colors = randomColor.randomColor(10);
+
+    public static List<String > getUsersList() {
+        return usersList;
+    }
+
+    public static void setUsersList( List<String > usersList) {
+        GlobalVariables.usersList = usersList;
+    }
+
+    public static List<String> getTempUsersList() {
+        return tempUsersList;
+    }
+
+    public static void setTempUsersList(List<String> tempUsersList) {
+        GlobalVariables.tempUsersList = tempUsersList;
+    }
 
     public int[] getColorsForUsername(){
         return colors;
@@ -45,6 +62,7 @@ public class GlobalVariables extends Application {
     public void setInvolvedCircles(int involvedCircles) {
         this.involvedCircles = involvedCircles;
     }
+
     public Uri getTempdownloadLink() {
         return TempdownloadLink;
     }
@@ -52,7 +70,6 @@ public class GlobalVariables extends Application {
     public void setTempdownloadLink(Uri tempdownloadLink) {
         TempdownloadLink = tempdownloadLink;
     }
-
 
     public FirebaseAuth getAuthenticationToken() {
         return authenticationToken;
@@ -97,7 +114,6 @@ public class GlobalVariables extends Application {
     public static void saveCurrentLoginUserObject(LoginUserObject currentLoginUserObject) {
         GlobalVariables.currentLoginUserObject = currentLoginUserObject;
     }
-
     public static TempLocation getCurrentTempLocation() {
         return currentTempLocation;
     }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+        <TextView
+            android:text="Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/name_textView"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="#000000"
+            android:gravity="center"/>
+        <TextView
+            android:text="Phone Number "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="35dp"
+            android:id="@+id/phone_number"
+            android:layout_marginStart="15dp"
+            android:textSize="20dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/grey"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/add_person_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Add"
+            android:fontFamily="@font/roboto_bold"
+            android:background="@drawable/green_add_button"
+            android:layout_marginRight="25dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="15dp" />
+
+        <Button
+            android:id="@+id/remove_person_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Remove"
+            android:textColor="@color/white"
+            android:fontFamily="@font/roboto_bold"
+            android:background="@drawable/red_remove_button"
+            android:layout_marginRight="25dp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="15dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+</LinearLayout>

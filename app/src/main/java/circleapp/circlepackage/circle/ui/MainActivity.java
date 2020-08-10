@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
@@ -16,6 +17,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     else
                         globalVariables.setInvolvedCircles(user.getCreatedCircles());
                     mainActivityViewModel.saveUserToSession(user);
+                    updateToken(user);
                     sendUserToHome();
                 } else {
                     sendUserToLogin();
@@ -68,6 +71,18 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             startOnBoarding();
+        }
+    }
+
+    private void updateToken(User user) {
+        String temp_token = FirebaseInstanceId.getInstance().getToken();
+        if (!user.getToken_id().equals(temp_token)){
+            user.setToken_id(temp_token);
+            globalVariables.getFBDatabase().getReference("Users").child(user.getUserId()).setValue(user).addOnCompleteListener(task -> {
+                Log.d("Main","Token Updates");
+            });
+        }else {
+            Log.d("Main","Old Token");
         }
     }
 

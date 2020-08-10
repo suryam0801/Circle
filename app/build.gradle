@@ -155,6 +155,7 @@ dependencies {
     implementation "com.github.SUPERCILEX.poi-android:proguard:$poiVersion"
     //Pdf
     implementation 'com.itextpdf:itextpdf:5.5.13.1'
+    implementation 'com.flipboard:bottomsheet-core:1.5.3'
 }
 
 
