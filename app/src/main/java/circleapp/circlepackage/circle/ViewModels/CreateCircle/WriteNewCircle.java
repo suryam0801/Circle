@@ -15,11 +15,11 @@ public class WriteNewCircle {
     public WriteNewCircle(){}
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    public void writeCircleToDb(Circle circle, User user, Subscriber subscriber, Context context){
+    public void writeCircleToDb(Circle circle, User user, Subscriber subscriber){
         CircleRepository circleRepository = new CircleRepository();
         circleRepository.createUserMadeCircle(circle, subscriber);
         updateUserObject(user, circle);
-        circleRepository.addUsersToCircle(circle, context);
+        circleRepository.addUsersToCircle(circle);
     }
 
     private void updateUserObject(User user, Circle circle){

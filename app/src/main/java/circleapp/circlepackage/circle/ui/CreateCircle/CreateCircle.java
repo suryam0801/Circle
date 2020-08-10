@@ -221,7 +221,7 @@ public class CreateCircle extends AppCompatActivity {
     public void createCircle() {
 
         setLocalCircleObject();
-        writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber,this);
+        writeNewCircle.writeCircleToDb(circle, user, creatorSubscriber);
         //navigate back to explore. new circle will be available in workbench
         goToCreatedCircle();
     }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -131,6 +132,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         broadcastPos = getIntent().getIntExtra("broadcastPos", 0);
         imageUploadProgressDialog = new ProgressDialog(this);
         if (getIntent().getBooleanExtra("fromCreateCircle", false) == true) {
+            addMembersToCirclePersonel();
             InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
             bottomSheet.show(getSupportFragmentManager(), "exampleBottomSheet");
         }
@@ -177,6 +179,23 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 getStartedBroadcast.setVisibility(View.GONE);
                 getStartedPhoto.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void addMembersToCirclePersonel() {
+        if(globalVariables.getUsersList()!=null){
+            for(String userId: globalVariables.getUsersList()) {
+                UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) this).get(UserViewModel.class);
+                LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(userId);
+                tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
+                        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(userId).setValue(subscriber);
+                    }
+                });
+            }
+            globalVariables.setUsersList(null);
         }
     }
 

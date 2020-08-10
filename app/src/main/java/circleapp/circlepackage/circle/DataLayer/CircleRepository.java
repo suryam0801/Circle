@@ -119,24 +119,13 @@ public class CircleRepository {
         fbTransactions.runTransactionOnIncrementalValues(1);
     }
 
-    public void addUsersToCircle(Circle c, Context context){
+    public void addUsersToCircle(Circle c){
         if(globalVariables.getUsersList()!=null){
 
             for(String userId: globalVariables.getUsersList()){
-
-                UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
-                LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(userId);
-                tempLiveData.observe((LifecycleOwner) context, dataSnapshot -> {
-                    User user = dataSnapshot.getValue(User.class);
-                    if (user != null) {
-                        Subscriber subscriber = new Subscriber(user,System.currentTimeMillis());
-                        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(c.getId()).child("members").child(userId).setValue(subscriber);
-                    }
-                });
                 globalVariables.getFBDatabase().getReference("/Users").child(userId).child("activeCircles").child(c.getId()).setValue(true);
                 globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(true);
             }
         }
-        globalVariables.setUsersList(null);
     }
 }
