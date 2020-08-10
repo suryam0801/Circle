@@ -413,8 +413,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 path.mkdir();
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             PollExportUtil pollExportUtil = new PollExportUtil();
-            pollExportUtil.writeAllPollsToExcelFile(this, file, pollBroadcasts, allCircleMembers, listOfMembers);
-            shareFile(file);
+            pollExportUtil.writeAllPollsToExcelFile(this, file, pollBroadcasts, allCircleMembers, listOfMembers, circle.getName());
+            File file1 = new File(path,"/" + "All Poll Results "+circle.getName()+".pdf");
+            shareFile(file1);
         }
         else {
             Toast.makeText(this, "No Polls exist in this Circle", Toast.LENGTH_SHORT).show();

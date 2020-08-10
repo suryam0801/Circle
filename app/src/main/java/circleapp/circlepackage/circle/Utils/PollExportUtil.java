@@ -99,21 +99,6 @@ public class PollExportUtil {
             if(pollResponse!=null)
                 pollResponse.clear();
             pollResponse = broadcast.getPoll().getUserResponse();
-            //If nobody answered the poll
-            if(pollResponse==null){
-
-                excelData[maxLen+1][0]="Un-Answered Members";
-                int x=0;
-                int l;
-                for (l = maxLen+2; l<maxLen+2+unAnsweredMembers.size();l++){
-                    excelData[l][0]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
-                    x++;
-                }
-                maxLen = l;
-                i=maxLen+2;
-                rowLength=i;
-                continue;
-            }
             //record poll responses
             excelData[++i][0]="Poll Responses:";
             pollOptions=broadcast.getPoll().getOptions();
@@ -122,22 +107,31 @@ public class PollExportUtil {
                 String  option = entry.getKey();
                 excelData[i+1][pollOptionsLength]=option;
                 pollOptionsLength++;
-                if(colLength<pollOptionsLength)
-                    colLength=pollOptionsLength;
+                if(colLength<pollOptionsLength+1)
+                    colLength=pollOptionsLength+1;
             }
             i++;//Go to line with answers strings
+            int pollQuestionLevel = i;
+            //If nobody answered the poll
+            if(pollResponse==null){
+
+                excelData[i][pollOptionsLength]="Un-Answered Members";
+                int x=0;
+                int l;
+                for (l = i+1; l<i+unAnsweredMembers.size()+1;l++){
+                    excelData[l][pollOptionsLength]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
+                    x++;
+                }
+                maxLen = l;
+                i=maxLen+2;
+                rowLength=i;
+                continue;
+            }
             //Remove members from unanswered list
             for(Map.Entry<String, String> entry : pollResponse.entrySet()){
                 String  userId = entry.getKey();
                 unAnsweredMembers.remove(userId);
             }
-            //List of answers strings in poll
-            if(answers!=null)
-                answers.clear();
-            answers.addAll(pollResponse.values());
-            //headers-Answered Poll option
-            int j = 0;
-
             //Adding name of user who responded under each poll
             for(Map.Entry<String, String> entry : pollResponse.entrySet()){
                 String  userId = entry.getKey();
@@ -157,14 +151,15 @@ public class PollExportUtil {
                 }
             }
             //Unanswered members in the poll
-            excelData[maxLen+1][0]="Un-Answered Members";
+            excelData[pollQuestionLevel][pollOptionsLength]="Un-Answered Members";
             int x=0;
             int l;
-            for (l = maxLen+2; l<maxLen+2+unAnsweredMembers.size();l++){
-                excelData[l][0]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
+            for (l = pollQuestionLevel+1; l<pollQuestionLevel+1+unAnsweredMembers.size();l++){
+                excelData[l][pollOptionsLength]= listOfMembers.get(unAnsweredMembers.get(x)).getName();
                 x++;
             }
-            maxLen = l;
+            if(maxLen<l)
+                maxLen=l;
             i=maxLen+2;
             rowLength = i;
         }
@@ -196,7 +191,7 @@ public class PollExportUtil {
 
     }
 
-    public void writeAllPollsToExcelFile(Context context, File fileName, List<Broadcast> pollBroadcasts, List<String> allCircleMembers, HashMap<String, Subscriber> listOfMembers){
+    public void writeAllPollsToExcelFile(Context context, File fileName, List<Broadcast> pollBroadcasts, List<String> allCircleMembers, HashMap<String, Subscriber> listOfMembers, String circleName){
         String [][]excelData = getAllPollResponsesForExporting(10000,10, pollBroadcasts, allCircleMembers, listOfMembers);
         for(int rowNum=0; rowNum<rowLength; rowNum++){
             for(int colNum=0; colNum<colLength; colNum++){
@@ -221,12 +216,12 @@ public class PollExportUtil {
         try{
             FileOutputStream out = new FileOutputStream(fileName);
             myWorkBook.write(out);
-            excelToPdf(context, fileName);
+            excelToPdf(context, fileName, circleName);
             out.close();
         }catch(Exception e){ e.printStackTrace();}
     }
 
-    private void excelToPdf(Context context, File inputFile) throws DocumentException, IOException {
+    private void excelToPdf(Context context, File inputFile, String circleName) throws DocumentException, IOException {
         //First we read the Excel file in binary format into FileInputStream
         FileInputStream input_document = new FileInputStream(inputFile);
 
@@ -244,7 +239,7 @@ public class PollExportUtil {
 
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
-        File file = new File(path, "/" + "All Poll Results Testing"+".pdf");
+        File file = new File(path, "/" + "All Poll Results "+circleName+".pdf");
 
         PdfWriter.getInstance(document, new FileOutputStream(file));
 
