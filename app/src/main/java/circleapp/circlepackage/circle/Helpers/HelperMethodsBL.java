@@ -257,25 +257,8 @@ public class HelperMethodsBL {
         fbRepository.makeFeedbackEntry(map);
     }
 
-
-    public static void updateUserAfterReadingComments(User user, Broadcast currentBroadcast){
-        UserRepository userRepository = new UserRepository();
-        HashMap<String,Integer> readDiscussions = new HashMap<>();
-        readDiscussions=user.getNoOfReadDiscussions();
-        if(readDiscussions!=null){
-            if(readDiscussions.containsKey(currentBroadcast.getId())){
-                int temp = readDiscussions.get(currentBroadcast.getId());
-                temp = temp + 1;
-                readDiscussions.put(currentBroadcast.getId(),temp);
-            }
-            else {
-                readDiscussions.put(currentBroadcast.getId(),0);
-            }
-        }
-        else
-            readDiscussions.put(currentBroadcast.getId(),0);
-        user.setNoOfReadDiscussions(readDiscussions);
-        globalVariables.saveCurrentUser(user);
-        userRepository.updateUser(user);
+    public static void updateCirclePersonel(Subscriber subscriber, String circleId){
+        CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
+        circlePersonnelRepository.updateCirclePersonnel(subscriber.getId(),circleId, subscriber);
     }
 }
