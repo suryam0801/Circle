@@ -40,16 +40,16 @@ public class CircleWallBackgroundPicker extends AppCompatActivity {
         bg8 = findViewById(R.id.circlWallBackground8);
         bg9 = findViewById(R.id.circlWallBackground9);
         bg10 = findViewById(R.id.circlWallBackground10);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_1)).centerCrop().into(bg1);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_2)).centerCrop().into(bg2);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3)).centerCrop().into(bg3);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_4)).centerCrop().into(bg4);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5)).centerCrop().into(bg5);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6)).centerCrop().into(bg6);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7)).centerCrop().into(bg7);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8)).centerCrop().into(bg8);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9)).centerCrop().into(bg9);
-        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_white)).centerCrop().into(bg10);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_1)).encodeQuality(50).centerCrop().into(bg1);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_2)).encodeQuality(50).centerCrop().into(bg2);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3)).encodeQuality(50).centerCrop().into(bg3);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_4)).encodeQuality(50).centerCrop().into(bg4);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5)).encodeQuality(50).centerCrop().into(bg5);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6)).encodeQuality(50).centerCrop().into(bg6);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7)).encodeQuality(50).centerCrop().into(bg7);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8)).encodeQuality(50).centerCrop().into(bg8);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9)).encodeQuality(50).centerCrop().into(bg9);
+        Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_white)).encodeQuality(50).centerCrop().into(bg10);
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void wallpaperClickListeners(){
