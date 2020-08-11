@@ -359,7 +359,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
     contact_View.setLayoutManager(layoutManager);
         AddPeopleCircularAdapter addPeopleAdapter = new AddPeopleCircularAdapter(this,tempUsersList);
         contact_View.setAdapter(addPeopleAdapter);
-}
+    }
     @Override
     public void contactsInterface(List<String> tempUsersList) {
         if(tempUsersList!=null){
