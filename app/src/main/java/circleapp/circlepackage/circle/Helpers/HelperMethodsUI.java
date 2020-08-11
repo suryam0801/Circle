@@ -497,11 +497,11 @@ public class HelperMethodsUI {
 
     public static void setPostIcon(Broadcast broadcast, CircleImageView backgroundPic, Context context){
         if(broadcast.isPollExists())
-            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.poll_post_icon));
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_poll_black));
         else if(broadcast.isImageExists())
-            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.photo_post_icon));
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_camera_black));
         else
-            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.message_post_icon));
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.megaphone));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

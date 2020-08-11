@@ -284,6 +284,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
+        viewHolder.viewPollAnswersImageBtn.setOnClickListener(view -> {
+            globalVariables.saveCurrentBroadcast(broadcast);
+            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
+        });
     }
 
     private void setCreatorProfilePic(ViewHolder viewHolder, Context context, Broadcast broadcast){
@@ -313,6 +317,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         poll = broadcast.getPoll();
         viewHolder.pollOptionsDisplayGroup.setVisibility(View.VISIBLE);
         viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+        viewHolder.viewPollAnswersImageBtn.setVisibility(View.VISIBLE);
         viewHolder.broadcastTitle.setText(poll.getQuestion());
         HashMap<String, Integer> pollOptions = poll.getOptions();
 
@@ -372,6 +377,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         private TextView broadcastNameDisplay, broadcastMessageDisplay, broadcastTitle;
         private CircleImageView profPicDisplay;
         private LinearLayout pollOptionsDisplayGroup, newNotifsContainer;
+        private CircleImageView viewPollAnswersImageBtn;
         private ImageButton notificationToggle;
         private String currentUserPollOption = null;
         private Button viewPollAnswers, addCommentButton;
@@ -391,6 +397,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             profPicDisplay = view.findViewById(R.id.full_page_broadcast_profilePicture);
             pollOptionsDisplayGroup = view.findViewById(R.id.full_page_broadcast_poll_options_radio_group);
             viewPollAnswers = view.findViewById(R.id.full_page_broadcast_view_poll_answers);
+            viewPollAnswersImageBtn = view.findViewById(R.id.full_page_broadcast_view_poll_results_image);
             broadcastTitle = view.findViewById(R.id.full_page_broadcast_Title);
             imageView = view.findViewById(R.id.uploaded_image_display_broadcast_full_page);
             addCommentButton = view.findViewById(R.id.full_page_broadcast_comment_send_button);
