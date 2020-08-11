@@ -287,6 +287,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         Intent intent = new Intent(CircleWall.this, FullPageImageDisplay.class);
         intent.putExtra("uri", qrUri);
         intent.putExtra("indexOfBroadcast", 0);
+        intent.putExtra("QRCode",true);
         CircleWall.this.startActivity(intent);
         CircleWall.this.finish();
     }
