@@ -156,6 +156,8 @@ dependencies {
     //Pdf
     implementation 'com.itextpdf:itextpdf:5.5.13.1'
     implementation 'com.flipboard:bottomsheet-core:1.5.3'
+    implementation 'com.google.zxing:core:3.2.1'
+    implementation('com.journeyapps:zxing-android-embedded:4.1.0') { transitive = false }
 }
 
 

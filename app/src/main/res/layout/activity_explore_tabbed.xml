@@ -31,6 +31,14 @@
             android:text="Coimbatore"
             android:textColor="@color/black"
             android:textSize="23dp"/>
+        <ImageButton
+            android:id="@+id/scan_qr_code_image_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="65dp"
+            android:background="@drawable/qr_code_icon"></ImageButton>
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/explore_profilePicture"
             android:layout_width="32dp"
