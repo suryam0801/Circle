@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.ui.CreateCircle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,11 @@ import java.util.List;
 import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ViewModels.CreateCircle.AddPeopleInterface;
 
 public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.ViewHolder> {
     private List<Contacts> contactsList;
+    private List<Contacts> tempList = new ArrayList<>();;
     private Context context;
     private GlobalVariables globalVariables = new GlobalVariables();
     private List<String> usersList = new ArrayList<>();
@@ -34,13 +37,21 @@ public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.View
     public AddPeopleAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = View.inflate(context, R.layout.contact_items_listview,null);
         return new AddPeopleAdapter.ViewHolder(view);
+
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull AddPeopleAdapter.ViewHolder holder, int position) {
-        String temp_num = this.contactsList.get(position).getPhn_number();
-        String temp_name = this.contactsList.get(position).getUid();
+        for (Contacts i : this.contactsList){
+            if (!tempList.contains(i)){
+                tempList.add(i);
+            }
+        }
+
+        Log.d("Adapter",tempList.toString());
+        String temp_num = tempList.get(position).getPhn_number();
+        String temp_name = tempList.get(position).getUid();
 
         if(globalVariables.getUsersList()!=null)
             usersList = globalVariables.getUsersList();
@@ -61,7 +72,6 @@ public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.View
             usersList.remove(tempUsersList.get(position));
             globalVariables.setUsersList(usersList);
         });
-
     }
 
     @Override

@@ -86,10 +86,9 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setContentTitle(title)
-                        .setSmallIcon(R.drawable.circle_logo)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setPriority(Notification.PRIORITY_MAX)
                         .setContentText(messageBody)
-                        .setStyle(new NotificationCompat.InboxStyle())
                         .setAutoCancel(false)
                         .setSound(notifSound);
 
