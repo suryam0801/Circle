@@ -553,6 +553,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3));
+                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     break;
                 case "bg4":
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_4));
@@ -563,12 +564,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5));
+                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     break;
                 case "bg6":
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
+                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6));
                     break;
                 case "bg7":
@@ -576,6 +579,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
+                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7));
                     break;
                 case "bg8":
@@ -583,6 +587,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
+                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8));
                     break;
                 case "bg9":
@@ -590,6 +595,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
+                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":

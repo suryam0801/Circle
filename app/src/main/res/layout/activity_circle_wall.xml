@@ -144,7 +144,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="85dp"
+                android:layout_marginRight="95dp"
                 android:background="@drawable/qr_code_icon"></ImageButton>
 
 

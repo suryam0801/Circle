@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -27,8 +28,11 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
@@ -113,7 +117,7 @@ public class CreatePollBroadcastDialog {
                     pollAnswerOptionsList.remove(tv.getText());
                 });
 
-                pollAnswerOptionsList.add(option);
+                pollAnswerOptionsList.add(option+"");
                 pollOptionsDisplay.addView(tv);
                 setPollOptionET.setText("");
             } else {
@@ -183,7 +187,9 @@ public class CreatePollBroadcastDialog {
         HashMap<String, Integer> options = new HashMap<>();
         if (!pollAnswerOptionsList.isEmpty()) {
             for (String option : pollAnswerOptionsList)
-                options.put(option, 0);
+            {
+                options.put(" "+option, 0);
+            }
         }
         circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
         circleWallViewModel.createPollBroadcast(pollQuestion,options,pollExists,imageExists,downloadLink,circle,user,activity).observe((LifecycleOwner) activity, state->{
@@ -202,7 +208,6 @@ public class CreatePollBroadcastDialog {
             }
 
         });
-//
 
     }
 }
