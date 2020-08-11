@@ -19,14 +19,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circlepackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
@@ -44,6 +48,7 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circlepackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -89,6 +94,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
         currentBroadcast = broadcastList.get(position);
         user = globalVariables.getCurrentUser();
+        setCircleObserver();
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -99,6 +105,30 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setBroadcastInfo(mContext, holder, currentBroadcast, globalVariables.getCurrentUser());
         setComments(holder, currentBroadcast);
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
+    }
+
+
+    private void setCircleObserver(){
+        circle = globalVariables.getCurrentCircle();
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(MyCirclesViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        tempLiveData.observe((LifecycleOwner) mContext, dataSnapshot -> {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getNoOfCommentsPerBroadcast()!=null) {
+                if(circleTemp.getNoOfCommentsPerBroadcast().get(currentBroadcast.getId())!=null)
+                    updateUserReadValues(circleTemp.getNoOfCommentsPerBroadcast().get(currentBroadcast.getId()),circleTemp);
+            }
+        });
+    }
+
+    private void updateUserReadValues(int commentCount, Circle circleTemp) {
+        if(user.getNoOfReadDiscussions()!=null){
+            if(user.getNoOfReadDiscussions().get(currentBroadcast.getId())!=null){
+                if(user.getNoOfReadDiscussions().get(currentBroadcast.getId())<commentCount)
+                    globalVariables.saveCurrentCircle(circleTemp);
+                    HelperMethodsBL.updateUserOnCommentRead(user,commentCount,currentBroadcast.getId());
+            }
+        }
     }
 
     private void setComments(ViewHolder holder,Broadcast currentBroadcast){

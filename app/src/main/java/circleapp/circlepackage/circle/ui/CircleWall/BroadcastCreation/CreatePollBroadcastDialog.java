@@ -104,7 +104,7 @@ public class CreatePollBroadcastDialog {
 
     private void addPollOption() {
         String option = setPollOptionET.getText().toString();
-        if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]") || option.isEmpty())) {
+        if ((option.contains(".") || option.contains("$") || option.contains("#") || option.contains("[") || option.contains("]") || option.contains("/") || option.isEmpty())) {
             //checking for invalid characters
             Toast.makeText(activity, "Option cannot use special characters or be empty", Toast.LENGTH_SHORT).show();
         } else {
