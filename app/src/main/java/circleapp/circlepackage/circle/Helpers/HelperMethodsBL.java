@@ -261,4 +261,12 @@ public class HelperMethodsBL {
         CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
         circlePersonnelRepository.updateCirclePersonnel(subscriber.getId(),circleId, subscriber);
     }
+
+    public static void updateUserOnCommentRead(User user, int newCommentCount, String broadcastId) {
+        UserRepository userRepository = new UserRepository();
+        HashMap<String, Integer> noOfReadDiscussions = user.getNoOfReadDiscussions();
+        noOfReadDiscussions.put(broadcastId, newCommentCount);
+        user.setNoOfReadDiscussions(noOfReadDiscussions);
+        userRepository.updateUser(user);
+    }
 }
