@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +98,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private String broadcastid;
     int broadcastPos;
     private ImageUpload imageUploadModel;
-    private ProgressDialog imageUploadProgressDialog;
+    private ProgressDialog imageUploadProgressDialog, pdfGenerateProgressBar;
     private GlobalVariables globalVariables = new GlobalVariables();
     private CreateNormalBroadcastDialog normalBroadcastDialog;
     private CreatePhotoBroadcastDialog photoBroadcastDialog;
@@ -147,6 +149,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         getStartedBroadcast = findViewById(R.id.circle_wall_get_started_broadcast);
         getStartedPhoto = findViewById(R.id.circle_wall_get_started_image);
         getStartedText = findViewById(R.id.circle_wall_get_started_text);
+        pdfGenerateProgressBar = new ProgressDialog(this);
         blackGetStartedBroadcast = findViewById(R.id.circle_wall_black_get_started_broadcast);
         blackGetStartedPhoto = findViewById(R.id.circle_wall_black_get_started_image);
         blackGetStartedPoll = findViewById(R.id.circle_wall_black_get_started_poll);
@@ -373,10 +376,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     HelperMethodsUI.showReportAbusePopup(reportAbuseDialog, CircleWall.this, circle.getId(), "", "", circle.getCreatorID(), user.getUserId());
                     break;
                 case "Export Poll Data":
-                    Permissions.check(this/*context*/, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                    Permissions.check(this, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
                         @Override
                         public void onGranted() {
-                            exportPollsToFile();
+                            pdfGenerateProgressBar.setTitle("Generating PDF...");
+                            pdfGenerateProgressBar.show();
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    exportPollsToFile();
+                                }
+                            };
+                            AsyncTask.execute(runnable);
                         }
                         @Override
                         public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -413,7 +424,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 path.mkdir();
             File file = new File(path, "/" + "All Poll Results "+circle.getName()+".xls");
             PollExportUtil pollExportUtil = new PollExportUtil();
-            pollExportUtil.writeAllPollsToExcelFile(this, file, pollBroadcasts, allCircleMembers, listOfMembers, circle.getName());
+            pollExportUtil.writeAllPollsToExcelFile(this, file, pollBroadcasts, allCircleMembers, listOfMembers, circle.getName(), pdfGenerateProgressBar);
             File file1 = new File(path,"/" + "All Poll Results "+circle.getName()+".pdf");
             shareFile(file1);
         }

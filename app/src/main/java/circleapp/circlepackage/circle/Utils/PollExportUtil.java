@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.Utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,12 +9,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfDocument;
@@ -191,7 +198,7 @@ public class PollExportUtil {
 
     }
 
-    public void writeAllPollsToExcelFile(Context context, File fileName, List<Broadcast> pollBroadcasts, List<String> allCircleMembers, HashMap<String, Subscriber> listOfMembers, String circleName){
+    public void writeAllPollsToExcelFile(Context context, File fileName, List<Broadcast> pollBroadcasts, List<String> allCircleMembers, HashMap<String, Subscriber> listOfMembers, String circleName, ProgressDialog progressBar){
         String [][]excelData = getAllPollResponsesForExporting(10000,10, pollBroadcasts, allCircleMembers, listOfMembers);
         for(int rowNum=0; rowNum<rowLength; rowNum++){
             for(int colNum=0; colNum<colLength; colNum++){
@@ -219,6 +226,7 @@ public class PollExportUtil {
             excelToPdf(context, fileName, circleName);
             out.close();
         }catch(Exception e){ e.printStackTrace();}
+        progressBar.dismiss();
     }
 
     private void excelToPdf(Context context, File inputFile, String circleName) throws DocumentException, IOException {
@@ -235,7 +243,7 @@ public class PollExportUtil {
         Iterator<Row> rowIterator = my_worksheet.iterator();
 
         //We will create output PDF document objects at this point
-        com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4, 0f, 0f, 0f, 0f);
 
         File path = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOCUMENTS);
@@ -288,22 +296,27 @@ public class PollExportUtil {
                 //next line
             }
         }
-        //Pdf dependency
-        /*try {
+        //Pdf image dependency
+        try {
             Drawable d = context.getResources().getDrawable(R.drawable.circle_logo);
             BitmapDrawable bitDw = ((BitmapDrawable) d);
             Bitmap bmp = bitDw.getBitmap();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.PNG, 5, stream);
+            bmp.compress(Bitmap.CompressFormat.PNG, 10, stream);
             Image image = Image.getInstance(stream.toByteArray());
+            image.scaleAbsolute(30,30);
+            image.setAlignment(Element.ALIGN_RIGHT);
             document.add(image);
-            document.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
+        Font f = new Font(Font.FontFamily.TIMES_ROMAN, 10.0f, Font.BOLD, BaseColor.BLACK);
         Paragraph para = new Paragraph();
-        para.add("Exported By Circle");
+        para.add("Exported By The Circle App");
+        para.setAlignment(Element.ALIGN_CENTER);
+        para.setFont(f);
         document.add(para);
+        document.add( Chunk.NEWLINE );
         //Finally add the table to PDF document
         document.add(my_table);
         document.close();
