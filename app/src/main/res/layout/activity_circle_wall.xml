@@ -225,8 +225,8 @@
             android:id="@+id/message_creation_FAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_chat_black_24dp"
-            fab:fab_label="New broadcast"
+            android:src="@drawable/ic_megaphone"
+            fab:fab_label="New Post"
             fab:fab_size="normal" />
 
         <com.github.clans.fab.FloatingActionButton

@@ -132,14 +132,6 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         else
             commentsDisplayText = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) + " messages";
         viewHolder.viewComments.setText(commentsDisplayText);
-
-        /*try {
-            if (user.getNewTimeStampsComments() != null && user.getNewTimeStampsComments().get(broadcast.getId()) < broadcast.getLatestCommentTimestamp()) {
-                viewHolder.viewComments.setText(commentsDisplayText + " (new)");
-            }
-        } catch (Exception e) {
-            //null value for get new timestamp comments for particular broadcast
-        }*/
     }
 
     private void setUiElements(ViewHolder viewHolder, int i, Broadcast broadcast){
@@ -169,6 +161,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.container.setOnClickListener(view -> intentToDiscussionActivity(i));
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
+            globalVariables.saveCurrentBroadcast(broadcast);
+            context.startActivity(new Intent(context, CreatorPollAnswersView.class));
+        });
+        viewHolder.viewPollResultsImage.setOnClickListener(view -> {
             globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
@@ -274,6 +270,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         final Poll poll = broadcast.getPoll();
         viewHolder.pollDisplay.setVisibility(View.VISIBLE);
         viewHolder.viewPollAnswers.setVisibility(View.VISIBLE);
+        viewHolder.viewPollResultsImage.setVisibility(View.VISIBLE);
         viewHolder.broadcastTitle.setText(poll.getQuestion());
         HashMap<String, Integer> pollOptions = poll.getOptions();
 
@@ -368,6 +365,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         private RelativeLayout imageDisplayHolder;
         private ProgressBar imageLoadProgressBar;
         private ImageButton broadcastListenerToggle;
+        private CircleImageView viewPollResultsImage;
 
         public ViewHolder(View view) {
             super(view);
@@ -379,6 +377,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             pollDisplay = view.findViewById(R.id.broadcastWall_poll_display_view);
             viewComments = view.findViewById(R.id.broadcastWall_object_viewComments);
             viewPollAnswers = view.findViewById(R.id.view_poll_answers);
+            viewPollResultsImage = view.findViewById(R.id.view_poll_results_image);
             broadcastTitle = view.findViewById(R.id.broadcastWall_Title);
             container = view.findViewById(R.id.broadcast_display_container);
             imageDisplay = view.findViewById(R.id.uploaded_image_display_broadcast);
