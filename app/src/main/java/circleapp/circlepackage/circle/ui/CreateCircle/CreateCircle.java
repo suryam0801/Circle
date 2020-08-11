@@ -57,9 +57,8 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
-    private LinearLayout addPeopleLayout;
-    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt, particiapantNumber;
-    private Button btn_createCircle;
+    private TextView visibilityPrompt, visibiltyHeading, acceptanceHeading, acceptancePrompt;
+    private Button btn_createCircle, addMembersBtn;
     private ImageButton back;
     private SwitchButton visibilitySwitchButton, acceptanceSwitchButton;
     private User user;
@@ -99,7 +98,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
         circleDescriptionEntry = findViewById(R.id.create_circle_Description);
         visibilitySwitchButton = findViewById(R.id.visibilitySwitch);
         acceptanceSwitchButton = findViewById(R.id.joiningSwitch);
-        addPeopleLayout = findViewById(R.id.add_people_layout);
+        addMembersBtn = findViewById(R.id.add_people_btn);
         visibilitySwitchButton.setChecked(true);
         acceptanceSwitchButton.setChecked(true);
         btn_createCircle = findViewById(R.id.create_circle_submit);
@@ -119,27 +118,17 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
         visibiltyHeading.setText("Public");
         acceptanceHeading.setText("Quick Join");
         acceptancePrompt.setText("People can join this Circle without applying");
-        particiapantNumber = findViewById(R.id.participant_number);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void showContacts() {
-//        Intent intent = new Intent(CreateCircle.this, AddPeople.class);
-//        startActivity(intent);
-//     if (finalcontactsList.equals(null)){
         AddPeopleBottomSheetDiologue bottomSheetDiologue = new AddPeopleBottomSheetDiologue(CreateCircle.this);
         bottomSheetDiologue.show(getSupportFragmentManager(), bottomSheetDiologue.getTag());
         if (globalVariables.getUsersList() != null) {
-            particiapantNumber.setVisibility(View.VISIBLE);
-            particiapantNumber.setText("No of Participants: " + globalVariables.getUsersList().size());
+            addMembersBtn.setText("Added " + globalVariables.getUsersList().size()+ " Members");
             Log.d("Users", globalVariables.getUsersList().toString());
 //            viewUser(tempUsersList);
-        } else
-            particiapantNumber.setVisibility(View.GONE);
-        if (bottomSheetDiologue.isDetached()) {
-
         }
-//     }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -218,7 +207,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
             }
         });
 
-        addPeopleLayout.setOnClickListener(v -> {
+        addMembersBtn.setOnClickListener(v -> {
             Permissions.check(this, new String[]{Manifest.permission.READ_CONTACTS}, null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
@@ -358,12 +347,8 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
     @Override
     public void onResume() {
         if (globalVariables.getUsersList() != null) {
-            particiapantNumber.setVisibility(View.VISIBLE);
-            particiapantNumber.setText("No of Participants: " + globalVariables.getUsersList().size());
-            Log.d("Users", globalVariables.getUsersList().toString());
-//            viewUser(tempUsersList);
-        } else
-            particiapantNumber.setVisibility(View.GONE);
+            addMembersBtn.setText("Added " + globalVariables.getUsersList().size()+ " Members");
+        }
         super.onResume();
     }
 
@@ -372,19 +357,16 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
     contact_View.setHasFixedSize(true);
     contact_View.setLayoutManager(layoutManager);
-        AddpeopleCircluarAdapter addPeopleAdapter = new AddpeopleCircluarAdapter(this,tempUsersList);
+        AddPeopleCircularAdapter addPeopleAdapter = new AddPeopleCircularAdapter(this,tempUsersList);
         contact_View.setAdapter(addPeopleAdapter);
 }
     @Override
     public void contactsInterface(List<String> tempUsersList) {
         if(tempUsersList!=null){
-            particiapantNumber.setVisibility(View.VISIBLE);
-            particiapantNumber.setText("No of Participants: "+tempUsersList.size());
+            addMembersBtn.setText("Added " + tempUsersList.size()+ " Members");
             Log.d("Users",tempUsersList.toString());
             viewUser(tempUsersList);
         }
-        else
-            particiapantNumber.setVisibility(View.GONE);
     }
 
 }

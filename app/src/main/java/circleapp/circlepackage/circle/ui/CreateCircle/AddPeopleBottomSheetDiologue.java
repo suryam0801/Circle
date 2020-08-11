@@ -36,7 +36,6 @@ import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.ContactsViewMod
 
 public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     private BottomSheetBehavior mBehavior;
-    private AppBarLayout app_bar_layout;
     private RecyclerView listView ;
     private List<Contacts> contactsList = new ArrayList<>();
     private Button doneBtn;

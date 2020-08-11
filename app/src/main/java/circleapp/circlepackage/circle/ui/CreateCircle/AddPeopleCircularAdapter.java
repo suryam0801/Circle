@@ -3,8 +3,6 @@ package circleapp.circlepackage.circle.ui.CreateCircle;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,28 +12,27 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.List;
 
-import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AddpeopleCircluarAdapter extends RecyclerView.Adapter<AddpeopleCircluarAdapter.ViewHolder> {
+public class AddPeopleCircularAdapter extends RecyclerView.Adapter<AddPeopleCircularAdapter.ViewHolder> {
     private Context context;
     private List<String> contactsList;
 
-    public AddpeopleCircluarAdapter(Context context, List<String> contactsList) {
+    public AddPeopleCircularAdapter(Context context, List<String> contactsList) {
         this.context = context;
         this.contactsList = contactsList;
     }
 
     @NonNull
     @Override
-    public AddpeopleCircluarAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AddPeopleCircularAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = View.inflate(context, R.layout.contact_item_circlur_view,null);
-        return new AddpeopleCircluarAdapter.ViewHolder(view);
+        return new AddPeopleCircularAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AddpeopleCircluarAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AddPeopleCircularAdapter.ViewHolder holder, int position) {
         String name = contactsList.get(position);
         holder.setContactview(name);
     }
