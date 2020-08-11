@@ -15,7 +15,7 @@ public class BroadcastsViewModel extends ViewModel {
 
     @NonNull
     public LiveData<String[]> getDataSnapsBroadcastLiveData(String circleId) {
-        FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId));
+        FirebaseQueryLiveData liveExploreCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Broadcasts").child(circleId).orderByChild("latestCommentTimestamp"));
         return liveExploreCircleData;
     }
 
