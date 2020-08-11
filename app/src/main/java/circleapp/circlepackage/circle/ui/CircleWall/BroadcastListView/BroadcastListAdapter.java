@@ -188,12 +188,15 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             viewHolder.broadcastListenerToggle.setBackground(context.getResources().getDrawable(R.drawable.ic_outline_broadcast_not_listening_icon));
         } else {
             int noOfUserUnread=0;
-            if(circle.getNoOfCommentsPerBroadcast()==null)
+            if(circle.getNoOfCommentsPerBroadcast()==null){
                 noOfUserUnread = 0;
-            else if(user.getNoOfReadDiscussions().get(broadcast.getId())==null)
-                noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId());
-            else
-                noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) - user.getNoOfReadDiscussions().get(broadcast.getId());
+            }
+            else if(user.getNoOfReadDiscussions()!=null){
+                if(user.getNoOfReadDiscussions().get(broadcast.getId())==null)
+                    noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId());
+                else
+                    noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId()) - user.getNoOfReadDiscussions().get(broadcast.getId());
+            }
             if (noOfUserUnread > 0) {
                 viewHolder.newCommentsTopNotifContainer.setVisibility(View.VISIBLE);
                 viewHolder.newCommentsTopTv.setText(noOfUserUnread + "");
