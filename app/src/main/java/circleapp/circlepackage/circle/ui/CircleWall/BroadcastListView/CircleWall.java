@@ -170,14 +170,16 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         }
         if (circle.getNoOfBroadcasts() == 0){
             emptyDisplay.setVisibility(View.VISIBLE);
-            if(SessionStorage.getCircleWallBgImage(CircleWall.this).equals("bg10")){
-                getStartedText.setTextColor(getResources().getColor(R.color.black));
-                blackGetStartedBroadcast.setVisibility(View.VISIBLE);
-                blackGetStartedPhoto.setVisibility(View.VISIBLE);
-                blackGetStartedPoll.setVisibility(View.VISIBLE);
-                getStartedPoll.setVisibility(View.GONE);
-                getStartedBroadcast.setVisibility(View.GONE);
-                getStartedPhoto.setVisibility(View.GONE);
+            if (SessionStorage.getCircleWallBgImage(CircleWall.this) != null){
+                 if(SessionStorage.getCircleWallBgImage(CircleWall.this).equals("bg10")){
+                    getStartedText.setTextColor(getResources().getColor(R.color.black));
+                    blackGetStartedBroadcast.setVisibility(View.VISIBLE);
+                    blackGetStartedPhoto.setVisibility(View.VISIBLE);
+                    blackGetStartedPoll.setVisibility(View.VISIBLE);
+                    getStartedPoll.setVisibility(View.GONE);
+                    getStartedBroadcast.setVisibility(View.GONE);
+                    getStartedPhoto.setVisibility(View.GONE);
+                }
             }
         }
     }

@@ -17,30 +17,34 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.suke.widget.SwitchButton;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
+import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
+import circleapp.circlepackage.circle.ViewModels.CreateCircle.AddPeopleInterface;
 import circleapp.circlepackage.circle.ViewModels.CreateCircle.WriteNewCircle;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
@@ -49,7 +53,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class CreateCircle extends AppCompatActivity {
+public class CreateCircle extends AppCompatActivity implements AddPeopleInterface {
 
     //Declare all UI elements for the CreateCircle Activity
     private EditText circleNameEntry, circleDescriptionEntry;
@@ -63,13 +67,15 @@ public class CreateCircle extends AppCompatActivity {
     private CircleImageView backgroundPic;
     private Uri filePath, downloadLink;
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-    private String backgroundImageLink="", acceptanceType, visibilityType, cName, cDescription;
+    private String backgroundImageLink = "", acceptanceType, visibilityType, cName, cDescription;
     public ImageUpload imageUploadModel;
     private ProgressDialog imageUploadProgressDialog;
     private Circle circle;
     private Subscriber creatorSubscriber;
     private GlobalVariables globalVariables = new GlobalVariables();
     private WriteNewCircle writeNewCircle = new WriteNewCircle();
+    public List<Contacts> finalcontactsList = new ArrayList<>();
+    private RecyclerView contact_View;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -82,7 +88,8 @@ public class CreateCircle extends AppCompatActivity {
         setObserverForImageUpload();
         setButtonListeners();
     }
-    private void setUIElements(){
+
+    private void setUIElements() {
         //Initialize all UI elements in the CreateCircle activity
         user = globalVariables.getCurrentUser();
         visibiltyHeading = findViewById(R.id.circle_visibility_heading_text);
@@ -97,6 +104,7 @@ public class CreateCircle extends AppCompatActivity {
         acceptanceSwitchButton.setChecked(true);
         btn_createCircle = findViewById(R.id.create_circle_submit);
         back = findViewById(R.id.bck_create);
+        contact_View = findViewById(R.id.circular_view);
         visibilityPrompt = findViewById(R.id.visibility_prompt_create_circle);
         circleNameEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         circleDescriptionEntry.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -105,37 +113,50 @@ public class CreateCircle extends AppCompatActivity {
         categoryName.setText(getIntent().getStringExtra("category_name"));
         //to set invisible on adding image
         imageUploadProgressDialog = new ProgressDialog(this);
-        acceptanceType="Automatic";
-        visibilityType="Everybody";
+        acceptanceType = "Automatic";
+        visibilityType = "Everybody";
         visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can view this Circle");
         visibiltyHeading.setText("Public");
         acceptanceHeading.setText("Quick Join");
         acceptancePrompt.setText("People can join this Circle without applying");
         particiapantNumber = findViewById(R.id.participant_number);
     }
- @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
- public void showContacts(){
-        Intent intent = new Intent(CreateCircle.this, AddPeople.class);
-        startActivity(intent);
- }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setObserverForImageUpload(){
+    public void showContacts() {
+//        Intent intent = new Intent(CreateCircle.this, AddPeople.class);
+//        startActivity(intent);
+//     if (finalcontactsList.equals(null)){
+        AddPeopleBottomSheetDiologue bottomSheetDiologue = new AddPeopleBottomSheetDiologue(CreateCircle.this);
+        bottomSheetDiologue.show(getSupportFragmentManager(), bottomSheetDiologue.getTag());
+        if (globalVariables.getUsersList() != null) {
+            particiapantNumber.setVisibility(View.VISIBLE);
+            particiapantNumber.setText("No of Participants: " + globalVariables.getUsersList().size());
+            Log.d("Users", globalVariables.getUsersList().toString());
+//            viewUser(tempUsersList);
+        } else
+            particiapantNumber.setVisibility(View.GONE);
+        if (bottomSheetDiologue.isDetached()) {
+
+        }
+//     }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setObserverForImageUpload() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             // update UI
-            if(progress==null);
+            if (progress == null) ;
 
-            else if(progress[1].equals("-1")){
+            else if (progress[1].equals("-1")) {
                 imageUploadProgressDialog.dismiss();
                 Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
-            }
-
-            else if(!progress[1].equals("100")){
+            } else if (!progress[1].equals("100")) {
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();
-            }
-            else if(progress[1].equals("100")){
+            } else if (progress[1].equals("100")) {
                 downloadLink = Uri.parse(progress[0]);
                 backgroundPic.setScaleX((float) 1.0);
                 backgroundPic.setScaleY((float) 1.0);
@@ -145,8 +166,9 @@ public class CreateCircle extends AppCompatActivity {
             }
         });
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setButtonListeners(){
+    private void setButtonListeners() {
         btn_createCircle.setOnClickListener(view -> {
             cName = circleNameEntry.getText().toString().trim();
             cDescription = circleDescriptionEntry.getText().toString().trim();
@@ -158,7 +180,7 @@ public class CreateCircle extends AppCompatActivity {
         });
 
         backgroundPic.setOnClickListener(v -> {
-            Permissions.check(this, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
+            Permissions.check(this, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     sendImageUploadIntent();
@@ -169,13 +191,12 @@ public class CreateCircle extends AppCompatActivity {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(isChecked){
-                    visibilityType="Everybody";
+                if (isChecked) {
+                    visibilityType = "Everybody";
                     visibilityPrompt.setText("Anyone in " + user.getDistrict() + " can view this Circle");
                     visibiltyHeading.setText("Public");
-                }
-                else{
-                    visibilityType="OnlyShare";
+                } else {
+                    visibilityType = "OnlyShare";
                     visibilityPrompt.setText("Only people with Invite Link can view this Circle");
                     visibiltyHeading.setText("Private");
                 }
@@ -185,21 +206,20 @@ public class CreateCircle extends AppCompatActivity {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(isChecked){
-                    acceptanceType="Automatic";
+                if (isChecked) {
+                    acceptanceType = "Automatic";
                     acceptanceHeading.setText("Quick Join");
                     acceptancePrompt.setText("People can join this Circle without applying");
-                }
-                else{
-                    acceptanceType="Review";
+                } else {
+                    acceptanceType = "Review";
                     acceptanceHeading.setText("People must apply");
                     acceptancePrompt.setText("People must apply to join this Circle");
                 }
             }
         });
 
-        addPeopleLayout.setOnClickListener(v->{
-            Permissions.check(this, new String[]{CAMERA, Manifest.permission.READ_CONTACTS},null, null, new PermissionHandler() {
+        addPeopleLayout.setOnClickListener(v -> {
+            Permissions.check(this, new String[]{Manifest.permission.READ_CONTACTS}, null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {
                     showContacts();
@@ -209,7 +229,7 @@ public class CreateCircle extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void checkIfFormIsFilled(){
+    private void checkIfFormIsFilled() {
         if (!cName.isEmpty() && !cDescription.isEmpty()) {
             createCircle();
         } else {
@@ -226,7 +246,7 @@ public class CreateCircle extends AppCompatActivity {
         goToCreatedCircle();
     }
 
-    private void setLocalCircleObject(){
+    private void setLocalCircleObject() {
         CircleRepository circleRepository = new CircleRepository();
         user = globalVariables.getCurrentUser();
         String category = getIntent().getStringExtra("category_name");
@@ -242,14 +262,14 @@ public class CreateCircle extends AppCompatActivity {
             backgroundImageLink = "default";
 
         circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilityType, creatorUserID, creatorName,
-                category, backgroundImageLink, tempUserForMemberList, null,null, user.getDistrict(), user.getWard(),
-                System.currentTimeMillis(), 0,true);
+                category, backgroundImageLink, tempUserForMemberList, null, null, user.getDistrict(), user.getWard(),
+                System.currentTimeMillis(), 0, true);
 
         creatorSubscriber = new Subscriber(user, System.currentTimeMillis());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void goToCreatedCircle(){
+    private void goToCreatedCircle() {
         //navigate back to explore. new circle will be available in workbench
         SharedPreferences prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
         if (prefs.getBoolean("firstWall", true)) {
@@ -265,24 +285,25 @@ public class CreateCircle extends AppCompatActivity {
             startActivity(intent);
         }
     }
-    private void sendImageUploadIntent(){
+
+    private void sendImageUploadIntent() {
         ImagePicker imagePicker = new ImagePicker(getApplication());
         Intent chooseImageIntent = imagePicker.getPickImageIntent();
         startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void uploadCircleLogo(){
+    private void uploadCircleLogo() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
         imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
             // update UI
-            if(progress==null);
+            if (progress == null) ;
 
-            else if(!progress[1].equals("100")){
+            else if (!progress[1].equals("100")) {
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();
-            }
-            else if(progress[1].equals("100")){
+            } else if (progress[1].equals("100")) {
                 downloadLink = Uri.parse(progress[0]);
                 backgroundPic.setScaleX((float) 1.0);
                 backgroundPic.setScaleY((float) 1.0);
@@ -299,12 +320,12 @@ public class CreateCircle extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
+        switch (requestCode) {
             case PICK_IMAGE_ID:
                 ImagePicker imagePicker = new ImagePicker(getApplication());
                 Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
                 filePath = imagePicker.getImageUri(bitmap);
-                if(filePath !=null){
+                if (filePath != null) {
                     uploadCircleLogo();
                 }
                 break;
@@ -320,9 +341,11 @@ public class CreateCircle extends AppCompatActivity {
         finishAfterTransition();
         Intent about_intent = new Intent(CreateCircle.this, ExploreTabbedActivity.class);
         startActivity(about_intent);
+        globalVariables.setUsersList(null);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void sendToHome(){
+    private void sendToHome() {
         finishAfterTransition();
         startActivity(new Intent(CreateCircle.this, ExploreTabbedActivity.class));
     }
@@ -334,12 +357,34 @@ public class CreateCircle extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        if(globalVariables.getUsersList()!=null){
+        if (globalVariables.getUsersList() != null) {
             particiapantNumber.setVisibility(View.VISIBLE);
-            particiapantNumber.setText("No of Participants: "+globalVariables.getUsersList().size());
-        }
-        else
+            particiapantNumber.setText("No of Participants: " + globalVariables.getUsersList().size());
+            Log.d("Users", globalVariables.getUsersList().toString());
+//            viewUser(tempUsersList);
+        } else
             particiapantNumber.setVisibility(View.GONE);
         super.onResume();
     }
+
+    private void viewUser(List<String> tempUsersList) {
+
+    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+    contact_View.setHasFixedSize(true);
+    contact_View.setLayoutManager(layoutManager);
+        AddpeopleCircluarAdapter addPeopleAdapter = new AddpeopleCircluarAdapter(this,tempUsersList);
+        contact_View.setAdapter(addPeopleAdapter);
+}
+    @Override
+    public void contactsInterface(List<String> tempUsersList) {
+        if(tempUsersList!=null){
+            particiapantNumber.setVisibility(View.VISIBLE);
+            particiapantNumber.setText("No of Participants: "+tempUsersList.size());
+            Log.d("Users",tempUsersList.toString());
+            viewUser(tempUsersList);
+        }
+        else
+            particiapantNumber.setVisibility(View.GONE);
+    }
+
 }

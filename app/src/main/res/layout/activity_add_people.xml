@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CreateCircle.AddPeople"
+    tools:context=".ui.CreateCircle.CreateCircle"
     android:background="@color/white"
     android:padding="4dp"
     android:orientation="vertical">
@@ -27,6 +27,7 @@
                 android:layout_marginBottom="12dp"
                 android:background="@android:color/transparent"
                 android:scaleX=".8"
+                android:visibility="invisible"
                 android:scaleY=".8"
                 android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
             <Space
@@ -57,7 +58,7 @@
                 android:shadowColor="@android:color/transparent"
                 android:text="Done"
                 android:textSize="15dp"
-                android:textColor="@android:color/holo_blue_light"></Button>
+                android:textColor="@android:color/holo_blue_light"/>
         </LinearLayout>
 
         <View

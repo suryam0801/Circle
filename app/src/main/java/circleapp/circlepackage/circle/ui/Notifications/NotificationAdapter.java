@@ -3,6 +3,7 @@ package circleapp.circlepackage.circle.ui.Notifications;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,6 +56,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         setNotificationType(state, holder, notif);
 
     holder.container.setOnClickListener(new View.OnClickListener() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onClick(View v) {
             HelperMethodsBL.navToNotificationSource(mContext, notif, position, NotificationList.get(position).getBroadcastId());

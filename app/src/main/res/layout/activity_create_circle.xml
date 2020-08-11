@@ -291,6 +291,18 @@
                 </TextView>
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/circular_view_layout"
+                android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:id="@+id/circular_view"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
 
