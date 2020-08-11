@@ -58,8 +58,7 @@
 
         <activity android:name=".ui.CircleWall.PollResults.CreatorPollAnswersView" />
         <activity
-            android:name=".ui.ExploreTabbedActivity"
-            android:noHistory="true"></activity>
+            android:name=".ui.ExploreTabbedActivity"></activity>
         <activity android:name=".ui.Login.EntryPage.EntryPage" />
         <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
         <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
