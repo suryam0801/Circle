@@ -98,18 +98,6 @@
                             android:text="Name"
                             android:textColor="@color/color_blue"
                             android:textSize="12dp"></TextView>
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                            <Button
-                                android:id="@+id/full_page_broadcast_view_poll_answers"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:layout_alignParentEnd="true"
-                                android:background="@drawable/ic_insert_chart_blue_24dp"
-                                android:gravity="center_vertical"
-                                android:visibility="gone"></Button>
-                        </RelativeLayout>
                     </LinearLayout>
 
                     <com.github.chrisbanes.photoview.PhotoView
@@ -136,7 +124,34 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone"></LinearLayout>
+                        android:visibility="visible"></LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/full_page_broadcast_view_poll_results_image"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/pie_chart"
+                            android:visibility="gone">
+                        </de.hdodenhof.circleimageview.CircleImageView>
+                        <Button
+                            android:id="@+id/full_page_broadcast_view_poll_answers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View Poll Results"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textSize="10dp"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginRight="30dp"
+                            android:layout_marginBottom="10dp"
+                            android:visibility="gone"></Button>
+                    </RelativeLayout>
 
                 </LinearLayout>
                 <LinearLayout
