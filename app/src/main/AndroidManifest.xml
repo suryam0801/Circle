@@ -14,6 +14,7 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <application
         android:allowBackup="false"
@@ -24,7 +25,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup"
+        tools:overrideLibrary="com.google.zxing.client.android">
         <activity android:name=".ui.CreateCircle.AddPeople"></activity>
         <activity
             android:name=".ui.CircleWall.CircleInformation"
@@ -46,7 +48,10 @@
             android:label="@string/title_activity_create_circle_category_picker"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="screenOrientation" />
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />

@@ -7,27 +7,27 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
-
-import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
@@ -47,6 +47,8 @@ import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
 import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.Manifest.permission.CAMERA;
 
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
@@ -68,6 +70,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private TextView tv_circleName, tv_creatorName, tv_circleDesc;
     private Button join, cancel;
     private CircleImageView profPic;
+    private ImageButton scanQrCodeBtn;
     private boolean alreadyMember, alreadyApplicant;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -123,7 +126,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             processUrl(url);
         }
 
-
+        scanQrCodeBtn = findViewById(R.id.scan_qr_code_image_btn);
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethodsUI.increaseTouchArea(profPicHolder);
         locationDisplay = findViewById(R.id.explore_district_name_display);
@@ -132,6 +135,17 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         locationDisplay.setText(user.getDistrict());
         HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
+        scanQrCodeBtn.setOnClickListener(v->{
+            Permissions.check(this, new String[]{CAMERA},null, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    IntentIntegrator intentIntegrator = new IntentIntegrator(ExploreTabbedActivity.this);
+                    intentIntegrator.setOrientationLocked(false);
+                    intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                    intentIntegrator.initiateScan();
+                }
+            });
+        });
     }
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
@@ -295,4 +309,20 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
+
+    @Override
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 }

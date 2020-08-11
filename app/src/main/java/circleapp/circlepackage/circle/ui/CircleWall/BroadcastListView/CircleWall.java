@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -37,11 +38,17 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.tooltip.Tooltip;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +75,7 @@ import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreatePhot
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastCreation.CreatePollBroadcastDialog;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleInformation;
 import circleapp.circlepackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
+import circleapp.circlepackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circlepackage.circle.ui.PersonelDisplay.PersonelDisplay;
@@ -83,7 +91,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Circle circle;
     private List<String> allCircleMembers;
     private HashMap<String, Subscriber> listOfMembers;
-    private ImageButton back, moreOptions;
+    private ImageButton back, moreOptions, qrCodeGenerateBtn;
     private User user;
 
     //create broadcast popup ui elements
@@ -158,6 +166,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
         viewApplicants = findViewById(R.id.applicants_display_creator);
         recyclerView = findViewById(R.id.broadcastViewRecyclerView);
+        qrCodeGenerateBtn = findViewById(R.id.get_qr_code_imagebtn);
         allCircleMembers = new ArrayList<>();
         circleBannerName.setText(circle.getName());
 
@@ -229,6 +238,57 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         blackGetStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
         blackGetStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
         blackGetStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
+
+        qrCodeGenerateBtn.setOnClickListener(v->{
+            Permissions.check(this, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    runQRGenerator();
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
+        });
+    }
+
+    private void runQRGenerator(){
+        String qrHash = circle.getId();
+        String qrUri = "";
+        Bitmap bitmap = Bitmap.createBitmap(200,200,Bitmap.Config.RGB_565);;
+        BitMatrix bitMatrix;
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try {
+            bitMatrix = qrCodeWriter.encode(qrHash, BarcodeFormat.QR_CODE,200,200);
+            for(int x = 0; x<200; x++){
+                for (int y=0; y<200; y++){
+                    bitmap.setPixel(x,y,bitMatrix.get(x,y)?Color.BLACK : Color.WHITE);
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        //write to local
+        File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        if(!path.exists())
+            path.mkdir();
+        File file = new File(path, "/" + "QRCode "+circle.getName()+".jpg");
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, out);// bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+            qrUri=file.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Intent intent = new Intent(CircleWall.this, FullPageImageDisplay.class);
+        intent.putExtra("uri", qrUri);
+        intent.putExtra("indexOfBroadcast", 0);
+        CircleWall.this.startActivity(intent);
+        CircleWall.this.finish();
     }
 
     private void setBroadcastObserver(){
