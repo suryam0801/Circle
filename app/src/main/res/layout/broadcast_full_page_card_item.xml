@@ -8,16 +8,16 @@
     android:background="@drawable/broadcast_cards"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingLeft="15dp"
-    android:paddingTop="13dp"
-    android:paddingRight="15dp">
+    android:paddingTop="13dp">
 
 
     <RelativeLayout
         android:id="@+id/full_page_broadcast_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -183,12 +183,14 @@
                             android:id="@+id/view_post_button"
                             android:layout_width="130dp"
                             android:layout_height="30dp"
-                            android:background="@drawable/unpressable_button"
+                            android:background="@android:color/transparent"
+                            android:shadowColor="@android:color/transparent"
+                            android:textSize="15dp"
+                            android:textColor="@android:color/holo_blue_light"
                             android:layout_alignParentEnd="true"
                             android:text="View Post"
                             android:textAlignment="textStart"
-                            android:paddingLeft="10dp"
-                            android:textColor="@color/grey"></Button>
+                            android:paddingLeft="10dp"></Button>
                         <Button
                             android:id="@+id/hide_post_button"
                             android:layout_width="130dp"
