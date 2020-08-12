@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,12 +67,12 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private String  intentUri;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
-    private TextView locationDisplay;
     private BottomNavigationView bottomNav;
     private Boolean popupCalled = false;
     private View decorView;
     boolean shownPopup;
     private FloatingActionButton btnAddCircle;
+    private RelativeLayout exploreHeader;
     private GlobalVariables globalVariables = new GlobalVariables();
     //Popup circle elements
     private TextView tv_circleName, tv_creatorName, tv_circleDesc;
@@ -158,14 +160,13 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             processUrl(url);
         }
 
+        exploreHeader = findViewById(R.id.exploreHeaderBar);
         scanQrCodeBtn = findViewById(R.id.scan_qr_code_image_btn);
         profPicHolder = findViewById(R.id.explore_profilePicture);
         HelperMethodsUI.increaseTouchArea(profPicHolder);
-        locationDisplay = findViewById(R.id.explore_district_name_display);
         bottomNav = findViewById(R.id.bottom_navigation);
         btnAddCircle = findViewById(R.id.add_circle_button);
 
-        locationDisplay.setText(user.getDistrict());
         HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
         scanQrCodeBtn.setOnClickListener(v->{
             Permissions.check(this, new String[]{CAMERA},null, null, new PermissionHandler() {
@@ -178,6 +179,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 }
             });
         });
+        location.setCompoundDrawables(null,null,null,null);
+        location.setText("My Circles");
+        exploreHeader.setVisibility(View.VISIBLE);
     }
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
@@ -193,19 +197,32 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Fragment selectedFragment = null;
         switch (item.getItemId()) {
             case R.id.workbench_bottom_nav_item:
+                location.setCompoundDrawables(null,null,null,null);
+                location.setText("My Circles");
+                exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new WorkbenchFragment();
                 break;
             case R.id.explore_bottom_nav_item:
+                Drawable img = ExploreTabbedActivity.this.getResources().getDrawable(R.drawable.ic_location_on_black_24dp);
+                img.setBounds(0, 0, 60, 60);
+                location.setCompoundDrawables(img, null, null, null);
+                location.setText(user.getDistrict());
+                exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new ExploreFragment();
                 break;
             case R.id.create_circle_nav_bar:
+                location.setText("My Circles");
+                location.setCompoundDrawables(null,null,null,null);
+                exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new WorkbenchFragment();
                 break;
             case R.id.notifications_bottom_nav_item:
+                exploreHeader.setVisibility(View.GONE);
                 selectedFragment = new NotificationFragment();
                 break;
 
             case R.id.search_bottom_nav_item:
+                exploreHeader.setVisibility(View.GONE);
                 selectedFragment = new EditProfileFragment();
                 break;
 
