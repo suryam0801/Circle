@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/applicants_nav_item"
+        android:icon="@drawable/applicant_icon"
+        android:title="Applicants" />
+
+    <item
+        android:id="@+id/members_nav_item"
+        android:icon="@drawable/baseline_group_black_18dp"
+        android:title="Members" />
+
+</menu>

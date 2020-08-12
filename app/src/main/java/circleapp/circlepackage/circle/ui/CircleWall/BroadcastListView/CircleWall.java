@@ -452,6 +452,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             Toast.makeText(this, "No Polls exist in this Circle", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void shareFile(File myFilePath){
         Intent intentShareFile = new Intent(Intent.ACTION_SEND);
         if(myFilePath.exists()) {

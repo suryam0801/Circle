@@ -132,5 +132,6 @@ public class CircleRepository {
                 globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(true);
             }
         }
+        globalVariables.setUsersList(null);
     }
 }
