@@ -70,7 +70,6 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
         listView = view.findViewById(R.id.contactView);
         doneBtn = view.findViewById(R.id.done_add_people);
         backBtn = view.findViewById(R.id.back_add_btn);
-        globalVariables.setUsersList(null);
         addPeopleInterface = (AddPeopleInterface) activity;
 //        LoadContacts();
         doneBtn.setOnClickListener(v->{
