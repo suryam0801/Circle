@@ -1,8 +1,7 @@
 package circleapp.circlepackage.circle.ViewModels.EditProfileViewModels;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -16,7 +15,6 @@ import circleapp.circlepackage.circle.DataLayer.UserRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
-import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
 
 public class EditProfileViewModel extends ViewModel {
     private MutableLiveData<Boolean> imageprogress;
@@ -25,8 +23,8 @@ public class EditProfileViewModel extends ViewModel {
     private CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
     private GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<String[]> liveData;
-    private EditProfile editProfileClassTemp;
-    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp) {
+    private FragmentActivity editProfileClassTemp;
+    public MutableLiveData<Boolean> editprofileimage(UserProfileChangeRequest profileUpdates, User user, FragmentActivity editProfileClassTemp) {
         imageprogress = new MutableLiveData<>();
         this.editProfileClassTemp = editProfileClassTemp;
         globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -41,7 +39,7 @@ public class EditProfileViewModel extends ViewModel {
         return imageprogress;
     }
 
-    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, EditProfile editProfileClassTemp){
+    public MutableLiveData<Boolean> editprofilename(UserProfileChangeRequest profileUpdates, User user, FragmentActivity editProfileClassTemp){
         nameprogress = new MutableLiveData<>();
         globalVariables.getAuthenticationToken().getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

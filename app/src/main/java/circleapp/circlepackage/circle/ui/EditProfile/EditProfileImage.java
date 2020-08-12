@@ -8,7 +8,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
@@ -46,11 +46,11 @@ public class EditProfileImage extends AppCompatActivity {
     private String avatar;
     private Uri downloadLink;
     private User user;
-    private EditProfile EditProfileClassTemp;
+    private FragmentActivity EditProfileClassTemp;
     public EditProfileViewModel editProfileViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
     private Button finalizeChanges,profilepicButton, profileuploadButton;
-    public void editProfile(EditProfile EditProfileClass, CircleImageView profileImageView, Button finalizeChanges) {
+    public void editProfile(FragmentActivity EditProfileClass, CircleImageView profileImageView, Button finalizeChanges) {
         this.finalizeChanges = finalizeChanges;
         this.profileImageView = profileImageView;
         this.EditProfileClassTemp = EditProfileClass;

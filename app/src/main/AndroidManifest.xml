@@ -64,9 +64,6 @@
         <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
         <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
         <activity
-            android:name=".ui.EditProfile.EditProfile"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.PersonelDisplay.PersonelDisplay"
             android:screenOrientation="portrait" />
         <activity

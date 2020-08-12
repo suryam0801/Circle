@@ -251,12 +251,6 @@ public class HelperMethodsBL {
         commentsRepository.deleteComment(comment, circleId,broadcastId);
     }
 
-    public static void makeNewFeedback(Map<String, Object> map) {
-
-        FBRepository fbRepository = new FBRepository();
-        fbRepository.makeFeedbackEntry(map);
-    }
-
     public static void updateCirclePersonel(Subscriber subscriber, String circleId){
         CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
         circlePersonnelRepository.updateCirclePersonnel(subscriber.getId(),circleId, subscriber);

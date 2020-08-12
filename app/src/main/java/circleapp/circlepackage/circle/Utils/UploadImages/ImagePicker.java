@@ -91,6 +91,7 @@ public class ImagePicker extends AndroidViewModel {
                 selectedImage = Uri.fromFile(imageFile);
             } else {            /** ALBUM **/
                 selectedImage = imageReturnedIntent.getData();
+                Log.d("File",selectedImage.toString());
             }
 
             bm = getImageResized(selectedImage);
@@ -213,6 +214,7 @@ public class ImagePicker extends AndroidViewModel {
         if(inImage!=null){
             inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
             String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title"+System.currentTimeMillis(), null);
+            Log.d("File",path);
             if(path==null)
                 return  null;
             else
