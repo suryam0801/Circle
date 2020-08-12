@@ -19,12 +19,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="25dp"
+                android:layout_marginRight="75dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -91,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="75dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp">
             <TextView
