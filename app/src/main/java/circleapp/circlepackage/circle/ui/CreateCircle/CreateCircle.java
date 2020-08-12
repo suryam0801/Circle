@@ -122,7 +122,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void showContacts() {
-        AddPeopleBottomSheetDiologue bottomSheetDiologue = new AddPeopleBottomSheetDiologue(CreateCircle.this);
+        AddPeopleBottomSheetDiologue bottomSheetDiologue = new AddPeopleBottomSheetDiologue(CreateCircle.this, false);
         bottomSheetDiologue.show(getSupportFragmentManager(), bottomSheetDiologue.getTag());
         if (globalVariables.getUsersList() != null) {
             addMembersBtn.setText("Added " + globalVariables.getUsersList().size()+ " Members");

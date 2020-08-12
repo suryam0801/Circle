@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
@@ -45,11 +46,14 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     private ContactsViewModel contactsViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
     private LiveData<DataSnapshot> liveData;
-    private CreateCircle activity;
+    private Activity activity;
     private AddPeopleInterface addPeopleInterface;
+    private Boolean isCircleWall;
+    private Circle circle;
 
-    public AddPeopleBottomSheetDiologue(CreateCircle activity) {
+    public AddPeopleBottomSheetDiologue(Activity activity, Boolean isCircleWall) {
         this.activity = activity;
+        this.isCircleWall = isCircleWall;
     }
 
     @NonNull
@@ -59,13 +63,14 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
         final View view = View.inflate(getContext(), R.layout.activity_add_people, null);
 
         dialog.setContentView(view);
+        circle = globalVariables.getCurrentCircle();
         mBehavior = BottomSheetBehavior.from((View) view.getParent());
         mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
         listView = view.findViewById(R.id.contactView);
         doneBtn = view.findViewById(R.id.done_add_people);
         backBtn = view.findViewById(R.id.back_add_btn);
         globalVariables.setUsersList(null);
-        addPeopleInterface = activity;
+        addPeopleInterface = (AddPeopleInterface) activity;
 //        LoadContacts();
         doneBtn.setOnClickListener(v->{
 //            onBackPressed();
@@ -139,9 +144,18 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
                     phn = phn.substring(phn.length()-10);
                     if(cont.containsKey(phn)){
                         if (!contactsList.contains(new Contacts(phn,cont.get(phn)))){
-                            contactsList.add(new Contacts(phn,cont.get(phn)));
-                            addPeopleAdapter.notifyDataSetChanged();
-                            tempUsersList.add(userId);
+                            if(isCircleWall){
+                                if(!circle.getMembersList().containsKey(userId)){
+                                    contactsList.add(new Contacts(phn,cont.get(phn)));
+                                    addPeopleAdapter.notifyDataSetChanged();
+                                    tempUsersList.add(userId);
+                                }
+                            }
+                            else {
+                                contactsList.add(new Contacts(phn,cont.get(phn)));
+                                addPeopleAdapter.notifyDataSetChanged();
+                                tempUsersList.add(userId);
+                            }
                         }else{
                             contactsList.remove(new Contacts(phn,cont.get(phn)));
                             addPeopleAdapter.notifyDataSetChanged();

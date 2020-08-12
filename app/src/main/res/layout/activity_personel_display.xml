@@ -8,74 +8,67 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/circle_members_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/bck_applicants_display"
+                android:layout_width="40dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
 
-        <ImageButton
-            android:id="@+id/bck_applicants_display"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:color/transparent"
-            android:scaleX=".8"
-            android:scaleY=".8"
-            android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Circle Members"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"></TextView>
 
-        <TextView
+            <ImageButton
+                android:id="@+id/add_members_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="15dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_add_members_icon"></ImageButton>
+        </RelativeLayout>
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_below="@id/circle_members_header"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_weight="99"
+            android:id="@+id/fragment_container_circle_members"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/roboto_regular"
-            android:paddingLeft="20dp"
-            android:paddingRight="70dp"
-            android:text="Applicants"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="20dp"></TextView>
-    </LinearLayout>
+            android:layout_above="@id/bottom_navigation_circle_members"/>
 
-    <LinearLayout
-        android:id="@+id/applicants_empty_display"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="167dp"
-            android:layout_height="160dp"
-            android:background="@drawable/no_applicants_place_holder"></ImageView>
-
-        <TextView
-            android:layout_width="248dp"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_circle_members"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
-            android:lineSpacingExtra="5dp"
-            android:paddingTop="43dp"
-            android:text="There are no applicants yet. We will notify you once someone has applied."
-            android:textAlignment="center"
-            android:textColor="#828282"
-            android:textSize="12dp"></TextView>
+            android:paddingBottom="5dp"
+            android:layout_alignParentBottom="true"
+            app:menu="@menu/circle_personel_menu"
+            android:background="@color/white"
+            app:itemHorizontalTranslationEnabled="false">
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/allApplicants_RV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10dp">
-        </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
