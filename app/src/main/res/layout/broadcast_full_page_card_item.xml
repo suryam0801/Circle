@@ -8,16 +8,16 @@
     android:background="@drawable/broadcast_cards"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingLeft="15dp"
-    android:paddingTop="13dp"
-    android:paddingRight="15dp">
+    android:paddingTop="13dp">
 
 
     <RelativeLayout
         android:id="@+id/full_page_broadcast_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -183,19 +183,23 @@
                             android:id="@+id/view_post_button"
                             android:layout_width="130dp"
                             android:layout_height="30dp"
-                            android:background="@drawable/unpressable_button"
+                            android:background="@android:color/transparent"
+                            android:shadowColor="@android:color/transparent"
+                            android:textSize="15dp"
+                            android:textColor="@android:color/holo_blue_light"
                             android:layout_alignParentEnd="true"
                             android:text="View Post"
                             android:textAlignment="textStart"
-                            android:paddingLeft="10dp"
-                            android:textColor="@color/grey"></Button>
+                            android:paddingLeft="10dp"></Button>
                         <Button
                             android:id="@+id/hide_post_button"
                             android:layout_width="130dp"
                             android:layout_height="30dp"
-                            android:background="@drawable/unpressable_button"
+                            android:background="@android:color/transparent"
+                            android:shadowColor="@android:color/transparent"
                             android:layout_alignParentEnd="true"
                             android:text="Hide Post"
+                            android:textSize="15dp"
                             android:textAlignment="textStart"
                             android:paddingLeft="10dp"
                             android:textColor="@color/grey"
@@ -234,7 +238,7 @@
         <LinearLayout
             android:id="@+id/full_page_write_comment_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/unpressable_button"
             android:orientation="horizontal"
@@ -246,14 +250,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="99"
                 android:backgroundTint="@color/white"
-                android:hint="Type your comment..."
+                android:hint="Type a comment"
                 android:imeOptions="actionSend|flagNoEnterAction"
                 android:inputType="textCapSentences|textImeMultiLine|textMultiLine"
+                android:paddingTop="15dp"
+                android:paddingBottom="10dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="#D1D1D1"
-                android:textSize="15dp"></EditText>
+                android:textSize="17dp"
+                android:maxLines="3"
+                android:minLines="1"></EditText>
 
             <Button
                 android:id="@+id/full_page_broadcast_comment_send_button"

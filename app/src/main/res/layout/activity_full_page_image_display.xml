@@ -25,13 +25,14 @@
                 android:src="@drawable/ic_chevron_left_black_24dp"></ImageButton>
 
             <TextView
+                android:id="@+id/full_page_image_header_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/roboto_condensed"
                 android:paddingLeft="20dp"
                 android:paddingRight="70dp"
-                android:text="QR Code"
+                android:text="Scan QR Code to Join this Circle"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20dp"></TextView>

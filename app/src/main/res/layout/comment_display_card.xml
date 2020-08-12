@@ -51,21 +51,23 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
                         android:paddingLeft="15dp"
-                        android:paddingRight="55dp"
-                        android:paddingTop="22dp"
-                        android:paddingBottom="15dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="19dp"
+                        android:paddingBottom="9dp"
                         android:text="Description"
                         android:autoLink="phone|web"
                         android:lineSpacingExtra="3dp"
                         android:textColor="#000000"
-                        android:textSize="14dp"></TextView>
+                        android:textSize="16dp"></TextView>
 
                     <TextView
                         android:id="@+id/comments_object_postedTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/comment_object_comment"
+                        android:layout_alignRight="@+id/comment_object_comment"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginRight="7dp"
                         android:elevation="5dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="00:00 pm"
@@ -101,14 +103,14 @@
                 android:fontFamily="@font/roboto_regular"
                 android:background="@drawable/broadcast_comment_right_align"
                 android:paddingLeft="15dp"
-                android:paddingRight="55dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="10dp"
                 android:text="Description"
                 android:autoLink="phone|web"
                 android:lineSpacingExtra="3dp"
                 android:textColor="#000000"
-                android:textSize="14dp"></TextView>
+                android:textSize="16dp"></TextView>
             <TextView
                 android:id="@+id/right_comments_object_postedTime"
                 android:layout_width="wrap_content"

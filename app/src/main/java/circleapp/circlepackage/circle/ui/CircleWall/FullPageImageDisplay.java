@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 public class FullPageImageDisplay extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class FullPageImageDisplay extends AppCompatActivity {
     private int indexOfBroadcast = 0;
     private ImageButton backButton;
     private LinearLayout qrCodeHeader;
+    private TextView qrCodeHeaderTxt;
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -30,6 +34,7 @@ public class FullPageImageDisplay extends AppCompatActivity {
         setContentView(R.layout.activity_full_page_image_display);
         backButton = findViewById(R.id.bck_fullpage_image_btn);
         qrCodeHeader = findViewById(R.id.qr_code_layout);
+        qrCodeHeaderTxt = findViewById(R.id.full_page_image_header_text);
 
         String uri = getIntent().getStringExtra("uri");
         indexOfBroadcast = getIntent().getIntExtra("indexOfBroadcast",0);
@@ -37,6 +42,7 @@ public class FullPageImageDisplay extends AppCompatActivity {
 
         if(qrCode)
             qrCodeHeader.setVisibility(View.VISIBLE);
+        qrCodeHeaderTxt.setText("Scan QR Code to join "+globalVariables.getCurrentCircle().getName());
 
         PhotoView photoView = findViewById(R.id.full_page_photo_view);
         Glide.with(this)

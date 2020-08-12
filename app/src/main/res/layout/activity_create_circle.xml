@@ -198,16 +198,29 @@
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="#EEEEEE"/>
-                    <Button
-                        android:id="@+id/add_people_btn"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@android:color/transparent"
-                        android:shadowColor="@android:color/transparent"
-                        android:text="Add Members"
-                        android:textSize="14dp"
-                        android:textColor="@android:color/holo_blue_light"></Button>
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_toLeftOf="@+id/add_people_btn"
+                            android:layout_marginRight="10dp"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/ic_person_add_black_24dp"></ImageButton>
+                        <Button
+                            android:id="@+id/add_people_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:shadowColor="@android:color/transparent"
+                            android:layout_centerInParent="true"
+                            android:text="Add Members"
+                            android:textSize="14dp"
+                            android:textColor="@android:color/holo_blue_light"></Button>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <RelativeLayout

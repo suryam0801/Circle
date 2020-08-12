@@ -139,16 +139,6 @@
                 android:textSize="18dp"></TextView>
 
             <ImageButton
-                android:id="@+id/get_qr_code_imagebtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="95dp"
-                android:background="@drawable/qr_code_icon"></ImageButton>
-
-
-            <ImageButton
                 android:id="@+id/applicants_display_creator"
                 android:layout_width="25dp"
                 android:layout_height="25dp"

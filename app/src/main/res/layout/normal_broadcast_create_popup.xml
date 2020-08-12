@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="99"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Create New Broadcast"
+                android:text="Create New Post"
                 android:textColor="#3B3B3B"
                 android:textSize="16dp"></TextView>
 
