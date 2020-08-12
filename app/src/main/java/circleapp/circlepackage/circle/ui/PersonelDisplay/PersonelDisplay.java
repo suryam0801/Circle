@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -15,16 +14,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
-import com.google.gson.Gson;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import circleapp.circlepackage.circle.DataLayer.CircleRepository;
@@ -35,16 +30,10 @@ import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CreateCircle.AddPeopleInterface;
-import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CreateCircle.AddPeopleBottomSheetDiologue;
-import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircle;
-import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
-import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
-import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
-import circleapp.circlepackage.circle.ui.Notifications.NotificationFragment;
 
 public class PersonelDisplay extends AppCompatActivity implements AddPeopleInterface {
 

@@ -21,6 +21,6 @@
 
     <item
         android:id="@+id/search_bottom_nav_item"
-        android:icon="@drawable/default_profile_pic"
-        android:title="EditProfile" />
+        android:icon="@drawable/ic_user"
+        android:title="Profile" />
 </menu>
