@@ -51,8 +51,6 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
 
         back = findViewById(R.id.bck_applicants_display);
         addMembersBtn = findViewById(R.id.add_members_btn);
-        RecyclerView recyclerView = findViewById(R.id.allApplicants_RV);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Button listeners
         back.setOnClickListener(view -> {
