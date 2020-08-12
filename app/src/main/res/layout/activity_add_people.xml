@@ -41,7 +41,7 @@
                 android:layout_marginTop="20dp"
                 android:fontFamily="@font/roboto_regular"
                 android:paddingLeft="10dp"
-                android:text="Add People"
+                android:text="Add Members"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20dp"></TextView>

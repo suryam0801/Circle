@@ -46,5 +46,11 @@
         android:title="Delete circle"
         android:visible="false">
     </item>
+    <item
+        android:id="@+id/share_qr_code_menu_bar"
+        android:title="Share QR Code"
+        android:visible="false"
+        android:icon="@drawable/qr_code_icon">
+    </item>
 
 </menu>

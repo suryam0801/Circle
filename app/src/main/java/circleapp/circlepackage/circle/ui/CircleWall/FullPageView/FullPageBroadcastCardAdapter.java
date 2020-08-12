@@ -231,6 +231,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     private void setButtonListeners(ViewHolder holder, Broadcast currentBroadcast, int position){
 
+        if(!currentBroadcast.isImageExists()&&!currentBroadcast.isPollExists()&&currentBroadcast.getMessage()==null)
+            holder.viewPostButton.setVisibility(View.GONE);
+
         holder.viewPostButton.setOnClickListener(view->{
             //visibility of button
             holder.viewPostImage.setVisibility(View.GONE);

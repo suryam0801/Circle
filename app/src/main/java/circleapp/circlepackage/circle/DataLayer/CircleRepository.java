@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,11 @@ public class CircleRepository {
             User tempUser = dataSnapshot.getValue(User.class);
             if(tempUser!=null){
                 tempLiveData.removeObservers((LifecycleOwner) context);
-                HashMap<String, Boolean> activeCircles = tempUser.getActiveCircles();
+                HashMap<String, Boolean> activeCircles;
+                if(tempUser.getActiveCircles()==null)
+                    activeCircles = new HashMap<>();
+                else
+                    activeCircles = tempUser.getActiveCircles();
                 activeCircles.put(circleId, true);
                 globalVariables.getFBDatabase().getReference("/Users").child(selectedApplicant.getId()).child("activeCircles").setValue(activeCircles);
             }

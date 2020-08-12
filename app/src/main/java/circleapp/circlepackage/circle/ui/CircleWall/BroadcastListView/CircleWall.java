@@ -1,6 +1,5 @@
 package circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,13 +11,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,7 +88,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Circle circle;
     private List<String> allCircleMembers;
     private HashMap<String, Subscriber> listOfMembers;
-    private ImageButton back, moreOptions, qrCodeGenerateBtn;
+    private ImageButton back, moreOptions;
     private User user;
 
     //create broadcast popup ui elements
@@ -166,11 +163,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
         viewApplicants = findViewById(R.id.applicants_display_creator);
         recyclerView = findViewById(R.id.broadcastViewRecyclerView);
-        qrCodeGenerateBtn = findViewById(R.id.get_qr_code_imagebtn);
         allCircleMembers = new ArrayList<>();
         circleBannerName.setText(circle.getName());
 
-        if (circle.getApplicantsList() != null) {
+        if (circle.getApplicantsList() != null && circle.getCreatorID().equals(user.getUserId())) {
             new Tooltip.Builder(viewApplicants)
                     .setText("You have pending applicants")
                     .setTextColor(Color.BLACK)
@@ -240,23 +236,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         blackGetStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
         blackGetStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
         blackGetStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
-
-        qrCodeGenerateBtn.setOnClickListener(v->{
-            Permissions.check(this, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    runQRGenerator();
-                }
-                @Override
-                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
-                    // permission denied, block the feature.
-                }
-            });
-        });
     }
 
     private void runQRGenerator(){
-        String qrHash = circle.getId();
+        String qrHash = "https://worfo.app.link/8JMEs34W96/?"+circle.getId();
         String qrUri = "";
         Bitmap bitmap = Bitmap.createBitmap(200,200,Bitmap.Config.RGB_565);;
         BitMatrix bitMatrix;
@@ -284,7 +267,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         Intent intent = new Intent(CircleWall.this, FullPageImageDisplay.class);
         intent.putExtra("uri", qrUri);
@@ -423,6 +405,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
         if (circle.getCreatorID().equals(user.getUserId()))
             popup.getMenu().findItem(R.id.exportPollsMenuBar).setVisible(true);
+        popup.getMenu().findItem(R.id.share_qr_code_menu_bar).setVisible(true);
 
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(item -> {
@@ -466,6 +449,18 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     break;
                 case "Circle Information":
                     startActivity(new Intent(CircleWall.this, CircleInformation.class));
+                    break;
+                case "Share QR Code":
+                    Permissions.check(this, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
+                        @Override
+                        public void onGranted() {
+                            runQRGenerator();
+                        }
+                        @Override
+                        public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                            // permission denied, block the feature.
+                        }
+                    });
                     break;
             }
             return true;
@@ -556,7 +551,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_3));
-                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     break;
                 case "bg4":
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_4));
@@ -567,14 +561,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_5));
-                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     break;
                 case "bg6":
                     circleBannerName.setTextColor(Color.WHITE);
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
-                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_6));
                     break;
                 case "bg7":
@@ -582,7 +574,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
-                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_7));
                     break;
                 case "bg8":
@@ -590,7 +581,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
-                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_8));
                     break;
                 case "bg9":
@@ -598,7 +588,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     back.setImageResource(R.drawable.ic_chevron_left_white_24dp);
                     moreOptions.setImageResource(R.drawable.ic_baseline_more_white_vert_24);
                     viewApplicants.setImageResource(R.drawable.ic_baseline_group_white_18);
-                    qrCodeGenerateBtn.setBackground(getResources().getDrawable(R.drawable.qr_code_icon_white));
                     parentLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.circle_wall_background_9));
                     break;
                 case "bg10":
