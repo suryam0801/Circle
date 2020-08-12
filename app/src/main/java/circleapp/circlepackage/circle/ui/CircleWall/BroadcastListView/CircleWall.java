@@ -238,44 +238,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         blackGetStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
     }
 
-    private void runQRGenerator(){
-        String qrHash = "https://worfo.app.link/8JMEs34W96/?"+circle.getId();
-        String qrUri = "";
-        Bitmap bitmap = Bitmap.createBitmap(200,200,Bitmap.Config.RGB_565);;
-        BitMatrix bitMatrix;
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        try {
-            bitMatrix = qrCodeWriter.encode(qrHash, BarcodeFormat.QR_CODE,200,200);
-            for(int x = 0; x<200; x++){
-                for (int y=0; y<200; y++){
-                    bitmap.setPixel(x,y,bitMatrix.get(x,y)?Color.BLACK : Color.WHITE);
-                }
-            }
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-        //write to local
-        File path = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        if(!path.exists())
-            path.mkdir();
-        File file = new File(path, "/" + "QRCode "+circle.getName()+".jpg");
-        try (FileOutputStream out = new FileOutputStream(file)) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 80, out);// bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-            qrUri=file.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Intent intent = new Intent(CircleWall.this, FullPageImageDisplay.class);
-        intent.putExtra("uri", qrUri);
-        intent.putExtra("indexOfBroadcast", 0);
-        intent.putExtra("QRCode",true);
-        CircleWall.this.startActivity(intent);
-        CircleWall.this.finish();
-    }
-
     private void setBroadcastObserver(){
         BroadcastsViewModel viewModel = ViewModelProviders.of(this).get(BroadcastsViewModel.class);
         LiveData<String[]> liveData = viewModel.getDataSnapsBroadcastLiveData(circle.getId());
@@ -517,6 +479,43 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
     }
 
+    private void runQRGenerator(){
+        String qrHash = "https://worfo.app.link/8JMEs34W96/?"+circle.getId();
+        String qrUri = "";
+        Bitmap bitmap = Bitmap.createBitmap(200,200,Bitmap.Config.RGB_565);;
+        BitMatrix bitMatrix;
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try {
+            bitMatrix = qrCodeWriter.encode(qrHash, BarcodeFormat.QR_CODE,200,200);
+            for(int x = 0; x<200; x++){
+                for (int y=0; y<200; y++){
+                    bitmap.setPixel(x,y,bitMatrix.get(x,y)?Color.BLACK : Color.WHITE);
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        //write to local
+        File path = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        if(!path.exists())
+            path.mkdir();
+        File file = new File(path, "/" + "QRCode "+circle.getName()+".jpg");
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, out);// bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+            qrUri=file.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Intent intent = new Intent(CircleWall.this, FullPageImageDisplay.class);
+        intent.putExtra("uri", qrUri);
+        intent.putExtra("indexOfBroadcast", 0);
+        intent.putExtra("QRCode",true);
+        CircleWall.this.startActivity(intent);
+        CircleWall.this.finish();
+    }
 
     private void addMembersToCirclePersonel() {
         if(globalVariables.getUsersList()!=null){

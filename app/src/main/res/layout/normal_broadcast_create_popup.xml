@@ -44,7 +44,7 @@
                 android:textColorHint="@color/black20"
                 android:inputType="textCapSentences"
                 android:textColor="@color/black"
-                android:textSize="12dp"></EditText>
+                android:textSize="15dp"></EditText>
 
             <EditText
                 android:id="@+id/broadcastDescriptionEditText"
@@ -63,7 +63,7 @@
                 android:padding="20dp"
                 android:textColorHint="@color/black20"
                 android:textColor="@color/black"
-                android:textSize="12dp"></EditText>
+                android:textSize="13dp"></EditText>
 
         </LinearLayout>
         <LinearLayout

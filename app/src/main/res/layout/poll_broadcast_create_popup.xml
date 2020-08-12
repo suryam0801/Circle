@@ -42,7 +42,7 @@
             android:padding="20dp"
             android:background="@drawable/broadcast_edit_text_background"
             android:textColor="@color/black"
-            android:textSize="12dp"></EditText>
+            android:textSize="15dp"></EditText>
 
         <LinearLayout
             android:id="@+id/poll_create_answer_option_display"
@@ -71,7 +71,7 @@
                 android:textColor="@color/black"
                 android:digits="@string/poll"
                 android:textColorHint="@color/black20"
-                android:textSize="12dp"></EditText>
+                android:textSize="13dp"></EditText>
 
             <Button
                 android:id="@+id/poll_create_answer_option_add_btn"
