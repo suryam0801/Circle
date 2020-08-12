@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.Utils;
 
 import android.app.Application;
 import android.net.Uri;
+import android.view.View;
 
 import com.github.lzyzsd.randomcolor.RandomColor;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,16 @@ public class GlobalVariables extends Application {
     public int involvedCircles = 0;
     RandomColor randomColor = new RandomColor();
     public int[] colors = randomColor.randomColor(10);
+
+    public static View view;
+
+    public static View getEditView(){
+        return view;
+    }
+
+    public static void setEditView(View view){
+        GlobalVariables.view = view;
+    }
 
     public static List<String > getUsersList() {
         return usersList;

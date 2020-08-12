@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Map;
 
 import circleapp.circlepackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.Model.ObjectModels.ReportAbuse;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.MainActivity;
@@ -32,10 +31,6 @@ public class FBRepository {
 
     public FirebaseAuth getAuthToken() {
         return globalVariables.getAuthenticationToken();
-    }
-
-    public void makeFeedbackEntry(Map<String, Object> map) {
-        globalVariables.getFBDatabase().getReference("UserFeedback").child(globalVariables.getCurrentUser().getDistrict()).push().setValue(map);
     }
 
     public void addDistrict(String district) {

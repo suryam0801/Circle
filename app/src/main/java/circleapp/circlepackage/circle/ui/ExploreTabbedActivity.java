@@ -1,10 +1,13 @@
 package circleapp.circlepackage.circle.ui;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +25,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -37,14 +41,15 @@ import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
 import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circlepackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circlepackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
-import circleapp.circlepackage.circle.ui.EditProfile.EditProfile;
+import circleapp.circlepackage.circle.ui.EditProfile.EditProfileFragment;
 import circleapp.circlepackage.circle.ui.Explore.ExploreFragment;
-import circleapp.circlepackage.circle.ui.Feedback.FeedbackFragment;
 import circleapp.circlepackage.circle.ui.MyCircles.WorkbenchFragment;
 import circleapp.circlepackage.circle.ui.Notifications.NotificationFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -73,7 +78,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private CircleImageView profPic;
     private ImageButton scanQrCodeBtn;
     private boolean alreadyMember, alreadyApplicant;
-
+    private static final int PICK_IMAGE_ID = 234;
+    private ImageUpload imageUploadModel;
+    private Uri filePath;
+    private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +91,32 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         initUIElements();
         initObserverForUser();
         setCirclePosition();
+        EditProfileFragment editProfileFragment = new EditProfileFragment();
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            // update UI
+            if(progress==null);
 
+            else if(!progress[1].equals("100")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100")){
+                Log.d("file",filePath.toString());
+                Uri downloadLink = Uri.parse(progress[0]);
+                editProfileFragment.loadGlide(downloadLink,filePath,getApplicationContext());
+//                Log.d("file",editProfileFragment.profileImageView.toString());
+//                Glide.with(ExploreTabbedActivity.this).load(filePath).into(editProfileFragment.profileImageView);
+//                editProfileFragment.finalizeChanges.setVisibility(View.VISIBLE);
+//                user.setProfileImageLink(editProfileFragment.downloadLink.toString());
+//                globalVariables.saveCurrentUser(user);
+                imageUploadProgressDialog.dismiss();
+            }
+        });
         profPicHolder.setOnClickListener(v -> {
             finishAfterTransition();
-            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
+//            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
         });
 
         btnAddCircle.setOnClickListener(v -> {
@@ -117,7 +147,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         location.setText(user.getDistrict());
         intentUri = getIntent().getStringExtra("imagelink");
         shownPopup = false;
-
+        userNameProgressDialogue = new ProgressDialog(this);
+        imageUploadProgressDialog = new ProgressDialog(this);
         //to hide the status and nav bar
         decorView = getWindow().getDecorView();
 
@@ -175,7 +206,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
 
             case R.id.search_bottom_nav_item:
-                selectedFragment = new FeedbackFragment();
+                selectedFragment = new EditProfileFragment();
                 break;
 
         }
@@ -310,11 +341,26 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
-
+    private void uploadUserProfilePic(){
+        imageUploadModel.imageUpload(filePath);
+    }
     @Override
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("OnActivityResult","");
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath= imagePicker.getImageUri(bitmap);
+                if(filePath !=null){
+                    uploadUserProfilePic();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {

@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateToken(User user) {
         String temp_token = FirebaseInstanceId.getInstance().getToken();
+        if(temp_token != null && user != null){
         if (!user.getToken_id().equals(temp_token)){
             user.setToken_id(temp_token);
             globalVariables.getFBDatabase().getReference("Users").child(user.getUserId()).setValue(user).addOnCompleteListener(task -> {
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }else {
             Log.d("Main","Old Token");
+        }
         }
     }
 

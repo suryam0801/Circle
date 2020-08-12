@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -27,11 +28,11 @@ public class EdituserName {
     private ProgressDialog userNameProgressDialogue;
     public EditProfileViewModel editProfileViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
-    private EditProfile EditProfileClassTemp;
+    private FragmentActivity EditProfileClassTemp;
     private User user;
     private TextView userName;
 
-    public void edituserNamedialogue(EditProfile editProfile, TextView userName) {
+    public void edituserNamedialogue(FragmentActivity editProfile, TextView userName) {
         this.userName = userName;
         this.EditProfileClassTemp = editProfile;
         editUserNamedialogue = new Dialog(EditProfileClassTemp);
