@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.R;
@@ -164,6 +165,11 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
 
                     }
                 }
+                if(isCircleWall){
+                    CircleRepository circleRepository = new CircleRepository();
+                    circleRepository.addUsersToCircle(circle);
+                }
+
                 globalVariables.setTempUsersList(tempUsersList);
                 Log.d("ContactInServer",tempUsersList.toString());
                 Log.d("ContactInServerRecycler",contactsList.toString());
