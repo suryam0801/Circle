@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -33,6 +34,7 @@ public class ApplicantsFragment extends Fragment {
     private GlobalVariables globalVariables = new GlobalVariables();
     private ImageButton back;
     private RecyclerView.Adapter adapter;
+    private LinearLayout emptyDisplay;
 
     ApplicantsFragment(){}
 
@@ -49,11 +51,11 @@ public class ApplicantsFragment extends Fragment {
         circle = globalVariables.getCurrentCircle();
         user = globalVariables.getCurrentUser();
 
+        emptyDisplay = view.findViewById(R.id.applicants_empty_display);
         back = view.findViewById(R.id.bck_applicants_display);
         RecyclerView recyclerView = view.findViewById(R.id.allApplicants_RV);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         applicantsList = new ArrayList<>(); //initialize membersList
-
 
         adapter = new ApplicantListAdapter(getContext(), applicantsList, circle);
         if (user.getUserId().equalsIgnoreCase(circle.getCreatorID()))
@@ -73,10 +75,16 @@ public class ApplicantsFragment extends Fragment {
                 case "added":
                     applicantsList.add(subscriber);
                     adapter.notifyDataSetChanged();
+                    if(!applicantsList.isEmpty()){
+                        emptyDisplay.setVisibility(View.GONE);
+                    }
                     break;
                 case "removed":
                     recyclerView.setAdapter(adapter);
                     removeMember(subscriber);
+                    if(!applicantsList.isEmpty()){
+                        emptyDisplay.setVisibility(View.GONE);
+                    }
             }
         });
     }

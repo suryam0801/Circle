@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Circle Members"
+                android:text="Manage Members"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20dp"></TextView>

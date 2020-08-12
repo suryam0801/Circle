@@ -82,6 +82,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
             });
         });
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+        bottomNav.setSelectedItemId(R.id.applicants_nav_item);
         setCircleObserver();
     }
 
