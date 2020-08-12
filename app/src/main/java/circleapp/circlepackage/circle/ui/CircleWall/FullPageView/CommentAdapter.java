@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,11 +85,17 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         holder.rightComment.setText(cmnt);
         holder.rightTimeElapsed.setText(timeString);
-
-        /*holder.rightBackgroundContainer.setOnLongClickListener(v->{
-            showDeleteCommentDialog(comment);
-            return true;
-        });*/
+        if(cmnt.length()<3){
+            holder.timeElapsed.setVisibility(View.GONE);
+            holder.rightTimeElapsed.setVisibility(View.GONE);
+        }
+        if(name.length()>cmnt.length()){
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.END_OF, R.id.comment_object_ownerName);
+            params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.comment_object_comment);
+            params.setMargins(3,0,9,0);
+            holder.timeElapsed.setLayoutParams(params);
+        }
 
         if(user.getUserId().equals(comment.getCommentorId())){
             holder.backgroundContainer.setVisibility(View.GONE);
@@ -104,6 +111,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         int val = name.charAt(0);
         return val%10;
     }
+
+
+    /*holder.rightBackgroundContainer.setOnLongClickListener(v->{
+        showDeleteCommentDialog(comment);
+        return true;
+    });*/
     public void showDeleteCommentDialog(Comment comment){
         deleteCommentConfirmation= new Dialog(mContext);
         deleteCommentConfirmation.setContentView(R.layout.delete_comment_popup);
