@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.nabinbhandari.android.permissions.Permissions;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Subscriber;
@@ -34,6 +36,7 @@ import circleapp.circlepackage.circle.R;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ViewModels.CreateCircle.AddPeopleInterface;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.CreateCircle.AddPeopleBottomSheetDiologue;
@@ -48,6 +51,8 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
     private ImageButton back, addMembersBtn;
     private GlobalVariables globalVariables = new GlobalVariables();
     private Circle circle;
+    private User user;
+    private BottomNavigationView bottomNav;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -58,7 +63,9 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
 
         back = findViewById(R.id.bck_applicants_display);
         addMembersBtn = findViewById(R.id.add_members_btn);
+        bottomNav = findViewById(R.id.bottom_navigation_circle_members);
         circle = globalVariables.getCurrentCircle();
+        user = globalVariables.getCurrentUser();
 
         //Button listeners
         back.setOnClickListener(view -> {
@@ -74,6 +81,8 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
                 }
             });
         });
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        setCircleObserver();
     }
 
     private void showContacts(){
@@ -98,6 +107,21 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
         return true;
     };
 
+    private void setCircleObserver(){
+        circle = globalVariables.getCurrentCircle();
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
+                circle = circleTemp;
+                if (circle.getMembersList().containsKey(user.getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
+                }
+            }
+        });
+    }
+
     private void addMembersToCirclePersonel() {
         if(globalVariables.getUsersList()!=null){
             for(String userId: globalVariables.getUsersList()) {
@@ -111,7 +135,8 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
                     }
                 });
             }
-            globalVariables.setUsersList(null);
+            CircleRepository circleRepository = new CircleRepository();
+            circleRepository.addUsersToCircle(circle);
             Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
         }
     }

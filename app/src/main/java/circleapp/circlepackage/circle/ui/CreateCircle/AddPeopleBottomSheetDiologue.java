@@ -165,10 +165,6 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
 
                     }
                 }
-                if(isCircleWall){
-                    CircleRepository circleRepository = new CircleRepository();
-                    circleRepository.addUsersToCircle(circle);
-                }
 
                 globalVariables.setTempUsersList(tempUsersList);
                 Log.d("ContactInServer",tempUsersList.toString());

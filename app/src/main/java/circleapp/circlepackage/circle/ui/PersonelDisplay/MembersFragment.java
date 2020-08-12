@@ -1,6 +1,7 @@
 package circleapp.circlepackage.circle.ui.PersonelDisplay;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ public class MembersFragment extends Fragment {
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
 
+    MembersFragment(){}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ public class MembersFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_members_list, container, false);
         membersDisplay = view.findViewById(R.id.all_members_RV);
+        Log.d("MemberListView","yoooo");
         loadMembersList();
         return view;
     }
@@ -57,11 +61,11 @@ public class MembersFragment extends Fragment {
         membersDisplay.setAdapter(adapter);
 
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
-
         liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
 
         liveData.observe(this, returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
+            Log.d("MemberListView",subscriber.getName());
             memberList.add(subscriber);
             adapter.notifyDataSetChanged();
             HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);

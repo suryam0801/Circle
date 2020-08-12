@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
+        <ListView
             android:id="@+id/all_members_RV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -19,7 +19,7 @@
             android:layout_marginRight="10dp"
             android:divider="@android:color/transparent"
             android:dividerHeight="10dp">
-        </androidx.recyclerview.widget.RecyclerView>
+        </ListView>
     </LinearLayout>
 
 </LinearLayout>

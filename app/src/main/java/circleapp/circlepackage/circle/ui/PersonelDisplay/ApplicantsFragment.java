@@ -34,6 +34,7 @@ public class ApplicantsFragment extends Fragment {
     private ImageButton back;
     private RecyclerView.Adapter adapter;
 
+    ApplicantsFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
