@@ -40,8 +40,9 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                 JSONObject data = new JSONObject(remoteMessage.getData());
                 String data_title = data.getString("title");
                 String data_body = data.getString("body");
+                String data_data = data.getString("data");
                 Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+data_title+"::"+data_body);
-                sendNotification(data_title,data_body);
+                sendNotification(data_title,data_body, data_data);
                 Log.d(TAG, "onMessageReceived: \n" +
                         "Extra Information: " + data_title+":::"+data_body);
                 String messageTitle = remoteMessage.getNotification().getTitle();
@@ -68,12 +69,14 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
     }
 
     @SuppressLint("NewApi")
-    private void sendNotification(String title, String messageBody) {
+    private void sendNotification(String title, String messageBody, String dataPayload) {
         Log.d("infunc", "NOTIF RECIEVED: "+title+"::"+messageBody);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
         Intent notificationIntent = new Intent(this, MainActivity.class);
+        if(dataPayload!=null)
+            notificationIntent.putExtra("circleId",dataPayload);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder =
@@ -82,7 +85,7 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                         .setSmallIcon(R.mipmap.ic_launcher_foreground)
                         .setPriority(Notification.PRIORITY_MAX)
                         .setContentText(messageBody)
-                        .setAutoCancel(false)
+                        .setAutoCancel(true)
                         .setSound(notifSound);
 
         notificationBuilder.setContentIntent(contentIntent);

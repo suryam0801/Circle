@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GlobalVariables globalVariables = new GlobalVariables();
     private MainActivityViewModel mainActivityViewModel;
+    private String circleId;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
+        circleId = getIntent().getStringExtra("circleId");
 
         setUserUpdatesObserver();
         mainActivityViewModel = ViewModelProviders.of( this).get(MainActivityViewModel.class);
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
             String url = getIntent().getData().toString();
             i.putExtra("imagelink", url);
         }
+        if(circleId!=null)
+            i.putExtra("circleId", circleId);
         startActivity(i);
         finish();
     }

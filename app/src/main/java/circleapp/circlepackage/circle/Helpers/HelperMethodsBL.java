@@ -111,7 +111,7 @@ public class HelperMethodsBL {
     }
 
     //BL
-    public static void pushFCM(String state, String application_state, String tokenId, Notification notification, Broadcast broadcast, String message, String name, String subscriberName, String token_id, String circlename) {
+    public static void pushFCM(String state, String application_state, String tokenId, Notification notification, Broadcast broadcast, String message, String name, String subscriberName, String token_id, String circlename, String circleId) {
         String apiurl = "https://circle-d8cc7.web.app/api/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(apiurl)
@@ -128,7 +128,7 @@ public class HelperMethodsBL {
                     break;
                 String title  = "New Comment added in "+ notification.getCircleName();
                 String body_comment = name+" " + ":" + " "+message ;
-                Call<ResponseBody> call_comment = api.sendpushNotification(tokenId,title,body_comment);
+                Call<ResponseBody> call_comment = api.sendpushNotification(tokenId,title,body_comment, circleId);
                 Log.d("Push",call_comment.toString());
                 call_comment.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -153,7 +153,7 @@ public class HelperMethodsBL {
                     body = broadcast.getPoll().getQuestion();
                 else
                     body = broadcast.getTitle();
-                Call<ResponseBody> call = api.sendpushNotification(tokenId,title_broadcast,body);
+                Call<ResponseBody> call = api.sendpushNotification(tokenId,title_broadcast,body, circleId);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -173,7 +173,7 @@ public class HelperMethodsBL {
             case "new_applicant":
                 String title_applicant  = "New Applicant in "+ circlename;
                 String body_applicant =name;
-                Call<ResponseBody> call_applicant = api.sendpushNotification(token_id,title_applicant,body_applicant);
+                Call<ResponseBody> call_applicant = api.sendpushNotification(token_id,title_applicant,body_applicant, circleId);
                 call_applicant.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -193,7 +193,7 @@ public class HelperMethodsBL {
             case "applicant":
                 String titleapplicant  = "Your Request for "+ notification.getCircleName();
                 String bodyapplicant = application_state;
-                Call<ResponseBody> callapplicant = api.sendpushNotification(tokenId,titleapplicant,bodyapplicant);
+                Call<ResponseBody> callapplicant = api.sendpushNotification(tokenId,titleapplicant,bodyapplicant, null);
                 callapplicant.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {

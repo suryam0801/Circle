@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -61,10 +62,10 @@ import static android.Manifest.permission.CAMERA;
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
-    private CircleImageView profPicHolder;
     private TextView location;
     private User user;
     private String  intentUri;
+    private Circle circle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private BottomNavigationView bottomNav;
@@ -83,6 +84,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private static final int PICK_IMAGE_ID = 234;
     private ImageUpload imageUploadModel;
     private Uri filePath;
+    private String circleIntent;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -90,6 +92,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        circleIntent = getIntent().getStringExtra("circleId");
+        if(circleIntent!=null)
+            goToCircleFromNotif();
         initUIElements();
         initObserverForUser();
         setCirclePosition();
@@ -108,17 +113,8 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 Log.d("file",filePath.toString());
                 Uri downloadLink = Uri.parse(progress[0]);
                 editProfileFragment.loadGlide(downloadLink,filePath,getApplicationContext());
-//                Log.d("file",editProfileFragment.profileImageView.toString());
-//                Glide.with(ExploreTabbedActivity.this).load(filePath).into(editProfileFragment.profileImageView);
-//                editProfileFragment.finalizeChanges.setVisibility(View.VISIBLE);
-//                user.setProfileImageLink(editProfileFragment.downloadLink.toString());
-//                globalVariables.saveCurrentUser(user);
                 imageUploadProgressDialog.dismiss();
             }
-        });
-        profPicHolder.setOnClickListener(v -> {
-            finishAfterTransition();
-//            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
         });
 
         btnAddCircle.setOnClickListener(v -> {
@@ -162,12 +158,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         exploreHeader = findViewById(R.id.exploreHeaderBar);
         scanQrCodeBtn = findViewById(R.id.scan_qr_code_image_btn);
-        profPicHolder = findViewById(R.id.explore_profilePicture);
-        HelperMethodsUI.increaseTouchArea(profPicHolder);
         bottomNav = findViewById(R.id.bottom_navigation);
         btnAddCircle = findViewById(R.id.add_circle_button);
 
-        HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
         scanQrCodeBtn.setOnClickListener(v->{
             Permissions.check(this, new String[]{CAMERA},null, null, new PermissionHandler() {
                 @Override
@@ -182,6 +175,23 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         location.setCompoundDrawables(null,null,null,null);
         location.setText("My Circles");
         exploreHeader.setVisibility(View.VISIBLE);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void goToCircleFromNotif(){
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circleIntent);
+        tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
+                circle = circleTemp;
+                if (circle.getMembersList().containsKey(user.getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
+                    startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
+                    ((Activity) ExploreTabbedActivity.this).finishAfterTransition();
+                }
+            }
+        });
     }
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);

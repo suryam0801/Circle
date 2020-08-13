@@ -54,7 +54,7 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         return new ViewHolder(view);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("Range")
     @Override
     public void onBindViewHolder(@NonNull WorkbenchDisplayAdapter.ViewHolder holder, int position) {

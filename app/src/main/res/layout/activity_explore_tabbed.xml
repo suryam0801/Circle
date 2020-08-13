@@ -71,18 +71,6 @@
         </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     </RelativeLayout>
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/explore_profilePicture"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="685dp"
-        android:layout_marginLeft="185dp"
-        android:layout_marginRight="15dp"
-        android:layout_alignLeft="@id/add_circle_button"
-        android:background="@drawable/ic_account_circle_black_24dp"
-        android:tooltipText="User Details"
-        android:visibility="gone" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_circle_button"
         android:layout_width="60dp"

@@ -51,7 +51,7 @@ public class NotificationRepository {
                             String state = "comment";
                             Log.d("commentnotif",i);
                             if(message!=null)
-                            HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null);
+                            HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null, notification.getCircleId());
                             globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                         }
                     } else {
@@ -84,7 +84,7 @@ public class NotificationRepository {
                             String tokenId = user.getToken_id();
                             String state = "broadcast";
                             if(broadcast!=null)
-                            HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null);
+                            HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null, notification.getCircleId());
                             globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                         }
                     } else {
@@ -99,7 +99,7 @@ public class NotificationRepository {
     public void writeNormalNotifications(Notification notification, String token_id, String name) {
         String state = "applicant";
         String application_state = notification.getState();
-        HelperMethodsBL.pushFCM(state,application_state, token_id,notification,null, null, name,null, null,null);
+        HelperMethodsBL.pushFCM(state,application_state, token_id,notification,null, null, name,null, null,null, notification.getCircleId());
         globalVariables.getFBDatabase().getReference("/Notifications").child(notification.getNotify_to()).child(notification.getNotificationId()).setValue(notification);
     }
 
