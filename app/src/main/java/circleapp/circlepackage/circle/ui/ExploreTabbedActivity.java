@@ -65,7 +65,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private TextView location;
     private User user;
     private String  intentUri;
-    private Circle circle;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
     private String url;
     private BottomNavigationView bottomNav;
@@ -84,7 +83,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private static final int PICK_IMAGE_ID = 234;
     private ImageUpload imageUploadModel;
     private Uri filePath;
-    private String circleIntent;
     private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -92,9 +90,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        circleIntent = getIntent().getStringExtra("circleId");
-        if(circleIntent!=null)
-            goToCircleFromNotif();
         initUIElements();
         initObserverForUser();
         setCirclePosition();
@@ -177,28 +172,13 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         exploreHeader.setVisibility(View.VISIBLE);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void goToCircleFromNotif(){
-        MyCirclesViewModel tempViewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circleIntent);
-        tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
-            Circle circleTemp = dataSnapshot.getValue(Circle.class);
-            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
-                circle = circleTemp;
-                if (circle.getMembersList().containsKey(user.getUserId())) {
-                    globalVariables.saveCurrentCircle(circle);
-                    startActivity(new Intent(ExploreTabbedActivity.this, CircleWall.class));
-                    ((Activity) ExploreTabbedActivity.this).finishAfterTransition();
-                }
-            }
-        });
-    }
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
         tempLiveData.observe((LifecycleOwner) ExploreTabbedActivity.this, dataSnapshot -> {
-            user = dataSnapshot.getValue(User.class);
-            if (user != null) {
+            User tempUser = dataSnapshot.getValue(User.class);
+            if (tempUser != null) {
+                user = tempUser;
                 globalVariables.saveCurrentUser(user);
             }
         });

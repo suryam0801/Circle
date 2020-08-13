@@ -501,7 +501,11 @@ public class HelperMethodsUI {
         else if(broadcast.isImageExists())
             backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_camera_black));
         else
-            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.megaphone));
+        {
+            backgroundPic.setScaleX((float) 0.7);
+            backgroundPic.setScaleY((float) 0.7);
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_add_post_black));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
