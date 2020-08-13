@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,22 +138,23 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     }
 
     private void clearNotifications(User user, Circle circle){
+        HashMap<String, Integer> tempUserNotifStore = new HashMap<>();
         if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 
-            HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
+            tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
             tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
             user.setNotificationsAlert(tempUserNotifStore);
 
         } else { //first time when a user is opening any circle
 
-            HashMap<String, Integer> newUserNotifStore = new HashMap<>();
-            newUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
-            user.setNotificationsAlert(newUserNotifStore);
+            tempUserNotifStore = new HashMap<>();
+            tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
+            user.setNotificationsAlert(tempUserNotifStore);
         }
 
         //Save user
         UserRepository userRepository = new UserRepository();
-        userRepository.updateUser(user);
+        userRepository.updateUserNotificationsAlert(tempUserNotifStore, user);
         globalVariables.saveCurrentCircle(circle);
         globalVariables.saveCurrentUser(user);
     }
