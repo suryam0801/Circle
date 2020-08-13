@@ -40,7 +40,7 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                 JSONObject data = new JSONObject(remoteMessage.getData());
                 String data_title = data.getString("title");
                 String data_body = data.getString("body");
-                String data_data = data.getString("data");
+                String data_data = data.getString("id");
                 Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+data_title+"::"+data_body);
                 sendNotification(data_title,data_body, data_data);
                 Log.d(TAG, "onMessageReceived: \n" +
