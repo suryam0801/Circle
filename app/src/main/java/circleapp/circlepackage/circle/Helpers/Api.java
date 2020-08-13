@@ -12,6 +12,7 @@ public interface Api {
     Call<ResponseBody> sendpushNotification(
             @Field("token") String token,
             @Field("title") String title,
-            @Field("body") String body
+            @Field("body") String body,
+            @Field("id") String id
     );
 }
