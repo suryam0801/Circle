@@ -114,7 +114,7 @@ public class CircleRepository {
 
     public String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, String category) {
         String id = HelperMethodsUI.uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, true);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, true, 1);
         globalVariables.getFBDatabase().getReference("/Circles").child(id).setValue(circle);
         return id;
     }

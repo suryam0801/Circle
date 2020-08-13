@@ -53,7 +53,7 @@ public class FullpageAdapterViewModel {
         CommentsRepository commentsRepository = new CommentsRepository();
         long currentCommentTimeStamp = System.currentTimeMillis();
         String commentId = commentsRepository.getCommentId(circle.getId(),broadcast.getId());
-        Comment comment = new Comment(commentId,user.getName().trim(),commentMessage,user.getUserId(),user.getProfileImageLink(),currentCommentTimeStamp);
+        Comment comment = new Comment(commentId,user.getName().trim(),commentMessage,user.getUserId(),user.getProfileImageLink(),currentCommentTimeStamp,1);
 
         commentsRepository.makeNewComment(comment, circle.getId(), broadcast.getId());
         SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());

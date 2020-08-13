@@ -33,7 +33,7 @@ public class CircleWallViewModel extends ViewModel {
         Broadcast normalBroadcast;
         normalBroadcast = new Broadcast(broadcastId, title, description, null,
                 currentUserName, circle.getMembersList(), currentUserId, false, false, System.currentTimeMillis(), null,
-                user.getProfileImageLink(), System.currentTimeMillis(),true);
+                user.getProfileImageLink(), System.currentTimeMillis(),true,1);
         Log.d("Push viewModel",user.getToken_id());
         SendNotification.sendBCinfo(activity,normalBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, circle.getMembersList(), circle.getBackgroundImageLink(), title);
 
@@ -59,7 +59,7 @@ public class CircleWallViewModel extends ViewModel {
         globalVariables  = new GlobalVariables();
         if (imageExists) {
             photoBroadcast = new Broadcast(broadcastId, title, null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, false, true,
-                    System.currentTimeMillis(), null, user.getProfileImageLink(), System.currentTimeMillis(),true);
+                    System.currentTimeMillis(), null, user.getProfileImageLink(), System.currentTimeMillis(),true,1);
         }
 
 
@@ -89,10 +89,10 @@ public class CircleWallViewModel extends ViewModel {
             Poll poll = new Poll(pollQuestion, options, null);
             if (imageExists) {
                 pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, circle.getMembersList(), currentUserId, true, true,
-                        System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true);
+                        System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
             } else
                 pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, circle.getMembersList(), currentUserId, true, false,
-                        System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true);
+                        System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
         }
         //updating number of broadcasts in circle
         int newCount = circle.getNoOfBroadcasts() + 1;

@@ -252,7 +252,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
 
         circle = new Circle(myCircleID, cName, cDescription, acceptanceType, visibilityType, creatorUserID, creatorName,
                 category, backgroundImageLink, tempUserForMemberList, null, null, user.getDistrict(), user.getWard(),
-                System.currentTimeMillis(), 0, true);
+                System.currentTimeMillis(), 0, true,1);
 
         creatorSubscriber = new Subscriber(user, System.currentTimeMillis());
     }

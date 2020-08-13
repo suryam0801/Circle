@@ -13,6 +13,7 @@ public class User  {
     private HashMap<String, Long> newTimeStampsComments;
     private List<String> mutedBroadcasts;
     private int createdCircles, completedProjects;
+    private long version;
 
 
     public User(){
@@ -23,7 +24,7 @@ public class User  {
                 String profileImageLink, String userId,
                 int createdCircles, HashMap<String, Boolean> activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
-                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> mutedBroadcasts) {
+                HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> mutedBroadcasts, long version) {
         this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
@@ -38,6 +39,7 @@ public class User  {
         this.newTimeStampsComments = newDiscussionAlert;
         this.noOfReadDiscussions = noOfNewComments;
         this.mutedBroadcasts = mutedBroadcasts;
+        this.version = version;
     }
 
     public void setCreatedCircles(int createdCircles) {
@@ -151,6 +153,14 @@ public class User  {
         this.mutedBroadcasts = mutedBroadcasts;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -168,6 +178,7 @@ public class User  {
                 ", createdCircles=" + createdCircles +
                 ", activeCircles=" + activeCircles +
                 ", completedProjects=" + completedProjects +
+                ", version=" + version +
                 '}';
     }
 }

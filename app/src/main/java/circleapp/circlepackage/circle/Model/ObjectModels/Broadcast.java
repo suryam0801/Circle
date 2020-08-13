@@ -7,7 +7,8 @@ public class Broadcast {
     private boolean pollExists, imageExists, adminVisibility;
     private long timeStamp, latestCommentTimestamp;
     private Poll poll;
-    HashMap<String, Boolean> listenersList;
+    private HashMap<String, Boolean> listenersList;
+    private long version;
 
     public boolean isImageExists() {
         return imageExists;
@@ -27,7 +28,7 @@ public class Broadcast {
 
     public Broadcast(String id, String title, String message, String attachmentURI, String creatorName, HashMap<String, Boolean> listenersList,
                      String creatorID, boolean pollExists, boolean imageExists, long timeStamp, Poll poll, String creatorPhotoURI,
-                     long latestCommentTimestamp, boolean adminVisibility) {
+                     long latestCommentTimestamp, boolean adminVisibility, long version) {
         this.id = id;
         this.title = title;
         this.message = message;
@@ -42,6 +43,7 @@ public class Broadcast {
         this.poll = poll;
         this.latestCommentTimestamp = latestCommentTimestamp;
         this.adminVisibility = adminVisibility;
+        this.version = version;
     }
 
     public Broadcast(){
@@ -53,6 +55,14 @@ public class Broadcast {
 
     public void setAdminVisibility(boolean adminVisibility) {
         this.adminVisibility = adminVisibility;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     public Poll getPoll() {
@@ -160,6 +170,7 @@ public class Broadcast {
                 ", latestCommentTimestamp=" + latestCommentTimestamp +
                 ", poll=" + poll +
                 ", adminVisibility=" + adminVisibility +
+                ", version=" + version +
                 '}';
     }
 }

@@ -99,15 +99,15 @@ public class NewUserRegistration extends ViewModel {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
             user = new User(Name, contact, downloadUri.toString(), userId, 0, null, 0, token_id, ward,
-                    district, null, null, null, null);
+                    district, null, null, null, null,1);
         } else if (!avatar.equals("")) {
             HashMap<String, Boolean> interestTag = new HashMap<>();
             interestTag.put("null", true);
             user = new User(Name, contact, avatar, userId, 0, null, 0, token_id, ward, district,
-                    null, null, null, null);
+                    null, null, null, null,1);
         } else {
             user = new User(Name, contact, "default", userId, 0, null, 0,
-                    token_id, ward, district, null, null, null, null);
+                    token_id, ward, district, null, null, null, null,1);
         }
         //storing user as a json in file locally
         //store user in realtime database. (testing possible options for fastest retrieval)

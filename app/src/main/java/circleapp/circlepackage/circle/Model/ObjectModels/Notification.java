@@ -6,9 +6,9 @@ import android.os.Parcelable;
 public class Notification implements Parcelable {
     private String notificationId, circleName,creatorId, circleId, from, notify_to, state, date,broadcastId,circleIcon,type, message;
     private Long timestamp;
+    private long version;
 
     public Notification () {
-
     }
 
     @Override
@@ -25,11 +25,12 @@ public class Notification implements Parcelable {
                 ", date='" + date + '\'' +
                 ", broadcastId='" + broadcastId + '\'' +
                 ", type='" + type + '\'' +
+                ", version=" + version +
                 '}';
     }
 
 
-    public Notification(String circleName,String creatorId, String circleId, String notificationId, String from, String notify_to, String state, Long timestamp, String date, String broadcastId, String circleIcon, String type, String message) {
+    public Notification(String circleName,String creatorId, String circleId, String notificationId, String from, String notify_to, String state, Long timestamp, String date, String broadcastId, String circleIcon, String type, String message, long version) {
         this.circleName = circleName;
         this.circleId = circleId;
         this.creatorId = creatorId;
@@ -43,6 +44,7 @@ public class Notification implements Parcelable {
         this.type = type;
         this.message = message;
         this.notificationId = notificationId;
+        this.version = version;
     }
     public String getNotificationId() {
         return notificationId;
@@ -146,6 +148,14 @@ public class Notification implements Parcelable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     @Override

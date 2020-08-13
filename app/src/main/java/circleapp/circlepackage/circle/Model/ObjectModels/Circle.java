@@ -8,6 +8,7 @@ public class Circle {
     private HashMap<String, Integer> noOfCommentsPerBroadcast;
     private long timestamp;
     private int noOfBroadcasts;
+    private long version;
     private boolean adminVisibility;
 
     public Circle() {
@@ -16,7 +17,7 @@ public class Circle {
     public Circle(String id, String name, String description, String acceptanceType, String visibility, String creatorID,
                   String creatorName, String category, String backgroundImageLink,
                   HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList, HashMap<String, Integer> noOfCommentsPerBroadcast,
-                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, boolean adminVisibility) {
+                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, boolean adminVisibility, long version) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -34,6 +35,7 @@ public class Circle {
         this.noOfBroadcasts = noOfBroadcasts;
         this.noOfCommentsPerBroadcast = noOfCommentsPerBroadcast;
         this.adminVisibility = adminVisibility;
+        this.version = version;
     }
     public boolean isAdminVisibility() {
         return adminVisibility;
@@ -41,6 +43,14 @@ public class Circle {
 
     public void setAdminVisibility(boolean adminVisibility) {
         this.adminVisibility = adminVisibility;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     public String getId() {
@@ -191,6 +201,7 @@ public class Circle {
                 ", timestamp=" + timestamp +
                 ", noOfBroadcasts=" + noOfBroadcasts +
                 ", adminVisibility=" + adminVisibility +
+                ", version=" + version +
                 '}';
     }
 }

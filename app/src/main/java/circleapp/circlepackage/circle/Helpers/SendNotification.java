@@ -25,7 +25,7 @@ public class SendNotification {
             message = message + "...";
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         String getDate = getCurrentDateStamp();
-        Notification notif = new Notification(circleName,userID,circleId,notificationId,creatorName,null,"comment_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
+        Notification notif = new Notification(circleName,userID,circleId,notificationId,creatorName,null,"comment_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message,1);
         notificationRepository.writeCommentNotifications(mContext,notif, listenersList,message,title);
     }
 
@@ -38,7 +38,7 @@ public class SendNotification {
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         String getDate = getCurrentDateStamp();
         Log.d("Push SN",circleName);
-        Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message);
+        Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message,1);
         notificationRepository.writeBroadcastNotifications(context,notif, membersList,broadcast);
 
     }
@@ -51,7 +51,7 @@ public class SendNotification {
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         String from = toUserId;
         String getDate = getCurrentDateStamp();
-        Notification notif = new Notification(circleName,null,circleId,notificationId,from,toUserId,state,System.currentTimeMillis(),getDate,null,null,null,null);
+        Notification notif = new Notification(circleName,null,circleId,notificationId,from,toUserId,state,System.currentTimeMillis(),getDate,null,null,null,null,1);
         notificationRepository.writeNormalNotifications(notif,token_id,name);
     }
 
@@ -69,7 +69,7 @@ public class SendNotification {
         }
     }
     public static void sendApplication(String state, User user, Circle circle, Subscriber subscriber){
-        HelperMethodsBL.pushFCM(state, state,null,null,null,null,null,subscriber.getName(),user.getToken_id(),circle.getName());
+        HelperMethodsBL.pushFCM(state, state,null,null,null,null,null,subscriber.getName(),user.getToken_id(),circle.getName(),circle.getId());
 
     }
 
