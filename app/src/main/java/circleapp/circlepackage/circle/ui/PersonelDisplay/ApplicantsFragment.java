@@ -35,6 +35,7 @@ public class ApplicantsFragment extends Fragment {
     private ImageButton back;
     private RecyclerView.Adapter adapter;
     private LinearLayout emptyDisplay;
+    private LiveData<String[]> liveData;
 
     ApplicantsFragment(){}
 
@@ -66,7 +67,7 @@ public class ApplicantsFragment extends Fragment {
 
     private void setObserverForApplicants(RecyclerView recyclerView){
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
-        LiveData<String[]> liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "applicants");
+        liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "applicants");
 
         liveData.observe(this, returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
@@ -101,5 +102,11 @@ public class ApplicantsFragment extends Fragment {
             }
             position = position + 1;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        liveData.removeObservers(this);
     }
 }

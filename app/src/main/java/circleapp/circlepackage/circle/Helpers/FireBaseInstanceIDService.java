@@ -3,7 +3,6 @@ package circleapp.circlepackage.circle.Helpers;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
-import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -16,10 +15,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -28,10 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import circleapp.circlepackage.circle.R;
-import circleapp.circlepackage.circle.ui.ExploreTabbedActivity;
-
-import static android.provider.Contacts.GroupMembership.GROUP_ID;
-import static circleapp.circlepackage.circle.R.string.default_notification_channel_id;
+import circleapp.circlepackage.circle.ui.MainActivity;
 
 public class FireBaseInstanceIDService extends FirebaseMessagingService {
     private static final String TAG =FireBaseInstanceIDService.class.getSimpleName();
@@ -80,7 +73,7 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Uri notifSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.notif_percussion);
-        Intent notificationIntent = new Intent(this, ExploreTabbedActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder =

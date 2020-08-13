@@ -22,7 +22,7 @@ import circleapp.circlepackage.circle.ViewModels.CreateCircle.AddPeopleInterface
 
 public class AddPeopleAdapter extends RecyclerView.Adapter<AddPeopleAdapter.ViewHolder> {
     private List<Contacts> contactsList;
-    private List<Contacts> tempList = new ArrayList<>();;
+    private List<Contacts> tempList = new ArrayList<>();
     private Context context;
     private GlobalVariables globalVariables = new GlobalVariables();
     private List<String> usersList = new ArrayList<>();
