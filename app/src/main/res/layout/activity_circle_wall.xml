@@ -225,7 +225,7 @@
             android:id="@+id/message_creation_FAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_megaphone"
+            android:src="@drawable/ic_add_post_white"
             fab:fab_label="New Post"
             fab:fab_size="normal" />
 
