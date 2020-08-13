@@ -58,27 +58,23 @@ public class UserRepository {
     }
 
     public void initializeNewCount(Circle c, User user) {
-        HashMap<String, Integer> newNotifs = new HashMap<>();
         if (user.getNotificationsAlert() != null && !user.getNotificationsAlert().containsKey(c.getId())) {
-            newNotifs = new HashMap<>(user.getNotificationsAlert());
+            HashMap<String, Integer> newNotifs = new HashMap<>(user.getNotificationsAlert());
             newNotifs.put(c.getId(), 0);
             user.setNotificationsAlert(newNotifs);
+            updateUser(user);
         } else if (user.getNotificationsAlert() == null) {
-            newNotifs = new HashMap<>();
+            HashMap<String, Integer> newNotifs = new HashMap<>();
             newNotifs.put(c.getId(), 0);
             user.setNotificationsAlert(newNotifs);
+            updateUser(user);
         }
-        updateUserNotificationsAlert(newNotifs,user);
     }
 
     public void updateUser(User user) {
         globalVariables.saveCurrentUser(user);
         globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).setValue(user);
 
-    }
-
-    public void updateUserNotificationsAlert(HashMap<String, Integer> tempUserNotifStore, User user){
-        globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).child("notificationsAlert").setValue(tempUserNotifStore);
     }
 
     public void updateUserReadDiscussions(User user, Broadcast broadcast){
