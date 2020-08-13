@@ -72,4 +72,10 @@ public class MembersFragment extends Fragment {
 
         });
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        liveData.removeObservers(this);
+    }
 }

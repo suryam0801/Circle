@@ -2,7 +2,6 @@ package circleapp.circlepackage.circle.ui.CreateCircle;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import circleapp.circlepackage.circle.DataLayer.CircleRepository;
 import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Model.ObjectModels.Contacts;
 import circleapp.circlepackage.circle.R;
@@ -51,6 +48,7 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     private AddPeopleInterface addPeopleInterface;
     private Boolean isCircleWall;
     private Circle circle;
+    private String ownUserId;
 
     public AddPeopleBottomSheetDiologue(Activity activity, Boolean isCircleWall) {
         this.activity = activity;
@@ -64,6 +62,7 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
         final View view = View.inflate(getContext(), R.layout.activity_add_people, null);
 
         dialog.setContentView(view);
+        ownUserId = globalVariables.getCurrentUser().getUserId();
         circle = globalVariables.getCurrentCircle();
         mBehavior = BottomSheetBehavior.from((View) view.getParent());
         mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
@@ -121,14 +120,14 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     public void GetContactsIntoArrayList(AddPeopleAdapter addPeopleAdapter){
 
         cursor = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null, null, null);
-        HashMap<String, String> cont = new HashMap<>();
+        HashMap<String, String> localContactsList = new HashMap<>();
 
         while (cursor.moveToNext()) {
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            phonenumber = phonenumber.replaceAll(" ", "");
             if(phonenumber.length()>=10)
-                cont.put(phonenumber.substring(phonenumber.length()-10),name);
-
+                localContactsList.put(phonenumber.substring(phonenumber.length()-10),name);
         }
         cursor.close();
 
@@ -140,24 +139,26 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
                 List<String > tempUsersList = new ArrayList<>();
                 for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                     userId = messageSnapshot.getValue().toString();
+                    if(userId.equals(ownUserId))
+                        continue;
                     String phn = messageSnapshot.getKey();
                     phn = phn.substring(phn.length()-10);
-                    if(cont.containsKey(phn)){
-                        if (!contactsList.contains(new Contacts(phn,cont.get(phn)))){
+                    if(localContactsList.containsKey(phn.replaceAll(" ",""))){
+                        if (!contactsList.contains(new Contacts(phn,localContactsList.get(phn)))){
                             if(isCircleWall){
                                 if(!circle.getMembersList().containsKey(userId)){
-                                    contactsList.add(new Contacts(phn,cont.get(phn)));
+                                    contactsList.add(new Contacts(phn,localContactsList.get(phn)));
                                     addPeopleAdapter.notifyDataSetChanged();
                                     tempUsersList.add(userId);
                                 }
                             }
                             else {
-                                contactsList.add(new Contacts(phn,cont.get(phn)));
+                                contactsList.add(new Contacts(phn,localContactsList.get(phn)));
                                 addPeopleAdapter.notifyDataSetChanged();
                                 tempUsersList.add(userId);
                             }
                         }else{
-                            contactsList.remove(new Contacts(phn,cont.get(phn)));
+                            contactsList.remove(new Contacts(phn,localContactsList.get(phn)));
                             addPeopleAdapter.notifyDataSetChanged();
                             tempUsersList.remove(userId);
                         }
@@ -179,5 +180,12 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         globalVariables.setTempUsersList(null);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        contactsList = new ArrayList<>();
+        liveData.removeObservers(this);
     }
 }
