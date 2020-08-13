@@ -1,5 +1,6 @@
 package circleapp.circlepackage.circle.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.net.Uri;
@@ -20,10 +21,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import circleapp.circlepackage.circle.Helpers.SessionStorage;
+import circleapp.circlepackage.circle.Model.ObjectModels.Circle;
 import circleapp.circlepackage.circle.Utils.GlobalVariables;
+import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circlepackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circlepackage.circle.ViewModels.LoginViewModels.MainActivityViewModel;
 import circleapp.circlepackage.circle.Model.ObjectModels.User;
+import circleapp.circlepackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.OnBoarding.get_started_first_page;
 import circleapp.circlepackage.circle.R;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private GlobalVariables globalVariables = new GlobalVariables();
     private MainActivityViewModel mainActivityViewModel;
     private String circleId;
+    private Circle circle;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
     }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setUserUpdatesObserver(){
         if(globalVariables.getAuthenticationToken().getCurrentUser() != null){
             UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) this).get(UserViewModel.class);
@@ -60,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
                     User user = dataSnapshot.getValue(User.class);
                     //for workbench display
                     if(user.getActiveCircles()!=null)
-                    globalVariables.setInvolvedCircles(user.getCreatedCircles()+user.getActiveCircles().size());
+                        globalVariables.setInvolvedCircles(user.getCreatedCircles()+user.getActiveCircles().size());
                     else
                         globalVariables.setInvolvedCircles(user.getCreatedCircles());
                     mainActivityViewModel.saveUserToSession(user);
                     updateToken(user);
-                    sendUserToHome();
+                    sendUserToHome(user);
                 } else {
                     sendUserToLogin();
                 }
@@ -79,18 +85,19 @@ public class MainActivity extends AppCompatActivity {
     private void updateToken(User user) {
         String temp_token = FirebaseInstanceId.getInstance().getToken();
         if(temp_token != null && user != null){
-        if (!user.getToken_id().equals(temp_token)){
-            user.setToken_id(temp_token);
-            globalVariables.getFBDatabase().getReference("Users").child(user.getUserId()).setValue(user).addOnCompleteListener(task -> {
-                Log.d("Main","Token Updates");
-            });
-        }else {
-            Log.d("Main","Old Token");
-        }
+            if (!user.getToken_id().equals(temp_token)){
+                user.setToken_id(temp_token);
+                globalVariables.getFBDatabase().getReference("Users").child(user.getUserId()).setValue(user).addOnCompleteListener(task -> {
+                    Log.d("Main","Token Updates");
+                });
+            }else {
+                Log.d("Main","Old Token");
+            }
         }
     }
 
-    private void sendUserToHome(){
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void sendUserToHome(User user){
         Intent i = new Intent(MainActivity.this, ExploreTabbedActivity.class);
         Uri intentUri = getIntent().getData();
         if (intentUri != null) {
@@ -98,9 +105,26 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra("imagelink", url);
         }
         if(circleId!=null)
-            i.putExtra("circleId", circleId);
+            goToCircleFromNotif(user);
         startActivity(i);
         finish();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void goToCircleFromNotif(User user){
+        MyCirclesViewModel tempViewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circleId);
+        tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
+            Circle circleTemp = dataSnapshot.getValue(Circle.class);
+            if (circleTemp != null&&circleTemp.getMembersList()!=null) {
+                circle = circleTemp;
+                if (circle.getMembersList().containsKey(user.getUserId())) {
+                    globalVariables.saveCurrentCircle(circle);
+                    startActivity(new Intent(MainActivity.this, CircleWall.class));
+                    ((Activity) MainActivity.this).finishAfterTransition();
+                }
+            }
+        });
     }
 
     private void startOnBoarding(){

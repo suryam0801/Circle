@@ -88,8 +88,12 @@ public class HelperMethodsBL {
                 break;
 
             case "view":
-                if(c.getNoOfCommentsPerBroadcast().containsKey(broadcast.getId()))
-                    tempNoOfDiscussion.put(broadcast.getId(), c.getNoOfCommentsPerBroadcast().get(broadcast.getId()));
+                if(c.getNoOfCommentsPerBroadcast()!=null){
+                    if(c.getNoOfCommentsPerBroadcast().containsKey(broadcast.getId()))
+                        tempNoOfDiscussion.put(broadcast.getId(), c.getNoOfCommentsPerBroadcast().get(broadcast.getId()));
+                    else
+                        tempNoOfDiscussion.put(broadcast.getId(), 0);
+                }
                 else
                     tempNoOfDiscussion.put(broadcast.getId(), 0);
                 user.setNoOfReadDiscussions(tempNoOfDiscussion);
