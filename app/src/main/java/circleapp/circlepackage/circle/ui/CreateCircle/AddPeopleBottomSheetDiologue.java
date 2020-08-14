@@ -167,8 +167,6 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
                 }
 
                 globalVariables.setTempUsersList(tempUsersList);
-                Log.d("ContactInServer",tempUsersList.toString());
-                Log.d("ContactInServerRecycler",contactsList.toString());
             }
             else {
                 Log.d("Contacts","Data not exist");
