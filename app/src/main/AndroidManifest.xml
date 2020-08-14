@@ -77,8 +77,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.CircleWall.BroadcastListView.CircleWall"
-            android:screenOrientation="portrait"
-            android:noHistory="true"/>
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
