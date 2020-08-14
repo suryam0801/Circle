@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -275,7 +274,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     globalVariables.saveCurrentCircle(circle);
                     if(circle.getMembersList().get(user.getUserId()).equals("admin")){
                         FABLayout.setVisibility(View.VISIBLE);
-                        emptyDisplay.setVisibility(View.GONE);
                     }
                 }
             }
