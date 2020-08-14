@@ -22,7 +22,7 @@ public class MyCirclesViewModel extends ViewModel {
     @NonNull
     public LiveData<String[]> getDataSnapsWorkbenchCircleLiveData(String userId) {
         String childQueryPath = "membersList/" + userId;
-        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Circles").orderByChild(childQueryPath));
+        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Circles").orderByChild(childQueryPath).equalTo("admin"));
         return liveWorkBenchCircleData;
     }
 
