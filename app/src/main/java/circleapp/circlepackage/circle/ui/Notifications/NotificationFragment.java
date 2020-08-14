@@ -85,7 +85,8 @@ public class NotificationFragment extends Fragment {
         liveData = viewModel.getDataSnapsNotificationsLiveData(user.getUserId());
         liveData.observe(this, returnArray -> {
             Notification notification = new Gson().fromJson(returnArray[0], Notification.class);
-            setNotifsView(notification);
+            if(notification!=null)
+                setNotifsView(notification);
         });
     }
 
