@@ -216,9 +216,9 @@ public class HelperMethodsBL {
 
         }
     }
-    public static void sendUserApplicationToCreator(User user, Subscriber subscriber, Circle circle){
+    public static void sendUserApplicationToCreator(User user, Subscriber subscriber, Circle circle, String role){
         CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
-        circlePersonnelRepository.applyOrJoin(circle, user, subscriber);
+        circlePersonnelRepository.applyOrJoin(circle, user, subscriber, role);
     }
 
     public static void writeReportAbuse(Context context,String circleID,String broadcastID,String commentID,String  creatorID,String  userID,String  reportType){

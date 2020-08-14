@@ -2,6 +2,7 @@ package circleapp.circlepackage.circle.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -17,6 +18,11 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -32,12 +38,16 @@ import circleapp.circlepackage.circle.ui.Login.EntryPage.EntryPage;
 import circleapp.circlepackage.circle.ui.Login.OnBoarding.get_started_first_page;
 import circleapp.circlepackage.circle.R;
 
+import static com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE;
+
 public class MainActivity extends AppCompatActivity {
 
     private GlobalVariables globalVariables = new GlobalVariables();
     private MainActivityViewModel mainActivityViewModel;
     private String circleId;
     private Circle circle;
+    private int APP_UPDATE_PROGRESS = 700;
+    private AppUpdateManager appUpdateManager;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -47,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFormat(PixelFormat.RGB_565);
         circleId = getIntent().getStringExtra("circleId");
+        appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+        checkForUpdates();
 
         setUserUpdatesObserver();
         mainActivityViewModel = ViewModelProviders.of( this).get(MainActivityViewModel.class);
@@ -96,6 +108,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void checkForUpdates(){
+        // Creates instance of the manager.
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(MainActivity.this);
+
+// Returns an intent object that you use to check for an update.
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+// Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                checkUpdatePriority();
+                // Request the update.
+            }
+        });
+    }
+
+    private void checkUpdatePriority(){
+
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.updatePriority() >= 3 //0-5 5 is highest priority update
+                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                try {
+                    startUpdate(appUpdateInfo);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void startUpdate(AppUpdateInfo appUpdateInfo) throws IntentSender.SendIntentException {
+        appUpdateManager.startUpdateFlowForResult(
+                // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                appUpdateInfo,
+                // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                IMMEDIATE,
+                // The current activity making the update request.
+                this,
+                // Include a request code to later monitor this update request.
+                APP_UPDATE_PROGRESS
+                );
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void sendUserToHome(User user){
         Intent i = new Intent(MainActivity.this, ExploreTabbedActivity.class);
@@ -136,6 +196,45 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, EntryPage.class));
         finish();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == APP_UPDATE_PROGRESS) {
+            if (resultCode != RESULT_OK) {
+                checkForUpdates();
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            }
+        }
+    }
+
+    // Checks that the update is not stalled during 'onResume()'.
+// However, you should execute this check at all entry points into the app.
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        appUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(
+                        appUpdateInfo -> {
+                            if (appUpdateInfo.updateAvailability()
+                                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                                // If an in-app update is already running, resume the update.
+                                try {
+                                    appUpdateManager.startUpdateFlowForResult(
+                                            appUpdateInfo,
+                                            IMMEDIATE,
+                                            this,
+                                            APP_UPDATE_PROGRESS);
+                                } catch (IntentSender.SendIntentException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+    }
+
 
     @Override
     protected void onDestroy() {

@@ -57,7 +57,7 @@ public class CircleRepository {
         globalVariables.saveCurrentUser(user);
 
         String key;
-        for(Map.Entry<String, Boolean> entry : circle.getMembersList().entrySet()) {
+        for(Map.Entry<String, String > entry : circle.getMembersList().entrySet()) {
             key = entry.getKey();
             globalVariables.getFBDatabase().getReference("/Users").child(key).child("activeCircles").child(circle.getId()).removeValue();
         }

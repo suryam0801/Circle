@@ -51,9 +51,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
-                android:drawableTop="@drawable/ic_message"
+                android:drawableTop="@drawable/ic_add_post_white"
                 android:gravity="center"
-                android:text="New Broadcast"
+                android:text="New Post"
                 android:textColor="@color/white"></TextView>
 
             <TextView
@@ -81,9 +81,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
-                android:drawableTop="@drawable/ic_message_black"
+                android:drawableTop="@drawable/ic_add_post_black"
                 android:gravity="center"
-                android:text="New Broadcast"
+                android:text="New Post"
                 android:textColor="@color/black"
                 android:visibility="gone"></TextView>
 
