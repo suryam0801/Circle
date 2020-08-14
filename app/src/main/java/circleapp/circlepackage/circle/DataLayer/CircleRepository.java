@@ -124,12 +124,12 @@ public class CircleRepository {
         fbTransactions.runTransactionOnIncrementalValues(1);
     }
 
-    public void addUsersToCircle(Circle c){
+    public void addUsersToCircle(Circle c, String role){
         if(globalVariables.getUsersList()!=null){
 
             for(String userId: globalVariables.getUsersList()){
                 globalVariables.getFBDatabase().getReference("/Users").child(userId).child("activeCircles").child(c.getId()).setValue(true);
-                globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(true);
+                globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(role);
             }
         }
         globalVariables.setUsersList(null);

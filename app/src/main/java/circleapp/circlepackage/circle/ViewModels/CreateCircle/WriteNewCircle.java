@@ -19,7 +19,7 @@ public class WriteNewCircle {
         CircleRepository circleRepository = new CircleRepository();
         circleRepository.createUserMadeCircle(circle, subscriber);
         updateUserObject(user, circle);
-        circleRepository.addUsersToCircle(circle);
+        circleRepository.addUsersToCircle(circle,"admin");
     }
 
     private void updateUserObject(User user, Circle circle){
