@@ -191,7 +191,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             if(circle.getNoOfCommentsPerBroadcast()==null){
                 noOfUserUnread = 0;
             }
-            else if(user.getNoOfReadDiscussions()!=null){
+            else if(!circle.getNoOfCommentsPerBroadcast().containsKey(broadcast.getId())){
+                noOfUserUnread = 0;
+            }
+            else if(user.getNoOfReadDiscussions()!=null&&circle.getNoOfCommentsPerBroadcast().containsKey(broadcast.getId())){
                 if(user.getNoOfReadDiscussions().get(broadcast.getId())==null)
                     noOfUserUnread = circle.getNoOfCommentsPerBroadcast().get(broadcast.getId());
                 else
