@@ -113,6 +113,7 @@ public class WorkbenchFragment extends Fragment {
         liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
         liveData.observe(this, returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
+            Log.d("Circle", circle.toString());
             String modifierType = returnArray[1];
             switch (modifierType) {
                 case "added":

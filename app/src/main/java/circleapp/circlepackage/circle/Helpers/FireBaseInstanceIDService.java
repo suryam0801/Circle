@@ -24,10 +24,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import circleapp.circlepackage.circle.R;
+import circleapp.circlepackage.circle.Utils.GlobalVariables;
 import circleapp.circlepackage.circle.ui.MainActivity;
 
 public class FireBaseInstanceIDService extends FirebaseMessagingService {
     private static final String TAG =FireBaseInstanceIDService.class.getSimpleName();
+    private GlobalVariables globalVariables = new GlobalVariables();
 
     Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
     private static final String channelId = String.valueOf(R.string.default_notification_channel_id);
@@ -42,7 +44,17 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                 String data_body = data.getString("body");
                 String data_data = data.getString("id");
                 Log.d("NOTIFICATION ADAPTER: ", "NOTIF RECIEVED: "+data_title+"::"+data_body);
-                sendNotification(data_title,data_body, data_data);
+                if(data_title.contains("New Comment added in")){
+                    if(globalVariables.getCurrentCircle()!=null){
+                        if(data_data.equals(globalVariables.getCurrentCircle().getId()));
+                        else
+                            sendNotification(data_title,data_body, data_data);
+                    }
+                    else
+                        sendNotification(data_title,data_body, data_data);
+                }
+                else
+                    sendNotification(data_title,data_body, data_data);
                 Log.d(TAG, "onMessageReceived: \n" +
                         "Extra Information: " + data_title+":::"+data_body);
                 String messageTitle = remoteMessage.getNotification().getTitle();
@@ -54,8 +66,6 @@ public class FireBaseInstanceIDService extends FirebaseMessagingService {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     @Override

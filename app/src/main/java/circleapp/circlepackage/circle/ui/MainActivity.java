@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -120,37 +122,23 @@ public class MainActivity extends AppCompatActivity {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                     // For a flexible update, use AppUpdateType.FLEXIBLE
                     && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
-                checkUpdatePriority();
-                // Request the update.
-            }
-        });
-    }
-
-    private void checkUpdatePriority(){
-
-        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.updatePriority() >= 3 //0-5 5 is highest priority update
-                    && appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                Log.d("UptoDate","App");
                 try {
                     startUpdate(appUpdateInfo);
                 } catch (IntentSender.SendIntentException e) {
                     e.printStackTrace();
                 }
+                // Request the update.
             }
         });
     }
 
     private void startUpdate(AppUpdateInfo appUpdateInfo) throws IntentSender.SendIntentException {
         appUpdateManager.startUpdateFlowForResult(
-                // Pass the intent that is returned by 'getAppUpdateInfo()'.
                 appUpdateInfo,
                 // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
                 IMMEDIATE,
-                // The current activity making the update request.
                 this,
-                // Include a request code to later monitor this update request.
                 APP_UPDATE_PROGRESS
                 );
 

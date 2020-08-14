@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class Circle {
     private String id, name, description, acceptanceType, visibility, creatorID, creatorName, circleDistrict, circleWard="", category, backgroundImageLink;
     private HashMap<String, String> membersList;
-    HashMap<String, Boolean> applicantsList;
+    private HashMap<String, Boolean> applicantsList;
     private HashMap<String, Integer> noOfCommentsPerBroadcast;
     private long timestamp;
     private int noOfBroadcasts;
