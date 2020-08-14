@@ -50,7 +50,6 @@ public class MembersFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_members_list, container, false);
         membersDisplay = view.findViewById(R.id.all_members_RV);
-        Log.d("MemberListView","yoooo");
         loadMembersList();
         return view;
     }

@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -109,6 +110,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private CreatePhotoBroadcastDialog photoBroadcastDialog;
     private CreatePollBroadcastDialog pollBroadcastDialog;
     private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto, getStartedText, blackGetStartedBroadcast, blackGetStartedPhoto, blackGetStartedPoll;
+    private RelativeLayout FABLayout;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
@@ -150,6 +152,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
         imagePost = findViewById(R.id.image_creation_FAB);
+        FABLayout = findViewById(R.id.floating_btn_layout);
         getStartedPoll = findViewById(R.id.circle_wall_get_started_poll);
         getStartedBroadcast = findViewById(R.id.circle_wall_get_started_broadcast);
         getStartedPhoto = findViewById(R.id.circle_wall_get_started_image);
@@ -270,6 +273,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 circle = circleTemp;
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
+                    if(circle.getMembersList().get(user.getUserId()).equals("admin"))
+                        FABLayout.setVisibility(View.VISIBLE);
                 }
             }
         });

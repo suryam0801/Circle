@@ -14,7 +14,7 @@ import circleapp.circlepackage.circle.Utils.GlobalVariables;
 public class CirclePersonnelRepository {
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    public void applyOrJoin(Circle circle, User user, Subscriber subscriber) {
+    public void applyOrJoin(Circle circle, User user, Subscriber subscriber, String role) {
         if (("review").equalsIgnoreCase(circle.getAcceptanceType())) {
             globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("applicants").child(user.getUserId()).setValue(subscriber);
             //adding userID to applicants list
@@ -24,7 +24,7 @@ public class CirclePersonnelRepository {
         } else if (("automatic").equalsIgnoreCase(circle.getAcceptanceType())) {
             globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(user.getUserId()).setValue(subscriber);
             //adding userID to members list in circlesReference
-            globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(user.getUserId()).setValue(true);
+            globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(user.getUserId()).setValue(role);
             HashMap<String, Boolean> nowActive = new HashMap<>();
             if(user.getActiveCircles()!=null)
              nowActive = user.getActiveCircles();

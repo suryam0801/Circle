@@ -62,6 +62,7 @@ import static android.Manifest.permission.CAMERA;
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
+    private String role = "admin";
     private TextView location;
     private User user;
     private String  intentUri;
@@ -311,7 +312,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
 
-        HelperMethodsBL.sendUserApplicationToCreator(user, subscriber, circle);
+        HelperMethodsBL.sendUserApplicationToCreator(user, subscriber, circle, role);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

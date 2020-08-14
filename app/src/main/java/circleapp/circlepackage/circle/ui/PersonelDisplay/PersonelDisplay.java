@@ -126,7 +126,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
                 });
             }
             CircleRepository circleRepository = new CircleRepository();
-            circleRepository.addUsersToCircle(circle);
+            circleRepository.addUsersToCircle(circle,"admin");
             Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
         }
     }

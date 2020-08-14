@@ -43,6 +43,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private Dialog circleJoinDialog;
     private User user;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private String role = "admin";
 
     public CircleDisplayAdapter() {
     }
@@ -206,7 +207,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
         CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
 
-        circlePersonnelRepository.applyOrJoin(circle, user, subscriber);
+        circlePersonnelRepository.applyOrJoin(circle, user, subscriber,role);
         SendNotification.sendApplication("new_applicant", user, circle, subscriber);
         if (circle.getAcceptanceType().equalsIgnoreCase("automatic")) {
             title.setText("Successfully Joined!");

@@ -30,6 +30,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     String TAG = "APPLICANT_LIST_ADAPTER";
     private String state;
     private int propic;
+    private String role = "admin";
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;
@@ -80,7 +81,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
             @Override
             public void onClick(View view) {
                 //add user to member list, update users active circle count by 1
-                circleRepository.acceptApplicant(circle.getId(), selectedApplicant, mContext);
+                circleRepository.acceptApplicant(circle.getId(), selectedApplicant, mContext, role);
                 state = "Accepted";
                 SendNotification.sendnotification(state, circle.getId(), circle.getName(), selectedApplicant.getId(),selectedApplicant.getToken_id(),selectedApplicant.getName());
 

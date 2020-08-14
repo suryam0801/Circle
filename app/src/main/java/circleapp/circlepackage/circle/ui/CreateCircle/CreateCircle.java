@@ -243,8 +243,8 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
         String creatorUserID = user.getUserId();
         String creatorName = user.getName();
 
-        HashMap<String, Boolean> tempUserForMemberList = new HashMap<>();
-        tempUserForMemberList.put(creatorUserID, true);
+        HashMap<String, String> tempUserForMemberList = new HashMap<>();
+        tempUserForMemberList.put(creatorUserID, "admin");
         if (downloadLink != null)
             backgroundImageLink = downloadLink.toString();
         else

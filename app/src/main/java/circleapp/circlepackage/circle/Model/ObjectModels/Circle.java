@@ -4,7 +4,8 @@ import java.util.HashMap;
 
 public class Circle {
     private String id, name, description, acceptanceType, visibility, creatorID, creatorName, circleDistrict, circleWard="", category, backgroundImageLink;
-    private HashMap<String, Boolean> membersList, applicantsList;
+    private HashMap<String, String> membersList;
+    private HashMap<String, Boolean> applicantsList;
     private HashMap<String, Integer> noOfCommentsPerBroadcast;
     private long timestamp;
     private int noOfBroadcasts;
@@ -16,7 +17,7 @@ public class Circle {
 
     public Circle(String id, String name, String description, String acceptanceType, String visibility, String creatorID,
                   String creatorName, String category, String backgroundImageLink,
-                  HashMap<String, Boolean> membersList, HashMap<String, Boolean> applicantsList, HashMap<String, Integer> noOfCommentsPerBroadcast,
+                  HashMap<String, String> membersList, HashMap<String, Boolean> applicantsList, HashMap<String, Integer> noOfCommentsPerBroadcast,
                   String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, boolean adminVisibility, long version) {
         this.id = id;
         this.name = name;
@@ -109,11 +110,11 @@ public class Circle {
         this.category = category;
     }
 
-    public HashMap<String, Boolean> getMembersList() {
+    public HashMap<String, String > getMembersList() {
         return membersList;
     }
 
-    public void setMembersList(HashMap<String, Boolean> membersList) {
+    public void setMembersList(HashMap<String, String > membersList) {
         this.membersList = membersList;
     }
 
