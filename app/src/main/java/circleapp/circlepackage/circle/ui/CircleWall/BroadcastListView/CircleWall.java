@@ -273,8 +273,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 circle = circleTemp;
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
-                    if(circle.getMembersList().get(user.getUserId()).equals("admin"))
+                    if(circle.getMembersList().get(user.getUserId()).equals("admin")){
                         FABLayout.setVisibility(View.VISIBLE);
+                        emptyDisplay.setVisibility(View.GONE);
+                    }
                 }
             }
         });
