@@ -38,7 +38,7 @@
             android:textColor="@color/black"
             android:textSize="12sp" />
 
-        <circleapp.circlepackage.circle.ui.Login.OtpVerification.PinEntryEditText
+        <circleapp.circleapppackage.circle.ui.Login.OtpVerification.PinEntryEditText
             android:id="@+id/otp_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:inputType="number"
             android:maxLength="6"
             android:textIsSelectable="false"
-            android:textSize="20sp"></circleapp.circlepackage.circle.ui.Login.OtpVerification.PinEntryEditText>
+            android:textSize="20sp"></circleapp.circleapppackage.circle.ui.Login.OtpVerification.PinEntryEditText>
 
         <TextView
             android:id="@+id/resend_otp_counter"
