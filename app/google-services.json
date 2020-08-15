@@ -8,9 +8,129 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:389814717628:android:ddb322976b79a9403cd4b9",
+        "android_client_info": {
+          "package_name": "circleapp.circleapppackage.circle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389814717628-6tckps8mte9pg55v70s0cvl7u1js47ff.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "circleapp.circleapppackage.circle",
+            "certificate_hash": "e4398e89e8d5af255298a851fca57022caead968"
+          }
+        },
+        {
+          "client_id": "389814717628-no2n4eakise6q25gesd270pgovvj3sc9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "circleapp.circleapppackage.circle",
+            "certificate_hash": "bea9b79ed50c7ac31d996aea75dec474144ae15d"
+          }
+        },
+        {
+          "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwoe0_CD9Z0yzJEwWkit_2vRmivvUjnAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "389814717628-3j7bje3jptlfilvrb5suf0l2b85pr86j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "circle.circleapp.CircleAppiOS"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:389814717628:android:9818909d1ed5957a3cd4b9",
         "android_client_info": {
           "package_name": "circleapp.circlepackage.circle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389814717628-40rc0kr66ts5hnq3omof73l4rqk2kvt1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "circleapp.circlepackage.circle",
+            "certificate_hash": "18a81136852485360c59dff2aa00788bc8116d43"
+          }
+        },
+        {
+          "client_id": "389814717628-e3mjnvvbq2jmb4tgo92at04c2rt1qml4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "circleapp.circlepackage.circle",
+            "certificate_hash": "df617369f8d423cc612666395fc48bd5f68fd3c8"
+          }
+        },
+        {
+          "client_id": "389814717628-kat5tf291ectfjp1srj54igv3h384jf0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "circleapp.circlepackage.circle",
+            "certificate_hash": "235a50e7ddb695ce87ef85046b88e72752f74651"
+          }
+        },
+        {
+          "client_id": "389814717628-bfgs7hfi6bhomisth19dablo0isro1v2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "circleapp.circlepackage.circle",
+            "certificate_hash": "29bfa0f9c7cd89ce37e543cf8293f2ce8ef9d9da"
+          }
+        },
+        {
+          "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwoe0_CD9Z0yzJEwWkit_2vRmivvUjnAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "389814717628-3j7bje3jptlfilvrb5suf0l2b85pr86j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "circle.circleapp.CircleAppiOS"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389814717628:android:2e1c7110780969393cd4b9",
+        "android_client_info": {
+          "package_name": "circleapp.circlepackage.test"
         }
       },
       "oauth_client": [
@@ -30,6 +150,49 @@
             {
               "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "389814717628-3j7bje3jptlfilvrb5suf0l2b85pr86j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "circle.circleapp.CircleAppiOS"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389814717628:android:093edcb71297e75d3cd4b9",
+        "android_client_info": {
+          "package_name": "com.example.circle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwoe0_CD9Z0yzJEwWkit_2vRmivvUjnAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389814717628-d6sbfqjde80b0q1a86rlpsd270clj2p3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "389814717628-3j7bje3jptlfilvrb5suf0l2b85pr86j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "circle.circleapp.CircleAppiOS"
+              }
             }
           ]
         }

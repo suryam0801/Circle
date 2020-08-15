@@ -14,7 +14,6 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
 
 
-
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -34,17 +33,17 @@ android {
     }
 
     defaultConfig {
-        applicationId "circleapp.circlepackage.circle"
+        applicationId "circleapp.circleapppackage.circle"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.4"
+        versionCode 5
+        versionName "1.5"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders = [
-                onesignal_app_id: '2b503464-66fb-4b87-96eb-4689ebc66e1d',
+                onesignal_app_id               : '2b503464-66fb-4b87-96eb-4689ebc66e1d',
                 // Project number pulled from dashboard, local value is ignored.
                 onesignal_google_project_number: 'REMOTE'
         ]

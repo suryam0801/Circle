@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="circleapp.circlepackage.circle">
+    package="circleapp.circleapppackage.circle">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -30,22 +30,22 @@
         tools:replace="android:allowBackup"
         tools:overrideLibrary="com.google.zxing.client.android">
         <activity
-            android:name=".ui.CircleWall.CircleInformation"
+            android:name="circleapp.circleapppackage.circle.ui.CircleWall.CircleInformation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.CircleWall.CircleWallBackgroundPicker"
+            android:name="circleapp.circleapppackage.circle.ui.CircleWall.CircleWallBackgroundPicker"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Explore.ExploreCategoryFilter"
+            android:name="circleapp.circleapppackage.circle.ui.Explore.ExploreCategoryFilter"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.CircleWall.FullPageImageDisplay"
+            android:name="circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.CircleWall.FullPageView.FullPageBroadcastCardView"
+            android:name="circleapp.circleapppackage.circle.ui.CircleWall.FullPageView.FullPageBroadcastCardView"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.CreateCircle.CreateCircleCategoryPicker"
+            android:name="circleapp.circleapppackage.circle.ui.CreateCircle.CreateCircleCategoryPicker"
             android:label="@string/title_activity_create_circle_category_picker"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -57,28 +57,28 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
 
-        <activity android:name=".ui.CircleWall.PollResults.CreatorPollAnswersView" />
-        <activity android:name=".ui.ExploreTabbedActivity"></activity>
-        <activity android:name=".ui.Login.EntryPage.EntryPage" />
-        <activity android:name=".ui.Login.OnBoarding.get_started_first_page" />
-        <activity android:name=".ui.Login.OnBoarding.get_started_second_page" />
-        <activity android:name=".ui.Login.OnBoarding.get_started_third_page" />
+        <activity android:name="circleapp.circleapppackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView" />
+        <activity android:name="circleapp.circleapppackage.circle.ui.ExploreTabbedActivity"></activity>
+        <activity android:name="circleapp.circleapppackage.circle.ui.Login.EntryPage.EntryPage" />
+        <activity android:name="circleapp.circleapppackage.circle.ui.Login.OnBoarding.get_started_first_page" />
+        <activity android:name="circleapp.circleapppackage.circle.ui.Login.OnBoarding.get_started_second_page" />
+        <activity android:name="circleapp.circleapppackage.circle.ui.Login.OnBoarding.get_started_third_page" />
         <activity
-            android:name=".ui.PersonelDisplay.PersonelDisplay"
+            android:name="circleapp.circleapppackage.circle.ui.PersonelDisplay.PersonelDisplay"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Login.UserRegistration.NewUserProfileCreation"
+            android:name="circleapp.circleapppackage.circle.ui.Login.UserRegistration.NewUserProfileCreation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Login.OtpVerification.OtpActivity"
+            android:name="circleapp.circleapppackage.circle.ui.Login.OtpVerification.OtpActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.Login.PhoneNumberEntry.PhoneLogin"
+            android:name="circleapp.circleapppackage.circle.ui.Login.PhoneNumberEntry.PhoneLogin"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.CircleWall.BroadcastListView.CircleWall"
+            android:name="circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.MainActivity">
+        <activity android:name="circleapp.circleapppackage.circle.ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -111,13 +111,13 @@
                     android:scheme="app" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.CreateCircle.CreateCircle"/>
+        <activity android:name="circleapp.circleapppackage.circle.ui.CreateCircle.CreateCircle"/>
         <activity
-            android:name=".ui.Explore.CircleDisplayAdapter"
+            android:name="circleapp.circleapppackage.circle.ui.Explore.CircleDisplayAdapter"
             tools:ignore="Instantiatable" />
 
         <service
-            android:name=".Helpers.FireBaseInstanceIDService"
+            android:name="circleapp.circleapppackage.circle.Helpers.FireBaseInstanceIDService"
             android:directBootAware="true"
             android:stopWithTask="false"
             android:exported="false">
@@ -127,7 +127,7 @@
         </service>
 
         <receiver
-            android:name=".Helpers.FirebaseDataReceiver"
+            android:name="circleapp.circleapppackage.circle.Helpers.FirebaseDataReceiver"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
