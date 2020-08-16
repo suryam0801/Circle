@@ -256,7 +256,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         //Write new comment
 
         holder.addCommentButton.setOnClickListener(view -> {
-            String commentMessage = holder.addCommentEditText.getText().toString().trim();
+            String commentMessage = "";
+            if(holder.addCommentEditText.getText().toString()!=null)
+                commentMessage = holder.addCommentEditText.getText().toString().trim();
             if (!commentMessage.equals("")) {
                 fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle);
             }
