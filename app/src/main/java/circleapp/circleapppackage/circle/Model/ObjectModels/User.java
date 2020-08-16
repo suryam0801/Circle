@@ -6,7 +6,7 @@ import java.util.List;
 public class User  {
 
 
-    private String name, contact, profileImageLink, userId, token_id, district, ward;
+    private String Name, contact, profileImageLink, userId, token_id, district, ward;
     private HashMap<String, Boolean> activeCircles;
     private HashMap<String, Integer> notificationsAlert;
     private HashMap<String, Integer> noOfReadDiscussions;
@@ -25,7 +25,7 @@ public class User  {
                 int createdCircles, HashMap<String, Boolean> activeCircles, int completedProjects, String token_id,
                 String ward, String district, HashMap<String, Integer> notificationsAlert,
                 HashMap<String, Long> newDiscussionAlert, HashMap<String, Integer> noOfNewComments, List<String> mutedBroadcasts, long version) {
-        this.name = Name;
+        this.Name = Name;
         this.contact = contact;
         this.profileImageLink = profileImageLink;
         this.userId = userId;
@@ -82,11 +82,11 @@ public class User  {
         this.profileImageLink = profileImageLink;
     }
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String Name) {
-        this.name = Name;
+        this.Name = Name;
     }
 
     public String getContact() {
@@ -164,7 +164,7 @@ public class User  {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "Name='" + Name + '\'' +
                 ", contact='" + contact + '\'' +
                 ", profileImageLink='" + profileImageLink + '\'' +
                 ", userId='" + userId + '\'' +
