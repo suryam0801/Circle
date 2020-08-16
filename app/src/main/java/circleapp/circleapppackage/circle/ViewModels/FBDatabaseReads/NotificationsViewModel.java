@@ -12,7 +12,7 @@ public class NotificationsViewModel extends ViewModel {
 
     @NonNull
     public LiveData<String[]> getDataSnapsNotificationsLiveData(String userId) {
-        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Notifications").child(userId).orderByChild("timestamp"));
+        FirebaseQueryLiveData liveWorkBenchCircleData = new FirebaseQueryLiveData(globalVariables.getFBDatabase().getReference("/Notifications").child(userId).orderByChild("timestamp").limitToFirst(25));
         return liveWorkBenchCircleData;
     }
 
