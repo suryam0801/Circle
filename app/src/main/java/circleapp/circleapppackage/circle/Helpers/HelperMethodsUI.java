@@ -71,13 +71,11 @@ public class HelperMethodsUI {
     private static GlobalVariables globalVariables = new GlobalVariables();
 
     public static int returnIndexOfMemberList(List<Subscriber> memberList, Subscriber member){
-        int counter = 0;
-        int position = -1;
-        for (Subscriber m : memberList) {
-            if (m.getId().equals(member.getId()))
-                position = counter;
-
-            counter++;
+        int position = 0;
+        for (Subscriber s : memberList) {
+            if (s.getId().equals(member.getId()))
+                return position;
+            position++;
         }
         return position;
     }

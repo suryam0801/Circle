@@ -63,6 +63,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
         });
 
         addMembersBtn.setOnClickListener(v->{
+            globalVariables.setUsersList(null);
             Permissions.check(this, new String[]{Manifest.permission.READ_CONTACTS}, null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {

@@ -5,7 +5,6 @@
     android:paddingLeft="10dp"
     android:id="@+id/member_cell_container"
     android:paddingTop="15dp"
-    android:background="@drawable/create_broadcast_popup_background"
     android:paddingRight="10dp"
     android:paddingBottom="15dp"
     android:elevation="4dp">

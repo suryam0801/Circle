@@ -96,19 +96,13 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return memberList.size();
     }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
 
     public void showMakeAdminDialog(Subscriber member, ViewHolder holder) {
         removeUserDialog = new Dialog(mContext);

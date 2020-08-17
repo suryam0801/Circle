@@ -366,10 +366,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         PopupMenu popup = new PopupMenu(this, moreOptions);
         popup.getMenuInflater()
                 .inflate(R.menu.circle_wall_menu, popup.getMenu());
-        if (circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getCreatorID().equals(user.getUserId())){
             popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
-        else
+            popup.getMenu().findItem(R.id.report_abuseMenubar).setVisible(false);
+        }
+        else{
+            popup.getMenu().findItem(R.id.report_abuseMenubar).setVisible(true);
             popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
+        }
         if (circle.getCreatorID().equals(user.getUserId()))
             popup.getMenu().findItem(R.id.exportPollsMenuBar).setVisible(true);
         popup.getMenu().findItem(R.id.share_qr_code_menu_bar).setVisible(true);
