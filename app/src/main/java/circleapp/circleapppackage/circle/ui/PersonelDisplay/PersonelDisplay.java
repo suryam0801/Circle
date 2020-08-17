@@ -42,6 +42,8 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
     private Circle circle;
     private User user;
     private BottomNavigationView bottomNav;
+    private LiveData<DataSnapshot> tempLiveData;
+    private LiveData<DataSnapshot> circlesPersonelLiveData;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -101,7 +103,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
     private void setCircleObserver(){
         circle = globalVariables.getCurrentCircle();
         MyCirclesViewModel tempViewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
-        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
+        tempLiveData = tempViewModel.getDataSnapsParticularCircleLiveData(circle.getId());
         tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
             Circle circleTemp = dataSnapshot.getValue(Circle.class);
             if (circleTemp != null&&circleTemp.getMembersList()!=null) {
@@ -117,8 +119,8 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
         if(globalVariables.getUsersList()!=null){
             for(String userId: globalVariables.getUsersList()) {
                 UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) this).get(UserViewModel.class);
-                LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(userId);
-                tempLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
+                circlesPersonelLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(userId);
+                circlesPersonelLiveData.observe((LifecycleOwner) this, dataSnapshot -> {
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null) {
                         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());

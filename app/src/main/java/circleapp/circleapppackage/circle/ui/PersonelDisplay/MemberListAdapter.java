@@ -28,6 +28,8 @@ import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static androidx.viewpager.widget.PagerAdapter.POSITION_NONE;
+
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.ViewHolder> {
 
     private Context mContext;

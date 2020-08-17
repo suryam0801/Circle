@@ -74,27 +74,29 @@ public class MembersFragment extends Fragment {
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
         liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
 
-        liveData.observe(getViewLifecycleOwner(), returnArray -> {
+        liveData.observe(this, returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
-            String modifierType = returnArray[1];
-            switch (modifierType) {
-                case "added":
-                    memberList.add(subscriber);
-                    adapter.notifyDataSetChanged();
-                    break;
-                case "changed":
-                    int index = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
-                    memberList.remove(index);
-                    memberList.add(index, subscriber);
-                    adapter.notifyItemChanged(index);
-                    break;
-                case "removed":
-                    memberList.remove(subscriber);
-                    adapter.notifyDataSetChanged();
-                    break;
+            if(subscriber!=null){
+                String modifierType = returnArray[1];
+                switch (modifierType) {
+                    case "added":
+                        if(!memberList.contains(subscriber)){
+                            memberList.add(subscriber);
+                            adapter.notifyDataSetChanged();
+                        }
+                        break;
+                    case "changed":
+                        int index = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
+                        memberList.remove(index);
+                        memberList.add(index, subscriber);
+                        adapter.notifyItemChanged(index);
+                        break;
+                    case "removed":
+                        memberList.remove(subscriber);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
             }
-            Log.d("MemberListView",subscriber.getName());
-
         });
     }
 
