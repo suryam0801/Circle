@@ -7,11 +7,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,13 +21,11 @@ import java.util.Locale;
 
 import circleapp.circleapppackage.circle.DataLayer.CircleRepository;
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsUI;
-import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
-import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchDisplayAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.ViewHolder> {
@@ -42,6 +38,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     private GlobalVariables globalVariables = new GlobalVariables();
     private Dialog removeUserDialog;
 
+    public MemberListAdapter(){}
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList, boolean circleWall) {
         this.mContext = mContext;
@@ -107,6 +104,12 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
         return 0;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
     public void showMakeAdminDialog(Subscriber member, ViewHolder holder) {
         removeUserDialog = new Dialog(mContext);
         removeUserDialog.setContentView(R.layout.remove_member_dialog);
@@ -132,6 +135,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
         private CircleImageView profPic;
         private LinearLayout container;
         private Button removeMember;
+
         public ViewHolder(@NonNull View pview) {
             super(pview);
             container = pview.findViewById(R.id.member_cell_container);
@@ -140,7 +144,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
             profPic = pview.findViewById(R.id.member_profile_picture);
             removeMember = pview.findViewById(R.id.remove_member);
             userRole = pview.findViewById(R.id.member_role);
-
         }
     }
 }
