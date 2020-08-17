@@ -79,6 +79,16 @@ public class CircleRepository {
         globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(user.getUserId()).removeValue();
     }
 
+    public void removeMember(Circle circle, Subscriber member){
+        globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(member.getId()).removeValue();
+        globalVariables.getFBDatabase().getReference("/Users").child(member.getId()).child("activeCircles").child(circle.getId()).removeValue();
+        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(member.getId()).removeValue();
+    }
+
+    public void makeAdmin(Circle circle, Subscriber member){
+        globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(member.getId()).setValue("admin");
+    }
+
     public void acceptApplicant(String circleId, Subscriber selectedApplicant, Context context, String role) {
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("applicants").child(selectedApplicant.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("applicantsList").child(selectedApplicant.getId()).removeValue();
@@ -126,6 +136,5 @@ public class CircleRepository {
                 globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(role);
             }
         }
-        globalVariables.setUsersList(null);
     }
 }

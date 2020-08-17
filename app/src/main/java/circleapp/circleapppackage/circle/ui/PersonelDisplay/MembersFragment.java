@@ -52,18 +52,33 @@ public class MembersFragment extends Fragment {
 
     private void loadMembersList() {
         memberList = new ArrayList<>(); //initialize membersList
-        final MemberListAdapter adapter = new MemberListAdapter(getContext(), memberList);
+        final MemberListAdapter adapter = new MemberListAdapter(getContext(), memberList, true);
         membersDisplay.setAdapter(adapter);
 
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
         liveData = viewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
 
-        liveData.observe(this, returnArray -> {
+        liveData.observe(getViewLifecycleOwner(), returnArray -> {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
+            String modifierType = returnArray[1];
+            switch (modifierType) {
+                case "added":
+                    memberList.add(subscriber);
+                    adapter.notifyDataSetChanged();
+                    HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);
+                    break;
+                case "changed":
+                    int index = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
+                    memberList.remove(index);
+                    memberList.add(index, subscriber);
+                    adapter.notifyDataSetChanged();
+                    break;
+                case "removed":
+                    memberList.remove(subscriber);
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
             Log.d("MemberListView",subscriber.getName());
-            memberList.add(subscriber);
-            adapter.notifyDataSetChanged();
-            HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);
 
         });
     }

@@ -110,7 +110,7 @@ public class CircleInformation extends AppCompatActivity {
 
     private void loadMembersList() {
         memberList = new ArrayList<>(); //initialize membersList
-        final MemberListAdapter adapter = new MemberListAdapter(this, memberList);
+        final MemberListAdapter adapter = new MemberListAdapter(this, memberList, false);
         membersDisplay.setAdapter(adapter);
 
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);

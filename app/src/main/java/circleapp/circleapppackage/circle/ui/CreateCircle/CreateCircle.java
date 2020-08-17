@@ -206,6 +206,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
         });
 
         addMembersBtn.setOnClickListener(v -> {
+            globalVariables.setUsersList(null);
             Permissions.check(this, new String[]{Manifest.permission.READ_CONTACTS}, null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {

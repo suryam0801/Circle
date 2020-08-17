@@ -30,7 +30,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     String TAG = "APPLICANT_LIST_ADAPTER";
     private String state;
     private int propic;
-    private String role = "admin";
+    private String role = "normal";
 
     public ApplicantListAdapter(Context mContext, List<Subscriber> ApplicantList, Circle circle) {
         this.mContext = mContext;

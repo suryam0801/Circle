@@ -42,7 +42,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
     private Dialog circleJoinDialog;
     private User user;
     private GlobalVariables globalVariables = new GlobalVariables();
-    private String role = "admin";
+    private String role = "normal";
 
     public CircleDisplayAdapter() {
     }

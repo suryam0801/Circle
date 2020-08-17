@@ -110,7 +110,7 @@ public class WorkbenchFragment extends Fragment {
     private void circlesObserver(){
         MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
         liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
-        liveData.observe(this, returnArray -> {
+        liveData.observe(getViewLifecycleOwner(), returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
             String modifierType = returnArray[1];
             switch (modifierType) {
