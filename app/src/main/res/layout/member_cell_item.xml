@@ -5,9 +5,10 @@
     android:paddingLeft="10dp"
     android:id="@+id/member_cell_container"
     android:paddingTop="15dp"
-    android:background="@color/white_transparent"
+    android:background="@drawable/create_broadcast_popup_background"
     android:paddingRight="10dp"
-    android:paddingBottom="15dp">
+    android:paddingBottom="15dp"
+    android:elevation="4dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,7 +18,8 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/member_profile_picture"
             android:layout_width="55dp"
-            android:layout_height="55dp"/>
+            android:layout_height="55dp"
+            android:src="@color/md_red_300"/>
 
     </LinearLayout>
 

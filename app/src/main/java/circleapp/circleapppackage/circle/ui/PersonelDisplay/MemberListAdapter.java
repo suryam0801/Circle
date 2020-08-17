@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,6 +12,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,35 +29,72 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
+import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchDisplayAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MemberListAdapter extends BaseAdapter {
+public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.ViewHolder> {
 
     private Context mContext;
     private Circle circle;
     private User user;
     private List<Subscriber> memberList;
-    private TextView name, timeElapsed, userRole;
-    private CircleImageView profPic;
-    private LinearLayout container;
     private boolean circleWall;
     private GlobalVariables globalVariables = new GlobalVariables();
     private Dialog removeUserDialog;
-    private Button removeMember;
+
 
     public MemberListAdapter(Context mContext, List<Subscriber> memberList, boolean circleWall) {
         this.mContext = mContext;
         this.memberList = memberList;
         this.circleWall = circleWall;
     }
+
+    @NonNull
     @Override
-    public int getCount() {
-        return memberList.size();
+    public MemberListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.member_cell_item, viewGroup, false);
+        return new MemberListAdapter.ViewHolder(view);
     }
 
     @Override
-    public Object getItem(int position) {
-        return memberList.get(position);
+    public void onBindViewHolder(@NonNull MemberListAdapter.ViewHolder holder, int position) {
+
+        final Subscriber member = memberList.get(position);
+        if(circleWall){
+            circle = globalVariables.getCurrentCircle();
+            user = globalVariables.getCurrentUser();
+            String userId = user.getUserId();
+            if(circle.getMembersList().get(userId).equals("admin")){
+                if(circle.getMembersList().get(member.getId())!=null){
+                    if(circle.getMembersList().get(member.getId()).equals("admin")){
+                        holder.removeMember.setVisibility(View.GONE);
+                        holder.userRole.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        holder.container.setOnLongClickListener(v->{
+                            showMakeAdminDialog(member, holder);
+                            return true;
+                        });
+                        holder.removeMember.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            holder.removeMember.setOnClickListener(v->{
+                CircleRepository circleRepository = new CircleRepository();
+                circleRepository.removeMember(circle, member);
+            });
+        }
+        HelperMethodsUI.setUserProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), holder.profPic);
+
+        //Set text for TextView
+        final String nameDisplay = member.getName();
+        holder.name.setText(nameDisplay);
+
+        long createdTime =member.getTimestamp();
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+        String dateString = formatter.format(new Date(createdTime));
+        holder.timeElapsed.setText("Member since " + dateString);
     }
 
     @Override
@@ -62,58 +103,11 @@ public class MemberListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        final View pview = View.inflate(mContext, R.layout.member_cell_item, null);
-
-        container = pview.findViewById(R.id.member_cell_container);
-        name = pview.findViewById(R.id.member_name);
-        timeElapsed = pview.findViewById(R.id.member_since_display);
-        profPic = pview.findViewById(R.id.member_profile_picture);
-        removeMember = pview.findViewById(R.id.remove_member);
-        userRole = pview.findViewById(R.id.member_role);
-
-        final Subscriber member = memberList.get(position);
-
-        if(circleWall){
-            circle = globalVariables.getCurrentCircle();
-            user = globalVariables.getCurrentUser();
-            String userId = user.getUserId();
-            if(circle.getMembersList().get(userId).equals("admin")){
-                if(circle.getMembersList().get(member.getId())!=null){
-                    if(circle.getMembersList().get(member.getId()).equals("admin")){
-                        removeMember.setVisibility(View.GONE);
-                        userRole.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
-                        container.setOnLongClickListener(v->{
-                            showMakeAdminDialog(member);
-                            return true;
-                        });
-                        removeMember.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-            removeMember.setOnClickListener(v->{
-                CircleRepository circleRepository = new CircleRepository();
-                circleRepository.removeMember(circle, member);
-            });
-        }
-        HelperMethodsUI.setUserProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), profPic);
-
-        //Set text for TextView
-        final String nameDisplay = member.getName();
-        name.setText(nameDisplay);
-
-        long createdTime =member.getTimestamp();
-        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        String dateString = formatter.format(new Date(createdTime));
-        timeElapsed.setText("Member since " + dateString);
-
-        return pview;
+    public int getItemCount() {
+        return 0;
     }
 
-    public void showMakeAdminDialog(Subscriber member) {
+    public void showMakeAdminDialog(Subscriber member, ViewHolder holder) {
         removeUserDialog = new Dialog(mContext);
         removeUserDialog.setContentView(R.layout.remove_member_dialog);
         final Button closeDialogButton = removeUserDialog.findViewById(R.id.make_admin_confirm_btn);
@@ -122,8 +116,8 @@ public class MemberListAdapter extends BaseAdapter {
         closeDialogButton.setOnClickListener(view -> {
             CircleRepository circleRepository = new CircleRepository();
             circleRepository.makeAdmin(circle, member);
-            userRole.setVisibility(View.VISIBLE);
-            removeMember.setVisibility(View.GONE);
+            holder.userRole.setVisibility(View.VISIBLE);
+            holder.removeMember.setVisibility(View.GONE);
             removeUserDialog.dismiss();
         });
 
@@ -131,5 +125,22 @@ public class MemberListAdapter extends BaseAdapter {
 
         removeUserDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         removeUserDialog.show();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView name, timeElapsed, userRole;
+        private CircleImageView profPic;
+        private LinearLayout container;
+        private Button removeMember;
+        public ViewHolder(@NonNull View pview) {
+            super(pview);
+            container = pview.findViewById(R.id.member_cell_container);
+            name = pview.findViewById(R.id.member_name);
+            timeElapsed = pview.findViewById(R.id.member_since_display);
+            profPic = pview.findViewById(R.id.member_profile_picture);
+            removeMember = pview.findViewById(R.id.remove_member);
+            userRole = pview.findViewById(R.id.member_role);
+
+        }
     }
 }

@@ -5,11 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
@@ -22,16 +24,30 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
+import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchDisplayAdapter;
+import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchFragment;
 
 public class MembersFragment extends Fragment {
 
-    private ListView membersDisplay;
-    private List<Subscriber> memberList;
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView membersDisplay;
+    private RecyclerView.Adapter adapter;
+    private List<Subscriber> memberList= new ArrayList<>();
     private Circle circle;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
 
     MembersFragment(){}
+
+    public static MembersFragment newInstance(String param1, String param2) {
+        MembersFragment fragment = new MembersFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,8 +67,11 @@ public class MembersFragment extends Fragment {
     }
 
     private void loadMembersList() {
-        memberList = new ArrayList<>(); //initialize membersList
-        final MemberListAdapter adapter = new MemberListAdapter(getContext(), memberList, true);
+        //initialize membersList
+        membersDisplay.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        membersDisplay.setLayoutManager(layoutManager);
+        adapter = new MemberListAdapter(getActivity(), memberList,true);
         membersDisplay.setAdapter(adapter);
 
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
@@ -65,13 +84,12 @@ public class MembersFragment extends Fragment {
                 case "added":
                     memberList.add(subscriber);
                     adapter.notifyDataSetChanged();
-                    HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);
                     break;
                 case "changed":
                     int index = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
                     memberList.remove(index);
                     memberList.add(index, subscriber);
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyItemChanged(index);
                     break;
                 case "removed":
                     memberList.remove(subscriber);
