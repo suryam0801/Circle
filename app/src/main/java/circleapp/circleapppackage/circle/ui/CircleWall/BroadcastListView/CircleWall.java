@@ -166,7 +166,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         allCircleMembers = new ArrayList<>();
         circleBannerName.setText(circle.getName());
 
-        if (circle.getApplicantsList() != null && circle.getCreatorID().equals(user.getUserId())) {
+        if (circle.getApplicantsList() != null && circle.getMembersList().get(user.getUserId()).equals("admin")) {
             new Tooltip.Builder(viewApplicants)
                     .setText("You have pending applicants")
                     .setTextColor(Color.BLACK)
@@ -190,7 +190,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 }
             }
         }
-        if(user.getUserId().equals(circle.getCreatorID()))
+        if(circle.getMembersList().get(user.getUserId()).equals("admin"))
             setCircleMembersObserver();
     }
 
@@ -217,7 +217,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         //set applicants button visible
-        if (circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getMembersList().get(user.getUserId()).equals("admin"))
             viewApplicants.setVisibility(View.VISIBLE);
 
         viewApplicants.setOnClickListener(view -> {
