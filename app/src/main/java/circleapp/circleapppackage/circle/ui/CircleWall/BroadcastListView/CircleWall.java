@@ -109,7 +109,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private CreatePhotoBroadcastDialog photoBroadcastDialog;
     private CreatePollBroadcastDialog pollBroadcastDialog;
     private TextView getStartedPoll, getStartedBroadcast, getStartedPhoto, getStartedText, blackGetStartedBroadcast, blackGetStartedPhoto, blackGetStartedPoll;
-    private RelativeLayout FABLayout;
     //elements for loading broadcasts, setting recycler view, and passing objects into adapter
     List<Broadcast> broadcastList = new ArrayList<>();
 
@@ -151,7 +150,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         poll = findViewById(R.id.poll_creation_FAB);
         newPost = findViewById(R.id.message_creation_FAB);
         imagePost = findViewById(R.id.image_creation_FAB);
-        FABLayout = findViewById(R.id.floating_btn_layout);
         getStartedPoll = findViewById(R.id.circle_wall_get_started_poll);
         getStartedBroadcast = findViewById(R.id.circle_wall_get_started_broadcast);
         getStartedPhoto = findViewById(R.id.circle_wall_get_started_image);
@@ -168,7 +166,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         allCircleMembers = new ArrayList<>();
         circleBannerName.setText(circle.getName());
 
-        if (circle.getApplicantsList() != null && circle.getCreatorID().equals(user.getUserId())) {
+        if (circle.getApplicantsList() != null && circle.getMembersList().get(user.getUserId()).equals("admin")) {
             new Tooltip.Builder(viewApplicants)
                     .setText("You have pending applicants")
                     .setTextColor(Color.BLACK)
@@ -192,7 +190,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 }
             }
         }
-        if(user.getUserId().equals(circle.getCreatorID()))
+        if(circle.getMembersList().get(user.getUserId()).equals("admin"))
             setCircleMembersObserver();
     }
 
@@ -219,7 +217,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         //set applicants button visible
-        if (circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getMembersList().get(user.getUserId()).equals("admin"))
             viewApplicants.setVisibility(View.VISIBLE);
 
         viewApplicants.setOnClickListener(view -> {
@@ -272,9 +270,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 circle = circleTemp;
                 if (circle.getMembersList().containsKey(user.getUserId())) {
                     globalVariables.saveCurrentCircle(circle);
-                    if(circle.getMembersList().get(user.getUserId()).equals("admin")){
-                        FABLayout.setVisibility(View.VISIBLE);
-                    }
                 }
             }
         });
@@ -366,11 +361,15 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         PopupMenu popup = new PopupMenu(this, moreOptions);
         popup.getMenuInflater()
                 .inflate(R.menu.circle_wall_menu, popup.getMenu());
-        if (circle.getCreatorID().equals(user.getUserId()))
+        if (circle.getMembersList().get(user.getUserId()).equals("admin")){
             popup.getMenu().findItem(R.id.deleteCircleMenuBar).setVisible(true);
-        else
+            popup.getMenu().findItem(R.id.report_abuseMenubar).setVisible(false);
+        }
+        else{
+            popup.getMenu().findItem(R.id.report_abuseMenubar).setVisible(true);
             popup.getMenu().findItem(R.id.exitCircleMenuBar).setVisible(true);
-        if (circle.getCreatorID().equals(user.getUserId()))
+        }
+        if (circle.getMembersList().get(user.getUserId()).equals("admin"))
             popup.getMenu().findItem(R.id.exportPollsMenuBar).setVisible(true);
         popup.getMenu().findItem(R.id.share_qr_code_menu_bar).setVisible(true);
 

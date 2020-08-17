@@ -89,6 +89,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
     private void setUIElements() {
         //Initialize all UI elements in the CreateCircle activity
         user = globalVariables.getCurrentUser();
+        globalVariables.setUsersList(null);
         visibiltyHeading = findViewById(R.id.circle_visibility_heading_text);
         acceptanceHeading = findViewById(R.id.acceptance_heading);
         acceptancePrompt = findViewById(R.id.acceptance_textview);
@@ -206,6 +207,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
         });
 
         addMembersBtn.setOnClickListener(v -> {
+            globalVariables.setUsersList(null);
             Permissions.check(this, new String[]{Manifest.permission.READ_CONTACTS}, null, null, new PermissionHandler() {
                 @Override
                 public void onGranted() {

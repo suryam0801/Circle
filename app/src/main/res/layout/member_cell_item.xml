@@ -6,7 +6,8 @@
     android:id="@+id/member_cell_container"
     android:paddingTop="15dp"
     android:paddingRight="10dp"
-    android:paddingBottom="15dp">
+    android:paddingBottom="15dp"
+    android:elevation="4dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -16,17 +17,18 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/member_profile_picture"
             android:layout_width="55dp"
-            android:layout_height="55dp"/>
+            android:layout_height="55dp"
+            android:src="@color/md_red_300"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
         android:layout_marginLeft="17dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -36,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Name"
+                android:text="Mr. Full Name McAlister"
                 android:textColor="#000000"
                 android:textSize="16dp" />
 
@@ -46,9 +48,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Android Developer"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:text="Since 2019"
                 android:textColor="#D1D1D1"
                 android:textSize="12dp" />
-        </LinearLayout>
+            <TextView
+                android:id="@+id/member_role"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="10dp"
+                android:text="Admin"
+                android:textColor="@color/md_green_500"
+                android:textSize="15dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/remove_member"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:padding="2dp"
+                android:textSize="15dp"
+                android:textColor="@color/md_red_300"
+                android:text="Remove Member"
+                android:visibility="gone"></Button>
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

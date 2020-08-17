@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -31,6 +33,7 @@ import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circleapppackage.circle.ui.ExploreTabbedActivity;
+import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchDisplayAdapter;
 import circleapp.circleapppackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,8 +42,9 @@ public class CircleInformation extends AppCompatActivity {
     private ImageView banner;
     private CircleImageView logo;
     private TextView creatorName, circleName, circleDescription;
-    private ListView membersDisplay;
-    private List<Subscriber> memberList;
+    private RecyclerView membersDisplay;
+    private RecyclerView.Adapter adapter;
+    private List<Subscriber> memberList = new ArrayList<>();
     private Circle circle;
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
@@ -108,9 +112,12 @@ public class CircleInformation extends AppCompatActivity {
         }
     }
 
-    private void loadMembersList() {
-        memberList = new ArrayList<>(); //initialize membersList
-        final MemberListAdapter adapter = new MemberListAdapter(this, memberList);
+    private void loadMembersList(){
+         //initialize membersList
+        membersDisplay.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        membersDisplay.setLayoutManager(layoutManager);
+        adapter = new MemberListAdapter(this, memberList, false);
         membersDisplay.setAdapter(adapter);
 
         CirclePersonnelViewModel viewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
@@ -121,8 +128,6 @@ public class CircleInformation extends AppCompatActivity {
             Subscriber subscriber = new Gson().fromJson(returnArray[0], Subscriber.class);
             memberList.add(subscriber);
             adapter.notifyDataSetChanged();
-            HelperMethodsUI.setListViewHeightBasedOnChildren(membersDisplay);
-
         });
     }
 

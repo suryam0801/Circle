@@ -61,7 +61,7 @@ import static android.Manifest.permission.CAMERA;
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
-    private String role = "admin";
+    private String role = "normal";
     private TextView location;
     private User user;
     private String  intentUri;

@@ -139,7 +139,7 @@ public class ExploreFragment extends Fragment {
         ExploreCirclesViewModel viewModel = ViewModelProviders.of(this).get(ExploreCirclesViewModel.class);
         liveData = viewModel.getDataSnapsExploreCircleLiveData(user.getDistrict());
 
-        liveData.observe(this, returnArray -> {
+        liveData.observe(getViewLifecycleOwner(), returnArray -> {
             Circle circle = new Gson().fromJson(returnArray[0], Circle.class);
             String modifierType = returnArray[1];
             switch (modifierType) {

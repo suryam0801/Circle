@@ -59,6 +59,7 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Comment;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Notification;
+import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
@@ -68,6 +69,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HelperMethodsUI {
     private static GlobalVariables globalVariables = new GlobalVariables();
+
+    public static int returnIndexOfMemberList(List<Subscriber> memberList, Subscriber member){
+        int counter = 0;
+        int position = -1;
+        for (Subscriber m : memberList) {
+            if (m.getId().equals(member.getId()))
+                position = counter;
+
+            counter++;
+        }
+        return position;
+    }
 //UI
     public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
         int counter = 0;
