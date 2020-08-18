@@ -128,7 +128,11 @@ public class HelperMethodsBL {
                 if(globalVariables.getCurrentUser().getToken_id().equals(tokenId))
                     break;
                 String title  = "New Comment added in "+ notification.getCircleName();
-                String body_comment = name+" " + ":" + " "+message ;
+                String body_comment;
+                if(message.contains("https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com"))
+                    body_comment = name+" " + ":" + " "+"[Photo]";
+                else
+                    body_comment = name+" " + ":" + " "+message ;
                 Call<ResponseBody> call_comment = api.sendpushNotification(tokenId,title,body_comment, circleId);
                 Log.d("Push",call_comment.toString());
                 call_comment.enqueue(new Callback<ResponseBody>() {
