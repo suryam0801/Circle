@@ -64,9 +64,36 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
         final Comment comment = CommentList.get(position);
+        setCommentValues(holder, comment);
+        String body = comment.getComment();
+
+        if(body.contains("https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com")){
+            holder.backgroundContainer.setVisibility(View.GONE);
+            holder.rightBackgroundContainer.setVisibility(View.GONE);
+            if(user.getUserId().equals(comment.getCommentorId())){
+                holder.imageBackgroundContainer.setVisibility(View.GONE);
+            }
+            else {
+                holder.rightImageBackgroundContainer.setVisibility(View.GONE);
+            }
+        }
+        else {
+            holder.rightImageBackgroundContainer.setVisibility(View.GONE);
+            holder.imageBackgroundContainer.setVisibility(View.GONE);
+            if(user.getUserId().equals(comment.getCommentorId())){
+                holder.backgroundContainer.setVisibility(View.GONE);
+            }
+            else {
+                holder.rightBackgroundContainer.setVisibility(View.GONE);
+            }
+        }
+
+    }
+
+    private void setCommentValues(ViewHolder holder, Comment comment){
+
         final String name = comment.getCommentorName();
         final String cmnt = comment.getComment();
-
         final long createdTime = comment.getTimestamp();
 
         String pattern = "hh:mm a";
@@ -74,91 +101,63 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Date date = new Date(createdTime);
         String timeString = simpleDateFormat.format(date);
 
-        if(cmnt.contains("https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com")){
-            if(user.getUserId().equals(comment.getCommentorId())){
-                holder.userName.setText(name);
-                holder.timeElapsed.setVisibility(View.GONE);
-                holder.comment.setVisibility(View.GONE);
-                holder.imageTimeStamp.setVisibility(View.VISIBLE);
-                holder.commentImage.setVisibility(View.VISIBLE);
-                holder.commentImageUpload.setVisibility(View.VISIBLE);
+        holder.userName.setText(name);
+        holder.comment.setText(cmnt);
+        holder.timeElapsed.setText(timeString);
+        holder.imageTimeStamp.setText(timeString);
+        holder.rightImageTimeStamp.setText(timeString);
 
-                Glide.with((Activity) mContext)
-                        .load(cmnt)
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                holder.commentImageUpload.setVisibility(View.GONE);
-                                return false;
-                            }
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                holder.commentImageUpload.setVisibility(View.GONE);
-                                return false;
-                            }
-                        })
-                        .into(holder.commentImage);
-                holder.imageTimeStamp.setText(timeString);
-            }
-            else {
-                holder.rightTimeElapsed.setVisibility(View.GONE);
-                holder.rightComment.setVisibility(View.GONE);
-                holder.rightImageTimeStamp.setVisibility(View.VISIBLE);
-                holder.rightCommentImage.setVisibility(View.VISIBLE);
-                holder.rightCommentImageUpload.setVisibility(View.VISIBLE);
+        //For username color change
+        int[] color = globalVariables.getColorsForUsername();
+        int hash = arrayValForName(name);
+        if(hash<10&&hash>=0)
+            holder.userName.setTextColor(color[hash]);
 
-                Glide.with((Activity) mContext)
-                        .load(cmnt)
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                holder.rightCommentImageUpload.setVisibility(View.GONE);
-                                return false;
-                            }
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                holder.rightCommentImageUpload.setVisibility(View.GONE);
-                                return false;
-                            }
-                        })
-                        .into(holder.rightCommentImage);
-                holder.rightImageTimeStamp.setText(timeString);
-            }
-
+        holder.rightComment.setText(cmnt);
+        holder.rightTimeElapsed.setText(timeString);
+        if(cmnt.length()<3){
+            holder.timeElapsed.setVisibility(View.GONE);
+            holder.rightTimeElapsed.setVisibility(View.GONE);
         }
-        else {
-            holder.userName.setText(name);
-            holder.comment.setText(cmnt);
-            holder.timeElapsed.setText(timeString);
-            //For username color change
-            int[] color = globalVariables.getColorsForUsername();
-            int hash = arrayValForName(name);
-            if(hash<10&&hash>=0)
-                holder.userName.setTextColor(color[hash]);
-
-            holder.rightComment.setText(cmnt);
-            holder.rightTimeElapsed.setText(timeString);
-            if(cmnt.length()<3){
-                holder.timeElapsed.setVisibility(View.GONE);
-                holder.rightTimeElapsed.setVisibility(View.GONE);
-            }
-            if(name.length()>cmnt.length()){
-                RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.addRule(RelativeLayout.END_OF, R.id.comment_object_ownerName);
-                params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.comment_object_comment);
-                params.setMargins(3,0,9,0);
-                holder.timeElapsed.setLayoutParams(params);
-            }
+        if(name.length()>cmnt.length()){
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.END_OF, R.id.comment_object_ownerName);
+            params.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.comment_object_comment);
+            params.setMargins(3,0,9,0);
+            holder.timeElapsed.setLayoutParams(params);
         }
 
-        if(user.getUserId().equals(comment.getCommentorId())){
-            holder.backgroundContainer.setVisibility(View.GONE);
-            holder.rightBackgroundContainer.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.backgroundContainer.setVisibility(View.VISIBLE);
-            holder.rightBackgroundContainer.setVisibility(View.GONE);
-        }
+        Glide.with((Activity) mContext)
+                .load(cmnt)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.commentImageUpload.setVisibility(View.GONE);
+                        return false;
+                    }
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.commentImageUpload.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.commentImage);
+
+        Glide.with((Activity) mContext)
+                .load(cmnt)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.rightCommentImageUpload.setVisibility(View.GONE);
+                        return false;
+                    }
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.rightCommentImageUpload.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.rightCommentImage);
     }
 
     private int arrayValForName(String name){
@@ -208,7 +207,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         private TextView userName;
         private TextView comment, rightComment;
         private TextView timeElapsed, rightTimeElapsed;
-        private LinearLayout backgroundContainer, rightBackgroundContainer;
+        private LinearLayout backgroundContainer, rightBackgroundContainer, imageBackgroundContainer, rightImageBackgroundContainer;
         private PhotoView commentImage, rightCommentImage;
         private TextView imageTimeStamp, rightImageTimeStamp;
         private ProgressBar commentImageUpload, rightCommentImageUpload;
@@ -218,6 +217,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             Bundle params1 = new Bundle();
             params1.putString("newCommentsViewed", "noOfComments");
 
+            imageBackgroundContainer = view.findViewById(R.id.image_comment_display_background_container);
             backgroundContainer = view.findViewById(R.id.comment_display_background_container);
             userName = view.findViewById(R.id.comment_object_ownerName);
             comment = view.findViewById(R.id.comment_object_comment);
@@ -226,6 +226,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             imageTimeStamp = view.findViewById(R.id.comment_image_postedTime);
             commentImageUpload = view.findViewById(R.id.comment_image_upload_progress);
 
+            rightImageBackgroundContainer = view.findViewById(R.id.image_right_comment_display_background_container);
             rightBackgroundContainer = view.findViewById(R.id.right_comment_display_background_container);
             rightComment = view.findViewById(R.id.right_comment_object_comment);
             rightTimeElapsed = view.findViewById(R.id.right_comments_object_postedTime);
