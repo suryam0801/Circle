@@ -268,4 +268,18 @@ public class HelperMethodsBL {
         user.setNoOfReadDiscussions(noOfReadDiscussions);
         userRepository.updateUser(user);
     }
+
+    public static void updateCircleName(Circle circle, String name){
+        CircleRepository circleRepository = new CircleRepository();
+        circleRepository.updateCircleName(circle.getId(),name);
+        circle.setName(name);
+        globalVariables.saveCurrentCircle(circle);
+    }
+
+    public static void updateCircleDescription(Circle circle, String description){
+        CircleRepository circleRepository = new CircleRepository();
+        circleRepository.updateCircleDescription(circle.getId(), description);
+        circle.setDescription(description);
+        globalVariables.saveCurrentCircle(circle);
+    }
 }

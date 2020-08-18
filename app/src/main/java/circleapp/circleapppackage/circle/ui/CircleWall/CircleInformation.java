@@ -1,14 +1,18 @@
 package circleapp.circleapppackage.circle.ui.CircleWall;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +28,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import circleapp.circleapppackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
@@ -33,7 +38,6 @@ import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circleapppackage.circle.ui.ExploreTabbedActivity;
-import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchDisplayAdapter;
 import circleapp.circleapppackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,19 +52,27 @@ public class CircleInformation extends AppCompatActivity {
     private Circle circle;
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
-    private ImageButton back;
+    private ImageButton backBtn, editCircleNameBtn, editCircleDescBtn;
     private int indexValue;
     private LiveData<String[]> liveData;
+    private Dialog editCircleNameDialog, editCircleDescDialog;
     private GlobalVariables globalVariables = new GlobalVariables();
+    private boolean isCircleWall;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_information);
+
+        isCircleWall = getIntent().getBooleanExtra("circle_wall_nav",false);
+
         initUIElements();
+        if(isCircleWall)
+            ifActionFromCircleWall();
+
         //back button
-        back.setOnClickListener(view -> {//go back to circle wall
+        backBtn.setOnClickListener(view -> {//go back to circle wall
             if (indexValue == -1) {
                 finishAfterTransition();
                 startActivity(new Intent(CircleInformation.this, CircleWall.class));
@@ -71,6 +83,7 @@ public class CircleInformation extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
     @Override
     public void onPause() {
@@ -78,6 +91,7 @@ public class CircleInformation extends AppCompatActivity {
         liveData.removeObservers(this);
         super.onPause();
     }
+    @SuppressLint("ResourceType")
     private void initUIElements(){
         circle = globalVariables.getCurrentCircle();
         user = globalVariables.getCurrentUser();
@@ -91,11 +105,13 @@ public class CircleInformation extends AppCompatActivity {
         membersDisplay = findViewById(R.id.circle_info_members_display);
         noPermissionToViewMembers = findViewById(R.id.circle_info_members_not_available);
         noMembersDisplay = findViewById(R.id.circle_info_empty_membersList);
-        back = findViewById(R.id.bck_circle_information);
+        backBtn = findViewById(R.id.bck_circle_information);
+        editCircleDescBtn = findViewById(R.id.edit_circle_desc_btn);
+        editCircleNameBtn = findViewById(R.id.edit_circle_name_btn);
 
         creatorName.setText(circle.getCreatorName());
-        circleName.setText(circle.getName());
-        circleDescription.setText(circle.getDescription());
+        circleName.setText(globalVariables.getCurrentCircle().getName());
+        circleDescription.setText(globalVariables.getCurrentCircle().getDescription());
         HelperMethodsUI.createDefaultCircleIcon(circle,this,logo);
         //setting circle banner
         setBannerBackground(circle.getCategory());
@@ -110,6 +126,64 @@ public class CircleInformation extends AppCompatActivity {
         } else {
             noMembersDisplay.setVisibility(View.VISIBLE);
         }
+
+    }
+
+    private void ifActionFromCircleWall(){
+        //Check if user is admin
+        if(circle.getMembersList().get(user.getUserId()).equals("admin")){
+            editCircleNameBtn.setVisibility(View.VISIBLE);
+            editCircleDescBtn.setVisibility(View.VISIBLE);
+            editCircleDescDialog =new Dialog(this);
+            editCircleNameDialog = new Dialog(this);
+
+            editCircleNameDialog.setContentView(R.layout.edit_circle_name_dialog);
+            editCircleDescDialog.setContentView(R.layout.edit_circle_desc_dialog);
+
+            editCircleNameBtn.setOnClickListener(v->{
+                showEditCircleNameDialog();
+            });
+
+            editCircleDescBtn.setOnClickListener(v->{
+                showEditCircleDescDialog();
+            });
+        }
+    }
+
+    private void showEditCircleNameDialog(){
+        final EditText changeName = editCircleNameDialog.findViewById(R.id.edit_circle_name_edittext);
+        final Button change = editCircleNameDialog.findViewById(R.id.edit_circle_name_Button);
+        change.setOnClickListener(v->{
+            if(!changeName.getText().toString().isEmpty()) {
+                HelperMethodsBL.updateCircleName(circle, changeName.getText().toString());
+                circleName.setText(changeName.getText().toString());
+                Toast.makeText(this,"Changed Name Successfully",Toast.LENGTH_SHORT).show();
+                editCircleNameDialog.dismiss();
+            }
+            else {
+                Toast.makeText(this,"No change",Toast.LENGTH_SHORT).show();
+                editCircleNameDialog.dismiss();
+            }
+        });
+        editCircleNameDialog.show();
+    }
+
+    private void showEditCircleDescDialog(){
+        final EditText changeDesc = editCircleDescDialog.findViewById(R.id.edit_circle_desc);
+        final Button change = editCircleDescDialog.findViewById(R.id.edit_circle_desc_Button);
+        change.setOnClickListener(v->{
+            if(!changeDesc.getText().toString().isEmpty()) {
+                HelperMethodsBL.updateCircleDescription(circle, changeDesc.getText().toString());
+                circleDescription.setText(changeDesc.getText().toString());
+                Toast.makeText(this,"Changed Description Successfully",Toast.LENGTH_SHORT).show();
+                editCircleDescDialog.dismiss();
+            }
+            else {
+                Toast.makeText(this,"No change",Toast.LENGTH_SHORT).show();
+                editCircleDescDialog.dismiss();
+            }
+        });
+        editCircleDescDialog.show();
     }
 
     private void loadMembersList(){

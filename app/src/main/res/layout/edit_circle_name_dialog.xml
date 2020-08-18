@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tag_picker_popup_background"
+    android:layout_gravity="center"
+    android:gravity="center"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Circle Name"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/grey"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="35dp"
+        android:textSize="14dp">
+    </TextView>
+    <EditText
+        android:id="@+id/edit_circle_name_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:backgroundTint="#ACA9A9"
+        android:textColorHint="#ACA9A9"
+        android:fontFamily="@font/roboto_medium"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textSize="15dp"
+        android:ems="10"
+        android:nextFocusDown="@id/registerButton"
+        android:inputType="textPersonName"
+        android:imeOptions="actionDone"
+        android:digits="@string/username"
+        android:textColor="@color/black"/>
+    <Button
+        android:id="@+id/edit_circle_name_Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/gradient_button"
+        android:fontFamily="@font/roboto_black"
+        android:gravity="start|center"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:layout_marginBottom="20dp"
+        android:text="Change"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFFFF"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textAlignment="center"
+        android:textSize="18dp" />
+
+</LinearLayout>

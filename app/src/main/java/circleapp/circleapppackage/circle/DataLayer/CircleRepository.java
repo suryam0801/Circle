@@ -137,4 +137,12 @@ public class CircleRepository {
             }
         }
     }
+
+    public void updateCircleName(String circleId, String name){
+        globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("name").setValue(name);
+    }
+
+    public void updateCircleDescription(String circleId, String description){
+        globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("description").setValue(description);
+    }
 }
