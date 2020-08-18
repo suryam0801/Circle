@@ -126,7 +126,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             }
 
         }
-
         else {
             holder.userName.setText(name);
             holder.comment.setText(cmnt);
