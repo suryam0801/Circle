@@ -263,6 +263,18 @@
                 android:maxLines="3"
                 android:minLines="1"></EditText>
 
+            <ImageButton
+                android:id="@+id/comment_image_upload"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="15dp"
+                android:visibility="visible"
+                android:src="@drawable/camera_grey"
+                android:background="@color/white_transparent"></ImageButton>
+
             <Button
                 android:id="@+id/full_page_broadcast_comment_send_button"
                 style="?android:attr/borderlessButtonStyle"

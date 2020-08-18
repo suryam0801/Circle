@@ -21,6 +21,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -45,7 +46,7 @@ public class CreatePhotoBroadcastDialog {
     private TextView addPhotoText;
     private Button btnUploadPhotoBroadcast, cancelPhotoButton;
     private Activity activity;
-    public ImageView addPhoto;
+    public PhotoView addPhoto;
     private CircleWall circleWall;
     private Uri downloadLink;
     private GlobalVariables globalVariables;
