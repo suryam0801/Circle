@@ -1,16 +1,21 @@
 package circleapp.circleapppackage.circle.ui.CircleWall.FullPageView;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +43,8 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
+import circleapp.circleapppackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circleapppackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
@@ -46,8 +53,9 @@ import circleapp.circleapppackage.circle.ui.CircleWall.CircleWallBackgroundPicke
 import circleapp.circleapppackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circleapppackage.circle.ui.PersonelDisplay.PersonelDisplay;
 
-public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
+public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 
+    private Uri filePath, downloadLink;
     private User user;
     private Circle circle;
     private List<Broadcast> broadcastList;
@@ -59,6 +67,10 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
     private RecyclerView recyclerView;
     private GlobalVariables globalVariables = new GlobalVariables();
     private Dialog reportAbuseDialog;
+    private ImageUpload imageUploadModel;
+    private ProgressDialog imageUploadProgressDialog;
+    private static final int PICK_IMAGE_ID = 234;
+    private RecyclerView.Adapter adapter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -71,6 +83,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         setParentBgImage();
         setCircleObserver();
         initObserverForUser();
+        setImageUploadObserver();
         //Go back to home
         back.setOnClickListener(view -> {
             onBackPressed();
@@ -89,7 +102,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition);
+        adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition);
         recyclerView.setAdapter(adapter);
 
         snapHelper.attachToRecyclerView(recyclerView);
@@ -97,6 +110,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         recyclerView.scrollToPosition(initialBroadcastPosition);
     }
     private void setUIElements(){
+        imageUploadProgressDialog = new ProgressDialog(this);
         reportAbuseDialog = new Dialog(this);
         recyclerView = findViewById(R.id.full_page_broadcast_card_recycler_view);
         banner = findViewById(R.id.full_page_broadcast_banner_name);
@@ -137,6 +151,33 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
                 globalVariables.saveCurrentCircle(circle);
             }
         });
+    }
+
+    private void setImageUploadObserver() {
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            // update UI
+            if(progress==null);
+
+            else if(progress[1].equals("-1")){
+                imageUploadProgressDialog.dismiss();
+                Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
+            }
+
+            else if(!progress[1].equals("100")){
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            }
+            else if(progress[1].equals("100")){
+                downloadLink = Uri.parse(progress[0]);
+                if(!downloadLink.toString().contains("content://media"))
+                    globalVariables.setCommentDownloadLink(downloadLink);
+                adapter.notifyDataSetChanged();
+                imageUploadProgressDialog.dismiss();
+            }
+        });
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -366,6 +407,29 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
                     parentLayout.setBackgroundColor(Color.WHITE);
                     break;
             }
+        }
+    }
+
+    private void uploadPicture(){
+        imageUploadModel.imageUpload(filePath);
+    }
+
+    //code for upload the image
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case PICK_IMAGE_ID:
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath = imagePicker.getImageUri(bitmap);
+                if(filePath !=null){
+                    uploadPicture();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 

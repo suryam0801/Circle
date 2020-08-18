@@ -23,6 +23,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
@@ -59,7 +60,7 @@ public class CreatePollBroadcastDialog {
 
     private GlobalVariables globalVariables = new GlobalVariables();
     private LinearLayout pollOptionsDisplay, pollImageUploadInitiation;
-    public ImageView pollAddPhoto;
+    public PhotoView pollAddPhoto;
     private CircleWallViewModel circleWallViewModel;
     public void showCreatePollBroadcastDialog(Activity activity) {
         this.activity = activity;

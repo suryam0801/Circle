@@ -1,8 +1,10 @@
 package circleapp.circleapppackage.circle.ui.CircleWall.FullPageView;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,8 @@ import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,15 +50,19 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Poll;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
+import circleapp.circleapppackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circleapppackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
+import circleapp.circleapppackage.circle.ViewModels.CircleWall.ImageUrlViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circleapppackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.Manifest.permission.CAMERA;
+
 public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageBroadcastCardAdapter.ViewHolder>{
-    private Context mContext;
+    private Activity mContext;
     private List<Broadcast> broadcastList;
     private Circle circle;
     private User user;
@@ -71,8 +79,10 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private String mPrevKey = "";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LiveData<String []> loadMoreLiveData, initLiveData;
+    private boolean isDownloadLinkActive = false;
+    private ImageUrlViewModel  imageUrlViewModel = new ImageUrlViewModel();
 
-    public FullPageBroadcastCardAdapter(Context mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
+    public FullPageBroadcastCardAdapter(Activity mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
         this.broadcastList = broadcastList;
         this.circle = circle;
@@ -95,6 +105,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         currentBroadcast = broadcastList.get(position);
         user = globalVariables.getCurrentUser();
         setCircleObserver();
+        setImageActiveListener(holder);
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -107,6 +118,20 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
     }
 
+    private void setImageActiveListener(ViewHolder holder){
+        imageUrlViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(ImageUrlViewModel.class);
+        imageUrlViewModel.listenForLocationUpdates(isDownloadLinkActive).observe((LifecycleOwner) mContext, imageUpdates -> {
+            if(imageUpdates&&globalVariables.getCommentDownloadLink()!=null)
+            {
+                String commentMessage = globalVariables.getCommentDownloadLink().toString();
+                if (!commentMessage.equals("")) {
+                    fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle);
+                }
+                holder.addCommentEditText.setText("");
+                globalVariables.setCommentDownloadLink(null);
+            }
+        });
+    }
 
     private void setCircleObserver(){
         circle = globalVariables.getCurrentCircle();
@@ -266,6 +291,21 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.notificationToggle.setOnClickListener(view -> {
             updateMutedStatus(currentBroadcast, holder);
         });
+
+        holder.imageUpload.setOnClickListener(v->{
+            Permissions.check(mContext,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
+                @Override
+                public void onGranted() {
+                    ImagePicker imagePicker = new ImagePicker(mContext.getApplication());
+                    Intent chooseImageIntent = imagePicker.getPickImageIntent();
+                    mContext.startActivityForResult(chooseImageIntent, 234);
+                }
+                @Override
+                public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                    // permission denied, block the feature.
+                }
+            });
+        });
     }
 
     public void updateMutedStatus(Broadcast broadcast, ViewHolder viewHolder) {
@@ -411,7 +451,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         private CircleImageView profPicDisplay;
         private LinearLayout pollOptionsDisplayGroup, newNotifsContainer;
         private CircleImageView viewPollAnswersImageBtn;
-        private ImageButton notificationToggle;
+        private ImageButton notificationToggle, imageUpload;
         private String currentUserPollOption = null;
         private Button viewPollAnswers, addCommentButton;
         private EditText addCommentEditText;
@@ -441,6 +481,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             hidePostButton = view.findViewById(R.id.hide_post_button);
             hidePostImage = view.findViewById(R.id.hide_image);
             swipeRefreshLayout = view.findViewById(R.id.message_swipe_layout);
+            imageUpload = view.findViewById(R.id.comment_image_upload);
 
         }
 
