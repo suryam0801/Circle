@@ -402,7 +402,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                             AsyncTask.execute(runnable);
                         }
                         @Override
-                        public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                        public void onDenied(Context context, ArrayList<String> deniedPermissions){
                             // permission denied, block the feature.
                         }
                     });
@@ -414,7 +414,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     HelperMethodsUI.showDeleteDialog(CircleWall.this,circle,user);
                     break;
                 case "Circle Information":
-                    startActivity(new Intent(CircleWall.this, CircleInformation.class));
+                    Intent intent = new Intent(CircleWall.this,CircleInformation.class);
+                    intent.putExtra("circle_wall_nav",true);
+                    startActivity(intent);
+                    finish();
                     break;
                 case "Share QR Code":
                     Permissions.check(this, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {

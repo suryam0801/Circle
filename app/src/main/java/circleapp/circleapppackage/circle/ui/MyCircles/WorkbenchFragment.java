@@ -142,6 +142,7 @@ public class WorkbenchFragment extends Fragment {
 
     @Override
     public void onPause() {
+        workbenchCircleList.clear();
         liveData.removeObservers(this);
         super.onPause();
     }
