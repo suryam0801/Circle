@@ -32,6 +32,7 @@ public class GlobalVariables extends Application {
     public static LoginUserObject currentLoginUserObject;
     public static TempLocation currentTempLocation;
     public static Uri TempdownloadLink;
+    public static Uri commentDownloadLink;
     public int involvedCircles = 0;
     RandomColor randomColor = new RandomColor();
     public int[] colors = randomColor.randomColor(10);
@@ -80,6 +81,15 @@ public class GlobalVariables extends Application {
 
     public void setTempdownloadLink(Uri tempdownloadLink) {
         TempdownloadLink = tempdownloadLink;
+    }
+
+
+    public static Uri getCommentDownloadLink() {
+        return commentDownloadLink;
+    }
+
+    public static void setCommentDownloadLink(Uri commentDownloadLink) {
+        GlobalVariables.commentDownloadLink = commentDownloadLink;
     }
 
     public FirebaseAuth getAuthenticationToken() {

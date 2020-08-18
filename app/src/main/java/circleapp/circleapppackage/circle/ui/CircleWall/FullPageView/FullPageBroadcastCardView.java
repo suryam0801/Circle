@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -52,7 +53,7 @@ import circleapp.circleapppackage.circle.ui.CircleWall.CircleWallBackgroundPicke
 import circleapp.circleapppackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circleapppackage.circle.ui.PersonelDisplay.PersonelDisplay;
 
-public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
+public class FullPageBroadcastCardView extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 
     private Uri filePath, downloadLink;
     private User user;
@@ -69,6 +70,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
     private ImageUpload imageUploadModel;
     private ProgressDialog imageUploadProgressDialog;
     private static final int PICK_IMAGE_ID = 234;
+    private RecyclerView.Adapter adapter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -100,7 +102,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        final RecyclerView.Adapter adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition, downloadLink);
+        adapter = new FullPageBroadcastCardAdapter(this, broadcastList, circle, initialBroadcastPosition);
         recyclerView.setAdapter(adapter);
 
         snapHelper.attachToRecyclerView(recyclerView);
@@ -169,7 +171,9 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
             }
             else if(progress[1].equals("100")){
                 downloadLink = Uri.parse(progress[0]);
-                globalVariables.setTempdownloadLink(downloadLink);
+                if(!downloadLink.toString().contains("content://media"))
+                    globalVariables.setCommentDownloadLink(downloadLink);
+                adapter.notifyDataSetChanged();
                 imageUploadProgressDialog.dismiss();
             }
         });

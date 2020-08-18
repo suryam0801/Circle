@@ -2,7 +2,6 @@ package circleapp.circleapppackage.circle.ui.CircleWall.FullPageView;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -53,6 +52,7 @@ import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circleapppackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
+import circleapp.circleapppackage.circle.ViewModels.CircleWall.ImageUrlViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
@@ -79,14 +79,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private String mPrevKey = "";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LiveData<String []> loadMoreLiveData, initLiveData;
-    private Uri downloadLink;
+    private boolean isDownloadLinkActive = false;
+    private ImageUrlViewModel  imageUrlViewModel = new ImageUrlViewModel();
 
-    public FullPageBroadcastCardAdapter(Activity mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex, Uri downloadLink) {
+    public FullPageBroadcastCardAdapter(Activity mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
         this.broadcastList = broadcastList;
         this.circle = circle;
         this.initialIndex = initialIndex;
-        this.downloadLink = downloadLink;
         imm = (InputMethodManager) mContext.getSystemService(mContext.INPUT_METHOD_SERVICE);
     }
 
@@ -105,6 +105,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         currentBroadcast = broadcastList.get(position);
         user = globalVariables.getCurrentUser();
         setCircleObserver();
+        setImageActiveListener(holder);
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
         if (broadcastMuted) {
@@ -117,6 +118,20 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
     }
 
+    private void setImageActiveListener(ViewHolder holder){
+        imageUrlViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(ImageUrlViewModel.class);
+        imageUrlViewModel.listenForLocationUpdates(isDownloadLinkActive).observe((LifecycleOwner) mContext, imageUpdates -> {
+            if(imageUpdates&&globalVariables.getCommentDownloadLink()!=null)
+            {
+                String commentMessage = globalVariables.getCommentDownloadLink().toString();
+                if (!commentMessage.equals("")) {
+                    fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle);
+                }
+                holder.addCommentEditText.setText("");
+                globalVariables.setCommentDownloadLink(null);
+            }
+        });
+    }
 
     private void setCircleObserver(){
         circle = globalVariables.getCurrentCircle();
@@ -284,13 +299,6 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                     ImagePicker imagePicker = new ImagePicker(mContext.getApplication());
                     Intent chooseImageIntent = imagePicker.getPickImageIntent();
                     mContext.startActivityForResult(chooseImageIntent, 234);
-                    if(downloadLink!=null){
-                        String commentMessage = downloadLink.toString();
-                        if (!commentMessage.equals("")) {
-                            fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle);
-                        }
-                        holder.addCommentEditText.setText("");
-                    }
                 }
                 @Override
                 public void onDenied(Context context, ArrayList<String> deniedPermissions) {

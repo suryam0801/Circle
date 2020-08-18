@@ -150,12 +150,12 @@
 
         </RelativeLayout>
 
-        <ImageView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/poll_display_photo_add_broadcast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:visibility="gone"></ImageView>
+            android:visibility="visible"></com.github.chrisbanes.photoview.PhotoView>
 
     </LinearLayout>
         <LinearLayout
