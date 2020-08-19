@@ -55,7 +55,7 @@ public class CreateNormalBroadcastDialog {
                     description=setMessageET.getText().toString();
 
                 circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
-                circleWallViewModel.createBroadcast(title,description,circle,user,activity).observe((LifecycleOwner) activity, state->{
+                circleWallViewModel.createBroadcast(title,description,circle,user,activity, globalVariables.getCircleWallPersonel()).observe((LifecycleOwner) activity, state->{
                     if (state){
                         livedataobserver(user,circle);
                     }

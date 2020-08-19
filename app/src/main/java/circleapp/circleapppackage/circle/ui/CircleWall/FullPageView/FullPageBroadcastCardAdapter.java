@@ -47,12 +47,14 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Comment;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Poll;
+import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.Utils.UploadImages.ImagePicker;
 import circleapp.circleapppackage.circle.ViewModels.CircleWall.FullpageAdapterViewModel;
 import circleapp.circleapppackage.circle.ViewModels.CircleWall.ImageUrlViewModel;
+import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
@@ -67,6 +69,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private Circle circle;
     private User user;
     private Broadcast currentBroadcast;
+    private List<Subscriber> listOfMembers;
     private int initialIndex;
     private InputMethodManager imm;
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -105,6 +108,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         currentBroadcast = broadcastList.get(position);
         user = globalVariables.getCurrentUser();
         setCircleObserver();
+        setCircleMembersObserver();
         setImageActiveListener(holder);
         //Init muted button
         final boolean broadcastMuted = user.getMutedBroadcasts() != null && user.getMutedBroadcasts().contains(currentBroadcast.getId());
@@ -125,7 +129,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             {
                 String commentMessage = globalVariables.getCommentDownloadLink().toString();
                 if (!commentMessage.equals("")) {
-                    fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle);
+                    fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle, listOfMembers);
                 }
                 holder.addCommentEditText.setText("");
                 globalVariables.setCommentDownloadLink(null);
@@ -142,6 +146,18 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             if (circleTemp != null&&circleTemp.getNoOfCommentsPerBroadcast()!=null) {
                 if(circleTemp.getNoOfCommentsPerBroadcast().get(currentBroadcast.getId())!=null)
                     updateUserReadValues(circleTemp.getNoOfCommentsPerBroadcast().get(currentBroadcast.getId()),circleTemp);
+            }
+        });
+    }
+
+    private void setCircleMembersObserver(){
+        listOfMembers = new ArrayList<>();
+        CirclePersonnelViewModel circlePersonnelViewModel = ViewModelProviders.of((FragmentActivity) mContext).get(CirclePersonnelViewModel.class);
+        LiveData<String[]> liveData = circlePersonnelViewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
+        liveData.observe((LifecycleOwner) mContext, returnArray -> {
+            Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
+            if(member!=null){
+                listOfMembers.add(member);
             }
         });
     }
@@ -283,7 +299,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.addCommentButton.setOnClickListener(view -> {
             String commentMessage = holder.addCommentEditText.getText().toString().trim();
             if (!commentMessage.equals("")) {
-                fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle);
+                fullpageAdapterViewModel.makeCommentEntry(mContext, commentMessage, currentBroadcast, globalVariables.getCurrentUser(), circle, listOfMembers);
             }
             holder.addCommentEditText.setText("");
         });

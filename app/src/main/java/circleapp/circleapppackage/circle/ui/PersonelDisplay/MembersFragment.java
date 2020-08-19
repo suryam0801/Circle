@@ -1,9 +1,11 @@
 package circleapp.circleapppackage.circle.ui.PersonelDisplay;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -79,10 +81,8 @@ public class MembersFragment extends Fragment {
                 String modifierType = returnArray[1];
                 switch (modifierType) {
                     case "added":
-                        if(!memberList.contains(subscriber)){
-                            memberList.add(subscriber);
-                            adapter.notifyDataSetChanged();
-                        }
+                        memberList.add(subscriber);
+                        adapter.notifyDataSetChanged();
                         break;
                     case "changed":
                         int index = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
@@ -91,6 +91,7 @@ public class MembersFragment extends Fragment {
                         adapter.notifyItemChanged(index);
                         break;
                     case "removed":
+                        Log.d("ItemRemoved", subscriber.getName());
                         memberList.remove(subscriber);
                         adapter.notifyDataSetChanged();
                         break;

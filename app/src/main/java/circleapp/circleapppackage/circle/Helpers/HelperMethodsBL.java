@@ -282,4 +282,9 @@ public class HelperMethodsBL {
         circle.setDescription(description);
         globalVariables.saveCurrentCircle(circle);
     }
+
+    public static void updateDeviceTokenInPersonel(String circleId, User user) {
+        CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
+        circlePersonnelRepository.checkIfDeviceTokenMatches(circleId, user.getToken_id(), user.getUserId());
+    }
 }

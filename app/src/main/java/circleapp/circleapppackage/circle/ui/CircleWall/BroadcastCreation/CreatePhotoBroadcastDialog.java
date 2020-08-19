@@ -69,7 +69,7 @@ public class CreatePhotoBroadcastDialog {
                 this.imageExists = true;
                 String title = setTitlePhoto.getText().toString();
                 circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
-                circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,this.imageExists, activity).observe((LifecycleOwner) activity, state->{
+                circleWallViewModel.createPhotoBroadcast(title, this.downloadLink,circle,user,this.imageExists, activity,globalVariables.getCircleWallPersonel()).observe((LifecycleOwner) activity, state->{
                     if (state){
                         circleWall.updateUserCount(circle);
                         createPhotoBroadcastPopup.dismiss();

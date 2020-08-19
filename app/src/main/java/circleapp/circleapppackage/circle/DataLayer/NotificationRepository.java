@@ -16,12 +16,15 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Notification;
+import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
@@ -31,40 +34,36 @@ import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleW
 public class NotificationRepository {
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    public void writeCommentNotifications(Context context, Notification notification, HashMap<String, Boolean> listenersList, String message, String title) {
+    public void writeCommentNotifications(Context context, Notification notification, HashMap<String, Boolean> listenersList, String message, String title, List<Subscriber> listOfCirclePersonel) {
         Set<String> member;
-        UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
+        Set<String> tokenIds =new HashSet<>();
         if (listenersList != null) {
             listenersList.remove(globalVariables.getCurrentUser().getUserId());
             member = listenersList.keySet();
-            if(member!=null)
-            for (String i : member)
-            {
-                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
-                liveData.observe((LifecycleOwner) context, dataSnapshot -> {
-                    if (dataSnapshot.exists()) {
-                        User user = dataSnapshot.getValue(User.class);
-                        if(user!=null){
-                            liveData.removeObservers((LifecycleOwner) context);
-                            String tokenId = user.getToken_id();
-                            String state = "comment";
-                            Log.d("commentnotif",i);
-                            if(message!=null)
-                            HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null, notification.getCircleId());
-                            globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
+            if(member!=null){
+                for (String i : member)
+                {
+                    for (Subscriber s : listOfCirclePersonel){
+                        if(s!=null){
+                            String tokenId = s.getToken_id();
+                            if(!tokenIds.contains(tokenId)){
+                                tokenIds.add(tokenId);
+                                String state = "comment";
+                                HelperMethodsBL.pushFCM(state, null,tokenId,notification,null, message,title, null,null,null, notification.getCircleId());
+                                globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
+                            }
                         }
-                    } else {
                     }
-                });
+                }
             }
-
         }
 
     }
 
 
-    public void writeBroadcastNotifications(Context context, Notification notification, HashMap<String, Boolean> membersList, Broadcast broadcast) {
+    public void writeBroadcastNotifications(Context context, Notification notification, HashMap<String, Boolean> membersList, Broadcast broadcast, List<Subscriber> listOfCirclePersonel) {
 
+        Set<String> tokenIds =new HashSet<>();
         Set<String> member;
         UserViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(UserViewModel.class);
         String apiurl = "https://circle-d8cc7.web.app/api/";
@@ -73,22 +72,18 @@ public class NotificationRepository {
             for (String i : member)
 
             {
-                LiveData<DataSnapshot> liveData = viewModel.getDataSnapsUserValueCirlceLiveData(i);
-                Log.d("Push NR user",i);
-                liveData.observe((LifecycleOwner) context, dataSnapshot -> {
-                    if (dataSnapshot.exists()) {
-                        User user = dataSnapshot.getValue(User.class);
-                        if(user!=null){
-                            liveData.removeObservers((LifecycleOwner) context);
-                            String tokenId = user.getToken_id();
+                for(Subscriber s : listOfCirclePersonel){
+                    if(s!=null){
+                        String tokenId = s.getToken_id();
+                        if(!tokenIds.contains(tokenId)){
+                            tokenIds.add(tokenId);
                             String state = "broadcast";
                             if(broadcast!=null)
-                            HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null, notification.getCircleId());
+                                HelperMethodsBL.pushFCM(state, null, tokenId,notification,broadcast, null, null,null,null,null, notification.getCircleId());
                             globalVariables.getFBDatabase().getReference("/Notifications").child(i).child(notification.getNotificationId()).setValue(notification);
                         }
-                    } else {
                     }
-                });
+                }
             }
 
 

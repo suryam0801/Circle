@@ -46,4 +46,10 @@ public class CirclePersonnelRepository {
     public void updateCirclePersonnel(String  userId, String  circleId, Subscriber subscriber){
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(userId).setValue(subscriber);
     }
+
+    public void checkIfDeviceTokenMatches(String circleId, String token, String userId){
+        if(!globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(userId).child("token_id").equals(token)){
+            globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(userId).child("token_id").setValue(token);
+        }
+    }
 }
