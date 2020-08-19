@@ -89,16 +89,30 @@
                 android:textSize="13dp" />
 
         </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/roboto_bold"
             android:text="Circle Name"
             android:textColor="@color/black"
             android:textSize="12dp" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/viewProfile_name"
+            android:layout_marginLeft="5dp"
+            android:visibility="gone"
+            android:layout_marginTop="2dp"
+            android:id="@+id/editCircleName"
+            android:background="@drawable/ic_edit_black_24dp"></ImageButton>
+    </LinearLayout>
 
         <TextView
             android:id="@+id/circle_info_circle_name"
@@ -111,16 +125,31 @@
             android:textColor="#D1D1D1"
             android:textSize="14dp" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/CircleDesc"
             android:fontFamily="@font/roboto_bold"
             android:text="Circle Description"
             android:textColor="@color/black"
             android:textSize="12dp" />
-
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/CircleDesc"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/editCircleDesc"
+            android:visibility="gone"
+            android:background="@drawable/ic_edit_black_24dp"></ImageButton>
+    </LinearLayout>
         <TextView
             android:id="@+id/circle_info_circle_description"
             android:layout_width="wrap_content"

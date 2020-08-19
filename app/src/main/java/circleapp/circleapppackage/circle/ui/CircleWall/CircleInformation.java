@@ -48,7 +48,7 @@ public class CircleInformation extends AppCompatActivity {
     private Circle circle;
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
-    private ImageButton back;
+    private ImageButton back,editName,editDesc;
     private int indexValue;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -59,6 +59,7 @@ public class CircleInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_information);
         initUIElements();
+
         //back button
         back.setOnClickListener(view -> {//go back to circle wall
             if (indexValue == -1) {
@@ -92,14 +93,18 @@ public class CircleInformation extends AppCompatActivity {
         noPermissionToViewMembers = findViewById(R.id.circle_info_members_not_available);
         noMembersDisplay = findViewById(R.id.circle_info_empty_membersList);
         back = findViewById(R.id.bck_circle_information);
-
+        editName = findViewById(R.id.editCircleName);
+        editDesc = findViewById(R.id.editCircleDesc);
         creatorName.setText(circle.getCreatorName());
         circleName.setText(circle.getName());
         circleDescription.setText(circle.getDescription());
         HelperMethodsUI.createDefaultCircleIcon(circle,this,logo);
         //setting circle banner
         setBannerBackground(circle.getCategory());
-
+        if (circle.getMembersList().get(user.getUserId()).equals("admin")){
+            editDesc.setVisibility(View.VISIBLE);
+            editName.setVisibility(View.VISIBLE);
+        }
         //setting members display
         if (circle.getMembersList() != null && circle.getMembersList().keySet().contains(user.getUserId())) {
             noPermissionToViewMembers.setVisibility(View.GONE);

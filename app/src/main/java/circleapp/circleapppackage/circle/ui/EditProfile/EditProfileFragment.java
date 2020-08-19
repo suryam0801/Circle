@@ -95,26 +95,6 @@ public class EditProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_edit_profile, container, false);
         InitUIElements(view);
         defUIValues();
-//        imageUploadModel = ViewModelProviders.of(getActivity()).get(ImageUpload.class);
-//        imageUploadModel.uploadImageWithProgress(filePath).observe(getActivity(), progress -> {
-//            // update UI
-//            if(progress==null);
-//
-//            else if(!progress[1].equals("100")){
-//                imageUploadProgressDialog.setTitle("Uploading");
-//                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
-//                imageUploadProgressDialog.show();
-//            }
-//            else if(progress[1].equals("100")){
-////                Log.d("File",filePath.toString());
-//                Glide.with(this).load(filePath).into(profileImageView);
-//                downloadLink = Uri.parse(progress[0]);
-//                finalizeChanges.setVisibility(View.VISIBLE);
-//                user.setProfileImageLink(downloadLink.toString());
-//                globalVariables.saveCurrentUser(user);
-//                imageUploadProgressDialog.dismiss();
-//            }
-//        });
         editProfPic.setOnClickListener(v -> {
             editUserProfileImage.editProfile(getActivity(),profileImageView,finalizeChanges);
         });

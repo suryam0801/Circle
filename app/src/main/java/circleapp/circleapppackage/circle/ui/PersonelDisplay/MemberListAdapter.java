@@ -80,8 +80,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
                 }
             }
             holder.removeMember.setOnClickListener(v->{
-                CircleRepository circleRepository = new CircleRepository();
-                circleRepository.removeMember(circle, member);
+                removeUser(circle,member,position);
             });
         }
         HelperMethodsUI.setUserProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), holder.profPic);
@@ -105,7 +104,28 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
     public int getItemCount() {
         return memberList.size();
     }
+    public void removeUser(Circle circle, Subscriber member, int pos) {
+        removeUserDialog = new Dialog(mContext);
+        removeUserDialog.setContentView(R.layout.remove_member_dialog);
+        final Button closeDialogButton = removeUserDialog.findViewById(R.id.make_admin_confirm_btn);
+        final Button cancel = removeUserDialog.findViewById(R.id.make_admin_cancel_btn);
+        final TextView content = removeUserDialog.findViewById(R.id.remove_member_dialog_title);
 
+        content.setText("Do you want to remove the user?");
+        closeDialogButton.setText("Remove");
+        closeDialogButton.setOnClickListener(view -> {
+            CircleRepository circleRepository = new CircleRepository();
+            circleRepository.removeMember(circle, member);
+            memberList.remove(pos);
+            notifyDataSetChanged();
+            removeUserDialog.dismiss();
+        });
+
+        cancel.setOnClickListener(view -> removeUserDialog.dismiss());
+
+        removeUserDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        removeUserDialog.show();
+    }
     public void showMakeAdminDialog(Subscriber member, ViewHolder holder) {
         removeUserDialog = new Dialog(mContext);
         removeUserDialog.setContentView(R.layout.remove_member_dialog);
