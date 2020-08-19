@@ -6,6 +6,7 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import circleapp.circleapppackage.circle.DataLayer.NotificationRepository;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
@@ -17,7 +18,7 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 
 public class SendNotification {
     private static NotificationRepository notificationRepository = new NotificationRepository();
-    public static void sendCommentInfo(Context mContext, String userID, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> listenersList, String circleIcon, String message, String title) {
+    public static void sendCommentInfo(Context mContext, String userID, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> listenersList, String circleIcon, String message, String title , List<Subscriber> listOfCirclePersonel) {
 
         String notificationId = notificationRepository.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
@@ -26,10 +27,10 @@ public class SendNotification {
         //REFER NOTIFICATIONADAPTER FOR THE STATUS CODES!
         String getDate = getCurrentDateStamp();
         Notification notif = new Notification(circleName,userID,circleId,notificationId,creatorName,null,"comment_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message,1);
-        notificationRepository.writeCommentNotifications(mContext,notif, listenersList,message,title);
+        notificationRepository.writeCommentNotifications(mContext,notif, listenersList,message,title, listOfCirclePersonel);
     }
 
-    public static void sendBCinfo(Context context, Broadcast broadcast, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message) {
+    public static void sendBCinfo(Context context, Broadcast broadcast, String userId, String broadcastId, String circleName, String circleId, String creatorName, HashMap<String, Boolean> membersList, String circleIcon, String message, List<Subscriber> listOfCirclePersonel) {
 
         String notificationId = notificationRepository.getNotificationId(broadcastId);
         message = message.substring(0, Math.min(message.length(), 60));
@@ -39,7 +40,7 @@ public class SendNotification {
         String getDate = getCurrentDateStamp();
         Log.d("Push SN",circleName);
         Notification notif = new Notification(circleName,userId,circleId,notificationId,creatorName,null,"broadcast_added",System.currentTimeMillis(),getDate,broadcastId,circleIcon,null,message,1);
-        notificationRepository.writeBroadcastNotifications(context,notif, membersList,broadcast);
+        notificationRepository.writeBroadcastNotifications(context,notif, membersList,broadcast, listOfCirclePersonel);
 
     }
 

@@ -165,6 +165,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
             }
 
             else if(!progress[1].equals("100")){
+                adapter.notifyDataSetChanged();
                 imageUploadProgressDialog.setTitle("Uploading");
                 imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
                 imageUploadProgressDialog.show();

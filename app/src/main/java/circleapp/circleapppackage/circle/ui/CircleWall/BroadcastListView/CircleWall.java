@@ -88,6 +88,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private Circle circle;
     private List<String> allCircleMembers;
     private HashMap<String, Subscriber> listOfMembers;
+    private List<Subscriber> listOfCirclePersonel;
     private ImageButton back, moreOptions;
     private User user;
 
@@ -119,6 +120,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         setContentView(R.layout.activity_circle_wall);
         setUserObserver();
         setCircleObserver();
+        HelperMethodsBL.updateDeviceTokenInPersonel(circle.getId(),user);
         setImageUploadObserver();
         initUIElements();
         initializeRecyclerView();
@@ -190,8 +192,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 }
             }
         }
-        if(circle.getMembersList().get(user.getUserId()).equals("admin"))
-            setCircleMembersObserver();
+        setCircleMembersObserver();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -379,6 +380,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 case "Change wallpaper":
                     finishAfterTransition();
                     startActivity(new Intent(CircleWall.this, CircleWallBackgroundPicker.class));
+                    globalVariables.setCircleWallPersonel(new ArrayList<>());
                     break;
                 case "Invite a friend":
                     InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
@@ -409,11 +411,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     break;
                 case "Exit circle":
                     HelperMethodsUI.showExitDialog(CircleWall.this,circle,user);
+                    globalVariables.setCircleWallPersonel(new ArrayList<>());
                     break;
                 case "Delete circle":
                     HelperMethodsUI.showDeleteDialog(CircleWall.this,circle,user);
+                    globalVariables.setCircleWallPersonel(new ArrayList<>());
                     break;
                 case "Circle Information":
+                    globalVariables.setCircleWallPersonel(new ArrayList<>());
                     Intent intent = new Intent(CircleWall.this,CircleInformation.class);
                     intent.putExtra("circle_wall_nav",true);
                     startActivity(intent);
@@ -423,6 +428,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     Permissions.check(this, WRITE_EXTERNAL_STORAGE, null, new PermissionHandler() {
                         @Override
                         public void onGranted() {
+                            globalVariables.setCircleWallPersonel(new ArrayList<>());
                             runQRGenerator();
                         }
                         @Override
@@ -476,11 +482,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void setCircleMembersObserver(){
         listOfMembers = new HashMap<>();
+        listOfCirclePersonel = new ArrayList<>();
         CirclePersonnelViewModel circlePersonnelViewModel = ViewModelProviders.of(this).get(CirclePersonnelViewModel.class);
         LiveData<String[]> liveData = circlePersonnelViewModel.getDataSnapsCirclePersonelLiveData(circle.getId(), "members");
         liveData.observe(this, returnArray -> {
             Subscriber member = new Gson().fromJson(returnArray[0], Subscriber.class);
             if(member!=null){
+                listOfCirclePersonel.add(member);
+                globalVariables.setCircleWallPersonel(listOfCirclePersonel);
                 allCircleMembers.add(member.getId());
                 listOfMembers.put(member.getId(), member);
             }
@@ -648,6 +657,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     @Override
     public void onBackPressed() {
         finishAfterTransition();
+        globalVariables.setCircleWallPersonel(new ArrayList<>());
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         startActivity(intent);
     }

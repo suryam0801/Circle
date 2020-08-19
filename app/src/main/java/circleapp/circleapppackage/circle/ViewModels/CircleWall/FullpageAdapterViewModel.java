@@ -3,6 +3,7 @@ package circleapp.circleapppackage.circle.ViewModels.CircleWall;
 import android.content.Context;
 
 import java.util.HashMap;
+import java.util.List;
 
 import circleapp.circleapppackage.circle.DataLayer.BroadcastsRepository;
 import circleapp.circleapppackage.circle.DataLayer.CircleRepository;
@@ -14,6 +15,7 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Comment;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Poll;
+import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.ui.CircleWall.FullPageView.FullPageBroadcastCardAdapter;
 
@@ -48,14 +50,14 @@ public class FullpageAdapterViewModel {
 
     }
 
-    public void makeCommentEntry(Context mContext, String commentMessage, Broadcast broadcast, User user, Circle circle) {
+    public void makeCommentEntry(Context mContext, String commentMessage, Broadcast broadcast, User user, Circle circle , List<Subscriber> listOfCirclePersonel) {
         CommentsRepository commentsRepository = new CommentsRepository();
         long currentCommentTimeStamp = System.currentTimeMillis();
         String commentId = commentsRepository.getCommentId(circle.getId(),broadcast.getId());
         Comment comment = new Comment(commentId,user.getName().trim(),commentMessage,user.getUserId(),user.getProfileImageLink(),currentCommentTimeStamp,1);
 
         commentsRepository.makeNewComment(comment, circle.getId(), broadcast.getId());
-        SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName());
+        SendNotification.sendCommentInfo(mContext,user.getUserId(), broadcast.getId(), circle.getName(), circle.getId(), user.getName(), broadcast.getListenersList(), circle.getBackgroundImageLink(), commentMessage,comment.getCommentorName(), listOfCirclePersonel);
 
         //Circle and broadcast
         updateCommentNumbersPostCreate(broadcast, currentCommentTimeStamp, circle);

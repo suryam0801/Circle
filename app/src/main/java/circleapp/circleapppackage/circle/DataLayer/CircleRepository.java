@@ -80,9 +80,9 @@ public class CircleRepository {
     }
 
     public void removeMember(Circle circle, Subscriber member){
+        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(member.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("membersList").child(member.getId()).removeValue();
         globalVariables.getFBDatabase().getReference("/Users").child(member.getId()).child("activeCircles").child(circle.getId()).removeValue();
-        globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circle.getId()).child("members").child(member.getId()).removeValue();
     }
 
     public void makeAdmin(Circle circle, Subscriber member){

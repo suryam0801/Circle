@@ -189,7 +189,7 @@ public class CreatePollBroadcastDialog {
             }
         }
         circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
-        circleWallViewModel.createPollBroadcast(pollQuestion,options,pollExists,imageExists,downloadLink,circle,user,activity).observe((LifecycleOwner) activity, state->{
+        circleWallViewModel.createPollBroadcast(pollQuestion,options,pollExists,imageExists,downloadLink,circle,user,activity, globalVariables.getCircleWallPersonel()).observe((LifecycleOwner) activity, state->{
             if (state) {
 
                 circleWall.updateUserCount(circle);

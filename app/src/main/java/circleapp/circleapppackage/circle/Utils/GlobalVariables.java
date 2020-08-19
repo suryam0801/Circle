@@ -15,6 +15,7 @@ import circleapp.circleapppackage.circle.Model.LocalObjectModels.LoginUserObject
 import circleapp.circleapppackage.circle.Model.LocalObjectModels.TempLocation;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
+import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 
 public class GlobalVariables extends Application {
@@ -26,6 +27,7 @@ public class GlobalVariables extends Application {
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
     public static User currentUser;
     public static List<String > usersList, tempUsersList;
+    public static List<Subscriber> circleWallPersonel;
     public static Circle currentCircle;
     public static Broadcast currentBroadcast;
     public static List<Broadcast> currentBroadcastList;
@@ -141,5 +143,13 @@ public class GlobalVariables extends Application {
 
     public static void saveCurrentTempLocation(TempLocation currentTempLocation) {
         GlobalVariables.currentTempLocation = currentTempLocation;
+    }
+
+    public static List<Subscriber> getCircleWallPersonel() {
+        return circleWallPersonel;
+    }
+
+    public static void setCircleWallPersonel(List<Subscriber> circleWallPersonel) {
+        GlobalVariables.circleWallPersonel = circleWallPersonel;
     }
 }
