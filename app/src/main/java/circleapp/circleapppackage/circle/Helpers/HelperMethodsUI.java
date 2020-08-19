@@ -455,6 +455,27 @@ public class HelperMethodsUI {
         }
 
     }
+    //UI
+    public static void setMemberProfileImage(String url, Context context, CircleImageView profileImageView){
+        if (url.length() > 10) {
+            Glide.with(context)
+                    .load(url)
+                    .into(profileImageView);
+        } else if (url.equals("default")) {
+            int profilePic = Integer.parseInt(String.valueOf(R.drawable.default_profile_pic));
+            Glide.with(context)
+                    .load(ContextCompat.getDrawable(context, profilePic))
+                    .into(profileImageView);
+        } else {
+            int index = Integer.parseInt(String.valueOf(url.charAt(url.length()-1)));
+            index = index-1;
+            TypedArray avatarResourcePos = context.getResources().obtainTypedArray(R.array.AvatarValues);
+            int profilePic = avatarResourcePos.getResourceId(index, 0);
+            Glide.with(context)
+                    .load(profilePic)
+                    .into(profileImageView);
+        }
+    }
 //UI
     public static void vibrate(Context context) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

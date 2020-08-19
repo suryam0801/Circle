@@ -43,7 +43,7 @@ public class PollAnswerDisplayAdapter extends RecyclerView.Adapter<PollAnswerDis
 
         final Subscriber member = (Subscriber) list.keySet().toArray()[position];
         final String answer = (String) list.values().toArray()[position];
-        HelperMethodsUI.setUserProfileImage(member.getPhotoURI(),mContext,holder.profPic);
+        HelperMethodsUI.setMemberProfileImage(member.getPhotoURI(),mContext,holder.profPic);
         ++count;
         if(count == 4) count = 0;
 

@@ -218,8 +218,11 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         });
 
         //set applicants button visible
-        if (circle.getMembersList().get(user.getUserId()).equals("admin"))
-            viewApplicants.setVisibility(View.VISIBLE);
+        if(circle.getMembersList()!=null){
+            if(circle.getMembersList().containsKey(user.getUserId()))
+                if (circle.getMembersList().get(user.getUserId()).equals("admin"))
+                    viewApplicants.setVisibility(View.VISIBLE);
+        }
 
         viewApplicants.setOnClickListener(view -> {
             finishAfterTransition();

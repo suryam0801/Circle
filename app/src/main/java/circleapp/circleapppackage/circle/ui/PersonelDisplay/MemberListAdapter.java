@@ -84,7 +84,7 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
                 circleRepository.removeMember(circle, member);
             });
         }
-        HelperMethodsUI.setUserProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), holder.profPic);
+        HelperMethodsUI.setMemberProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), holder.profPic);
 
         //Set text for TextView
         final String nameDisplay = member.getName();

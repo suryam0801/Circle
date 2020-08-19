@@ -137,6 +137,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private void initUIElements(){
         location = findViewById(R.id.explore_district_name_display);
         user = globalVariables.getCurrentUser();
+        if(user.getDistrict()!=null)
         location.setText(user.getDistrict());
         intentUri = getIntent().getStringExtra("imagelink");
         shownPopup = false;

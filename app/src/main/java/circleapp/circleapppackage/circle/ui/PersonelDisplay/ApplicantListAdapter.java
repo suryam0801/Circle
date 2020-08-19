@@ -49,7 +49,7 @@ public class ApplicantListAdapter extends RecyclerView.Adapter<ApplicantListAdap
     public void onBindViewHolder(@NonNull ApplicantListAdapter.ViewHolder holder, int position) {
         final Subscriber selectedApplicant = ApplicantList.get(position);
 
-        HelperMethodsUI.setUserProfileImage(selectedApplicant.getPhotoURI(), mContext, holder.profPic);
+        HelperMethodsUI.setMemberProfileImage(selectedApplicant.getPhotoURI(), mContext, holder.profPic);
 
         //Set text for TextView
         final String nameDisplay = selectedApplicant.getName();

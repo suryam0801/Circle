@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -193,6 +195,7 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void applyOrJoin(final Circle circle) {
 
         circleJoinDialog.setContentView(R.layout.apply_popup_layout);
@@ -218,7 +221,6 @@ public class CircleDisplayAdapter extends RecyclerView.Adapter<CircleDisplayAdap
             } else {
                 globalVariables.saveCurrentCircle(circle);
                 context.startActivity(new Intent(context, CircleWall.class));
-                ((Activity) context).finish();
                 circleJoinDialog.dismiss();
             }
         });
