@@ -3,8 +3,8 @@
     android:id="@+id/wbContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="19dp"
-    android:layout_marginTop="19dp"
+    android:layout_marginLeft="17dp"
+    android:layout_marginTop="17dp"
     android:layout_marginRight="15dp"
     android:layout_marginBottom="2dp"
     android:orientation="vertical">
@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="60dp"
-                    android:text="Last Active: 5 mins ago"
+                    android:text="Last Active: long ago"
                     android:textSize="12dp"
                     android:layout_below="@+id/wbcircleName">
                 </TextView>
@@ -88,4 +88,11 @@
         </RelativeLayout>
 
     </LinearLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="3dp"
+        android:background="#EEEEEE"></View>
 </LinearLayout>
