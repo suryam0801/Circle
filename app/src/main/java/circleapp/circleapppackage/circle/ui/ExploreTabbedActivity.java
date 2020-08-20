@@ -1,14 +1,11 @@
 package circleapp.circleapppackage.circle.ui;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +24,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -43,17 +39,15 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
-import circleapp.circleapppackage.circle.Utils.UploadImages.ImagePicker;
-import circleapp.circleapppackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circleapppackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import circleapp.circleapppackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
-import circleapp.circleapppackage.circle.ui.EditProfile.EditProfileFragment;
+import circleapp.circleapppackage.circle.ui.EditProfile.EditProfile;
 import circleapp.circleapppackage.circle.ui.Explore.ExploreFragment;
 import circleapp.circleapppackage.circle.ui.MyCircles.WorkbenchFragment;
-import circleapp.circleapppackage.circle.ui.Notifications.NotificationFragment;
+import circleapp.circleapppackage.circle.ui.Notifications.Notifications;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.Manifest.permission.CAMERA;
@@ -61,8 +55,8 @@ import static android.Manifest.permission.CAMERA;
 
 public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
-    private String role = "normal";
-    private TextView location;
+    private CircleImageView profPicHolder;
+    private TextView location, locationDisplay;
     private User user;
     private String  intentUri;
     private Dialog linkCircleDialog, circleJoinSuccessDialog;
@@ -78,12 +72,9 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private TextView tv_circleName, tv_creatorName, tv_circleDesc;
     private Button join, cancel;
     private CircleImageView profPic;
-    private ImageButton scanQrCodeBtn;
+    private ImageButton scanQrCodeBtn, notificationsBtn;
     private boolean alreadyMember, alreadyApplicant;
-    private static final int PICK_IMAGE_ID = 234;
-    private ImageUpload imageUploadModel;
-    private Uri filePath;
-    private ProgressDialog userNameProgressDialogue, imageUploadProgressDialog;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,28 +84,20 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         initUIElements();
         initObserverForUser();
         setCirclePosition();
-        EditProfileFragment editProfileFragment = new EditProfileFragment();
-        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
-            // update UI
-            if(progress==null);
 
-            else if(!progress[1].equals("100")){
-                imageUploadProgressDialog.setTitle("Uploading");
-                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
-                imageUploadProgressDialog.show();
-            }
-            else if(progress[1].equals("100")){
-                Log.d("file",filePath.toString());
-                Uri downloadLink = Uri.parse(progress[0]);
-                editProfileFragment.loadGlide(downloadLink,filePath,getApplicationContext());
-                imageUploadProgressDialog.dismiss();
-            }
+        profPicHolder.setOnClickListener(v -> {
+            finishAfterTransition();
+            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
         });
 
         btnAddCircle.setOnClickListener(v -> {
             finishAfterTransition();
             startActivity(new Intent(this, CreateCircleCategoryPicker.class));
+        });
+
+        notificationsBtn.setOnClickListener(v->{
+            finishAfterTransition();
+            startActivity(new Intent(this, Notifications.class));
         });
         //set view pager adapter
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -137,12 +120,10 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
     private void initUIElements(){
         location = findViewById(R.id.explore_district_name_display);
         user = globalVariables.getCurrentUser();
-        if(user.getDistrict()!=null)
         location.setText(user.getDistrict());
         intentUri = getIntent().getStringExtra("imagelink");
         shownPopup = false;
-        userNameProgressDialogue = new ProgressDialog(this);
-        imageUploadProgressDialog = new ProgressDialog(this);
+
         //to hide the status and nav bar
         decorView = getWindow().getDecorView();
 
@@ -154,9 +135,14 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         exploreHeader = findViewById(R.id.exploreHeaderBar);
         scanQrCodeBtn = findViewById(R.id.scan_qr_code_image_btn);
+        profPicHolder = findViewById(R.id.explore_profilePicture);
+        locationDisplay = findViewById(R.id.explore_district_name_display);
         bottomNav = findViewById(R.id.bottom_navigation);
         btnAddCircle = findViewById(R.id.add_circle_button);
+        notificationsBtn = findViewById(R.id.notifications_btn);
 
+        locationDisplay.setText(user.getDistrict());
+        HelperMethodsUI.setUserProfileImage(user.getProfileImageLink(),this, profPicHolder);
         scanQrCodeBtn.setOnClickListener(v->{
             Permissions.check(this, new String[]{CAMERA},null, null, new PermissionHandler() {
                 @Override
@@ -172,7 +158,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         location.setText("My Circles");
         exploreHeader.setVisibility(View.VISIBLE);
     }
-
     private void initObserverForUser(){
         UserViewModel tempViewModel = ViewModelProviders.of(ExploreTabbedActivity.this).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
@@ -188,33 +173,19 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Fragment selectedFragment = null;
         switch (item.getItemId()) {
             case R.id.workbench_bottom_nav_item:
-                location.setCompoundDrawables(null,null,null,null);
                 location.setText("My Circles");
                 exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new WorkbenchFragment();
                 break;
             case R.id.explore_bottom_nav_item:
-                Drawable img = ExploreTabbedActivity.this.getResources().getDrawable(R.drawable.ic_location_on_black_24dp);
-                img.setBounds(0, 0, 60, 60);
-                location.setCompoundDrawables(img, null, null, null);
-                location.setText(user.getDistrict());
+                location.setText("Explore");
                 exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new ExploreFragment();
                 break;
             case R.id.create_circle_nav_bar:
                 location.setText("My Circles");
-                location.setCompoundDrawables(null,null,null,null);
                 exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new WorkbenchFragment();
-                break;
-            case R.id.notifications_bottom_nav_item:
-                exploreHeader.setVisibility(View.GONE);
-                selectedFragment = new NotificationFragment();
-                break;
-
-            case R.id.search_bottom_nav_item:
-                exploreHeader.setVisibility(View.GONE);
-                selectedFragment = new EditProfileFragment();
                 break;
 
         }
@@ -312,7 +283,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
 
         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
 
-        HelperMethodsBL.sendUserApplicationToCreator(user, subscriber, circle, role);
+        HelperMethodsBL.sendUserApplicationToCreator(user, subscriber, circle, "normal");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -349,26 +320,11 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
         }
     }
-    private void uploadUserProfilePic(){
-        imageUploadModel.imageUpload(filePath);
-    }
+
     @Override
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("OnActivityResult","");
-        switch(requestCode) {
-            case PICK_IMAGE_ID:
-                ImagePicker imagePicker = new ImagePicker(getApplication());
-                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
-                filePath= imagePicker.getImageUri(bitmap);
-                if(filePath !=null){
-                    uploadUserProfilePic();
-                }
-                break;
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-                break;
-        }
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {

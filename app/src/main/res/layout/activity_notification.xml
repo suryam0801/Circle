@@ -48,42 +48,44 @@
             android:background="#EEEEEE"></View>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/roboto_regular"
-        android:paddingLeft="23dp"
-        android:text="This Week"
-        android:textColor="#828282"
-        android:textSize="14dp">
-
-    </TextView>
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="25dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingLeft="23dp"
+            android:text="This Week"
+            android:textColor="#828282"
+            android:textSize="14dp">
+
+        </TextView>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/thisweek_notifications_display"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:divider="@color/white">
 
-                </ListView>
+                </androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,22 +99,22 @@
                     android:textSize="14dp"></TextView>
 
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_time_notifications_display"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_below="@id/prevnotifytext"
                     android:divider="@color/white">
 
-                </ListView>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </RelativeLayout>
 
         </ScrollView>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

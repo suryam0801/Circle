@@ -1,12 +1,13 @@
 package circleapp.circleapppackage.circle.ui.Notifications;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,62 +23,38 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.NotificationsViewModel;
+import circleapp.circleapppackage.circle.ui.ExploreTabbedActivity;
 
-public class NotificationFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
+public class Notifications extends AppCompatActivity {
 
     private RecyclerView thisWeekListView, previousListView;
     private List<Notification> thisWeekNotifs, previousNotifs;
+    private ImageButton backBtn;
     private NotificationAdapter adapterThisWeek, adapterPrevious;
     private TextView prevnotify;
     private User user;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
 
-    public NotificationFragment() {
-        // Required empty public constructor
-    }
-
-    public static NotificationFragment newInstance(String param1, String param2) {
-        NotificationFragment fragment = new NotificationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setContentView(R.layout.activity_notification);
+        thisWeekListView = findViewById(R.id.thisweek_notifications_display);
+        previousListView = findViewById(R.id.all_time_notifications_display);
+        backBtn = findViewById(R.id.bck_notifications);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_notification, container, false);
-        InitUIElements(view);
-        setNotifObserver();
-        return view;
-    }
-
-    private void InitUIElements(View view) {
-        thisWeekListView = view.findViewById(R.id.thisweek_notifications_display);
-        previousListView = view.findViewById(R.id.all_time_notifications_display);
-        prevnotify = view.findViewById(R.id.prevnotifytext);
+        prevnotify = findViewById(R.id.prevnotifytext);
         user = globalVariables.getCurrentUser();
         thisWeekNotifs = new ArrayList<>();
         previousNotifs = new ArrayList<>();
 
+        backBtn.setOnClickListener(v->{
+            onBackPressed();
+        });
+
+        setNotifObserver();
     }
 
     private void setNotifObserver(){
@@ -91,7 +68,7 @@ public class NotificationFragment extends Fragment {
     }
 
     private void setNotifsView(Notification notification) {
-        HelperMethodsUI.OrderNotification(getContext(), prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
+        HelperMethodsUI.OrderNotification(this, prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
     }
 
     @Override
@@ -102,5 +79,12 @@ public class NotificationFragment extends Fragment {
     public void onPause() {
         liveData.removeObservers(this);
         super.onPause();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(this, ExploreTabbedActivity.class));
+        finishAfterTransition();
     }
 }

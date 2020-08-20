@@ -60,7 +60,8 @@ public class ExploreFragment extends Fragment {
     private List<String> listOfFilters = new ArrayList<>();
     private LiveData<String[]> liveData;
 
-    private TextView filter;
+    private ImageButton filter;
+    private TextView districtView;
     private int setIndex = 0;
     private GlobalVariables globalVariables = new GlobalVariables();
 
@@ -100,8 +101,9 @@ public class ExploreFragment extends Fragment {
         emptyDisplay = view.findViewById(R.id.explore_empty_display);
         createCircle = view.findViewById(R.id.placeholder_explore_circle_layout);
         exploreRecyclerView = view.findViewById(R.id.exploreRecyclerView);
+        districtView = view.findViewById(R.id.district_text_view);
         setIndex = getActivity().getIntent().getIntExtra("exploreIndex", 0);
-
+        districtView.setText(user.getDistrict());
         //initialize recylcerview
         exploreRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
