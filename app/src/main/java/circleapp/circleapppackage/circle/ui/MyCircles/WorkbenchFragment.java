@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import circleapp.circleapppackage.circle.DataLayer.UserRepository;
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsUI;
@@ -150,7 +151,7 @@ public class WorkbenchFragment extends Fragment {
     public void addCircle(Circle circle) {
         //add new circle to list
         if(circle.getLastActivityTimeStamp()!=0){
-            workbenchCircleList = HelperMethodsUI.getCirclePostion(workbenchCircleList, circle);
+            insertAndSort(circle);
         }
         else {
             workbenchCircleList.add(workbenchCircleList.size()+1,circle);
@@ -175,5 +176,22 @@ public class WorkbenchFragment extends Fragment {
         wbadapter.notifyItemChanged(position);
         if(globalVariables.getInvolvedCircles()==0)
             emptyDisplay.setVisibility(View.VISIBLE);
+    }
+
+    public List<Circle> insertAndSort(Circle circle){
+
+        ArrayList<Circle> a = new ArrayList<Circle>(workbenchCircleList);
+        a.add(circle);
+        TreeSet t = new TreeSet(a);
+        a = new ArrayList<Circle>(t);
+
+        if(workbenchCircleList.size() >= 2 && workbenchCircleList.get(0).getLastActivityTimeStamp() < workbenchCircleList.get(1).getLastActivityTimeStamp())
+            return a;
+        else{
+            ArrayList<Circle> a2 = new ArrayList<Circle>();
+            for(int i = a.size() - 1; i >= 0; i--)
+                a2.add(a.get(i));
+            return a2;
+        }
     }
 }

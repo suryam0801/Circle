@@ -44,6 +44,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -80,18 +82,6 @@ public class HelperMethodsUI {
             counter++;
         }
         return position;
-    }
-
-    public static List<Circle> getCirclePostion(List<Circle> workbenchCircleList, Circle circle) {
-        int index = 0;
-        if(workbenchCircleList!=null){
-            for (Circle c : workbenchCircleList){
-                if(c.getLastActivityTimeStamp()==0){
-                    index = workbenchCircleList.indexOf(c)-1;
-                }
-            }
-        }
-        return index;
     }
 //UI
     public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
