@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,22 +73,18 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     private void setUIElements(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         holder.tv_MycircleName.setText(circle.getName());
-        if (circle.getCreatorID().equals(user.getUserId()))
-            holder.tv_circleCreatorName.setText("Me");
-        holder.tv_circleCreatorName.setText(circle.getCreatorName());
-        String timeElapsed = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(), circle.getTimestamp());
-        holder.tv_circleCreatedDateWB.setText("Started " + timeElapsed);
-        holder.categoryDisplay.setText(circle.getCategory());
+        if(circle.getLastActivityTimeStamp()!=0){
+            String message = HelperMethodsUI.getTimeElapsed(System.currentTimeMillis(),circle.getLastActivityTimeStamp());
+            holder.lastSeenActivity.setText("Last Active: " + message);
+        }
     }
 
     private void setNewApplicantsIndicator(WorkbenchDisplayAdapter.ViewHolder holder, Circle circle, User user){
         //setting new applicants
         if (HelperMethodsUI.numberOfApplicants(circle, user) > 0) {
-            GradientDrawable itemBackgroundApplicant = HelperMethodsUI.gradientRectangleDrawableSetter(80);
-            itemBackgroundApplicant.setColor(context.getResources().getColor(R.color.request_alert_color));
             holder.newApplicantsDisplay.setVisibility(View.VISIBLE);
-            holder.newApplicantsDisplay.setBackground(itemBackgroundApplicant);
-            holder.newApplicantsDisplay.setText(Integer.toString(circle.getApplicantsList().size()));
+            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
+            holder.tv_MycircleName.setTypeface(typeface);
         }
     }
 
@@ -96,18 +94,14 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
         int newNotifs = HelperMethodsUI.newNotifications(circle, user);
         int newCommentsNotif = HelperMethodsUI.newCommentNotifications(circle, user);
         if (newNotifs > 0) {
-            GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
-            itemBackgroundNotif.setColor(context.getResources().getColor(R.color.broadcast_alert_color));
-            holder.newNotifAlert.setText(newNotifs + "");
-            holder.newNotifAlert.setBackground(itemBackgroundNotif);
-            holder.newNotifAlert.setVisibility(View.VISIBLE);
+            holder.newActivityDisplay.setVisibility(View.VISIBLE);
+            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
+            holder.tv_MycircleName.setTypeface(typeface);
         }
         else if(newCommentsNotif>0){
-            GradientDrawable itemBackgroundNotif = HelperMethodsUI.gradientRectangleDrawableSetter(80);
-            itemBackgroundNotif.setColor(Color.parseColor("#158BF1"));
-            holder.newNotifAlert.setText(newCommentsNotif + "");
-            holder.newNotifAlert.setBackground(itemBackgroundNotif);
-            holder.newNotifAlert.setVisibility(View.VISIBLE);
+            holder.newActivityDisplay.setVisibility(View.VISIBLE);
+            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
+            holder.tv_MycircleName.setTypeface(typeface);
         }
     }
 
@@ -119,13 +113,6 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
             globalVariables.saveCurrentCircle(circle);
             //If user enters circle wall for first time
             actionOnFirstTimeEntry();
-        });
-
-        //update new notifs value
-        holder.shareCirclesLayout.setOnClickListener(view -> {
-            globalVariables.saveCurrentCircle(circle);
-            InviteFriendsBottomSheet bottomSheet = new InviteFriendsBottomSheet();
-            bottomSheet.show((((FragmentActivity) context).getSupportFragmentManager()), "exampleBottomSheet");
         });
 
         //bring up share bottom sheet
@@ -178,26 +165,20 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_MycircleName, tv_circleCreatorName, tv_circleCreatedDateWB,
-                newNotifAlert, newApplicantsDisplay, newDiscussionDisplay, categoryDisplay;
-        private CircleImageView backgroundPic;
+        private TextView tv_MycircleName, lastSeenActivity;
+        private CircleImageView backgroundPic, newActivityDisplay, newApplicantsDisplay;
         private LinearLayout container;
-        private RelativeLayout shareCirclesLayout;
         private ImageButton shareCirclesButton;
 
         public ViewHolder(View view) {
             super(view);
-            newApplicantsDisplay = view.findViewById(R.id.newApplicantsDisplay);
             container = view.findViewById(R.id.wbContainer);
             tv_MycircleName = view.findViewById(R.id.wbcircleName);
-            tv_circleCreatorName = view.findViewById(R.id.wbcircle_creatorName);
-            shareCirclesLayout = view.findViewById(R.id.wb_share_circle_button_layout);
+            lastSeenActivity = view.findViewById(R.id.last_activity_circle);
             shareCirclesButton = view.findViewById(R.id.wb_share_circle_button);
-            tv_circleCreatedDateWB = view.findViewById(R.id.workbench_circle_created_date);
-            newNotifAlert = view.findViewById(R.id.newNotifAlertTV);
-            newDiscussionDisplay = view.findViewById(R.id.newDiscussionDisplay);
-            categoryDisplay = view.findViewById(R.id.workbench_circle_category_display);
             backgroundPic = view.findViewById(R.id.background_image_workbench);
+            newActivityDisplay = view.findViewById(R.id.new_activity_indicator);
+            newApplicantsDisplay = view.findViewById(R.id.new_applicants_indicator);
         }
     }
 

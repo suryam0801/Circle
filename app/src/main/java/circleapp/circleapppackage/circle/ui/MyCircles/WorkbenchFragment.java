@@ -1,6 +1,7 @@
 package circleapp.circleapppackage.circle.ui.MyCircles;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
@@ -17,7 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 import circleapp.circleapppackage.circle.DataLayer.UserRepository;
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsUI;
@@ -28,6 +33,8 @@ import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
 import circleapp.circleapppackage.circle.ui.CreateCircle.CreateCircleCategoryPicker;
 import circleapp.circleapppackage.circle.ui.Explore.ExploreFragment;
+
+import static java.lang.Long.compare;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +77,7 @@ public class WorkbenchFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,6 +115,7 @@ public class WorkbenchFragment extends Fragment {
 
         return view;
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void circlesObserver(){
         MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
         liveData = viewModel.getDataSnapsWorkbenchCircleLiveData(user.getUserId());
@@ -147,19 +156,21 @@ public class WorkbenchFragment extends Fragment {
         super.onPause();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void addCircle(Circle circle) {
         //add new circle to list
-        workbenchCircleList.add(circle);
+        insert(circle);
         wbadapter.notifyDataSetChanged();
         UserRepository userRepository = new UserRepository();
         userRepository.initializeNewCount( circle, user);
         emptyDisplay.setVisibility(View.GONE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void changeCircle(Circle circle) {
         int index = HelperMethodsUI.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(index);
-        workbenchCircleList.add(index, circle);
+        insert(circle);
         wbadapter.notifyItemChanged(index);
     }
 
@@ -169,5 +180,15 @@ public class WorkbenchFragment extends Fragment {
         wbadapter.notifyItemChanged(position);
         if(globalVariables.getInvolvedCircles()==0)
             emptyDisplay.setVisibility(View.VISIBLE);
+    }
+
+    void insert(Circle element) {
+        int pos;
+        for(pos = 0 ; pos < workbenchCircleList.size() ; pos++ ) {
+            if(compare(workbenchCircleList.get(pos).getLastActivityTimeStamp(), element.getLastActivityTimeStamp()) < 0) {
+                break;
+            }
+        }
+        workbenchCircleList.add(pos, element);
     }
 }

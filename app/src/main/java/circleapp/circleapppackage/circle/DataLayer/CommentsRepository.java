@@ -8,7 +8,9 @@ public class CommentsRepository {
 
     public void makeNewComment(Comment comment, String circleId, String broadcastId) {
         globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circleId).child(broadcastId).child(comment.getId()).setValue(comment);
+        globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("lastActivityTimeStamp").setValue(System.currentTimeMillis());
     }
+
     public String getCommentId(String circleId, String broadcastId){
         String commentId = globalVariables.getFBDatabase().getReference("/BroadcastComments").child(circleId).child(broadcastId).push().getKey();
         return commentId;

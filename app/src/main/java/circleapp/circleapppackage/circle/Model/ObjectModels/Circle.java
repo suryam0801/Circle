@@ -7,7 +7,7 @@ public class Circle {
     private HashMap<String, String> membersList;
     private HashMap<String, Boolean> applicantsList;
     private HashMap<String, Integer> noOfCommentsPerBroadcast;
-    private long timestamp;
+    private long timestamp, lastActivityTimeStamp;
     private int noOfBroadcasts;
     private long version;
     private boolean adminVisibility;
@@ -18,7 +18,7 @@ public class Circle {
     public Circle(String id, String name, String description, String acceptanceType, String visibility, String creatorID,
                   String creatorName, String category, String backgroundImageLink,
                   HashMap<String, String> membersList, HashMap<String, Boolean> applicantsList, HashMap<String, Integer> noOfCommentsPerBroadcast,
-                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, boolean adminVisibility, long version) {
+                  String circleDistrict, String circleWard, long timestamp, int noOfBroadcasts, boolean adminVisibility, long version, long lastActivityTimeStamp) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,6 +37,7 @@ public class Circle {
         this.noOfCommentsPerBroadcast = noOfCommentsPerBroadcast;
         this.adminVisibility = adminVisibility;
         this.version = version;
+        this.lastActivityTimeStamp = lastActivityTimeStamp;
     }
     public boolean isAdminVisibility() {
         return adminVisibility;
@@ -182,6 +183,14 @@ public class Circle {
         this.noOfCommentsPerBroadcast = noOfCommentsPerBroadcast;
     }
 
+    public long getLastActivityTimeStamp() {
+        return lastActivityTimeStamp;
+    }
+
+    public void setLastActivityTimeStamp(long lastActivityTimeStamp) {
+        this.lastActivityTimeStamp = lastActivityTimeStamp;
+    }
+
     @Override
     public String toString() {
         return "Circle{" +
@@ -203,6 +212,7 @@ public class Circle {
                 ", noOfBroadcasts=" + noOfBroadcasts +
                 ", adminVisibility=" + adminVisibility +
                 ", version=" + version +
+                ", lastActivityTimeStamp=" + lastActivityTimeStamp +
                 '}';
     }
 }
