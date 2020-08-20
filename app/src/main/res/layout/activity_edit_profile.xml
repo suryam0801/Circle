@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.EditProfile.EditProfile">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,7 +23,6 @@
                 android:orientation="horizontal"
                 android:layout_marginTop="19dp"
                 android:layout_marginLeft="22dp"
-                android:visibility="gone"
                 android:layout_marginRight="22dp"
                 android:gravity="center">
 
@@ -48,27 +48,13 @@
                 </TextView>
 
             </LinearLayout>
-            <RelativeLayout
-                android:id="@+id/EditProfileHeaderBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/explore_district_name_display"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="20dp"
-                    android:drawablePadding="10dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="My Profile"
-                    android:textColor="@color/black"
-                    android:textSize="23dp"/>
-
-            </RelativeLayout>
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="18.5dp"
+                android:background="#EEEEEE">
+            </View>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,16 +99,16 @@
                         android:layout_gravity="center"
                         android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/viewProfile_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="User Name"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textSize="16dp"
-                        android:textColor="@color/black">
-                    </TextView>
+                        <TextView
+                            android:id="@+id/viewProfile_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="User Name"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="16dp"
+                            android:textColor="@color/black">
+                        </TextView>
                         <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

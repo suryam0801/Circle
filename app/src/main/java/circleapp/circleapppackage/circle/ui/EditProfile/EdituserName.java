@@ -28,11 +28,11 @@ public class EdituserName {
     private ProgressDialog userNameProgressDialogue;
     public EditProfileViewModel editProfileViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
-    private FragmentActivity EditProfileClassTemp;
+    private EditProfile EditProfileClassTemp;
     private User user;
     private TextView userName;
 
-    public void edituserNamedialogue(FragmentActivity editProfile, TextView userName) {
+    public void edituserNamedialogue(EditProfile editProfile, TextView userName) {
         this.userName = userName;
         this.EditProfileClassTemp = editProfile;
         editUserNamedialogue = new Dialog(EditProfileClassTemp);

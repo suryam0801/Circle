@@ -46,11 +46,11 @@ public class EditProfileImage extends AppCompatActivity {
     private String avatar;
     private Uri downloadLink;
     private User user;
-    private FragmentActivity EditProfileClassTemp;
+    private EditProfile EditProfileClassTemp;
     public EditProfileViewModel editProfileViewModel;
     private GlobalVariables globalVariables = new GlobalVariables();
     private Button finalizeChanges,profilepicButton, profileuploadButton;
-    public void editProfile(FragmentActivity EditProfileClass, CircleImageView profileImageView, Button finalizeChanges) {
+    public void editProfile(EditProfile EditProfileClass, CircleImageView profileImageView, Button finalizeChanges) {
         this.finalizeChanges = finalizeChanges;
         this.profileImageView = profileImageView;
         this.EditProfileClassTemp = EditProfileClass;
