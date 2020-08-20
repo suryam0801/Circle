@@ -173,22 +173,17 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         Fragment selectedFragment = null;
         switch (item.getItemId()) {
             case R.id.workbench_bottom_nav_item:
-                location.setCompoundDrawables(null,null,null,null);
                 location.setText("My Circles");
                 exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new WorkbenchFragment();
                 break;
             case R.id.explore_bottom_nav_item:
-                Drawable img = ExploreTabbedActivity.this.getResources().getDrawable(R.drawable.ic_location_on_black_24dp);
-                img.setBounds(0, 0, 60, 60);
-                location.setCompoundDrawables(img, null, null, null);
-                location.setText(user.getDistrict());
+                location.setText("Explore");
                 exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new ExploreFragment();
                 break;
             case R.id.create_circle_nav_bar:
                 location.setText("My Circles");
-                location.setCompoundDrawables(null,null,null,null);
                 exploreHeader.setVisibility(View.VISIBLE);
                 selectedFragment = new WorkbenchFragment();
                 break;
