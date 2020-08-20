@@ -37,6 +37,7 @@ public class BroadcastsRepository {
         globalVariables.getFBDatabase().getReference("/Broadcasts").child(circle.getId()).child(broadcast.getId()).setValue(broadcast);
         //globalVariables.getFBDatabase().getReference("/Users").child("noOfReadDiscussions").child(broadcast.getId()).setValue(0);
         storageReferenceRepository.addBroadcastImageReference(circle.getId(), broadcast.getId(), broadcast.getAttachmentURI());
+        globalVariables.getFBDatabase().getReference("/Circles").child(circle.getId()).child("lastActivityTimeStamp").setValue(System.currentTimeMillis());
     }
 
     public void updateBroadcast(Broadcast broadcast, String circleId) {

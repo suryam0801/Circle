@@ -149,6 +149,12 @@ public class WorkbenchFragment extends Fragment {
 
     public void addCircle(Circle circle) {
         //add new circle to list
+        if(circle.getLastActivityTimeStamp()!=0){
+            workbenchCircleList = HelperMethodsUI.getCirclePostion(workbenchCircleList, circle);
+        }
+        else {
+            workbenchCircleList.add(workbenchCircleList.size()+1,circle);
+        }
         workbenchCircleList.add(circle);
         wbadapter.notifyDataSetChanged();
         UserRepository userRepository = new UserRepository();

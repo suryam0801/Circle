@@ -81,6 +81,18 @@ public class HelperMethodsUI {
         }
         return position;
     }
+
+    public static List<Circle> getCirclePostion(List<Circle> workbenchCircleList, Circle circle) {
+        int index = 0;
+        if(workbenchCircleList!=null){
+            for (Circle c : workbenchCircleList){
+                if(c.getLastActivityTimeStamp()==0){
+                    index = workbenchCircleList.indexOf(c)-1;
+                }
+            }
+        }
+        return index;
+    }
 //UI
     public static int returnIndexOfCircleList(List<Circle> circleList, Circle circle) {
         int counter = 0;

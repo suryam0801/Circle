@@ -1,6 +1,7 @@
 package circleapp.circleapppackage.circle.DataLayer;
 
 import android.content.Context;
+import android.os.SystemClock;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
@@ -118,7 +119,7 @@ public class CircleRepository {
 
     public String createDefaultCircle(String name, String description, String acceptanceType, String creatorName, String district, int noOfBroadcasts, String category) {
         String id = HelperMethodsUI.uuidGet();
-        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, true, 1);
+        Circle circle = new Circle(id, name, description, acceptanceType, "Everybody", "CreatorAdmin", creatorName, category, "default", null, null, null, district, null, System.currentTimeMillis(), noOfBroadcasts, true, 1, System.currentTimeMillis());
         globalVariables.getFBDatabase().getReference("/Circles").child(id).setValue(circle);
         return id;
     }
