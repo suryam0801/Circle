@@ -84,6 +84,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     private LiveData<String []> loadMoreLiveData, initLiveData;
     private boolean isDownloadLinkActive = false;
     private ImageUrlViewModel  imageUrlViewModel = new ImageUrlViewModel();
+    private List<Comment> commentsList;
 
     public FullPageBroadcastCardAdapter(Activity mContext, List<Broadcast> broadcastList, Circle circle, int initialIndex) {
         this.mContext = mContext;
@@ -174,7 +175,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
     private void setComments(ViewHolder holder,Broadcast currentBroadcast){
         CommentAdapter commentAdapter;
-        List<Comment> commentsList = new ArrayList<>();
+        commentsList = new ArrayList<>();
 
         layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         holder.commentListView.setLayoutManager(layoutManager);
@@ -183,7 +184,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         holder.commentListView.setAdapter(commentAdapter);
         mSwipeRefreshLayout = holder.swipeRefreshLayout;
         //Load initial messages
-        loadInitialComments(currentBroadcast, holder, commentAdapter, commentsList);
+        loadInitialComments(currentBroadcast, holder, commentAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -191,14 +192,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
 
                 mCurrentPage++;
                 itemPos = 0;
-                loadMoreComments(currentBroadcast, commentAdapter, commentsList);
+                loadMoreComments(currentBroadcast, commentAdapter);
                 if(!mSwipeRefreshLayout.isRefreshing())
                     mSwipeRefreshLayout.setRefreshing(true);
             }
         });
     }
 
-    private void loadInitialComments(Broadcast currentBroadcast, ViewHolder holder, CommentAdapter commentAdapter, List<Comment> commentsList){
+    private void loadInitialComments(Broadcast currentBroadcast, ViewHolder holder, CommentAdapter commentAdapter){
 
         CommentsViewModel commentsViewModel = new CommentsViewModel();
         initLiveData = commentsViewModel.getDataSnapsInitialLoadCommentsLiveData(circle.getId(), currentBroadcast.getId(), mCurrentPage, TOTAL_ITEMS_TO_LOAD);
@@ -207,16 +208,16 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             String modifierType = returnArray[1];
             switch (modifierType) {
                 case "added":
-                    addInitComments(comment,commentAdapter,commentsList,holder);
+                    addInitComments(comment,commentAdapter,holder);
                     break;
                 case "removed":
-                    removeInitComment(comment,commentAdapter,commentsList);
+                    removeInitComment(comment,commentAdapter);
                     break;
             }
         });
     }
 
-    private void addInitComments(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList, ViewHolder holder){
+    private void addInitComments(Comment comment, CommentAdapter commentAdapter, ViewHolder holder){
         itemPos++;
         if (itemPos == 1) {
             String messageKey = comment.getId();
@@ -230,13 +231,13 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    private void removeInitComment(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
+    private void removeInitComment(Comment comment, CommentAdapter commentAdapter){
         int index = commentsList.indexOf(comment);
         commentsList.remove(comment);
         commentAdapter.notifyItemRangeChanged(index,commentsList.size()-index);
     }
 
-    private void loadMoreComments(Broadcast currentBroadcast, CommentAdapter commentAdapter, List<Comment> commentsList) {
+    private void loadMoreComments(Broadcast currentBroadcast, CommentAdapter commentAdapter) {
 
         CommentsViewModel commentsViewModel = new CommentsViewModel();
         loadMoreLiveData = commentsViewModel.getDataSnapsLoadMoreCommentsLiveData(circle.getId(), currentBroadcast.getId(), mLastKey, 100);
@@ -246,13 +247,13 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             String modifierType = returnArray[1];
             switch (modifierType) {
                 case "added":
-                    addMoreComments(comment,commentAdapter,commentsList);
+                    addMoreComments(comment,commentAdapter);
                     break;
             }
         });
     }
 
-    private void addMoreComments(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
+    private void addMoreComments(Comment comment, CommentAdapter commentAdapter){
         String commentKey = comment.getId();
         assert comment != null;
         if(!mPrevKey.equals(commentKey)){

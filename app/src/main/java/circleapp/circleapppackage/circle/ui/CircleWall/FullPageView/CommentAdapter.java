@@ -3,6 +3,7 @@ package circleapp.circleapppackage.circle.ui.CircleWall.FullPageView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,6 +38,7 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Comment;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
+import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
@@ -64,7 +66,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
         final Comment comment = CommentList.get(position);
-        setCommentValues(holder, comment);
+        setCommentValues(holder, comment, position);
         String body = comment.getComment();
 
         if(body.contains("https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com")){
@@ -90,7 +92,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     }
 
-    private void setCommentValues(ViewHolder holder, Comment comment){
+    private void setCommentValues(ViewHolder holder, Comment comment, int pos){
 
         final String name = comment.getCommentorName();
         final String cmnt = comment.getComment();
@@ -158,6 +160,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     }
                 })
                 .into(holder.rightCommentImage);
+
+        holder.commentImage.setOnClickListener(v->{
+            goToFullPageImageView(cmnt,pos);
+        });
+        holder.rightCommentImage.setOnClickListener(v->{
+            goToFullPageImageView(cmnt,pos);
+        });
+    }
+
+    private void goToFullPageImageView(String url, int position){
+        Intent intent = new Intent(mContext, FullPageImageDisplay.class);
+        intent.putExtra("uri", url);
+        intent.putExtra("indexOfComment", position);
+        mContext.startActivity(intent);
+        ((Activity) mContext).finish();
     }
 
     private int arrayValForName(String name){
