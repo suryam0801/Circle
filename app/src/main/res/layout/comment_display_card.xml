@@ -127,6 +127,7 @@
 
                     <com.github.chrisbanes.photoview.PhotoView
                         android:id="@+id/comment_image"
+                        android:layout_marginTop="30dp"
                         android:layout_width="220dp"
                         android:layout_height="250dp"
                         android:padding="10dp"

@@ -177,7 +177,7 @@ public class WorkbenchFragment extends Fragment {
     public void removeCircle(Circle circle) {
         int position = HelperMethodsUI.returnIndexOfCircleList(workbenchCircleList, circle);
         workbenchCircleList.remove(position);
-        wbadapter.notifyItemChanged(position);
+        wbadapter.notifyDataSetChanged();
         if(globalVariables.getInvolvedCircles()==0)
             emptyDisplay.setVisibility(View.VISIBLE);
     }

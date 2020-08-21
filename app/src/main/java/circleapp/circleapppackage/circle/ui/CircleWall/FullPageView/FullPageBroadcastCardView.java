@@ -172,9 +172,10 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
             }
             else if(progress[1].equals("100")){
                 downloadLink = Uri.parse(progress[0]);
-                if(!downloadLink.toString().contains("content://media"))
+                if(!downloadLink.toString().contains("content://media")){
                     globalVariables.setCommentDownloadLink(downloadLink);
-                adapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
+                }
                 imageUploadProgressDialog.dismiss();
             }
         });
@@ -436,7 +437,6 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
 
     @Override
     protected void onPause() {
-        recyclerView.removeAllViews();
         super.onPause();
     }
 

@@ -66,23 +66,16 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
             if(circle.getMembersList().get(userId).equals("admin")){
                 if(circle.getMembersList().get(member.getId())!=null){
                     if(circle.getMembersList().get(member.getId()).equals("admin")){
-                        holder.removeMember.setVisibility(View.GONE);
                         holder.userRole.setVisibility(View.VISIBLE);
                     }
                     else
                     {
-                        holder.container.setOnLongClickListener(v->{
+                        holder.container.setOnClickListener(v->{
                             showMakeAdminDialog(member, holder);
-                            return true;
                         });
-                        holder.removeMember.setVisibility(View.VISIBLE);
                     }
                 }
             }
-            holder.removeMember.setOnClickListener(v->{
-                CircleRepository circleRepository = new CircleRepository();
-                circleRepository.removeMember(circle, member);
-            });
         }
         HelperMethodsUI.setMemberProfileImage(member.getPhotoURI(), mContext.getApplicationContext(), holder.profPic);
 
@@ -111,12 +104,14 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
         removeUserDialog.setContentView(R.layout.remove_member_dialog);
         final Button closeDialogButton = removeUserDialog.findViewById(R.id.make_admin_confirm_btn);
         final Button cancel = removeUserDialog.findViewById(R.id.make_admin_cancel_btn);
+        final TextView title = removeUserDialog.findViewById(R.id.make_admin_dialog_title);
+
+        title.setText("Do you want to make "+ member.getName() +" an Admin?");
 
         closeDialogButton.setOnClickListener(view -> {
             CircleRepository circleRepository = new CircleRepository();
             circleRepository.makeAdmin(circle, member);
             holder.userRole.setVisibility(View.VISIBLE);
-            holder.removeMember.setVisibility(View.GONE);
             removeUserDialog.dismiss();
         });
 
@@ -130,7 +125,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
         private TextView name, timeElapsed, userRole;
         private CircleImageView profPic;
         private LinearLayout container;
-        private Button removeMember;
 
         public ViewHolder(@NonNull View pview) {
             super(pview);
@@ -138,7 +132,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
             name = pview.findViewById(R.id.member_name);
             timeElapsed = pview.findViewById(R.id.member_since_display);
             profPic = pview.findViewById(R.id.member_profile_picture);
-            removeMember = pview.findViewById(R.id.remove_member);
             userRole = pview.findViewById(R.id.member_role);
         }
     }
