@@ -27,11 +27,10 @@ import circleapp.circleapppackage.circle.ui.ExploreTabbedActivity;
 
 public class Notifications extends AppCompatActivity {
 
-    private RecyclerView thisWeekListView, previousListView;
-    private List<Notification> thisWeekNotifs, previousNotifs;
+    private RecyclerView thisWeekListView;
+    private List<Notification> thisWeekNotifs;
     private ImageButton backBtn;
-    private NotificationAdapter adapterThisWeek, adapterPrevious;
-    private TextView prevnotify;
+    private NotificationAdapter adapterThisWeek;
     private User user;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -42,13 +41,10 @@ public class Notifications extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         thisWeekListView = findViewById(R.id.thisweek_notifications_display);
-        previousListView = findViewById(R.id.all_time_notifications_display);
         backBtn = findViewById(R.id.bck_notifications);
 
-        prevnotify = findViewById(R.id.prevnotifytext);
         user = globalVariables.getCurrentUser();
         thisWeekNotifs = new ArrayList<>();
-        previousNotifs = new ArrayList<>();
 
         backBtn.setOnClickListener(v->{
             onBackPressed();
@@ -68,7 +64,7 @@ public class Notifications extends AppCompatActivity {
     }
 
     private void setNotifsView(Notification notification) {
-        HelperMethodsUI.OrderNotification(this, prevnotify, notification, previousNotifs, thisWeekNotifs, adapterPrevious, adapterThisWeek, previousListView, thisWeekListView);
+        HelperMethodsUI.OrderNotification(this, notification, thisWeekNotifs, adapterThisWeek, thisWeekListView);
     }
 
     @Override

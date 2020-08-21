@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.ViewPager;
@@ -268,37 +269,13 @@ public class HelperMethodsUI {
         reportAbuseDialog.show();
     }
 //UI
-    public static void OrderNotification(Context context, TextView prevnotify, Notification notification, List<Notification> previousNotifs, List<Notification> thisWeekNotifs, NotificationAdapter adapterPrevious, NotificationAdapter adapterThisWeek, RecyclerView previousListView, RecyclerView thisWeekListView) {
-        String currentTimeStamp = getCurrentTimeStamp();
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(thisWeekNotifs.size(), StaggeredGridLayoutManager.HORIZONTAL );
-        thisWeekListView.setLayoutManager(gridLayoutManager);
-        Scanner scan = new Scanner(currentTimeStamp);
-        scan.useDelimiter("-");
-        int currentDay = Integer.parseInt(scan.next());
-        int currentMonth = Integer.parseInt(scan.next());
-        String date = notification.getDate();
-        scan = new Scanner(date);
-        scan.useDelimiter("-");
-        int notificationDay = Integer.parseInt(scan.next());
-        int notificationMonth = Integer.parseInt(scan.next());
+    public static void OrderNotification(Context context, Notification notification, List<Notification> thisWeekNotifs, NotificationAdapter adapterThisWeek, RecyclerView thisWeekListView) {
 
-        if (Math.abs(notificationDay - currentDay) > 6 || Math.abs(notificationMonth - currentMonth) >= 1)
-            previousNotifs.add(0, notification);
-        else
-            thisWeekNotifs.add(0, notification);
-
-        if (previousNotifs.size() == 0) {
-            prevnotify.setVisibility(View.INVISIBLE);
-        } else {
-            prevnotify.setVisibility(View.VISIBLE);
-            StaggeredGridLayoutManager prevnotifygridLayoutManager = new StaggeredGridLayoutManager(previousNotifs.size(), StaggeredGridLayoutManager.HORIZONTAL );
-            thisWeekListView.setLayoutManager(prevnotifygridLayoutManager);
-        }
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        thisWeekListView.setLayoutManager(layoutManager);
+        thisWeekNotifs.add(0, notification);
 
         adapterThisWeek = new NotificationAdapter(context, thisWeekNotifs);
-        adapterPrevious = new NotificationAdapter(context, previousNotifs);
-
-        previousListView.setAdapter(adapterPrevious);
         thisWeekListView.setAdapter(adapterThisWeek);
 
     }
