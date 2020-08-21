@@ -118,20 +118,33 @@
                     android:visibility="gone" />
 
             </RelativeLayout>
-
+                <TextView
+                    android:id="@+id/broadcastWall_Message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:lineSpacingExtra="4dp"
+                    android:text="This is a good time to explore new ways of learning and smart ways of earning in the app Store Google Play Store download on the way you can see the attached file is scanned image in PDF format of the morning to you and your family and friends and family ❤️😮 the same way as well if you're interested ☺️. However the same way as to the server new guy who is the best of luck to you and your family and friends and family ❤️ Nextdoor the same way as you get a chance to meet you at the moment and hope to hear from you soon as possible 😚😘😘"
+                    android:autoLink="phone|web"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:maxLines="5"
+                    android:visibility="gone"></TextView>
             <TextView
-                android:id="@+id/broadcastWall_Message"
+                android:id="@+id/read_more_message"
                 android:layout_width="wrap_content"
-                android:layout_height="65dp"
-                android:layout_marginTop="10dp"
-                android:fontFamily="@font/roboto_regular"
-                android:lineSpacingExtra="4dp"
-                android:text="Message"
-                android:autoLink="phone|web"
-                android:textColor="@color/black"
-                android:textSize="14dp"
+                android:layout_height="wrap_content"
+                android:text="Read More"
+                android:layout_gravity="right"
                 android:visibility="gone"></TextView>
-
+            <TextView
+                android:id="@+id/read_less_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Read Less"
+                android:layout_gravity="right"
+                android:visibility="gone"></TextView>
 
             <ScrollView
                 android:id="@+id/broadcastWall_poll_display_view"

@@ -149,6 +149,11 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         if (broadcast.isPollExists() == true)
             ifPollExistsAction(viewHolder, broadcast, user);
 
+        if(broadcast.getMessage()!=null){
+            if(broadcast.getMessage().length()>240)
+                viewHolder.readMoreTextView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -162,9 +167,22 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
         });
+
         viewHolder.viewPollResultsImage.setOnClickListener(view -> {
             globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
+        });
+
+        viewHolder.readMoreTextView.setOnClickListener(v->{
+            viewHolder.readLessTextView.setVisibility(View.VISIBLE);
+            viewHolder.readMoreTextView.setVisibility(View.GONE);
+            viewHolder.broadcastMessageDisplay.setMaxLines(50);
+        });
+
+        viewHolder.readLessTextView.setOnClickListener(v->{
+            viewHolder.readMoreTextView.setVisibility(View.VISIBLE);
+            viewHolder.readLessTextView.setVisibility(View.GONE);
+            viewHolder.broadcastMessageDisplay.setMaxLines(5);
         });
 
         viewHolder.container.setOnLongClickListener(v -> {
@@ -358,7 +376,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newCommentsTopTv;
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newCommentsTopTv, readMoreTextView, readLessTextView;
         private CircleImageView profPicDisplay;
         private LinearLayout pollOptionsDisplayGroup, newCommentsTopNotifContainer;
         private RelativeLayout container;
@@ -390,6 +408,8 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             newCommentsTopNotifContainer = view.findViewById(R.id.broadcast_adapter_comments_alert_display);
             newCommentsTopTv = view.findViewById(R.id.broadcast_adapter_no_of_comments_display);
             broadcastListenerToggle = view.findViewById(R.id.broadcast_listener_on_off_toggle);
+            readMoreTextView = view.findViewById(R.id.read_more_message);
+            readLessTextView = view.findViewById(R.id.read_less_message);
         }
 
         public String getCurrentUserPollOption() {

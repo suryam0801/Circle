@@ -344,6 +344,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         a.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
+        finishAfterTransition();
     }
 
 }

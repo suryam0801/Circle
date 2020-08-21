@@ -231,9 +231,9 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
     }
 
     private void removeInitComment(Comment comment, CommentAdapter commentAdapter, List<Comment> commentsList){
-        int index = commentsList.indexOf(comment);
-        commentsList.remove(comment);
-        commentAdapter.notifyItemRangeChanged(index,commentsList.size()-index);
+        int index = HelperMethodsUI.returnIndexOfComment(commentsList, comment);
+        commentsList.remove(index);
+        commentAdapter.notifyItemRemoved(index);
     }
 
     private void loadMoreComments(Broadcast currentBroadcast, CommentAdapter commentAdapter, List<Comment> commentsList) {

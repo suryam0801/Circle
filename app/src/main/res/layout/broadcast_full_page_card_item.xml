@@ -111,7 +111,7 @@
                     <TextView
                         android:id="@+id/full_page_broadcast_Message"
                         android:layout_width="wrap_content"
-                        android:layout_height="65dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/roboto_regular"
                         android:lineSpacingExtra="4dp"
@@ -202,7 +202,7 @@
                             android:textSize="15dp"
                             android:textAlignment="textStart"
                             android:paddingLeft="10dp"
-                            android:textColor="@color/grey"
+                            android:textColor="@color/md_red_500"
                             android:visibility="gone"></Button>
                     </RelativeLayout>
                 </LinearLayout>

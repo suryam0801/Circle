@@ -83,7 +83,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.rightImageBackgroundContainer.setVisibility(View.GONE);
             holder.imageBackgroundContainer.setVisibility(View.GONE);
             if(user.getUserId().equals(comment.getCommentorId())){
-                holder.backgroundContainer.setVisibility(View.GONE);
+                if(body.length()<=3){
+                    holder.rightCommentShortContainer.setVisibility(View.VISIBLE);
+                    holder.rightBackgroundContainer.setVisibility(View.GONE);
+                    holder.backgroundContainer.setVisibility(View.GONE);
+                }
+                else
+                    holder.backgroundContainer.setVisibility(View.GONE);
             }
             else {
                 holder.rightBackgroundContainer.setVisibility(View.GONE);
@@ -108,6 +114,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.timeElapsed.setText(timeString);
         holder.imageTimeStamp.setText(timeString);
         holder.rightImageTimeStamp.setText(timeString);
+        holder.rightShortComment.setText(cmnt);
+        holder.rightTimeElapsedShort.setText(timeString);
 
         //For username color change
         int[] color = globalVariables.getColorsForUsername();
@@ -118,9 +126,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.rightComment.setText(cmnt);
         holder.rightTimeElapsed.setText(timeString);
         if(cmnt.length()<3){
-            holder.timeElapsed.setVisibility(View.GONE);
-            holder.rightTimeElapsed.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.END_OF, R.id.comment_object_ownerName);
+            holder.timeElapsed.setLayoutParams(params);
         }
+
         if(name.length()>cmnt.length()){
             RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.END_OF, R.id.comment_object_ownerName);
@@ -164,8 +174,24 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.commentImage.setOnClickListener(v->{
             goToFullPageImageView(cmnt,pos);
         });
+
         holder.rightCommentImage.setOnClickListener(v->{
             goToFullPageImageView(cmnt,pos);
+        });
+
+        holder.rightBackgroundContainer.setOnLongClickListener(v->{
+            showDeleteCommentDialog(comment);
+            return true;
+        });
+
+        holder.rightCommentImage.setOnLongClickListener(v->{
+            showDeleteCommentDialog(comment);
+            return true;
+        });
+
+        holder.rightShortComment.setOnLongClickListener(v->{
+            showDeleteCommentDialog(comment);
+            return true;
         });
     }
 
@@ -182,11 +208,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return val%10;
     }
 
-
-    /*holder.rightBackgroundContainer.setOnLongClickListener(v->{
-        showDeleteCommentDialog(comment);
-        return true;
-    });*/
     public void showDeleteCommentDialog(Comment comment){
         deleteCommentConfirmation= new Dialog(mContext);
         deleteCommentConfirmation.setContentView(R.layout.delete_comment_popup);
@@ -222,9 +243,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView userName;
-        private TextView comment, rightComment;
-        private TextView timeElapsed, rightTimeElapsed;
-        private LinearLayout backgroundContainer, rightBackgroundContainer, imageBackgroundContainer, rightImageBackgroundContainer;
+        private TextView comment, rightComment, rightShortComment;
+        private TextView timeElapsed, rightTimeElapsed, rightTimeElapsedShort;
+        private LinearLayout backgroundContainer, rightBackgroundContainer, imageBackgroundContainer, rightImageBackgroundContainer, rightCommentShortContainer;
         private PhotoView commentImage, rightCommentImage;
         private TextView imageTimeStamp, rightImageTimeStamp;
         private ProgressBar commentImageUpload, rightCommentImageUpload;
@@ -250,6 +271,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             rightCommentImage = view.findViewById(R.id.right_comment_image);
             rightImageTimeStamp = view.findViewById(R.id.right_comment_image_postedTime);
             rightCommentImageUpload = view.findViewById(R.id.right_comment_image_upload_progress);
+            rightCommentShortContainer = view.findViewById(R.id.right_comment_short_background_container);
+            rightShortComment = view.findViewById(R.id.right_comment_short_comment);
+            rightTimeElapsedShort = view.findViewById(R.id.right_comments_short_postedTime);
 
         }
     }

@@ -55,7 +55,7 @@
                         android:paddingRight="10dp"
                         android:paddingTop="19dp"
                         android:paddingBottom="9dp"
-                        android:text="Description"
+                        android:text="D"
                         android:autoLink="phone|web"
                         android:lineSpacingExtra="3dp"
                         android:textColor="#000000"
@@ -223,11 +223,72 @@
                         android:textColor="#9D9D9D"
                         android:textSize="10dp"
                         android:visibility="visible"></TextView>
+
                 </RelativeLayout>
 
             </RelativeLayout>
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/right_comment_short_background_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/broadcast_comment_right_align"
+                android:layout_marginTop="1dp"
+                android:layout_marginLeft="75dp"
+                android:layout_alignParentEnd="true">
+
+                <TextView
+                    android:id="@+id/right_comment_short_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="30dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="9dp"
+                    android:text="D"
+                    android:autoLink="phone|web"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="#000000"
+                    android:textSize="16dp"
+                    android:visibility="visible"></TextView>
+
+                <TextView
+                    android:id="@+id/right_comments_short_postedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/right_comment_short_comment"
+                    android:layout_alignRight="@+id/right_comment_short_comment"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginLeft="3dp"
+                    android:elevation="5dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="00:00 pm"
+                    android:textAlignment="textEnd"
+                    android:textColor="#9D9D9D"
+                    android:textSize="10dp"
+                    android:visibility="visible"></TextView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
