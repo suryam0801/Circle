@@ -131,6 +131,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
             CircleRepository circleRepository = new CircleRepository();
             circleRepository.addUsersToCircle(circle,"normal");
             Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
+
         }
     }
 
