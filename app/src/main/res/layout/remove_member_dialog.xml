@@ -15,21 +15,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:background="@drawable/ic_add_members_icon">
-        </ImageView>
-
         <TextView
-            android:id="@+id/remove_member_dialog_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/make_admin_dialog_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:fontFamily="@font/roboto_bold"
             android:textSize="16dp"
             android:layout_marginLeft="15.5dp"
             android:textColor="@color/black"
-            android:text="Do you want to make user admin?">
+            android:text="Do you want to make User admin?">
         </TextView>
 
     </LinearLayout>
@@ -46,7 +41,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
             <Button
                 android:layout_width="92dp"
                 android:layout_height="35dp"
