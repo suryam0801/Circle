@@ -25,6 +25,10 @@ public class StorageReferenceRepository {
         temp.delete();
     }
 
+    public void addCommentImageReference(String circleId, String commentId, String imageUrl){
+        globalVariables.getFBDatabase().getReference("StorageReferences").child(circleId).child(commentId).setValue(imageUrl);
+    }
+
     public void addBroadcastImageReference(String circleId, String broadcastId, String imageUrl) {
         globalVariables.getFBDatabase().getReference("StorageReferences").child(circleId).child(broadcastId).setValue(imageUrl);
     }

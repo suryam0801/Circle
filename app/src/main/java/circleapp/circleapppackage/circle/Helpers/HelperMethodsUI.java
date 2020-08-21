@@ -111,7 +111,7 @@ public class HelperMethodsUI {
         int position = 0;
         for (Comment c : commentsList) {
             if (comment.getId().equals(c.getId()))
-                return position;
+                break;
 
             position++;
         }

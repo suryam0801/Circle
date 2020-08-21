@@ -72,6 +72,7 @@ public class NotificationRepository {
             for (String i : member)
 
             {
+                if(listOfCirclePersonel!=null)
                 for(Subscriber s : listOfCirclePersonel){
                     if(s!=null){
                         String tokenId = s.getToken_id();
