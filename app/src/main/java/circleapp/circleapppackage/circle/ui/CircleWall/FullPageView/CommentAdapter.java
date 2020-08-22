@@ -110,6 +110,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         String timeString = simpleDateFormat.format(date);
 
         holder.userName.setText(name);
+        holder.imageUserName.setText(name);
         holder.comment.setText(cmnt);
         holder.timeElapsed.setText(timeString);
         holder.imageTimeStamp.setText(timeString);
@@ -242,7 +243,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView userName;
+        private TextView userName, imageUserName;
         private TextView comment, rightComment, rightShortComment;
         private TextView timeElapsed, rightTimeElapsed, rightTimeElapsedShort;
         private LinearLayout backgroundContainer, rightBackgroundContainer, imageBackgroundContainer, rightImageBackgroundContainer, rightCommentShortContainer;
@@ -258,6 +259,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             imageBackgroundContainer = view.findViewById(R.id.image_comment_display_background_container);
             backgroundContainer = view.findViewById(R.id.comment_display_background_container);
             userName = view.findViewById(R.id.comment_object_ownerName);
+            imageUserName = view.findViewById(R.id.image_comment_object_ownerName);
             comment = view.findViewById(R.id.comment_object_comment);
             timeElapsed = view.findViewById(R.id.comments_object_postedTime);
             commentImage = view.findViewById(R.id.comment_image);
