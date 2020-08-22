@@ -38,7 +38,6 @@ public class GlobalVariables extends Application {
     public int involvedCircles = 0;
     RandomColor randomColor = new RandomColor();
     public int[] colors = randomColor.randomColor(10);
-    public boolean isRemoveMembersActive = false;
 
     public static View view;
 
@@ -152,13 +151,5 @@ public class GlobalVariables extends Application {
 
     public static void setCircleWallPersonel(List<Subscriber> circleWallPersonel) {
         GlobalVariables.circleWallPersonel = circleWallPersonel;
-    }
-
-    public boolean isRemoveMembersActive() {
-        return isRemoveMembersActive;
-    }
-
-    public void setRemoveMembersActive(boolean removeMembersActive) {
-        isRemoveMembersActive = removeMembersActive;
     }
 }

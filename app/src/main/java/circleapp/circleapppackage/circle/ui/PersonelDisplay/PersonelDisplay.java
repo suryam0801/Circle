@@ -126,17 +126,16 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null) {
                         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
-                        if(!globalVariables.isRemoveMembersActive())
-                            HelperMethodsBL.updateCirclePersonel(subscriber, circle.getId());
+                        HelperMethodsBL.updateCirclePersonel(subscriber, circle.getId());
                     }
                 });
             }
             CircleRepository circleRepository = new CircleRepository();
             circleRepository.addUsersToCircle(circle,"normal");
-            Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
             Intent intent = getIntent();
             finish();
             startActivity(intent);
+            Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
         }
     }
 
