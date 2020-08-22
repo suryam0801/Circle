@@ -25,13 +25,14 @@ import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 
+import static java.lang.Long.compare;
+
 public class MembersFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private RecyclerView membersDisplay;
     private RecyclerView.Adapter adapter;
-    private List<Subscriber> memberList= new ArrayList<>();
     private Circle circle;
     private LiveData<String[]> liveData;
     private GlobalVariables globalVariables = new GlobalVariables();
@@ -66,6 +67,7 @@ public class MembersFragment extends Fragment {
 
     private void loadMembersList() {
         //initialize membersList
+        List<Subscriber> memberList= new ArrayList<>();
         membersDisplay.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         membersDisplay.setLayoutManager(layoutManager);
@@ -81,23 +83,46 @@ public class MembersFragment extends Fragment {
                 String modifierType = returnArray[1];
                 switch (modifierType) {
                     case "added":
-                        memberList.add(subscriber);
-                        adapter.notifyDataSetChanged();
+                        if(!checkIfExists(subscriber,memberList)){
+                            addInOrder(subscriber, memberList);
+                            adapter.notifyDataSetChanged();
+                        }
                         break;
                     case "changed":
                         int index = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
                         memberList.remove(index);
-                        memberList.add(index, subscriber);
-                        adapter.notifyItemChanged(index);
+                        addInOrder(subscriber,memberList);
+                        adapter.notifyDataSetChanged();
                         break;
                     case "removed":
                         Log.d("ItemRemoved", subscriber.getName());
-                        memberList.remove(subscriber);
-                        adapter.notifyDataSetChanged();
+                        int removeIndex = HelperMethodsUI.returnIndexOfMemberList(memberList, subscriber);
+                        memberList.remove(removeIndex);
+                        adapter.notifyItemRemoved(removeIndex);
                         break;
                 }
             }
         });
+    }
+
+    private boolean checkIfExists(Subscriber subscriber, List<Subscriber> memberList){
+        boolean exists = false;
+        if(memberList!=null&&subscriber!=null)
+        for(Subscriber s: memberList){
+            if(s.getId().equals(subscriber.getId()))
+                exists = true;
+        }
+        return exists;
+    }
+
+    private void addInOrder(Subscriber subscriber, List<Subscriber> memberList){
+        int pos;
+        for(pos = 0 ; pos < memberList.size() ; pos++ ) {
+            if(compare(memberList.get(pos).getTimestamp(), subscriber.getTimestamp()) < 0) {
+                break;
+            }
+        }
+        memberList.add(pos, subscriber);
     }
 
     @Override

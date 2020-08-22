@@ -44,6 +44,7 @@ public class CirclePersonnelRepository {
     }
 
     public void updateCirclePersonnel(String  userId, String  circleId, Subscriber subscriber){
+        if(!globalVariables.isRemoveMembersActive())
         globalVariables.getFBDatabase().getReference("/CirclePersonel").child(circleId).child("members").child(userId).setValue(subscriber);
     }
 
