@@ -78,7 +78,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
                 }
             }
             holder.removeMember.setOnClickListener(v->{
-                globalVariables.setRemoveMembersActive(true);
                 showRemoveUserDialog(member, holder);
             });
         }
@@ -145,7 +144,6 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
         });
 
         cancel.setOnClickListener(v->{
-            globalVariables.setRemoveMembersActive(false);
             removeMemberDialog.dismiss();
         });
         removeMemberDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
