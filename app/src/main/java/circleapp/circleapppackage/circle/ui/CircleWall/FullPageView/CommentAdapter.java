@@ -125,7 +125,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         holder.rightComment.setText(cmnt);
         holder.rightTimeElapsed.setText(timeString);
-        if(cmnt.length()<3){
+        if(cmnt.length()<6){
             RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.END_OF, R.id.comment_object_ownerName);
             holder.timeElapsed.setLayoutParams(params);
