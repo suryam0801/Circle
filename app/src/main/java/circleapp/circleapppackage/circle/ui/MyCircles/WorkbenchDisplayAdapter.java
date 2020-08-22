@@ -124,23 +124,23 @@ public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDispl
     }
 
     private void clearNotifications(User user, Circle circle){
+        HashMap<String, Integer> notifStore;
         if (user.getNotificationsAlert() != null) { //if the user has notification info from other circles
 
-            HashMap<String, Integer> tempUserNotifStore = new HashMap<>(user.getNotificationsAlert());
-            tempUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
-            user.setNotificationsAlert(tempUserNotifStore);
+            notifStore = new HashMap<>(user.getNotificationsAlert());
+            notifStore.put(circle.getId(), circle.getNoOfBroadcasts());
 
         } else { //first time when a user is opening any circle
 
-            HashMap<String, Integer> newUserNotifStore = new HashMap<>();
-            newUserNotifStore.put(circle.getId(), circle.getNoOfBroadcasts());
-            user.setNotificationsAlert(newUserNotifStore);
+            notifStore = new HashMap<>();
+            notifStore.put(circle.getId(), circle.getNoOfBroadcasts());
         }
 
         //Save user
         UserRepository userRepository = new UserRepository();
-        userRepository.updateUser(user);
+        userRepository.updateUserNotifsIndicator(user, notifStore);
         globalVariables.saveCurrentCircle(circle);
+        user.setNotificationsAlert(notifStore);
         globalVariables.saveCurrentUser(user);
     }
 

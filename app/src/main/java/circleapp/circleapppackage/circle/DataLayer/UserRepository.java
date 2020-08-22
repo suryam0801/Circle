@@ -85,4 +85,7 @@ public class UserRepository {
         return userId;
     }
 
+    public void updateUserNotifsIndicator(User user, HashMap<String, Integer> notifStore) {
+        globalVariables.getFBDatabase().getReference("/Users").child(user.getUserId()).child("notificationsAlert").setValue(notifStore);
+    }
 }

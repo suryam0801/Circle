@@ -27,6 +27,10 @@ import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePerson
 
 public class ApplicantsFragment extends Fragment {
 
+
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
     private List<Subscriber> applicantsList;
     private User user;
     private Circle circle;
@@ -37,6 +41,15 @@ public class ApplicantsFragment extends Fragment {
     private LiveData<String[]> liveData;
 
     ApplicantsFragment(){}
+
+    public static ApplicantsFragment newInstance(String param1, String param2) {
+        ApplicantsFragment fragment = new ApplicantsFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
