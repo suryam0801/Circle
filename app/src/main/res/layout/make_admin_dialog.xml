@@ -16,7 +16,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/remove_member_dialog_title"
+            android:id="@+id/make_admin_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -24,7 +24,7 @@
             android:textSize="16dp"
             android:layout_marginLeft="15.5dp"
             android:textColor="@color/black"
-            android:text="Do you want to make remove member?">
+            android:text="Do you want to make User admin?">
         </TextView>
 
     </LinearLayout>
@@ -48,30 +48,28 @@
                 android:layout_height="35dp"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/unpressable_button"
-                android:textColor="@color/grey"
+                android:textColor="@color/md_red_300"
                 android:fontFamily="@font/roboto_medium"
                 android:layout_toLeftOf="@+id/make_admin_confirm_btn"
-                android:layout_marginLeft="45dp"
                 android:layout_marginRight="12dp"
                 android:text="Cancel"
                 android:textAllCaps="false"
-                android:id="@+id/remove_member_cancel_btn"
+                android:id="@+id/make_admin_cancel_btn"
                 android:layout_marginBottom="20dp">
             </Button>
 
             <Button
-                android:id="@+id/remove_member_confirm_btn"
+                android:id="@+id/make_admin_confirm_btn"
                 android:layout_width="92dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="20dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="45dp"
-                android:background="@drawable/red_outline_button"
+                android:background="@drawable/green_make_admin"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Remove"
+                android:text="Make Admin"
                 android:textAllCaps="false"
-                android:textColor="@color/md_red_500"></Button>
+                android:textColor="@color/md_green_500"></Button>
         </RelativeLayout>
 
     </RelativeLayout>

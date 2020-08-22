@@ -21,6 +21,8 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import circleapp.circleapppackage.circle.DataLayer.CircleRepository;
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsBL;
@@ -74,7 +76,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
             });
         });
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        bottomNav.setSelectedItemId(R.id.applicants_nav_item);
+        bottomNav.setSelectedItemId(R.id.members_nav_item);
         setCircleObserver();
     }
 
@@ -124,14 +126,17 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null) {
                         Subscriber subscriber = new Subscriber(user, System.currentTimeMillis());
-                        HelperMethodsBL.updateCirclePersonel(subscriber, circle.getId());
+                        if(!globalVariables.isRemoveMembersActive())
+                            HelperMethodsBL.updateCirclePersonel(subscriber, circle.getId());
                     }
                 });
             }
             CircleRepository circleRepository = new CircleRepository();
             circleRepository.addUsersToCircle(circle,"normal");
             Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
-
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
         }
     }
 
