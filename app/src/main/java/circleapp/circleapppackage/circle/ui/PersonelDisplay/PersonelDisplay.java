@@ -117,6 +117,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void addMembersToCirclePersonel() {
         if(globalVariables.getUsersList()!=null){
             for(String userId: globalVariables.getUsersList()) {
@@ -133,7 +134,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
             CircleRepository circleRepository = new CircleRepository();
             circleRepository.addUsersToCircle(circle,"normal");
             Intent intent = getIntent();
-            finish();
+            finishAfterTransition();
             startActivity(intent);
             Toast.makeText(this,"Added members successfully!",Toast.LENGTH_SHORT).show();
         }
@@ -146,6 +147,7 @@ public class PersonelDisplay extends AppCompatActivity implements AddPeopleInter
         startActivity(new Intent(PersonelDisplay.this, CircleWall.class));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void contactsInterface(List<String> tempUsersList) {
         addMembersToCirclePersonel();
