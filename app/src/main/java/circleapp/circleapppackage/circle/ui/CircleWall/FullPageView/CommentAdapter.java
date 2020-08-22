@@ -121,8 +121,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         //For username color change
         int[] color = globalVariables.getColorsForUsername();
         int hash = arrayValForName(name);
-        if(hash<10&&hash>=0)
+        if(hash<10&&hash>=0){
             holder.userName.setTextColor(color[hash]);
+            holder.imageUserName.setTextColor(color[hash]);
+        }
 
         holder.rightComment.setText(cmnt);
         holder.rightTimeElapsed.setText(timeString);
