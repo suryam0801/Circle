@@ -287,4 +287,11 @@ public class HelperMethodsBL {
         CirclePersonnelRepository circlePersonnelRepository = new CirclePersonnelRepository();
         circlePersonnelRepository.checkIfDeviceTokenMatches(circleId, user.getToken_id(), user.getUserId());
     }
+
+    public static void updateCircleLogo(Circle circle, String url) {
+        CircleRepository circleRepository = new CircleRepository();
+        circleRepository.updateCircleLogo(circle.getId(), url);
+        circle.setBackgroundImageLink(url);
+        globalVariables.saveCurrentCircle(circle);
+    }
 }

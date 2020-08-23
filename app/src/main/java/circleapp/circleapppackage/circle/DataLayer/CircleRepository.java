@@ -146,4 +146,8 @@ public class CircleRepository {
     public void updateCircleDescription(String circleId, String description){
         globalVariables.getFBDatabase().getReference("/Circles").child(circleId).child("description").setValue(description);
     }
+
+    public void updateCircleLogo(String id, String url) {
+        globalVariables.getFBDatabase().getReference("/Circles").child(id).child("backgroundImageLink").setValue(url);
+    }
 }
