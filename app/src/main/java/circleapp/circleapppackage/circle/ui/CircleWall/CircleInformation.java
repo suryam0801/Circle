@@ -1,8 +1,12 @@
 package circleapp.circleapppackage.circle.ui.CircleWall;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +42,23 @@ import circleapp.circleapppackage.circle.Model.ObjectModels.Subscriber;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
+import circleapp.circleapppackage.circle.Utils.UploadImages.ImagePicker;
+import circleapp.circleapppackage.circle.Utils.UploadImages.ImageUpload;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 import circleapp.circleapppackage.circle.ui.ExploreTabbedActivity;
 import circleapp.circleapppackage.circle.ui.PersonelDisplay.MemberListAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.Manifest.permission.CAMERA;
+
 public class CircleInformation extends AppCompatActivity {
+
+
+    private Uri filePath, downloadLink;
+    private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
+    public ImageUpload imageUploadModel;
+    private ProgressDialog imageUploadProgressDialog;
 
     private ImageView banner;
     private CircleImageView logo;
@@ -52,7 +69,7 @@ public class CircleInformation extends AppCompatActivity {
     private Circle circle;
     private LinearLayout noPermissionToViewMembers, noMembersDisplay;
     private User user;
-    private ImageButton backBtn, editCircleNameBtn, editCircleDescBtn;
+    private ImageButton backBtn, editCircleNameBtn, editCircleDescBtn, editCircleLogo;
     private int indexValue;
     private LiveData<String[]> liveData;
     private Dialog editCircleNameDialog, editCircleDescDialog;
@@ -68,6 +85,7 @@ public class CircleInformation extends AppCompatActivity {
         isCircleWall = getIntent().getBooleanExtra("circle_wall_nav",false);
 
         initUIElements();
+        setObserverForImageUpload();
         if(isCircleWall)
             ifActionFromCircleWall();
 
@@ -91,6 +109,38 @@ public class CircleInformation extends AppCompatActivity {
         liveData.removeObservers(this);
         super.onPause();
     }
+
+    private void sendImageUploadIntent() {
+        ImagePicker imagePicker = new ImagePicker(getApplication());
+        Intent chooseImageIntent = imagePicker.getPickImageIntent();
+        startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setObserverForImageUpload() {
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+            // update UI
+            if (progress == null) ;
+
+            else if (progress[1].equals("-1")) {
+                imageUploadProgressDialog.dismiss();
+                Toast.makeText(this, "Error uploading. Please try again", Toast.LENGTH_SHORT).show();
+            } else if (!progress[1].equals("100")) {
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            } else if (progress[1].equals("100")) {
+                downloadLink = Uri.parse(progress[0]);
+                Glide.with(this).load(filePath).into(logo);
+                if(downloadLink!=null)
+                    HelperMethodsBL.updateCircleLogo(circle, downloadLink.toString());
+                imageUploadProgressDialog.dismiss();
+                Toast.makeText(this, "Circle Logo Updated!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @SuppressLint("ResourceType")
     private void initUIElements(){
         circle = globalVariables.getCurrentCircle();
@@ -108,6 +158,8 @@ public class CircleInformation extends AppCompatActivity {
         backBtn = findViewById(R.id.bck_circle_information);
         editCircleDescBtn = findViewById(R.id.edit_circle_desc_btn);
         editCircleNameBtn = findViewById(R.id.edit_circle_name_btn);
+        editCircleLogo = findViewById(R.id.edit_circle_profile_pic);
+        imageUploadProgressDialog = new ProgressDialog(this);
 
         creatorName.setText(circle.getCreatorName());
         circleName.setText(globalVariables.getCurrentCircle().getName());
@@ -134,6 +186,7 @@ public class CircleInformation extends AppCompatActivity {
         if(circle.getMembersList().get(user.getUserId()).equals("admin")){
             editCircleNameBtn.setVisibility(View.VISIBLE);
             editCircleDescBtn.setVisibility(View.VISIBLE);
+            editCircleLogo.setVisibility(View.VISIBLE);
             editCircleDescDialog =new Dialog(this);
             editCircleNameDialog = new Dialog(this);
 
@@ -147,7 +200,39 @@ public class CircleInformation extends AppCompatActivity {
             editCircleDescBtn.setOnClickListener(v->{
                 showEditCircleDescDialog();
             });
+
+            editCircleLogo.setOnClickListener(v->{
+                Permissions.check(this, new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, null, null, new PermissionHandler() {
+                    @Override
+                    public void onGranted() {
+                        sendImageUploadIntent();
+                    }
+                });
+            });
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void uploadCircleLogo() {
+        imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
+        imageUploadModel.uploadImageWithProgress(filePath).observe((LifecycleOwner) this, progress -> {
+            // update UI
+            if (progress == null) ;
+
+            else if (!progress[1].equals("100")) {
+                imageUploadProgressDialog.setTitle("Uploading");
+                imageUploadProgressDialog.setMessage("Uploaded " + progress[1] + "%...");
+                imageUploadProgressDialog.show();
+            } else if (progress[1].equals("100")) {
+                downloadLink = Uri.parse(progress[0]);
+                Glide.with(this).load(filePath).into(logo);
+                if(downloadLink!=null)
+                    HelperMethodsBL.updateCircleLogo(circle, downloadLink.toString());
+                imageUploadProgressDialog.dismiss();
+                Toast.makeText(this, "Circle Logo Updated!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        imageUploadModel.imageUpload(filePath);
     }
 
     private void showEditCircleNameDialog(){
@@ -242,6 +327,26 @@ public class CircleInformation extends AppCompatActivity {
                 break;
             default:
                 Glide.with(this).load(ContextCompat.getDrawable(this, R.drawable.banner_custom_circle)).centerCrop().into(banner);
+                break;
+        }
+    }
+
+    //code for upload the image
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICK_IMAGE_ID:
+                ImagePicker imagePicker = new ImagePicker(getApplication());
+                Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
+                filePath = imagePicker.getImageUri(bitmap);
+                if (filePath != null) {
+                    uploadCircleLogo();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
