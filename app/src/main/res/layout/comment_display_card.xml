@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_grey"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_grey"
         android:id="@+id/comment_display_background_container"
         android:orientation="vertical"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,13 +53,13 @@
                         android:fontFamily="@font/roboto_regular"
                         android:paddingLeft="15dp"
                         android:paddingRight="10dp"
-                        android:paddingTop="19dp"
-                        android:paddingBottom="9dp"
-                        android:text="D"
+                        android:paddingTop="25dp"
+                        android:paddingBottom="15dp"
+                        android:text="Description"
                         android:autoLink="phone|web"
                         android:lineSpacingExtra="3dp"
                         android:textColor="#000000"
-                        android:textSize="16dp"
+                        android:textSize="17dp"
                         android:visibility="visible"></TextView>
 
                     <TextView
@@ -88,11 +88,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_grey"
         android:id="@+id/image_comment_display_background_container"
         android:orientation="vertical"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -166,11 +166,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_grey"
         android:id="@+id/right_comment_display_background_container"
         android:orientation="vertical"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -200,12 +200,12 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="10dp"
                         android:paddingTop="2dp"
-                        android:paddingBottom="9dp"
+                        android:paddingBottom="17dp"
                         android:text="Description"
                         android:autoLink="phone|web"
                         android:lineSpacingExtra="3dp"
                         android:textColor="#000000"
-                        android:textSize="16dp"
+                        android:textSize="17dp"
                         android:visibility="visible"></TextView>
 
                     <TextView
@@ -262,12 +262,12 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="30dp"
                     android:paddingTop="2dp"
-                    android:paddingBottom="9dp"
+                    android:paddingBottom="14dp"
                     android:text="D"
                     android:autoLink="phone|web"
                     android:lineSpacingExtra="3dp"
                     android:textColor="#000000"
-                    android:textSize="16dp"
+                    android:textSize="17dp"
                     android:visibility="visible"></TextView>
 
                 <TextView
@@ -295,11 +295,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_grey"
         android:id="@+id/image_right_comment_display_background_container"
         android:orientation="vertical"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"

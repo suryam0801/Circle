@@ -118,7 +118,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         setButtonListeners(holder, currentBroadcast, position);
         setCreatorProfilePic(holder, mContext, currentBroadcast);
         setBroadcastInfo(mContext, holder, currentBroadcast, globalVariables.getCurrentUser());
-        setComments(holder, currentBroadcast);
+        setComments(holder, currentBroadcast, position);
         fullpageAdapterViewModel.updateUserAfterReadingComments(circle, currentBroadcast, user, "view");
     }
 
@@ -172,14 +172,14 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         }
     }
 
-    private void setComments(ViewHolder holder,Broadcast currentBroadcast){
+    private void setComments(ViewHolder holder,Broadcast currentBroadcast, int position){
         CommentAdapter commentAdapter;
         List<Comment> commentsList = new ArrayList<>();
 
         layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         holder.commentListView.setLayoutManager(layoutManager);
 
-        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast);
+        commentAdapter = new CommentAdapter(commentsList, currentBroadcast, position);
         holder.commentListView.setAdapter(commentAdapter);
         mSwipeRefreshLayout = holder.swipeRefreshLayout;
         //Load initial messages

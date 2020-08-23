@@ -223,7 +223,6 @@
             android:id="@+id/message_swipe_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/light_grey"
             android:layout_above="@+id/full_page_write_comment_edit_text"
             android:layout_alignParentStart="true">
 
@@ -239,6 +238,8 @@
             android:id="@+id/full_page_write_comment_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/unpressable_button"
             android:orientation="horizontal"
@@ -249,7 +250,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="99"
-                android:backgroundTint="@color/white"
+                android:background="@android:color/transparent"
                 android:hint="Type a comment"
                 android:imeOptions="actionSend|flagNoEnterAction"
                 android:inputType="textCapSentences|textImeMultiLine|textMultiLine"

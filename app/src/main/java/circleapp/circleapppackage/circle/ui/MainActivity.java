@@ -1,6 +1,7 @@
 package circleapp.circleapppackage.circle.ui;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.PixelFormat;
@@ -65,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
         mainActivityViewModel.setPersistenceEnabled();
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+        cancelNotifications();
+    }
+
+    private void cancelNotifications(){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setUserUpdatesObserver(){
