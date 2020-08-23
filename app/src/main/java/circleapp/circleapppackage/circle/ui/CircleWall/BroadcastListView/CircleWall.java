@@ -96,7 +96,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     private TextView circleBannerName;
     private Dialog confirmationDialog, reportAbuseDialog;
     private ImageButton viewApplicants;
-    private RelativeLayout parentLayout;
+    private RelativeLayout parentLayout, fabLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private FloatingActionMenu floatingActionMenu;
@@ -161,6 +161,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         blackGetStartedPhoto = findViewById(R.id.circle_wall_black_get_started_image);
         blackGetStartedPoll = findViewById(R.id.circle_wall_black_get_started_poll);
         floatingActionMenu = findViewById(R.id.menu);
+        fabLayout = findViewById(R.id.floating_btn_layout);
         moreOptions = findViewById(R.id.circle_wall_more_options);
         parentLayout = findViewById(R.id.circle_wall_parent_layout);
         viewApplicants = findViewById(R.id.applicants_display_creator);
@@ -168,6 +169,8 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         allCircleMembers = new ArrayList<>();
         circleBannerName.setText(circle.getName());
 
+        if(circle.getMembersList().get(user.getUserId()).equals("admin"))
+            fabLayout.setVisibility(View.VISIBLE);
         if (circle.getApplicantsList() != null && circle.getMembersList().get(user.getUserId()).equals("admin")) {
             new Tooltip.Builder(viewApplicants)
                     .setText("You have pending applicants")
