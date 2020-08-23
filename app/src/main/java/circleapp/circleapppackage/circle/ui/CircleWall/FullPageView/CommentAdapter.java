@@ -50,8 +50,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private GlobalVariables globalVariables = new GlobalVariables();
     private Dialog deleteCommentConfirmation;
 
-    public CommentAdapter(Context mContext, List<Comment> CommentList, Broadcast currentBroadcast, int postPosition) {
-        this.mContext = mContext;
+    public CommentAdapter(List<Comment> CommentList, Broadcast currentBroadcast, int postPosition) {
         this.CommentList = CommentList;
         this.user = globalVariables.getCurrentUser();
         this.currentBroadcast = currentBroadcast;
@@ -61,12 +60,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     @NonNull
     @Override
     public CommentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View pview = View.inflate(mContext, R.layout.comment_display_card, null);
         return new CommentAdapter.ViewHolder(pview);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
+        mContext = holder.itemView.getContext();
         final Comment comment = CommentList.get(position);
         setCommentValues(holder, comment, position);
         String body = comment.getComment();
@@ -89,6 +90,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                 return false;
                             }
                         })
+                        .thumbnail(0.5f)
                         .into(holder.rightCommentImage);
             }
             else {
@@ -107,6 +109,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                 return false;
                             }
                         })
+                        .thumbnail(0.5f)
+                        .centerInside()
                         .into(holder.commentImage);
             }
         }
