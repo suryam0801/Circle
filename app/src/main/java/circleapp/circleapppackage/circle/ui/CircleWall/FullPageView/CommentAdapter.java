@@ -115,6 +115,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             }
         }
         else {
+            Glide.with(mContext).clear(holder.itemView);
             if(user.getUserId().equals(comment.getCommentorId())){
                 if(body.length()<=3){
                     holder.rightCommentShortContainer.setVisibility(View.VISIBLE);
