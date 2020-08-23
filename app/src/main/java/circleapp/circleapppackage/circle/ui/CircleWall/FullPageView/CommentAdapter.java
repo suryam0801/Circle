@@ -42,6 +42,7 @@ import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
+    private int postPosition;
     private Context mContext;
     private List<Comment> CommentList;
     private User user;
@@ -49,11 +50,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private GlobalVariables globalVariables = new GlobalVariables();
     private Dialog deleteCommentConfirmation;
 
-    public CommentAdapter(Context mContext, List<Comment> CommentList, Broadcast currentBroadcast) {
+    public CommentAdapter(Context mContext, List<Comment> CommentList, Broadcast currentBroadcast, int postPosition) {
         this.mContext = mContext;
         this.CommentList = CommentList;
         this.user = globalVariables.getCurrentUser();
         this.currentBroadcast = currentBroadcast;
+        this.postPosition = postPosition;
     }
 
     @NonNull
@@ -70,29 +72,54 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         String body = comment.getComment();
 
         if(body.contains("https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com")){
-            holder.backgroundContainer.setVisibility(View.GONE);
-            holder.rightBackgroundContainer.setVisibility(View.GONE);
+
             if(user.getUserId().equals(comment.getCommentorId())){
-                holder.imageBackgroundContainer.setVisibility(View.GONE);
+                holder.rightImageBackgroundContainer.setVisibility(View.VISIBLE);
+                Glide.with((Activity) mContext)
+                        .load(body)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                holder.rightCommentImageUpload.setVisibility(View.GONE);
+                                return false;
+                            }
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                holder.rightCommentImageUpload.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(holder.rightCommentImage);
             }
             else {
-                holder.rightImageBackgroundContainer.setVisibility(View.GONE);
+                holder.imageBackgroundContainer.setVisibility(View.VISIBLE);
+                Glide.with((Activity) mContext)
+                        .load(body)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                holder.commentImageUpload.setVisibility(View.GONE);
+                                return false;
+                            }
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                holder.commentImageUpload.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(holder.commentImage);
             }
         }
         else {
-            holder.rightImageBackgroundContainer.setVisibility(View.GONE);
-            holder.imageBackgroundContainer.setVisibility(View.GONE);
             if(user.getUserId().equals(comment.getCommentorId())){
                 if(body.length()<=3){
                     holder.rightCommentShortContainer.setVisibility(View.VISIBLE);
-                    holder.rightBackgroundContainer.setVisibility(View.GONE);
-                    holder.backgroundContainer.setVisibility(View.GONE);
                 }
                 else
-                    holder.backgroundContainer.setVisibility(View.GONE);
+                    holder.rightBackgroundContainer.setVisibility(View.VISIBLE);
             }
             else {
-                holder.rightBackgroundContainer.setVisibility(View.GONE);
+                holder.backgroundContainer.setVisibility(View.VISIBLE);
             }
         }
 
@@ -142,44 +169,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.timeElapsed.setLayoutParams(params);
         }
 
-        Glide.with((Activity) mContext)
-                .load(cmnt)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.commentImageUpload.setVisibility(View.GONE);
-                        return false;
-                    }
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.commentImageUpload.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.commentImage);
-
-        Glide.with((Activity) mContext)
-                .load(cmnt)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.rightCommentImageUpload.setVisibility(View.GONE);
-                        return false;
-                    }
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.rightCommentImageUpload.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.rightCommentImage);
-
         holder.commentImage.setOnClickListener(v->{
-            goToFullPageImageView(cmnt,pos);
+            goToFullPageImageView(cmnt);
         });
 
         holder.rightCommentImage.setOnClickListener(v->{
-            goToFullPageImageView(cmnt,pos);
+            goToFullPageImageView(cmnt);
         });
 
         holder.rightBackgroundContainer.setOnLongClickListener(v->{
@@ -198,10 +193,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
     }
 
-    private void goToFullPageImageView(String url, int position){
+    private void goToFullPageImageView(String url){
         Intent intent = new Intent(mContext, FullPageImageDisplay.class);
         intent.putExtra("uri", url);
-        intent.putExtra("indexOfComment", position);
+        intent.putExtra("indexOfComment", postPosition);
         mContext.startActivity(intent);
         ((Activity) mContext).finish();
     }

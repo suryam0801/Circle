@@ -27,7 +27,8 @@ public class FullPageImageDisplay extends AppCompatActivity {
     private LinearLayout qrCodeHeader;
     private TextView qrCodeHeaderTxt;
     private GlobalVariables globalVariables = new GlobalVariables();
-    private int discussionPos = -1;
+    private int discussionPos;
+    private boolean commentPic = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -38,7 +39,18 @@ public class FullPageImageDisplay extends AppCompatActivity {
         qrCodeHeader = findViewById(R.id.qr_code_layout);
         qrCodeHeaderTxt = findViewById(R.id.full_page_image_header_text);
 
-        discussionPos = getIntent().getIntExtra("indexOfComment",0);
+        // You can be pretty confident that the intent will not be null here.
+        Intent intent = getIntent();
+
+        // Get the extras (if there are any)
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            if (extras.containsKey("indexOfComment")) {
+                discussionPos = extras.getInt("indexOfComment",0);
+                commentPic = true;
+            }
+        }
+
         String uri = getIntent().getStringExtra("uri");
         indexOfBroadcast = getIntent().getIntExtra("indexOfBroadcast",0);
         Boolean qrCode = getIntent().getBooleanExtra("QRCode",false);
@@ -59,7 +71,7 @@ public class FullPageImageDisplay extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        if(discussionPos!=-1){
+        if(commentPic){
                 Intent intent = new Intent(this, FullPageBroadcastCardView.class);
                 intent.putExtra("broadcastPosition", discussionPos);
                 startActivity(intent);
