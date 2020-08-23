@@ -232,7 +232,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null"
-                android:dividerHeight="0dp"></androidx.recyclerview.widget.RecyclerView>
+                android:dividerHeight="0dp"
+                android:nestedScrollingEnabled="false"></androidx.recyclerview.widget.RecyclerView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout

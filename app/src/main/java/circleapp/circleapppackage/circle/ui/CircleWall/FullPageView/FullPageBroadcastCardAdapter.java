@@ -179,7 +179,7 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
         layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         holder.commentListView.setLayoutManager(layoutManager);
 
-        commentAdapter = new CommentAdapter(mContext, commentsList, currentBroadcast, position);
+        commentAdapter = new CommentAdapter(commentsList, currentBroadcast, position);
         holder.commentListView.setAdapter(commentAdapter);
         mSwipeRefreshLayout = holder.swipeRefreshLayout;
         //Load initial messages
