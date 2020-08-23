@@ -64,7 +64,10 @@ public class MemberListAdapter extends RecyclerView.Adapter<MemberListAdapter.Vi
             if(circle.getMembersList().get(userId).equals("admin")){
                 if(circle.getMembersList().get(member.getId())!=null){
                     if(circle.getMembersList().get(member.getId()).equals("admin")){
-                        if(circle.getCreatorID().equals(userId))
+                        holder.container.setClickable(false);
+                        if(circle.getCreatorID().equals(userId)&& !member.getId().equals(userId))
+                            holder.removeMember.setVisibility(View.VISIBLE);
+                        else
                             holder.removeMember.setVisibility(View.GONE);
                         holder.userRole.setVisibility(View.VISIBLE);
                         holder.userRole.setText("Admin");
