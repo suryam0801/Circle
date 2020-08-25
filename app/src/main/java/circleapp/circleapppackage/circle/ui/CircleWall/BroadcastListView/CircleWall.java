@@ -119,7 +119,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
-        try {
+
             setUserObserver();
             setCircleObserver();
             HelperMethodsBL.updateDeviceTokenInPersonel(circle.getId(),user);
@@ -129,11 +129,6 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             setParentBgImage();
             initBtnListeners();
             setBroadcastObserver();
-        }catch (NullPointerException e){
-            Intent intent = getIntent();
-            finishAfterTransition();
-            startActivity(intent);
-        }
     }
 
     private void initUIElements(){
@@ -176,8 +171,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         allCircleMembers = new ArrayList<>();
         circleBannerName.setText(circle.getName());
 
-        if(circle.getMembersList().get(user.getUserId()).equals("admin"))
-            fabLayout.setVisibility(View.VISIBLE);
+        if(circle.getMembersList()!=null)
+            if(circle.getMembersList().containsKey(user.getUserId()))
+                if(circle.getMembersList().get(user.getUserId()).equals("admin"))
+                    fabLayout.setVisibility(View.VISIBLE);
         if (circle.getApplicantsList() != null && circle.getMembersList().get(user.getUserId()).equals("admin")) {
             new Tooltip.Builder(viewApplicants)
                     .setText("You have pending applicants")
