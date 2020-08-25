@@ -109,6 +109,7 @@ public class MembersFragment extends Fragment {
         boolean exists = false;
         if(memberList!=null&&subscriber!=null)
         for(Subscriber s: memberList){
+            if(s!=null)
             if(s.getId().equals(subscriber.getId()))
                 exists = true;
         }

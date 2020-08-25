@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import org.openxmlformats.schemas.drawingml.x2006.main.STAdjCoordinate;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -123,6 +125,26 @@ public class HelperMethodsBL {
 
         switch (state)
         {
+            case "added":
+                String added_title = "Congratulations!";
+                String added_body ="You have been added to "+circlename;
+                Call<ResponseBody> added_notif = api.sendpushNotification(tokenId,added_title,added_body, circleId);
+                added_notif.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                        try {
+                            Log.d("Push",response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                    }
+                });
+                break;
             case "comment":
                 Log.d("comment_problem",message);
                 if(globalVariables.getCurrentUser().getToken_id().equals(tokenId))

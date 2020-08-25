@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circleapppackage.circle.Model.LocalObjectModels.LoginUserObject;
@@ -38,6 +39,7 @@ public class GlobalVariables extends Application {
     public int involvedCircles = 0;
     RandomColor randomColor = new RandomColor();
     public int[] colors = randomColor.randomColor(10);
+    private HashMap<String, String> userTokens;
 
     public static View view;
 
@@ -151,5 +153,13 @@ public class GlobalVariables extends Application {
 
     public static void setCircleWallPersonel(List<Subscriber> circleWallPersonel) {
         GlobalVariables.circleWallPersonel = circleWallPersonel;
+    }
+
+    public HashMap<String, String> getUserTokens() {
+        return userTokens;
+    }
+
+    public void setUserTokens(HashMap<String, String> userTokens) {
+        this.userTokens = userTokens;
     }
 }

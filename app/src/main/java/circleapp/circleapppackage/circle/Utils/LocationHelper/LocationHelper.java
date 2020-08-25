@@ -112,6 +112,7 @@ public class LocationHelper extends AndroidViewModel {
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             getCountry(addresses);
         } catch (IOException e) {
+            setSessionLocation("Unknown","Circle Town", "Unknown", "91");
             e.printStackTrace();
         }
     }

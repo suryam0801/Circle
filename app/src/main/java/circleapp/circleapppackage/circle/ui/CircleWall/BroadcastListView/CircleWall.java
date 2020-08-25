@@ -118,15 +118,19 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_wall);
-        setUserObserver();
-        setCircleObserver();
-        HelperMethodsBL.updateDeviceTokenInPersonel(circle.getId(),user);
-        setImageUploadObserver();
-        initUIElements();
-        initializeRecyclerView();
-        setParentBgImage();
-        initBtnListeners();
-        setBroadcastObserver();
+        try {
+            setUserObserver();
+            setCircleObserver();
+            HelperMethodsBL.updateDeviceTokenInPersonel(circle.getId(),user);
+            setImageUploadObserver();
+            initUIElements();
+            initializeRecyclerView();
+            setParentBgImage();
+            initBtnListeners();
+            setBroadcastObserver();
+        }catch (NullPointerException e){
+            recreate();
+        }
     }
 
     private void initUIElements(){
@@ -243,6 +247,14 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         blackGetStartedPhoto.setOnClickListener(view -> photoBroadcastDialog.showCreatePhotoBroadcastDialog(CircleWall.this));
         blackGetStartedPoll.setOnClickListener(view -> pollBroadcastDialog.showCreatePollBroadcastDialog(CircleWall.this));
         blackGetStartedBroadcast.setOnClickListener(view -> normalBroadcastDialog.showCreateNormalBroadcastDialog(CircleWall.this));
+
+        circleBannerName.setOnClickListener(v->{
+            globalVariables.setCircleWallPersonel(new ArrayList<>());
+            Intent intent = new Intent(CircleWall.this,CircleInformation.class);
+            intent.putExtra("circle_wall_nav",true);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void setBroadcastObserver(){
@@ -287,8 +299,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
         UserViewModel tempViewModel = ViewModelProviders.of(CircleWall.this).get(UserViewModel.class);
         LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(user.getUserId());
         tempLiveData.observe((LifecycleOwner) CircleWall.this, dataSnapshot -> {
-            user = dataSnapshot.getValue(User.class);
-            if (user != null) {
+            User temp = dataSnapshot.getValue(User.class);
+            if (temp != null) {
+                user = temp;
                 globalVariables.saveCurrentUser(user);
             }
         });
