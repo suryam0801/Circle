@@ -36,15 +36,9 @@
             android:layout_marginLeft="50dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="50dp"
-            android:text="Make your group chats clutter free. \n\nBlock out the chatter on your terms."
+            android:text="Make your group chats clutter free"
             android:textAlignment="center"
-            android:textSize="17dp" />
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/ic_outline_broadcast_not_listening_icon" />
+            android:textSize="19dp" />
     </LinearLayout>
 
     <LinearLayout

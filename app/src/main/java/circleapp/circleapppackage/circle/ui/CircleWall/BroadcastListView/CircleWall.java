@@ -130,15 +130,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
             initBtnListeners();
             setBroadcastObserver();
         }catch (NullPointerException e){
-            setUserObserver();
-            setCircleObserver();
-            HelperMethodsBL.updateDeviceTokenInPersonel(circle.getId(),user);
-            setImageUploadObserver();
-            initUIElements();
-            initializeRecyclerView();
-            setParentBgImage();
-            initBtnListeners();
-            setBroadcastObserver();
+            Intent intent = getIntent();
+            finishAfterTransition();
+            startActivity(intent);
         }
     }
 
@@ -684,10 +678,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        finishAfterTransition();
         globalVariables.setCircleWallPersonel(new ArrayList<>());
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
+        intent.putExtra("fromcirclewall",true);
+        globalVariables.saveCurrentCircle(null);
         startActivity(intent);
+        finish();
     }
 
     //bottom sheet dialog onclick (only called when nagivating from create circle)

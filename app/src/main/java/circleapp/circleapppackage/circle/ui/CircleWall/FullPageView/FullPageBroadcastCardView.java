@@ -436,8 +436,9 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

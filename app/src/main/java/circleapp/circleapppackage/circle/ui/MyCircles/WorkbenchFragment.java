@@ -83,24 +83,20 @@ public class WorkbenchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_workbench, container, false);
-
         user = globalVariables.getCurrentUser();
+        workbenchCircleList.clear();
 
+        setRecyclerView(view);
+        setEmptyPlaceholder();
+        setEmptyDisplay(view);
+        circlesObserver();
+        return view;
+    }
+
+    private void setEmptyDisplay(View view) {
         emptyDisplay = view.findViewById(R.id.workbench_empty_display);
         ImageButton explore = view.findViewById(R.id.placeholder_explore_circle_layout);
         ImageButton create = view.findViewById(R.id.placeholder_create_circle_layout);
-
-        //initialize  workbench recylcerview
-        RecyclerView wbrecyclerView = view.findViewById(R.id.wbRecyclerView);
-        wbrecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        wbrecyclerView.setLayoutManager(wblayoutManager);
-        //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
-        //adapter adds all items from the circle list and displays them in individual circles in the recycler view
-        wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
-        wbrecyclerView.setAdapter(wbadapter);
-        setEmptyPlaceholder();
-
         create.setOnClickListener(view12 -> {
             startActivity(new Intent(getActivity(), CreateCircleCategoryPicker.class));
             getActivity().finish();
@@ -110,11 +106,20 @@ public class WorkbenchFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ExploreFragment()).commit();
         });
-
-        circlesObserver();
-
-        return view;
     }
+
+    private void setRecyclerView(View view){
+        //initialize  workbench recylcerview
+        RecyclerView wbrecyclerView = view.findViewById(R.id.wbRecyclerView);
+        wbrecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager wblayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        wbrecyclerView.setLayoutManager(wblayoutManager);
+        //initializing the WorkbenchDisplayAdapter and setting the adapter to recycler view
+        //adapter adds all items from the circle list and displays them in individual circles in the recycler view
+        wbadapter = new WorkbenchDisplayAdapter(workbenchCircleList, getActivity());
+        wbrecyclerView.setAdapter(wbadapter);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void circlesObserver(){
         MyCirclesViewModel viewModel = ViewModelProviders.of(this).get(MyCirclesViewModel.class);
@@ -147,13 +152,6 @@ public class WorkbenchFragment extends Fragment {
         globalVariables.setInvolvedCircles(noOfCircleInvolvements);
         if(globalVariables.getInvolvedCircles()==0)
             emptyDisplay.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onPause() {
-        workbenchCircleList.clear();
-        liveData.removeObservers(this);
-        super.onPause();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -190,5 +188,19 @@ public class WorkbenchFragment extends Fragment {
             }
         }
         workbenchCircleList.add(pos, element);
+    }
+
+    @Override
+    public void onResume() {
+        workbenchCircleList.clear();
+        liveData.removeObservers(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        workbenchCircleList.clear();
+        liveData.removeObservers(this);
+        super.onPause();
     }
 }

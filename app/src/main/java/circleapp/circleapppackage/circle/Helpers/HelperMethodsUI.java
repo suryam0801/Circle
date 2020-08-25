@@ -43,6 +43,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -490,8 +492,9 @@ public class HelperMethodsUI {
         TextDrawable drawable = TextDrawable.builder()
                 .buildRound(firstLetter +"",color);
 
-        if (!circle.getBackgroundImageLink().equals("default"))
+        if (!circle.getBackgroundImageLink().equals("default")){
             Glide.with(context).load(circle.getBackgroundImageLink()).into(backgroundPic);
+        }
         else {
             backgroundPic.setBackground(drawable);
         }

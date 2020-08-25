@@ -5,16 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,6 +33,8 @@ import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleW
 import circleapp.circleapppackage.circle.ui.CircleWall.CircleWallBackgroundPicker;
 import circleapp.circleapppackage.circle.ui.CircleWall.InviteFriendsBottomSheet;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.google.android.material.internal.ContextUtils.getActivity;
 
 public class WorkbenchDisplayAdapter extends RecyclerView.Adapter<WorkbenchDisplayAdapter.ViewHolder> {
 
