@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +52,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.Manifest.permission.CAMERA;
 
 
-public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
+public class ExploreTabbedActivity extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener{
 
     private CircleImageView profPicHolder;
     private TextView location, locationDisplay;
@@ -211,9 +210,6 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
 
         }
-        if(getIntent().getBooleanExtra("fromcirclewall", false))
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new WorkbenchFragment()).commit();
         assert selectedFragment != null;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 selectedFragment).commit();
@@ -372,5 +368,4 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         startActivity(a);
         finishAfterTransition();
     }
-
 }

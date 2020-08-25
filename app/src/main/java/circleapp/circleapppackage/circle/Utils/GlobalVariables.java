@@ -27,26 +27,26 @@ public class GlobalVariables extends Application {
     private static final FirebaseAuth authenticationToken = FirebaseAuth.getInstance();
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-    public static User currentUser;
-    public static List<String > usersList, tempUsersList;
-    public static List<Subscriber> circleWallPersonel;
-    public static Circle currentCircle;
-    public static Broadcast currentBroadcast;
-    public static List<Broadcast> currentBroadcastList;
-    public static LoginUserObject currentLoginUserObject;
-    public static TempLocation currentTempLocation;
-    public static Uri TempdownloadLink;
-    public static Uri commentDownloadLink;
-    public int involvedCircles = 0;
+    private static User currentUser;
+    private static List<String > usersList, tempUsersList;
+    private static List<Subscriber> circleWallPersonel;
+    private static Circle currentCircle;
+    private static Broadcast currentBroadcast;
+    private static List<Broadcast> currentBroadcastList;
+    private static LoginUserObject currentLoginUserObject;
+    private static TempLocation currentTempLocation;
+    private static Uri TempdownloadLink;
+    private static Uri commentDownloadLink;
+    private int involvedCircles = 0;
     private static RandomColor randomColor = new RandomColor();
-    public static int[] colors = randomColor.randomColor(20);
+    private static int[] colors = randomColor.randomColor(20);
     private static HashMap<String, String> userTokens;
 
     public static List<String > getUsersList() {
         return usersList;
     }
 
-    public static void setUsersList( List<String > usersList) {
+    public static void setUsersList(List<String > usersList) {
         GlobalVariables.usersList = usersList;
     }
 

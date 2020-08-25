@@ -215,12 +215,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private int arrayValForName(String name){
-        int randomNum = ThreadLocalRandom.current().nextInt(0, 7);
-        int val;
-        if(name.length()>10)
-            val = name.length()+randomNum;
-        else
-            val = name.length();
+        int val = name.length();
         return val%10;
     }
 

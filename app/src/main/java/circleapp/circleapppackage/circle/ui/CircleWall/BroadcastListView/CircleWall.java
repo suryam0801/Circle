@@ -678,12 +678,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed() {
-        finishAfterTransition();
         globalVariables.setCircleWallPersonel(new ArrayList<>());
         Intent intent = new Intent(CircleWall.this, ExploreTabbedActivity.class);
         intent.putExtra("fromcirclewall",true);
         globalVariables.saveCurrentCircle(null);
         startActivity(intent);
+        finish();
     }
 
     //bottom sheet dialog onclick (only called when nagivating from create circle)

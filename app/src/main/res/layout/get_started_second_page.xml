@@ -24,15 +24,9 @@
             android:layout_marginLeft="50dp"
             android:layout_marginTop="50dp"
             android:layout_marginRight="50dp"
-            android:text="Quickly get opinions from friends and make decisions then and there."
+            android:text="Quickly get opinions from friends and make decisions then and there"
             android:textAlignment="center"
-            android:textSize="17dp" />
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/poll_icon" />
+            android:textSize="19dp" />
     </LinearLayout>
 
     <LinearLayout
