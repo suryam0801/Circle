@@ -85,37 +85,43 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
             initUIElements();
             initObserverForUser();
             setCirclePosition();
-
-            profPicHolder.setOnClickListener(v -> {
-                finishAfterTransition();
-                startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
-            });
-
-            btnAddCircle.setOnClickListener(v -> {
-                finishAfterTransition();
-                startActivity(new Intent(this, CreateCircleCategoryPicker.class));
-            });
-
-            notificationsBtn.setOnClickListener(v->{
-                finishAfterTransition();
-                startActivity(new Intent(this, Notifications.class));
-            });
-            //set view pager adapter
-            bottomNav.setOnNavigationItemSelectedListener(navListener);
-            int noOfCircleInvolvements = globalVariables.getInvolvedCircles();
-            if(user.getActiveCircles()!=null)
-                noOfCircleInvolvements = user.getActiveCircles().size();
-            if (user.getCreatedCircles() != 0)
-                noOfCircleInvolvements = noOfCircleInvolvements+user.getCreatedCircles();
-            globalVariables.setInvolvedCircles(noOfCircleInvolvements);
-            if(globalVariables.getInvolvedCircles()==0)
-            {
-                bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ExploreFragment()).commit();
-            }
+            setListeners();
         }catch (NullPointerException e){
-            recreate();
+            Intent intent = getIntent();
+            finishAfterTransition();
+            startActivity(intent);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setListeners(){
+        profPicHolder.setOnClickListener(v -> {
+            finishAfterTransition();
+            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
+        });
+
+        btnAddCircle.setOnClickListener(v -> {
+            finishAfterTransition();
+            startActivity(new Intent(this, CreateCircleCategoryPicker.class));
+        });
+
+        notificationsBtn.setOnClickListener(v->{
+            finishAfterTransition();
+            startActivity(new Intent(this, Notifications.class));
+        });
+        //set view pager adapter
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        int noOfCircleInvolvements = globalVariables.getInvolvedCircles();
+        if(user.getActiveCircles()!=null)
+            noOfCircleInvolvements = user.getActiveCircles().size();
+        if (user.getCreatedCircles() != 0)
+            noOfCircleInvolvements = noOfCircleInvolvements+user.getCreatedCircles();
+        globalVariables.setInvolvedCircles(noOfCircleInvolvements);
+        if(globalVariables.getInvolvedCircles()==0)
+        {
+            bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new ExploreFragment()).commit();
         }
     }
     private void setCirclePosition(){
@@ -205,10 +211,13 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
                 break;
 
         }
+        if(getIntent().getBooleanExtra("fromcirclewall", false))
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new WorkbenchFragment()).commit();
         assert selectedFragment != null;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 selectedFragment).commit();
-        return true;
+            return true;
     };
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

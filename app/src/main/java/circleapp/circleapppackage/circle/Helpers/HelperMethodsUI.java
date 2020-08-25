@@ -490,8 +490,10 @@ public class HelperMethodsUI {
         TextDrawable drawable = TextDrawable.builder()
                 .buildRound(firstLetter +"",color);
 
-        if (!circle.getBackgroundImageLink().equals("default"))
+        if (!circle.getBackgroundImageLink().equals("default")){
+            Glide.with(context).clear(backgroundPic);
             Glide.with(context).load(circle.getBackgroundImageLink()).into(backgroundPic);
+        }
         else {
             backgroundPic.setBackground(drawable);
         }
