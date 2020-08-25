@@ -87,8 +87,8 @@ public class WorkbenchFragment extends Fragment {
         workbenchCircleList.clear();
 
         setRecyclerView(view);
-        setEmptyPlaceholder();
         setEmptyDisplay(view);
+        setEmptyPlaceholder();
         circlesObserver();
         return view;
     }
