@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,10 +30,13 @@ import java.util.List;
 
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Contacts;
+import circleapp.circleapppackage.circle.Model.ObjectModels.User;
 import circleapp.circleapppackage.circle.R;
 import circleapp.circleapppackage.circle.Utils.GlobalVariables;
 import circleapp.circleapppackage.circle.ViewModels.CreateCircle.AddPeopleInterface;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.ContactsViewModel;
+import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.UserViewModel;
+import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.CircleWall;
 
 public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     private BottomSheetBehavior mBehavior;
@@ -49,6 +54,7 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
     private Boolean isCircleWall;
     private Circle circle;
     private String ownUserId;
+    private HashMap<String, String > userTokens = new HashMap<>();
 
     public AddPeopleBottomSheetDiologue(Activity activity, Boolean isCircleWall) {
         this.activity = activity;
@@ -75,6 +81,7 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
 //            onBackPressed();
             addPeopleInterface.contactsInterface(globalVariables.getUsersList());
             dismiss();
+            globalVariables.setUserTokens(userTokens);
         });
         backBtn.setOnClickListener(v->{
 //            onBackPressed();
@@ -150,17 +157,20 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
                                     contactsList.add(new Contacts(phn,localContactsList.get(phn)));
                                     addPeopleAdapter.notifyDataSetChanged();
                                     tempUsersList.add(userId);
+                                    addToUserTokens(userId);
                                 }
                             }
                             else {
                                 contactsList.add(new Contacts(phn,localContactsList.get(phn)));
                                 addPeopleAdapter.notifyDataSetChanged();
                                 tempUsersList.add(userId);
+                                addToUserTokens(userId);
                             }
                         }else{
                             contactsList.remove(new Contacts(phn,localContactsList.get(phn)));
                             addPeopleAdapter.notifyDataSetChanged();
                             tempUsersList.remove(userId);
+                            removeFromUsersList(userId);
                         }
 
                     }
@@ -172,6 +182,23 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
                 Log.d("Contacts","Data not exist");
             }
         });
+    }
+
+    private void addToUserTokens(String userId){
+
+        UserViewModel tempViewModel = ViewModelProviders.of((FragmentActivity) activity).get(UserViewModel.class);
+        LiveData<DataSnapshot> tempLiveData = tempViewModel.getDataSnapsUserValueCirlceLiveData(userId);
+        tempLiveData.observe((LifecycleOwner) activity, dataSnapshot -> {
+            User temp = dataSnapshot.getValue(User.class);
+            if (temp != null) {
+                String tokenId = temp.getToken_id();
+                userTokens.put(userId,tokenId);
+            }
+        });
+    }
+
+    private void removeFromUsersList(String userId){
+        userTokens.remove(userId);
     }
 
     @Override

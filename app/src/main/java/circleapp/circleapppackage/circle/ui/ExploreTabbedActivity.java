@@ -81,26 +81,42 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_tabbed);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        initUIElements();
-        initObserverForUser();
-        setCirclePosition();
+        try {
+            initUIElements();
+            initObserverForUser();
+            setCirclePosition();
 
-        profPicHolder.setOnClickListener(v -> {
-            finishAfterTransition();
-            startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
-        });
+            profPicHolder.setOnClickListener(v -> {
+                finishAfterTransition();
+                startActivity(new Intent(ExploreTabbedActivity.this, EditProfile.class));
+            });
 
-        btnAddCircle.setOnClickListener(v -> {
-            finishAfterTransition();
-            startActivity(new Intent(this, CreateCircleCategoryPicker.class));
-        });
+            btnAddCircle.setOnClickListener(v -> {
+                finishAfterTransition();
+                startActivity(new Intent(this, CreateCircleCategoryPicker.class));
+            });
 
-        notificationsBtn.setOnClickListener(v->{
-            finishAfterTransition();
-            startActivity(new Intent(this, Notifications.class));
-        });
-        //set view pager adapter
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
+            notificationsBtn.setOnClickListener(v->{
+                finishAfterTransition();
+                startActivity(new Intent(this, Notifications.class));
+            });
+            //set view pager adapter
+            bottomNav.setOnNavigationItemSelectedListener(navListener);
+            int noOfCircleInvolvements = globalVariables.getInvolvedCircles();
+            if(user.getActiveCircles()!=null)
+                noOfCircleInvolvements = user.getActiveCircles().size();
+            if (user.getCreatedCircles() != 0)
+                noOfCircleInvolvements = noOfCircleInvolvements+user.getCreatedCircles();
+            globalVariables.setInvolvedCircles(noOfCircleInvolvements);
+            if(globalVariables.getInvolvedCircles()==0)
+            {
+                bottomNav.setSelectedItemId(R.id.explore_bottom_nav_item);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ExploreFragment()).commit();
+            }
+        }catch (NullPointerException e){
+            recreate();
+        }
     }
     private void setCirclePosition(){
         if (getIntent().getBooleanExtra("fromFilters", false)) {
@@ -337,6 +353,7 @@ public class ExploreTabbedActivity extends AppCompatActivity implements InviteFr
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBackPressed(){
         Intent a = new Intent(Intent.ACTION_MAIN);

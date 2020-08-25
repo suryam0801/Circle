@@ -2,6 +2,7 @@ package circleapp.circleapppackage.circle.DataLayer;
 
 import android.content.Context;
 import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
@@ -13,6 +14,7 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+import circleapp.circleapppackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsUI;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
@@ -133,6 +135,11 @@ public class CircleRepository {
         if(globalVariables.getUsersList()!=null){
 
             for(String userId: globalVariables.getUsersList()){
+                String token = "";
+                if(globalVariables.getUserTokens()!=null){
+                    token = globalVariables.getUserTokens().get(userId);
+                }
+                HelperMethodsBL.pushFCM("added",null, token,null,null,null,null,null,null,c.getName(),c.getId());
                 globalVariables.getFBDatabase().getReference("/Users").child(userId).child("activeCircles").child(c.getId()).setValue(true);
                 globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(role);
             }

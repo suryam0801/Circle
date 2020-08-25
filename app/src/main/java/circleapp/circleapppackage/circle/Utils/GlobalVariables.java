@@ -2,6 +2,7 @@ package circleapp.circleapppackage.circle.Utils;
 
 import android.app.Application;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 
 import com.github.lzyzsd.randomcolor.RandomColor;
@@ -9,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.HashMap;
 import java.util.List;
 
 import circleapp.circleapppackage.circle.Model.LocalObjectModels.LoginUserObject;
@@ -36,18 +38,9 @@ public class GlobalVariables extends Application {
     public static Uri TempdownloadLink;
     public static Uri commentDownloadLink;
     public int involvedCircles = 0;
-    RandomColor randomColor = new RandomColor();
-    public int[] colors = randomColor.randomColor(10);
-
-    public static View view;
-
-    public static View getEditView(){
-        return view;
-    }
-
-    public static void setEditView(View view){
-        GlobalVariables.view = view;
-    }
+    private static RandomColor randomColor = new RandomColor();
+    public static int[] colors = randomColor.randomColor(20);
+    private static HashMap<String, String> userTokens;
 
     public static List<String > getUsersList() {
         return usersList;
@@ -151,5 +144,13 @@ public class GlobalVariables extends Application {
 
     public static void setCircleWallPersonel(List<Subscriber> circleWallPersonel) {
         GlobalVariables.circleWallPersonel = circleWallPersonel;
+    }
+
+    public HashMap<String, String> getUserTokens() {
+        return userTokens;
+    }
+
+    public void setUserTokens(HashMap<String, String> userTokens) {
+        this.userTokens = userTokens;
     }
 }
