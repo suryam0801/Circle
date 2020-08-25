@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +33,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import circleapp.circleapppackage.circle.Helpers.HelperMethodsBL;
 import circleapp.circleapppackage.circle.Model.ObjectModels.Broadcast;
@@ -65,13 +68,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return new CommentAdapter.ViewHolder(pview);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull CommentAdapter.ViewHolder holder, int position) {
         mContext = holder.itemView.getContext();
         final Comment comment = CommentList.get(position);
         setCommentValues(holder, comment, position);
         String body = comment.getComment();
+        loadImages(comment, body, holder);
 
+    }
+
+    private void loadImages(Comment comment, String body, ViewHolder holder) {
         if(body.contains("https://firebasestorage.googleapis.com/v0/b/circle-d8cc7.appspot.com")){
 
             if(user.getUserId().equals(comment.getCommentorId())){
@@ -127,9 +135,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 holder.backgroundContainer.setVisibility(View.VISIBLE);
             }
         }
-
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setCommentValues(ViewHolder holder, Comment comment, int pos){
 
         final String name = comment.getCommentorName();
@@ -151,11 +159,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.rightTimeElapsedShort.setText(timeString);
 
         //For username color change
-        int[] color = globalVariables.getColorsForUsername();
         int hash = arrayValForName(name);
         if(hash<10&&hash>=0){
-            holder.userName.setTextColor(color[hash]);
-            holder.imageUserName.setTextColor(color[hash]);
+            holder.userName.setTextColor(globalVariables.getColorsForUsername()[hash]);
+            holder.imageUserName.setTextColor(globalVariables.getColorsForUsername()[hash]);
         }
 
         holder.rightComment.setText(cmnt);
@@ -206,8 +213,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         ((Activity) mContext).finish();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private int arrayValForName(String name){
-        int val = name.charAt(0);
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 7);
+        int val;
+        if(name.length()>10)
+            val = name.length()+randomNum;
+        else
+            val = name.length();
         return val%10;
     }
 

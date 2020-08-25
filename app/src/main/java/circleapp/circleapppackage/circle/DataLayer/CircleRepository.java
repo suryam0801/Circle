@@ -136,15 +136,14 @@ public class CircleRepository {
 
             for(String userId: globalVariables.getUsersList()){
                 String token = "";
-                if(globalVariables.getUserTokens()!=null)
+                if(globalVariables.getUserTokens()!=null){
                     token = globalVariables.getUserTokens().get(userId);
-                Log.d("TOKENLIST",token);
-                HelperMethodsBL.pushFCM("added",null,token,null,null,null,null,null,null,c.getName(),c.getId());
+                }
+                HelperMethodsBL.pushFCM("added",null, token,null,null,null,null,null,null,c.getName(),c.getId());
                 globalVariables.getFBDatabase().getReference("/Users").child(userId).child("activeCircles").child(c.getId()).setValue(true);
                 globalVariables.getFBDatabase().getReference("/Circles").child(c.getId()).child("membersList").child(userId).setValue(role);
             }
         }
-        globalVariables.setUserTokens(new HashMap<>());
     }
 
     public void updateCircleName(String circleId, String name){

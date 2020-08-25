@@ -81,6 +81,7 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
 //            onBackPressed();
             addPeopleInterface.contactsInterface(globalVariables.getUsersList());
             dismiss();
+            globalVariables.setUserTokens(userTokens);
         });
         backBtn.setOnClickListener(v->{
 //            onBackPressed();
@@ -192,14 +193,12 @@ public class AddPeopleBottomSheetDiologue extends BottomSheetDialogFragment {
             if (temp != null) {
                 String tokenId = temp.getToken_id();
                 userTokens.put(userId,tokenId);
-                globalVariables.setUserTokens(userTokens);
             }
         });
     }
 
     private void removeFromUsersList(String userId){
         userTokens.remove(userId);
-        globalVariables.setUserTokens(userTokens);
     }
 
     @Override

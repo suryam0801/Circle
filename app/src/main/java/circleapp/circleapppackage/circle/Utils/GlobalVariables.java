@@ -2,6 +2,7 @@ package circleapp.circleapppackage.circle.Utils;
 
 import android.app.Application;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 
 import com.github.lzyzsd.randomcolor.RandomColor;
@@ -37,19 +38,9 @@ public class GlobalVariables extends Application {
     public static Uri TempdownloadLink;
     public static Uri commentDownloadLink;
     public int involvedCircles = 0;
-    RandomColor randomColor = new RandomColor();
-    public int[] colors = randomColor.randomColor(10);
-    private HashMap<String, String> userTokens;
-
-    public static View view;
-
-    public static View getEditView(){
-        return view;
-    }
-
-    public static void setEditView(View view){
-        GlobalVariables.view = view;
-    }
+    private static RandomColor randomColor = new RandomColor();
+    public static int[] colors = randomColor.randomColor(20);
+    private static HashMap<String, String> userTokens;
 
     public static List<String > getUsersList() {
         return usersList;
