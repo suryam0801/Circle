@@ -2,7 +2,11 @@ package circleapp.circleapppackage.circle.ui.CircleWall.FullPageView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -368,6 +373,26 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
             viewHolder.broadcastMessageDisplay.setVisibility(View.GONE);
         else
             viewHolder.broadcastMessageDisplay.setText(broadcast.getMessage());
+
+        viewHolder.broadcastMessageDisplay.setOnLongClickListener(v->{
+            String [] options = {"Copy"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Options");
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which==0)
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", viewHolder.broadcastMessageDisplay.getText());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(context, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.show();
+            return true;
+        });
 
         viewHolder.viewPollAnswers.setOnClickListener(view -> {
             globalVariables.saveCurrentBroadcast(broadcast);

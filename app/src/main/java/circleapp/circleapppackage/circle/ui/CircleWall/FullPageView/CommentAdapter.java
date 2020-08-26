@@ -1,8 +1,12 @@
 package circleapp.circleapppackage.circle.ui.CircleWall.FullPageView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -190,7 +194,45 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
 
         holder.rightBackgroundContainer.setOnLongClickListener(v->{
-            showDeleteCommentDialog(comment);
+            String [] options = {"Copy", "Delete"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("Options");
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which==1){
+                        showDeleteCommentDialog(comment);
+                    }
+                    else
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", "@Me"+": " +  cmnt);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.show();
+            return true;
+        });
+
+        holder.backgroundContainer.setOnLongClickListener(v->{
+            String [] options = {"Copy"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("Options");
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which==0)
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", "@"+ name+": " +  cmnt);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.show();
             return true;
         });
 
@@ -200,7 +242,25 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
 
         holder.rightShortComment.setOnLongClickListener(v->{
-            showDeleteCommentDialog(comment);
+            String [] options = {"Copy", "Delete"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("Options");
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which==1){
+                        showDeleteCommentDialog(comment);
+                    }
+                    else
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", "@Me"+": " + cmnt);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.show();
             return true;
         });
     }

@@ -1,8 +1,12 @@
 package circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -171,6 +175,26 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
         viewHolder.viewPollResultsImage.setOnClickListener(view -> {
             globalVariables.saveCurrentBroadcast(broadcast);
             context.startActivity(new Intent(context, CreatorPollAnswersView.class));
+        });
+
+        viewHolder.broadcastMessageDisplay.setOnLongClickListener(v->{
+            String [] options = {"Copy"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Options");
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which==0)
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("label", viewHolder.broadcastMessageDisplay.getText());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(context, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.show();
+            return true;
         });
 
         viewHolder.readMoreTextView.setOnClickListener(v->{
