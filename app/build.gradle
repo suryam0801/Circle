@@ -36,8 +36,8 @@ android {
         applicationId "circleapp.circleapppackage.circle"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 14
-        versionName "1.65"
+        versionCode 15
+        versionName "1.66"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
