@@ -119,7 +119,7 @@ public class CircleInformation extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setObserverForImageUpload() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, false).observe(this, progress -> {
             // update UI
             if (progress == null) ;
 
@@ -215,7 +215,7 @@ public class CircleInformation extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void uploadCircleLogo() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe((LifecycleOwner) this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, false).observe((LifecycleOwner) this, progress -> {
             // update UI
             if (progress == null) ;
 
@@ -232,7 +232,7 @@ public class CircleInformation extends AppCompatActivity {
                 Toast.makeText(this, "Circle Logo Updated!", Toast.LENGTH_SHORT).show();
             }
         });
-        imageUploadModel.imageUpload(filePath);
+        imageUploadModel.imageUpload(filePath, false);
     }
 
     private void showEditCircleNameDialog(){

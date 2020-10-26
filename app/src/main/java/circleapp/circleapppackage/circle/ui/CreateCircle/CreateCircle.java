@@ -133,7 +133,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setObserverForImageUpload() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, false).observe(this, progress -> {
             // update UI
             if (progress == null) ;
 
@@ -284,7 +284,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void uploadCircleLogo() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, false).observe(this, progress -> {
             // update UI
             if (progress == null) ;
 
@@ -301,7 +301,7 @@ public class CreateCircle extends AppCompatActivity implements AddPeopleInterfac
                 imageUploadProgressDialog.dismiss();
             }
         });
-        imageUploadModel.imageUpload(filePath);
+        imageUploadModel.imageUpload(filePath, false);
     }
 
     //code for upload the image

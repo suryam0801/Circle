@@ -217,7 +217,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
 
         holder.backgroundContainer.setOnLongClickListener(v->{
-            String [] options = {"Copy"};
+            String [] options = {"Copy", "Delete"};
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("Options");
             builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -229,6 +229,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                         ClipData clip = ClipData.newPlainText("label", "@"+ name+": " +  cmnt);
                         clipboard.setPrimaryClip(clip);
                         Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                    }
+                    else if(which==1){
+                        showDeleteCommentDialog(comment);
                     }
                 }
             });

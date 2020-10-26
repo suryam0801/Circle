@@ -42,6 +42,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.tooltip.Tooltip;
 
 import java.io.File;
@@ -82,8 +83,10 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CircleWall extends AppCompatActivity implements InviteFriendsBottomSheet.BottomSheetListener {
 
+    private boolean isFile = false;
     private Uri filePath;
     private static final int PICK_IMAGE_ID = 234;
+    private static final int PICK_FILE_ID = 235;
     private Uri downloadLink;
     private LinearLayout emptyDisplay;
     private Circle circle;
@@ -309,7 +312,7 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     private void setImageUploadObserver() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, isFile).observe(this, progress -> {
             // update UI
             if(progress==null);
 
@@ -334,10 +337,12 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     photoBroadcastDialog.photoUploadButtonView.setVisibility(View.GONE);
                     photoBroadcastDialog.addPhoto.setVisibility(View.VISIBLE);
                 }
-                if (pollBroadcastDialog.pollExists)
-                    Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollBroadcastDialog.pollAddPhoto);
-                else
-                    Glide.with(CircleWall.this).load(filePath).fitCenter().into(photoBroadcastDialog.addPhoto);
+                if(!isFile){
+                    if (pollBroadcastDialog.pollExists)
+                        Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollBroadcastDialog.pollAddPhoto);
+                    else
+                        Glide.with(CircleWall.this).load(filePath).fitCenter().into(photoBroadcastDialog.addPhoto);
+                }
                 imageUploadProgressDialog.dismiss();
             }
         });
@@ -649,8 +654,9 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
 
     }
 
-    private void uploadPicture(){
-        imageUploadModel.imageUpload(filePath);
+    private void uploadPicture(boolean isFile){
+        this.isFile = isFile;
+        imageUploadModel.imageUpload(filePath, isFile);
     }
 
     //code for upload the image
@@ -663,9 +669,19 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                 Bitmap bitmap = imagePicker.getImageFromResult(resultCode, data);
                 filePath = imagePicker.getImageUri(bitmap);
                 if(filePath !=null){
-                    uploadPicture();
+                    uploadPicture(false);
                 }
                 break;
+            case PICK_FILE_ID:
+                isFile = true;
+                String filePaths = "";
+                    filePaths = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+                    filePath = Uri.parse(filePaths);
+                    if(filePath !=null){
+                        Log.d("filepath", filePath.toString());
+                        uploadPicture(true);
+                    }
+
             default:
                 super.onActivityResult(requestCode, resultCode, data);
                 break;

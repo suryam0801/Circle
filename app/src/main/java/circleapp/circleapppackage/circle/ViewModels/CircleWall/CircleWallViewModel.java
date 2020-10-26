@@ -44,7 +44,7 @@ public class CircleWallViewModel extends ViewModel {
         }
         Broadcast normalBroadcast;
         normalBroadcast = new Broadcast(broadcastId, title, description, null,
-                currentUserName, listenersList, currentUserId, false, false, System.currentTimeMillis(), null,
+                currentUserName, listenersList, currentUserId, false, false,false, System.currentTimeMillis(), null,
                 user.getProfileImageLink(), System.currentTimeMillis(),true,1);
         Log.d("Push viewModel",user.getToken_id());
         SendNotification.sendBCinfo(activity,normalBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, listenersList, circle.getBackgroundImageLink(), title, listOfCirclePersonel);
@@ -61,7 +61,7 @@ public class CircleWallViewModel extends ViewModel {
         creationState.setValue(true);
         return creationState;
     }
-    public MutableLiveData<Boolean> createPhotoBroadcast(String title, Uri downloadLink, Circle circle, User user, boolean imageExists, Activity activity, List<Subscriber> listOfCirclePersonel) {
+    public MutableLiveData<Boolean> createPhotoBroadcast(String title, Uri downloadLink, Circle circle, User user, boolean imageExists,boolean isFile, Activity activity, List<Subscriber> listOfCirclePersonel) {
         creationState = new MutableLiveData<>();
         String currentCircleId = circle.getId();
         String broadcastId = broadcastsRepository.getBroadcastId(currentCircleId);
@@ -80,9 +80,12 @@ public class CircleWallViewModel extends ViewModel {
             }
         }
         if (imageExists) {
-            photoBroadcast = new Broadcast(broadcastId, title, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, false, true,
+            photoBroadcast = new Broadcast(broadcastId, title, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, false, true,isFile,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), System.currentTimeMillis(),true,1);
         }
+        else
+            photoBroadcast = new Broadcast(broadcastId, title, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, false, true,isFile,
+                    System.currentTimeMillis(), null, user.getProfileImageLink(), System.currentTimeMillis(),true,1);
 
 
         SendNotification.sendBCinfo(activity, photoBroadcast, user.getUserId(), broadcastId, circle.getName(), currentCircleId, currentUserName, listenersList, circle.getBackgroundImageLink(),title, listOfCirclePersonel);
@@ -120,10 +123,10 @@ public class CircleWallViewModel extends ViewModel {
 
             Poll poll = new Poll(pollQuestion, options, null);
             if (imageExists) {
-                pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, true, true,
+                pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, true, true,false,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
             } else
-                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, listenersList, currentUserId, true, false,
+                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, listenersList, currentUserId, true, false,false,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
         }
         //updating number of broadcasts in circle

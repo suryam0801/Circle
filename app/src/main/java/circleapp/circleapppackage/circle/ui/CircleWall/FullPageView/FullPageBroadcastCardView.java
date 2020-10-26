@@ -155,7 +155,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
 
     private void setImageUploadObserver() {
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, false).observe(this, progress -> {
             // update UI
             if(progress==null);
 
@@ -413,7 +413,7 @@ public class FullPageBroadcastCardView extends AppCompatActivity implements Invi
     }
 
     private void uploadPicture(){
-        imageUploadModel.imageUpload(filePath);
+        imageUploadModel.imageUpload(filePath, false);
     }
 
     //code for upload the image

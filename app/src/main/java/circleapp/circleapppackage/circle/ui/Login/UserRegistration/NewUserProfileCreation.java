@@ -241,7 +241,7 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
 
     private void setImageUploadProgressObservable(){
         imageUploadModel = ViewModelProviders.of(this).get(ImageUpload.class);
-        imageUploadModel.uploadImageWithProgress(filePath).observe(this, progress -> {
+        imageUploadModel.uploadImageWithProgress(filePath, false).observe(this, progress -> {
             // update UI
             if(progress==null);
 
@@ -290,7 +290,7 @@ public class NewUserProfileCreation extends AppCompatActivity implements View.On
     }
 
     private void uploadUserProfilePic(){
-        imageUploadModel.imageUpload(filePath);
+        imageUploadModel.imageUpload(filePath, false);
     }
 
     //code for upload the image

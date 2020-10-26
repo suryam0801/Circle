@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -25,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="99"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Post New Photo"
+                android:text="Post New File"
                 android:textColor="#3B3B3B"
                 android:textSize="16dp"></TextView>
 
@@ -43,7 +44,7 @@
                 android:textColor="@color/black"
                 android:textSize="15dp"></EditText>
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/photo_add_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
@@ -54,16 +55,35 @@
                     android:id="@+id/photo_upload_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_marginStart="32dp"
                     android:drawableStart="@drawable/ic_cloud_upload_blue_24dp"
                     android:drawablePadding="10dp"
                     android:scaleX="1.2"
                     android:scaleY="1.2"
                     android:text="Add Photo +"
                     android:textColor="@color/color_blue"
-                    android:visibility="visible"></TextView>
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></TextView>
 
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/photo_upload_file"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:drawableStart="@drawable/ic_baseline_insert_file_24"
+                    android:drawablePadding="10dp"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:text="Add File +"
+                    android:textColor="@color/color_blue"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/photo_display_photo_add_broadcast"
                 android:layout_width="wrap_content"
@@ -71,6 +91,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:layout_gravity="center"
+                android:src="@drawable/file_uploaded"
                 android:visibility="gone" />
 
         </LinearLayout>
