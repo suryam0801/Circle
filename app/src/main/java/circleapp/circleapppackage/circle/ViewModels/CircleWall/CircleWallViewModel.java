@@ -84,7 +84,7 @@ public class CircleWallViewModel extends ViewModel {
                     System.currentTimeMillis(), null, user.getProfileImageLink(), System.currentTimeMillis(),true,1);
         }
         else
-            photoBroadcast = new Broadcast(broadcastId, title, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, false, true,isFile,
+            photoBroadcast = new Broadcast(broadcastId, title, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, false, false,isFile,
                     System.currentTimeMillis(), null, user.getProfileImageLink(), System.currentTimeMillis(),true,1);
 
 
@@ -101,7 +101,7 @@ public class CircleWallViewModel extends ViewModel {
         return creationState;
     }
 
-    public MutableLiveData<Boolean> createPollBroadcast(String pollQuestion, HashMap<String, Integer> options, boolean pollExists, boolean imageExists, Uri downloadLink, Circle circle, User user, Activity activity, List<Subscriber> listOfCirclePersonel){
+    public MutableLiveData<Boolean> createPollBroadcast(String pollQuestion, HashMap<String, Integer> options, boolean pollExists, boolean imageExists,boolean isFile, Uri downloadLink, Circle circle, User user, Activity activity, List<Subscriber> listOfCirclePersonel){
         creationState = new MutableLiveData<>();
         globalVariables  = new GlobalVariables();
         String currentCircleId = circle.getId();
@@ -125,8 +125,9 @@ public class CircleWallViewModel extends ViewModel {
             if (imageExists) {
                 pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, true, true,false,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
-            } else
-                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, listenersList, currentUserId, true, false,false,
+            }
+            if(isFile)
+                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, listenersList, currentUserId, true, false,true,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
         }
         //updating number of broadcasts in circle

@@ -1,5 +1,6 @@
 package circleapp.circleapppackage.circle.ui.CircleWall.BroadcastCreation;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,12 +13,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,10 +26,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import circleapp.circleapppackage.circle.Model.ObjectModels.Circle;
 import circleapp.circleapppackage.circle.Model.ObjectModels.User;
@@ -44,14 +46,18 @@ import static android.Manifest.permission.CAMERA;
 public class CreatePollBroadcastDialog {
     public boolean pollExists = false;
     public boolean imageExists = false;
+    public boolean isFile =false;
 
     private static final int PICK_IMAGE_ID = 234;
+    private static final int FILE_REQUEST_CODE = 235;
     private Dialog createPollBroadcastPopup;
     private EditText setPollQuestionET, setPollOptionET;
     private Button btnAddPollOption,btnUploadPollBroadcast, cancelPollButton;
     private List<String> pollAnswerOptionsList = new ArrayList<>();
     private CircleWall circleWall;
-    public RelativeLayout pollUploadButtonView;
+    public ConstraintLayout pollUploadButtonView;
+    private TextView uploadPhotoTxt = null;
+    private TextView uploadFileTxt =null;
     private Circle circle;
     private User user;
     private Activity activity;
@@ -72,8 +78,12 @@ public class CreatePollBroadcastDialog {
             pollUploadButtonView.setVisibility(View.VISIBLE);
         });
 
-        pollUploadButtonView.setOnClickListener(v -> {
-            permissionCheck();
+        uploadPhotoTxt.setOnClickListener(v -> {
+            imagePermissionCheck();
+        });
+
+        uploadFileTxt.setOnClickListener(v->{
+            filePermissionCheck();
         });
 
         btnAddPollOption.setOnClickListener(view -> {
@@ -95,6 +105,8 @@ public class CreatePollBroadcastDialog {
             downloadLink = globalVariables.getTempdownloadLink();
             if (downloadLink != null)
                 imageExists = true;
+            if(isFile)
+                imageExists = false;
             createPollBroadcast();
         }
     }
@@ -123,7 +135,7 @@ public class CreatePollBroadcastDialog {
         }
     }
 
-    private void permissionCheck() {
+    private void imagePermissionCheck() {
 
         Permissions.check(activity/*context*/, CAMERA, null, new PermissionHandler() {
             @Override
@@ -131,6 +143,21 @@ public class CreatePollBroadcastDialog {
                 ImagePicker imagePicker= new ImagePicker(activity.getApplication());
                 Intent chooseImageIntent = imagePicker.getPickImageIntent();
                 activity.startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
+            }
+            @Override
+            public void onDenied(Context context, ArrayList<String> deniedPermissions) {
+                // permission denied, block the feature.
+            }
+        });
+    }
+
+    private void filePermissionCheck(){
+        Permissions.check(activity/*context*/,new String[]{CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                MaterialFilePicker materialFilePicker=  new MaterialFilePicker();
+                materialFilePicker.withActivity(activity).withFilter(Pattern.compile(".*\\.(pdf|xls|xlsx|doc|docx|html|txt)$")).withCloseMenu(true).withTitle("Choose File").withRequestCode(FILE_REQUEST_CODE).start();
+                isFile = true;
             }
             @Override
             public void onDenied(Context context, ArrayList<String> deniedPermissions) {
@@ -157,6 +184,8 @@ public class CreatePollBroadcastDialog {
         pollUploadButtonView = createPollBroadcastPopup.findViewById(R.id.poll_add_photo_view);
         pollImageUploadInitiation = createPollBroadcastPopup.findViewById(R.id.poll_image_upload_initiate_layout);
         pollExists = true;
+        uploadFileTxt = createPollBroadcastPopup.findViewById(R.id.poll_upload_file);
+        uploadPhotoTxt = createPollBroadcastPopup.findViewById(R.id.poll_upload_photo);
 
         btnUploadPollBroadcast = createPollBroadcastPopup.findViewById(R.id.upload_poll_broadcast_btn);
         cancelPollButton = createPollBroadcastPopup.findViewById(R.id.create_poll_broadcast_cancel_btn);
@@ -189,7 +218,7 @@ public class CreatePollBroadcastDialog {
             }
         }
         circleWallViewModel = ViewModelProviders.of((FragmentActivity) activity).get(CircleWallViewModel.class);
-        circleWallViewModel.createPollBroadcast(pollQuestion,options,pollExists,imageExists,downloadLink,circle,user,activity, globalVariables.getCircleWallPersonel()).observe((LifecycleOwner) activity, state->{
+        circleWallViewModel.createPollBroadcast(pollQuestion,options,pollExists,imageExists,isFile,downloadLink,circle,user,activity, globalVariables.getCircleWallPersonel()).observe((LifecycleOwner) activity, state->{
             if (state) {
 
                 circleWall.updateUserCount(circle);

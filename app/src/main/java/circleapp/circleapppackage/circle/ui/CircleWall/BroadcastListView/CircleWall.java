@@ -338,8 +338,10 @@ public class CircleWall extends AppCompatActivity implements InviteFriendsBottom
                     photoBroadcastDialog.addPhoto.setVisibility(View.VISIBLE);
                 }
                 if(!isFile){
-                    if (pollBroadcastDialog.pollExists)
+                    if (pollBroadcastDialog.pollExists){
+                        pollBroadcastDialog.pollAddPhoto.setVisibility(View.VISIBLE);
                         Glide.with(CircleWall.this).load(filePath).fitCenter().into(pollBroadcastDialog.pollAddPhoto);
+                    }
                     else
                         Glide.with(CircleWall.this).load(filePath).fitCenter().into(photoBroadcastDialog.addPhoto);
                 }
