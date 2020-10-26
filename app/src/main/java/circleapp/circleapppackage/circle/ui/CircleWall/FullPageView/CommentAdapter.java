@@ -217,25 +217,64 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
 
         holder.backgroundContainer.setOnLongClickListener(v->{
-            String [] options = {"Copy", "Delete"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setTitle("Options");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(which==0)
-                    {
-                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("label", "@"+ name+": " +  cmnt);
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
-                    }
-                    else if(which==1){
-                        showDeleteCommentDialog(comment);
-                    }
+            try {
+                if(globalVariables.getCurrentCircle().getMembersList().get(globalVariables.getCurrentUser().getUserId()).equals("admin")){
+                    String [] options = {"Copy", "Delete"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Options");
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(which==0)
+                            {
+                                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("label", "@"+ name+": " +  cmnt);
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                            }
+                            else if(which==1){
+                                showDeleteCommentDialog(comment);
+                            }
+                        }
+                    });
+                    builder.show();
                 }
-            });
-            builder.show();
+                else{
+                    String [] options = {"Copy"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Options");
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(which==0)
+                            {
+                                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("label", "@"+ name+": " +  cmnt);
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    builder.show();
+                }
+            }catch (Exception e){
+                String [] options = {"Copy"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Options");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which==0)
+                        {
+                            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("label", "@"+ name+": " +  cmnt);
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(mContext, "Copied to Clipboard",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.show();
+            }
             return true;
         });
 
