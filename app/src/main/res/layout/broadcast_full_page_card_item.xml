@@ -99,14 +99,29 @@
                             android:textColor="@color/color_blue"
                             android:textSize="12dp"></TextView>
                     </LinearLayout>
-
-                    <com.github.chrisbanes.photoview.PhotoView
-                        android:id="@+id/uploaded_image_display_broadcast_full_page"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:visibility="gone" />
+                        android:layout_height="wrap_content">
+                        <com.github.chrisbanes.photoview.PhotoView
+                            android:id="@+id/uploaded_image_display_broadcast_full_page"
+                            android:layout_width="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/uploaded_image_text_broadcast_full_page"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:text="Click to View/Download"
+                            android:layout_marginRight="15dp"
+                            android:visibility="gone"
+                            android:textSize="17sp"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/uploaded_image_display_broadcast_full_page"/>
+                    </RelativeLayout>
 
                     <TextView
                         android:id="@+id/full_page_broadcast_Message"

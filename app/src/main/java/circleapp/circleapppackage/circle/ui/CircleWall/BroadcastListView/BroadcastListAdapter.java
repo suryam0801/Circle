@@ -3,6 +3,8 @@ package circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -11,8 +13,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +73,9 @@ import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circleapppackage.circle.ui.CircleWall.FullPageView.FullPageBroadcastCardView;
 import circleapp.circleapppackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.webkit.MimeTypeMap.getFileExtensionFromUrl;
 
 public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdapter.ViewHolder> {
     private List<Broadcast> broadcastList;
@@ -171,8 +179,10 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
     }
 
     private void ifFileExistsAction(ViewHolder viewHolder, int position, Broadcast broadcast){
+        viewHolder.docText.setVisibility(View.VISIBLE);
         viewHolder.imageDisplayHolder.setVisibility(View.VISIBLE);
         viewHolder.imageDisplay.setVisibility(View.VISIBLE);
+        viewHolder.imageLoadProgressBar.setVisibility(View.GONE);
 
         //setting imageview
         int profilePic = Integer.parseInt(String.valueOf(R.drawable.file_download));
@@ -182,25 +192,31 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         //navigate to full screen photo display when clicked
         viewHolder.imageDisplay.setOnClickListener(view -> {
-            //TODO Open file
-            StorageReference httpsReference = globalVariables.getFirebaseStorage().getReferenceFromUrl(broadcast.getAttachmentURI());
-            try {
-                File localFile = File.createTempFile(broadcast.getTitle(),"lol");
-                httpsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        // Local temp file has been created
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if(broadcast.isPollExists())
+                downloadFile(Uri.parse(broadcast.getAttachmentURI()),circle.getName()+"_"+broadcast.getPoll().getQuestion());
+            else
+                downloadFile(Uri.parse(broadcast.getAttachmentURI()),circle.getName()+"_"+broadcast.getTitle());
         });
+    }
+
+    private void downloadFile(Uri uri, String filename){
+        Toast.makeText(context, "Your file is downloading",Toast.LENGTH_SHORT).show();
+        DownloadManager.Request r = new DownloadManager.Request(uri);
+
+// This put the download in the same Download dir the browser uses
+        r.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+
+// When downloading music and videos they will be listed in the player
+// (Seems to be available since Honeycomb only)
+        r.allowScanningByMediaScanner();
+
+// Notify user when download is completed
+// (Seems to be available since Honeycomb only)
+        r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+// Start download
+        DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+        dm.enqueue(r);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -443,7 +459,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
     //initializes the views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newCommentsTopTv, readMoreTextView, readLessTextView;
+        private TextView broadcastNameDisplay, broadcastMessageDisplay, timeElapsedDisplay, viewComments, broadcastTitle, newCommentsTopTv, readMoreTextView, readLessTextView, docText;
         private CircleImageView profPicDisplay;
         private LinearLayout pollOptionsDisplayGroup, newCommentsTopNotifContainer;
         private RelativeLayout container;
@@ -477,6 +493,7 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
             broadcastListenerToggle = view.findViewById(R.id.broadcast_listener_on_off_toggle);
             readMoreTextView = view.findViewById(R.id.read_more_message);
             readLessTextView = view.findViewById(R.id.read_less_message);
+            docText = view.findViewById(R.id.uploaded_image_text_broadcast);
         }
 
         public String getCurrentUserPollOption() {

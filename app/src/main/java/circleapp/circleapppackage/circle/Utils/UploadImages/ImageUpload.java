@@ -53,6 +53,7 @@ public class ImageUpload extends ViewModel {
                 progressPercentageAndLink.setValue(returnValue);
                 profileRef = storageReferenceRepository.getStorageReference("Files/" + id);
                 UploadTask uploadTask = profileRef.putFile(file);
+                StorageReference finalProfileRef1 = profileRef;
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -64,11 +65,17 @@ public class ImageUpload extends ViewModel {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                        String[] returnValue = {taskSnapshot.getUploadSessionUri().toString(), "" + 50};
+                        progressPercentageAndLink.setValue(returnValue);
                         // ...
-                        if (globalVariables.getAuthenticationToken().getCurrentUser() != null) {
-                            String[] returnValue = {taskSnapshot.getUploadSessionUri().toString(), "" + 100};
-                            progressPercentageAndLink.setValue(returnValue);
-                        }
+                        finalProfileRef1.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String url = uri.toString();
+                                String[] returnValue = {url, "" + 100};
+                                progressPercentageAndLink.setValue(returnValue);
+                            }
+                        });
                     }
                 });
 
