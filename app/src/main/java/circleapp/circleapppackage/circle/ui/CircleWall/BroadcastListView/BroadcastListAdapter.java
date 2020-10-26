@@ -26,8 +26,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -40,8 +42,14 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,12 +160,47 @@ public class BroadcastListAdapter extends RecyclerView.Adapter<BroadcastListAdap
 
         if (broadcast.isPollExists() == true)
             ifPollExistsAction(viewHolder, broadcast, user);
+        if(broadcast.isFileExists() == true)
+            ifFileExistsAction(viewHolder, i, broadcast);
 
         if(broadcast.getMessage()!=null){
             if(broadcast.getMessage().length()>240)
                 viewHolder.readMoreTextView.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void ifFileExistsAction(ViewHolder viewHolder, int position, Broadcast broadcast){
+        viewHolder.imageDisplayHolder.setVisibility(View.VISIBLE);
+        viewHolder.imageDisplay.setVisibility(View.VISIBLE);
+
+        //setting imageview
+        int profilePic = Integer.parseInt(String.valueOf(R.drawable.file_download));
+        Glide.with((Activity) context)
+                .load(ContextCompat.getDrawable(context, profilePic))
+                .into(viewHolder.imageDisplay);
+
+        //navigate to full screen photo display when clicked
+        viewHolder.imageDisplay.setOnClickListener(view -> {
+            //TODO Open file
+            StorageReference httpsReference = globalVariables.getFirebaseStorage().getReferenceFromUrl(broadcast.getAttachmentURI());
+            try {
+                File localFile = File.createTempFile(broadcast.getTitle(),"lol");
+                httpsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Local temp file has been created
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

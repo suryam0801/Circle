@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -36,11 +37,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +69,7 @@ import circleapp.circleapppackage.circle.ViewModels.CircleWall.ImageUrlViewModel
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CirclePersonnelViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.CommentsViewModel;
 import circleapp.circleapppackage.circle.ViewModels.FBDatabaseReads.MyCirclesViewModel;
+import circleapp.circleapppackage.circle.ui.CircleWall.BroadcastListView.BroadcastListAdapter;
 import circleapp.circleapppackage.circle.ui.CircleWall.FullPageImageDisplay;
 import circleapp.circleapppackage.circle.ui.CircleWall.PollResults.CreatorPollAnswersView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -424,6 +432,38 @@ public class FullPageBroadcastCardAdapter extends RecyclerView.Adapter<FullPageB
                 ((Activity) context).finish();
             });
         }
+    }
+
+    private void ifFileExistsAction(ViewHolder viewHolder, Context context, Broadcast broadcast){
+        viewHolder.imageView.setVisibility(View.VISIBLE);
+
+        //setting imageview
+        int profilePic = Integer.parseInt(String.valueOf(R.drawable.file_download));
+        Glide.with((Activity) context)
+                .load(ContextCompat.getDrawable(context, profilePic))
+                .into(viewHolder.imageView);
+
+        //navigate to full screen photo display when clicked
+        viewHolder.imageView.setOnClickListener(view -> {
+            //TODO OPen file
+            StorageReference httpsReference = globalVariables.getFirebaseStorage().getReferenceFromUrl(broadcast.getAttachmentURI());
+            try {
+                File localFile = File.createTempFile(broadcast.getTitle(),"lol");
+                httpsReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Local temp file has been created
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void actionsIfPollExists(ViewHolder viewHolder, Broadcast broadcast, Context context, User user) {

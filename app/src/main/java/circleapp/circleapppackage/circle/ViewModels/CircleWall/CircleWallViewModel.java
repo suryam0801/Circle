@@ -127,7 +127,7 @@ public class CircleWallViewModel extends ViewModel {
                         System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
             }
             if(isFile)
-                pollBroadcast = new Broadcast(broadcastId, null, null, null, currentUserName, listenersList, currentUserId, true, false,true,
+                pollBroadcast = new Broadcast(broadcastId, null, null, downloadLink.toString(), currentUserName, listenersList, currentUserId, true, false,true,
                         System.currentTimeMillis(), poll, user.getProfileImageLink(),  System.currentTimeMillis(),true,1);
         }
         //updating number of broadcasts in circle
