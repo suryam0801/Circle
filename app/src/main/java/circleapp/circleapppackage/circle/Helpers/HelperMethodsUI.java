@@ -514,6 +514,8 @@ public class HelperMethodsUI {
             backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_poll_black));
         else if(broadcast.isImageExists())
             backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_camera_black));
+        else if(broadcast.isFileExists())
+            backgroundPic.setBackground(context.getResources().getDrawable(R.drawable.ic_baseline_insert_drive_file_black));
         else
         {
             backgroundPic.setScaleX((float) 0.7);
