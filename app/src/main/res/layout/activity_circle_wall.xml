@@ -61,9 +61,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
-                android:drawableTop="@drawable/ic_camera_alt_white_24dp"
+                android:drawableTop="@drawable/ic_baseline_insert_file_white_24"
                 android:gravity="center"
-                android:text="New Image"
+                android:text="New File"
                 android:textColor="@color/white"></TextView>
             <TextView
                 android:id="@+id/circle_wall_black_get_started_poll"
@@ -92,9 +92,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
-                android:drawableTop="@drawable/ic_camera_black"
+                android:drawableTop="@drawable/ic_baseline_insert_drive_file_black"
                 android:gravity="center"
-                android:text="New Image"
+                android:text="New File"
                 android:textColor="@color/black"
                 android:visibility="gone"></TextView>
 
@@ -237,8 +237,8 @@
                 android:id="@+id/image_creation_FAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_camera_alt_white_24dp"
-                fab:fab_label="New Photo"
+                android:src="@drawable/ic_baseline_insert_file_white_24"
+                fab:fab_label="New File"
                 fab:fab_size="normal" />
         </com.github.clans.fab.FloatingActionMenu>
     </RelativeLayout>

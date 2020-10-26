@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Broadcast {
     private String id, title, message, attachmentURI, creatorName, creatorID, creatorPhotoURI;
-    private boolean pollExists, imageExists, adminVisibility;
+    private boolean pollExists, imageExists,fileExists, adminVisibility;
     private long timeStamp, latestCommentTimestamp;
     private Poll poll;
     private HashMap<String, Boolean> listenersList;
@@ -27,7 +27,7 @@ public class Broadcast {
     }
 
     public Broadcast(String id, String title, String message, String attachmentURI, String creatorName, HashMap<String, Boolean> listenersList,
-                     String creatorID, boolean pollExists, boolean imageExists, long timeStamp, Poll poll, String creatorPhotoURI,
+                     String creatorID, boolean pollExists, boolean imageExists,boolean fileExists, long timeStamp, Poll poll, String creatorPhotoURI,
                      long latestCommentTimestamp, boolean adminVisibility, long version) {
         this.id = id;
         this.title = title;
@@ -38,6 +38,7 @@ public class Broadcast {
         this.creatorID = creatorID;
         this.pollExists = pollExists;
         this.imageExists = imageExists;
+        this.fileExists = fileExists;
         this.creatorPhotoURI = creatorPhotoURI;
         this.timeStamp = timeStamp;
         this.poll = poll;
@@ -153,6 +154,14 @@ public class Broadcast {
         this.title = title;
     }
 
+    public boolean isFileExists() {
+        return fileExists;
+    }
+
+    public void setFileExists(boolean fileExists) {
+        this.fileExists = fileExists;
+    }
+
     @Override
     public String toString() {
         return "Broadcast{" +
@@ -166,6 +175,7 @@ public class Broadcast {
                 ", creatorPhotoURI='" + creatorPhotoURI + '\'' +
                 ", pollExists=" + pollExists +
                 ", imageExists" + imageExists +
+                ", fileExists" + fileExists +
                 ", timeStamp=" + timeStamp +
                 ", latestCommentTimestamp=" + latestCommentTimestamp +
                 ", poll=" + poll +
